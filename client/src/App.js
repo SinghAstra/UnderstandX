@@ -10,6 +10,7 @@ function App() {
   const [employees, setEmployees] = useState(employeeData);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortType, setSortType] = useState("name");
 
   const [currentPage, setCurrentPage] = useState(0);
   const employeesPerPage = 5;
@@ -46,11 +47,18 @@ function App() {
     setEditingEmployee(null);
   };
 
-  const filteredEmployees = employees.filter(
-    (employee) =>
-      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.team.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredEmployees = employees
+    .filter(
+      (employee) =>
+        employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.team.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortType === "name") {
+        return a.name.localeCompare(b.name);
+      }
+      return a.team.localeCompare(b.team);
+    });
 
   const pageCount = Math.ceil(filteredEmployees.length / employeesPerPage);
 
@@ -73,6 +81,10 @@ function App() {
               setSearchTerm(e.target.value);
             }}
           />
+          <select onChange={(e) => setSortType(e.target.value)}>
+            <option value="name">Sort by Name</option>
+            <option value="team">Sort by Team</option>
+          </select>
           <AddEmployee onAdd={addEmployee} />
           <EmployeeList
             employees={filteredEmployees.slice(
