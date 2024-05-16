@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AddEmployee from "./components/AddEmployee";
+import AssignTeam from "./components/AssignTeam";
 import EmployeeList from "./components/EmployeeList";
 import employeeData from "./data/employeeData";
 
@@ -10,11 +11,22 @@ function App() {
     setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
   };
 
+  const updateTeam = (employeeName, newTeam) => {
+    setEmployees(
+      employees.map((employee) =>
+        employee.name === employeeName
+          ? { ...employee, team: newTeam }
+          : employee
+      )
+    );
+  };
+
   return (
     <div>
       <h1>Employee Management App</h1>
       <AddEmployee onAdd={addEmployee} />
       <EmployeeList employees={employees} />
+      <AssignTeam employees={employees} onUpdate={updateTeam} />
     </div>
   );
 }
