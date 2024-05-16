@@ -8,6 +8,7 @@ import employeeData from "./data/employeeData";
 function App() {
   const [employees, setEmployees] = useState(employeeData);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const addEmployee = (employee) => {
     setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
@@ -36,6 +37,12 @@ function App() {
     setEditingEmployee(null);
   };
 
+  const filteredEmployees = employees.filter(
+    (employee) =>
+      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.team.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h1>Employee Management App</h1>
@@ -43,9 +50,15 @@ function App() {
         <EditEmployee employee={editingEmployee} onUpdate={updateEmployee} />
       ) : (
         <>
+          <input
+            type="text"
+            placeholder="Search employees by name or team"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <AddEmployee onAdd={addEmployee} />
           <EmployeeList
-            employees={employees}
+            employees={filteredEmployees}
             onDelete={deleteEmployee}
             onEdit={setEditingEmployee}
           />
