@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReactPaginate from "react-paginate";
 import AddEmployee from "./components/AddEmployee";
 import AssignTeam from "./components/AssignTeam";
 import EditEmployee from "./components/EditEmployee";
@@ -9,6 +10,16 @@ function App() {
   const [employees, setEmployees] = useState(employeeData);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const employeesPerPage = 5;
+  const offset = currentPage * employeesPerPage;
+  const pageCount = Math.ceil(employees.length / employeesPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    console.log("selected ", selected);
+    setCurrentPage(selected);
+  };
 
   const addEmployee = (employee) => {
     setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
@@ -58,11 +69,24 @@ function App() {
           />
           <AddEmployee onAdd={addEmployee} />
           <EmployeeList
-            employees={filteredEmployees}
+            employees={filteredEmployees.slice(
+              offset,
+              offset + employeesPerPage
+            )}
             onDelete={deleteEmployee}
             onEdit={setEditingEmployee}
           />
           <AssignTeam employees={employees} onUpdate={updateTeam} />
+          <ReactPaginate
+            previousLabel={"<"}
+            nextLabel={">"}
+            breakLabel={"..."}
+            onPageChange={handlePageClick}
+            pageCount={pageCount}
+            pageRangeDisplayed={5}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
         </>
       )}
     </div>
