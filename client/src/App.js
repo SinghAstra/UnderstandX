@@ -14,10 +14,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState(0);
   const employeesPerPage = 5;
   const offset = currentPage * employeesPerPage;
-  const pageCount = Math.ceil(employees.length / employeesPerPage);
 
   const handlePageClick = ({ selected }) => {
-    console.log("selected ", selected);
     setCurrentPage(selected);
   };
 
@@ -54,6 +52,11 @@ function App() {
       employee.team.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const pageCount = Math.ceil(filteredEmployees.length / employeesPerPage);
+
+  console.log("pageCount is ", pageCount);
+  console.log("current page is ", currentPage);
+
   return (
     <div>
       <h1>Employee Management App</h1>
@@ -65,7 +68,10 @@ function App() {
             type="text"
             placeholder="Search employees by name or team"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setCurrentPage(0);
+              setSearchTerm(e.target.value);
+            }}
           />
           <AddEmployee onAdd={addEmployee} />
           <EmployeeList
@@ -86,6 +92,7 @@ function App() {
             pageRangeDisplayed={5}
             containerClassName={"pagination"}
             activeClassName={"active"}
+            forcePage={currentPage}
           />
         </>
       )}
