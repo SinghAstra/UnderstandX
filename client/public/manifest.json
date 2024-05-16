@@ -1,0 +1,9 @@
+{
+  "short_name": "Employee App",
+  "name": "Employee Management App",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
