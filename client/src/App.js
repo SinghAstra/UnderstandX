@@ -21,11 +21,15 @@ function App() {
     );
   };
 
+  const deleteEmployee = (id) => {
+    setEmployees(employees.filter((employee) => employee.id !== id));
+  };
+
   return (
     <div>
       <h1>Employee Management App</h1>
       <AddEmployee onAdd={addEmployee} />
-      <EmployeeList employees={employees} />
+      <EmployeeList employees={employees} onDelete={deleteEmployee} />
       <AssignTeam employees={employees} onUpdate={updateTeam} />
     </div>
   );

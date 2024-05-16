@@ -1,6 +1,6 @@
 import React from "react";
 
-const EmployeeList = ({ employees }) => {
+const EmployeeList = ({ employees, onDelete }) => {
   return (
     <div>
       <h2>Employee List</h2>
@@ -8,6 +8,7 @@ const EmployeeList = ({ employees }) => {
         {employees.map((employee) => (
           <li key={employee.id}>
             {employee.name} - {employee.team}
+            <button onClick={() => onDelete(employee.id)}>Delete</button>
           </li>
         ))}
       </ul>
