@@ -34,9 +34,17 @@ const AddEmployeePage = ({ onAdd }) => {
   };
 
   const handleFileChange = (e) => {
-    setProfilePicture(e.target.files[0]);
+    const file = e.target.files[0];
+    if (
+      file &&
+      file.type.startsWith("image/") &&
+      file.size <= 5 * 1024 * 1024
+    ) {
+      setProfilePicture(file);
+    } else {
+      alert("Please upload a valid image file (max size 5MB)");
+    }
   };
-
   return (
     <div>
       <h2>Add Employee</h2>
