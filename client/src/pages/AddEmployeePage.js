@@ -5,6 +5,10 @@ const AddEmployeePage = ({ onAdd }) => {
   const [name, setName] = useState("");
   const [team, setTeam] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
+  const [contactInfo, setContactInfo] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [dateOfHire, setDateOfHire] = useState("");
+
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -15,12 +19,18 @@ const AddEmployeePage = ({ onAdd }) => {
       profilePicture: profilePicture
         ? URL.createObjectURL(profilePicture)
         : null,
+      contactInfo,
+      jobTitle,
+      dateOfHire,
     };
     onAdd(newEmployee);
     navigate("/");
     setName("");
     setTeam("");
     setProfilePicture(null);
+    setContactInfo("");
+    setJobTitle("");
+    setDateOfHire("");
   };
 
   const handleFileChange = (e) => {
@@ -44,7 +54,28 @@ const AddEmployeePage = ({ onAdd }) => {
           onChange={(e) => setTeam(e.target.value)}
         />
         <input type="file" onChange={handleFileChange} />
-        <button type="submit">Add</button>
+        <input
+          type="text"
+          placeholder="Contact Information"
+          value={contactInfo}
+          onChange={(e) => setContactInfo(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Job Title"
+          value={jobTitle}
+          onChange={(e) => setJobTitle(e.target.value)}
+          required
+        />
+        <input
+          type="date"
+          placeholder="Date of Hire"
+          value={dateOfHire}
+          onChange={(e) => setDateOfHire(e.target.value)}
+          required
+        />
+        <button type="submit">Add Employee</button>
       </form>
     </div>
   );

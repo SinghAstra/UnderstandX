@@ -38,11 +38,13 @@ const EditEmployee = ({ employees, onUpdate }) => {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
         <input
           type="text"
           value={team}
           onChange={(e) => setTeam(e.target.value)}
+          required
         />
         <input type="file" onChange={handleFileChange} />
         {profilePicture && (
