@@ -7,11 +7,23 @@ const EditEmployee = ({ employees, onUpdate }) => {
   const employee = employees.find((employee) => employee.id === parseInt(id));
   const [name, setName] = useState(employee ? employee.name : "");
   const [team, setTeam] = useState(employee ? employee.team : "");
+  const [profilePicture, setProfilePicture] = useState(
+    employee ? employee.profilePicture : null
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdate(employee.id, { name, team });
+    const updatedEmployee = {
+      name,
+      team,
+      profilePicture,
+    };
+    onUpdate(employee.id, updatedEmployee);
     navigate("/");
+  };
+
+  const handleFileChange = (e) => {
+    setProfilePicture(URL.createObjectURL(e.target.files[0]));
   };
 
   if (!employee) {
@@ -32,6 +44,10 @@ const EditEmployee = ({ employees, onUpdate }) => {
           value={team}
           onChange={(e) => setTeam(e.target.value)}
         />
+        <input type="file" onChange={handleFileChange} />
+        {profilePicture && (
+          <img src={profilePicture} alt="Profile" width="50" height="50" />
+        )}
         <button type="submit">Update</button>
       </form>
     </div>

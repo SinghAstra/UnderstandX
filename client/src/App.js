@@ -9,6 +9,8 @@ import HomePage from "./pages/HomePage";
 
 function App() {
   const [employees, setEmployees] = useState(employeeData);
+
+  console.log("employees is ", employees);
   const updateEmployee = (id, updatedEmployee) => {
     setEmployees(
       employees.map((employee) =>

@@ -4,16 +4,27 @@ import { useNavigate } from "react-router-dom";
 const AddEmployeePage = ({ onAdd }) => {
   const [name, setName] = useState("");
   const [team, setTeam] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name && team) {
-      onAdd({ name, team });
-      navigate("/");
-      setName("");
-      setTeam("");
-    }
+    const newEmployee = {
+      name,
+      team,
+      profilePicture: profilePicture
+        ? URL.createObjectURL(profilePicture)
+        : null,
+    };
+    onAdd(newEmployee);
+    navigate("/");
+    setName("");
+    setTeam("");
+    setProfilePicture(null);
+  };
+
+  const handleFileChange = (e) => {
+    setProfilePicture(e.target.files[0]);
   };
 
   return (
@@ -32,6 +43,7 @@ const AddEmployeePage = ({ onAdd }) => {
           value={team}
           onChange={(e) => setTeam(e.target.value)}
         />
+        <input type="file" onChange={handleFileChange} />
         <button type="submit">Add</button>
       </form>
     </div>
