@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { toast } from "react-toastify";
 import AssignTeam from "../components/AssignTeam";
 import EmployeeList from "../components/EmployeeList";
 
@@ -27,6 +28,7 @@ const HomePage = ({ employees, setEmployees }) => {
 
   const deleteEmployee = (id) => {
     setEmployees(employees.filter((employee) => employee.id !== id));
+    toast.error("Employee deleted successfully!");
   };
 
   const filteredEmployees = employees

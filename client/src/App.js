@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { toast } from "react-toastify";
 import Navbar from "./components/Navbar";
 import employeeData from "./data/employeeData";
 import AddEmployeePage from "./pages/AddEmployeePage";
@@ -10,17 +11,18 @@ import HomePage from "./pages/HomePage";
 function App() {
   const [employees, setEmployees] = useState(employeeData);
 
-  console.log("employees is ", employees);
   const updateEmployee = (id, updatedEmployee) => {
     setEmployees(
       employees.map((employee) =>
         employee.id === id ? { ...employee, ...updatedEmployee } : employee
       )
     );
+    toast.success("Team updated successfully!");
   };
 
   const addEmployee = (employee) => {
     setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
+    toast.success("Employee added successfully!");
   };
 
   return (
