@@ -3,6 +3,7 @@ import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 import AssignTeam from "../components/AssignTeam";
 import EmployeeList from "../components/EmployeeList";
+import { generateCSV } from "../utils/csvUtils";
 
 const HomePage = ({ employees, setEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,6 +45,16 @@ const HomePage = ({ employees, setEmployees }) => {
       return a.team.localeCompare(b.team);
     });
 
+  const csvHeader = [
+    { label: "ID", key: "id" },
+    { label: "Name", key: "name" },
+    { label: "Team", key: "team" },
+    { label: "Job Title", key: "jobTitle" },
+    { label: "Contact Info", key: "contactInfo" },
+    { label: "Date of Hire", key: "dateOfHire" },
+    { label: "Profile Picture", key: "profilePicture" },
+  ];
+
   const pageCount = Math.ceil(filteredEmployees.length / employeesPerPage);
   return (
     <div>
@@ -66,6 +77,9 @@ const HomePage = ({ employees, setEmployees }) => {
         onDelete={deleteEmployee}
         currentPage={currentPage}
       />
+      <button onClick={() => generateCSV(csvHeader, employees, "employees")}>
+        Export to CSV
+      </button>
       <AssignTeam employees={employees} onUpdate={updateTeam} />
       <ReactPaginate
         previousLabel={"<"}
