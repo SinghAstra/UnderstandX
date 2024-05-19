@@ -25,9 +25,14 @@ const HomePage = ({ employees, setEmployees }) => {
           : employee
       )
     );
+    toast.success("Team updated successfully!");
   };
 
   const deleteEmployee = (id) => {
+    if (!employees.find((employee) => employee.id === id)) {
+      toast.error("Employee not found!");
+      return;
+    }
     setEmployees(employees.filter((employee) => employee.id !== id));
     toast.error("Employee deleted successfully!");
   };
@@ -66,6 +71,9 @@ const HomePage = ({ employees, setEmployees }) => {
         onChange={(e) => {
           setSearchTerm(e.target.value);
           setCurrentPage(0);
+          if (e.target.value && !filteredEmployees.length) {
+            toast.info("No employees found matching the search criteria.");
+          }
         }}
       />
       <select onChange={(e) => setSortType(e.target.value)}>
@@ -77,7 +85,12 @@ const HomePage = ({ employees, setEmployees }) => {
         onDelete={deleteEmployee}
         currentPage={currentPage}
       />
-      <button onClick={() => generateCSV(csvHeader, employees, "employees")}>
+      <button
+        onClick={() => {
+          generateCSV(csvHeader, employees, "employees");
+          toast.success("Employee data exported to CSV successfully!");
+        }}
+      >
         Export to CSV
       </button>
       <AssignTeam employees={employees} onUpdate={updateTeam} />
