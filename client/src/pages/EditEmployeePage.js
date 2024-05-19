@@ -1,13 +1,22 @@
 import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-const EditEmployee = ({ employee, onUpdate }) => {
-  const [name, setName] = useState(employee.name);
-  const [team, setTeam] = useState(employee.team);
+const EditEmployee = ({ employees, onUpdate }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const employee = employees.find((employee) => employee.id === parseInt(id));
+  const [name, setName] = useState(employee ? employee.name : "");
+  const [team, setTeam] = useState(employee ? employee.team : "");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onUpdate(employee.id, { name, team });
+    navigate("/");
   };
+
+  if (!employee) {
+    return <div>Employee not found</div>;
+  }
 
   return (
     <div>

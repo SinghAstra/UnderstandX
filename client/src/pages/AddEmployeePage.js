@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AddEmployee = ({ onAdd }) => {
+const AddEmployeePage = ({ onAdd }) => {
   const [name, setName] = useState("");
   const [team, setTeam] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name && team) {
       onAdd({ name, team });
+      navigate("/");
       setName("");
       setTeam("");
     }
@@ -35,4 +38,4 @@ const AddEmployee = ({ onAdd }) => {
   );
 };
 
-export default AddEmployee;
+export default AddEmployeePage;

@@ -1,23 +1,18 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
-import AddEmployee from "../components/AddEmployee";
 import AssignTeam from "../components/AssignTeam";
 import EmployeeList from "../components/EmployeeList";
 
 const HomePage = ({ employees, setEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
-
   const [currentPage, setCurrentPage] = useState(0);
+
   const employeesPerPage = 5;
   const offset = currentPage * employeesPerPage;
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
-  };
-
-  const addEmployee = (employee) => {
-    setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
   };
 
   const updateTeam = (employeeName, newTeam) => {
@@ -64,10 +59,10 @@ const HomePage = ({ employees, setEmployees }) => {
         <option value="name">Sort by Name</option>
         <option value="team">Sort by Team</option>
       </select>
-      <AddEmployee onAdd={addEmployee} />
       <EmployeeList
         employees={filteredEmployees.slice(offset, offset + employeesPerPage)}
         onDelete={deleteEmployee}
+        currentPage={currentPage}
       />
       <AssignTeam employees={employees} onUpdate={updateTeam} />
       <ReactPaginate

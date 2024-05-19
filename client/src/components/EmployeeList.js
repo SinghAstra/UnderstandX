@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const EmployeeList = ({ employees, onDelete }) => {
+const EmployeeList = ({ employees, onDelete, currentPage }) => {
   const navigate = useNavigate();
 
-  const handleEdit = (id) => {
-    navigate(`/edit/${id}`);
+  const handleEdit = (employee) => {
+    navigate(`/edit/${employee.id}`);
+  };
+
+  const handleDetails = (employee) => {
+    navigate(`/details/${employee.id}`);
   };
 
   return (
@@ -15,12 +19,12 @@ const EmployeeList = ({ employees, onDelete }) => {
         {employees.map((employee) => (
           <li key={employee.id}>
             <span
-              onClick={() => navigate(`/details/${employee.id}`)}
+              onClick={() => handleDetails(employee)}
               style={{ cursor: "pointer", color: "blue" }}
             >
               {employee.name} - {employee.team}
             </span>
-            <button onClick={() => handleEdit(employee.id)}>Edit</button>
+            <button onClick={() => handleEdit(employee)}>Edit</button>
             <button onClick={() => onDelete(employee.id)}>Delete</button>
           </li>
         ))}

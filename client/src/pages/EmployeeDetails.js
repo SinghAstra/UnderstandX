@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const EmployeeDetails = ({ employees }) => {
   const { id } = useParams();
@@ -15,7 +15,7 @@ const EmployeeDetails = ({ employees }) => {
       <p>Name: {employee.name}</p>
       <p>Team: {employee.team}</p>
       <p>ID: {employee.id}</p>
-      <a href="/">Back to Employee List</a>
+      <Link to="/">Back to Employee List</Link>
     </div>
   );
 };
