@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import EditEmployeePage from "./pages/EditEmployeePage";
 import EmployeeDetails from "./pages/EmployeeDetails";
 import EmployeeManagement from "./pages/EmployeeManagement";
+import ExportPage from "./pages/ExportPage";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
@@ -66,6 +67,10 @@ function App() {
                 <AddEmployeePage onAdd={addEmployee} />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/export"
+            element={<ExportPage employees={employees} />}
           />
           <Route path="/login" element={<LoginPage />} />
         </Routes>
