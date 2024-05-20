@@ -18,7 +18,6 @@ const AddEmployeePage = ({ onAdd }) => {
   const initialValues = {
     name: "",
     team: "",
-    profilePicture: null,
     contactInfo: "",
     jobTitle: "",
     dateOfHire: "",
