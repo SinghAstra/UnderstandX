@@ -1,9 +1,17 @@
 import React, { useState } from "react";
+import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 
 const AssignTeamPage = ({ employees, setEmployees }) => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [newTeam, setNewTeam] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const employeesPerPage = 5;
+  const offset = currentPage * employeesPerPage;
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
   const toggleEmployeeSelection = (id) => {
     setSelectedEmployees((prevSelected) =>
@@ -26,6 +34,9 @@ const AssignTeamPage = ({ employees, setEmployees }) => {
     setNewTeam("");
   };
 
+  const displayedEmployees = employees.slice(offset, offset + employeesPerPage);
+  const pageCount = Math.ceil(employees.length / employeesPerPage);
+
   return (
     <div>
       <h1>Assign Team</h1>
@@ -41,7 +52,7 @@ const AssignTeamPage = ({ employees, setEmployees }) => {
         </div>
       )}
       <div>
-        {employees.map((employee) => (
+        {displayedEmployees.map((employee) => (
           <div
             key={employee.id}
             onClick={() => toggleEmployeeSelection(employee.id)}
@@ -58,6 +69,17 @@ const AssignTeamPage = ({ employees, setEmployees }) => {
           </div>
         ))}
       </div>
+      <ReactPaginate
+        previousLabel={"<"}
+        nextLabel={">"}
+        breakLabel={"..."}
+        onPageChange={handlePageClick}
+        pageCount={pageCount}
+        pageRangeDisplayed={5}
+        containerClassName={"pagination"}
+        activeClassName={"active"}
+        forcePage={currentPage}
+      />
     </div>
   );
 };

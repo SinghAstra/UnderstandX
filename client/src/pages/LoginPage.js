@@ -1,10 +1,9 @@
-// LoginPage.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
-  const [role, setRole] = useState("employee");
+  const [role, setRole] = useState("admin");
   const { login } = useAuth();
   const navigate = useNavigate();
 
