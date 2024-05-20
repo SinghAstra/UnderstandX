@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
+import SearchFilter from "../components/SearchFilter";
 
 const AssignTeamPage = ({ employees, setEmployees }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortType, setSortType] = useState("name");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [newTeam, setNewTeam] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -22,24 +25,50 @@ const AssignTeamPage = ({ employees, setEmployees }) => {
   };
 
   const assignTeam = () => {
-    setEmployees((prevEmployees) =>
-      prevEmployees.map((employee) =>
-        selectedEmployees.includes(employee.id)
-          ? { ...employee, team: newTeam }
-          : employee
-      )
-    );
-    toast.success("Team assigned successfully!");
-    setSelectedEmployees([]);
-    setNewTeam("");
+    if (selectedEmployees.length && newTeam) {
+      setEmployees((prevEmployees) =>
+        prevEmployees.map((employee) =>
+          selectedEmployees.includes(employee.id)
+            ? { ...employee, team: newTeam }
+            : employee
+        )
+      );
+      toast.success("Team assigned successfully!");
+      setSelectedEmployees([]);
+      setNewTeam("");
+    }
   };
 
-  const displayedEmployees = employees.slice(offset, offset + employeesPerPage);
+  const filteredEmployees = employees
+    .filter(
+      (employee) =>
+        employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.team.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortType === "name") {
+        return a.name.localeCompare(b.name);
+      }
+      return a.team.localeCompare(b.team);
+    });
+
+  const displayedEmployees = filteredEmployees.slice(
+    offset,
+    offset + employeesPerPage
+  );
   const pageCount = Math.ceil(employees.length / employeesPerPage);
 
   return (
     <div>
       <h1>Assign Team</h1>
+      <SearchFilter
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setCurrentPage={setCurrentPage}
+        sortType={sortType}
+        setSortType={setSortType}
+        filteredEmployees={filteredEmployees}
+      />
       {selectedEmployees.length > 0 && (
         <div>
           <input
