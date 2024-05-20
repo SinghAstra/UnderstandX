@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
+import ConfirmationModal from "../components/ConfirmationModal";
 import EmployeeList from "../components/EmployeeList";
 import SearchFilter from "../components/SearchFilter";
 
@@ -8,32 +9,14 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
   const [currentPage, setCurrentPage] = useState(0);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
   const employeesPerPage = 5;
   const offset = currentPage * employeesPerPage;
 
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
-  };
-
-  const updateTeam = (employeeName, newTeam) => {
-    setEmployees(
-      employees.map((employee) =>
-        employee.name === employeeName
-          ? { ...employee, team: newTeam }
-          : employee
-      )
-    );
-    toast.success("Team updated successfully!");
-  };
-
-  const deleteEmployee = (id) => {
-    if (!employees.find((employee) => employee.id === id)) {
-      toast.error("Employee not found!");
-      return;
-    }
-    setEmployees(employees.filter((employee) => employee.id !== id));
-    toast.error("Employee deleted successfully!");
   };
 
   const filteredEmployees = employees
@@ -49,6 +32,27 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
       return a.team.localeCompare(b.team);
     });
 
+  const handleDeleteClick = (id) => {
+    const employee = employees.find((employee) => employee.id === id);
+    setEmployeeToDelete(employee);
+    setDeleteModalIsOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalIsOpen(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!employeeToDelete) {
+      return;
+    }
+    setEmployees(
+      employees.filter((employee) => employee.id !== employeeToDelete.id)
+    );
+    setDeleteModalIsOpen(false);
+    toast.error("Employee deleted successfully!");
+  };
+
   const pageCount = Math.ceil(filteredEmployees.length / employeesPerPage);
   return (
     <div>
@@ -63,7 +67,7 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
       />
       <EmployeeList
         employees={filteredEmployees.slice(offset, offset + employeesPerPage)}
-        onDelete={deleteEmployee}
+        onDelete={handleDeleteClick}
         currentPage={currentPage}
       />
       <ReactPaginate
@@ -76,6 +80,12 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
         containerClassName={"pagination"}
         activeClassName={"active"}
         forcePage={currentPage}
+      />
+      <ConfirmationModal
+        isOpen={deleteModalIsOpen}
+        closeModal={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        message={`Are you sure you want to delete ${employeeToDelete?.name}?`}
       />
     </div>
   );
