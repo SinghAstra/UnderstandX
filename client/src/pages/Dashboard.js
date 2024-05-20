@@ -4,14 +4,20 @@ import { Link } from "react-router-dom";
 const Dashboard = ({ employees }) => {
   const totalEmployees = employees.length;
   const totalTeams = [...new Set(employees.map((emp) => emp.team))].length;
-  const averageTenure = (
-    employees.reduce(
+  const averageTenure = (() => {
+    const totalEmployees = employees.length;
+    if (totalEmployees === 0) {
+      return "N/A";
+    }
+
+    const totalTenure = employees.reduce(
       (total, emp) =>
         total +
         (new Date().getFullYear() - new Date(emp.dateOfHire).getFullYear()),
       0
-    ) / totalEmployees
-  ).toFixed(2);
+    );
+    return (totalTenure / totalEmployees).toFixed(2);
+  })();
 
   return (
     <div>

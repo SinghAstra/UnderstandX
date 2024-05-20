@@ -8,11 +8,16 @@ const AddEmployeePage = ({ onAdd }) => {
   const [contactInfo, setContactInfo] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [dateOfHire, setDateOfHire] = useState("");
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!name || !team || !contactInfo || !jobTitle || !dateOfHire) {
+      setError("Please fill in all fields");
+      return;
+    }
     const newEmployee = {
       name,
       team,
@@ -48,6 +53,7 @@ const AddEmployeePage = ({ onAdd }) => {
   return (
     <div>
       <h2>Add Employee</h2>
+      {error && <div style={{ color: "red" }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -67,21 +73,18 @@ const AddEmployeePage = ({ onAdd }) => {
           placeholder="Contact Information"
           value={contactInfo}
           onChange={(e) => setContactInfo(e.target.value)}
-          required
         />
         <input
           type="text"
           placeholder="Job Title"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
-          required
         />
         <input
           type="date"
           placeholder="Date of Hire"
           value={dateOfHire}
           onChange={(e) => setDateOfHire(e.target.value)}
-          required
         />
         <button type="submit">Add Employee</button>
       </form>

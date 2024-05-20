@@ -44,13 +44,17 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
 
   const handleConfirmDelete = () => {
     if (!employeeToDelete) {
+      setDeleteModalIsOpen(false);
       return;
     }
-    setEmployees(
-      employees.filter((employee) => employee.id !== employeeToDelete.id)
-    );
-    setDeleteModalIsOpen(false);
-    toast.error("Employee deleted successfully!");
+    toast.info("Deleting employee...");
+    setTimeout(() => {
+      setEmployees(
+        employees.filter((employee) => employee.id !== employeeToDelete.id)
+      );
+      setDeleteModalIsOpen(false);
+      toast.success("Employee deleted successfully!");
+    }, 1000);
   };
 
   const pageCount = Math.ceil(filteredEmployees.length / employeesPerPage);

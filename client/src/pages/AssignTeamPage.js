@@ -36,6 +36,8 @@ const AssignTeamPage = ({ employees, setEmployees, teams }) => {
       toast.success("Team assigned successfully!");
       setSelectedEmployees([]);
       setNewTeam("");
+    } else {
+      toast.error("Please select employees and a team");
     }
   };
 

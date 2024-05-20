@@ -18,17 +18,27 @@ function App() {
   const [employees, setEmployees] = useState(employeeData);
 
   const updateEmployee = (id, updatedEmployee) => {
-    setEmployees(
-      employees.map((employee) =>
-        employee.id === id ? { ...employee, ...updatedEmployee } : employee
-      )
-    );
-    toast.success("Team updated successfully!");
+    try {
+      setEmployees(
+        employees.map((employee) =>
+          employee.id === id ? { ...employee, ...updatedEmployee } : employee
+        )
+      );
+      toast.success("Team updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update team. Please try again.");
+      console.error("Update error:", error);
+    }
   };
 
   const addEmployee = (employee) => {
-    setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
-    toast.success("Employee added successfully!");
+    try {
+      setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
+      toast.success("Employee added successfully!");
+    } catch (error) {
+      toast.error("Failed to add employee. Please try again.");
+      console.error("Add employee error:", error);
+    }
   };
 
   const getUniqueTeams = (employees) => {

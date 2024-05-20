@@ -10,9 +10,14 @@ const EditEmployee = ({ employees, onUpdate }) => {
   const [profilePicture, setProfilePicture] = useState(
     employee ? employee.profilePicture : null
   );
+  const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!name || !team) {
+      setError("Please fill in all fields");
+      return;
+    }
     const updatedEmployee = {
       name,
       team,
@@ -33,18 +38,17 @@ const EditEmployee = ({ employees, onUpdate }) => {
   return (
     <div>
       <h2>Edit Employee</h2>
+      {error && <div style={{ color: "red" }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          required
         />
         <input
           type="text"
           value={team}
           onChange={(e) => setTeam(e.target.value)}
-          required
         />
         <input type="file" onChange={handleFileChange} />
         {profilePicture && (

@@ -14,8 +14,13 @@ const ExportPage = ({ employees }) => {
   ];
 
   const handleExport = () => {
-    generateCSV(csvHeader, employees, "employees");
-    toast.success("Employee data exported to CSV successfully!");
+    try {
+      generateCSV(csvHeader, employees, "employees");
+      toast.success("Employee data exported to CSV successfully!");
+    } catch (error) {
+      toast.error("Failed to export employee data to CSV. Please try again.");
+      console.error("Export error:", error);
+    }
   };
 
   return (
