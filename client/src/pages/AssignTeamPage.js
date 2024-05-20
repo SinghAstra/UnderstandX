@@ -3,7 +3,7 @@ import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 import SearchFilter from "../components/SearchFilter";
 
-const AssignTeamPage = ({ employees, setEmployees }) => {
+const AssignTeamPage = ({ employees, setEmployees, teams }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -71,12 +71,14 @@ const AssignTeamPage = ({ employees, setEmployees }) => {
       />
       {selectedEmployees.length > 0 && (
         <div>
-          <input
-            type="text"
-            placeholder="New Team"
-            value={newTeam}
-            onChange={(e) => setNewTeam(e.target.value)}
-          />
+          <select value={newTeam} onChange={(e) => setNewTeam(e.target.value)}>
+            <option value="">Select Team</option>
+            {teams.map((team) => (
+              <option key={team} value={team}>
+                {team}
+              </option>
+            ))}
+          </select>
           <button onClick={assignTeam}>Assign Team</button>
         </div>
       )}

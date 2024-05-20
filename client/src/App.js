@@ -31,6 +31,14 @@ function App() {
     toast.success("Employee added successfully!");
   };
 
+  const getUniqueTeams = (employees) => {
+    const teams = employees.map((employee) => employee.team);
+    const uniqueTeams = [...new Set(teams)];
+    return uniqueTeams;
+  };
+
+  const teams = getUniqueTeams(employees);
+
   return (
     <AuthProvider>
       <div>
@@ -81,6 +89,7 @@ function App() {
                 <AssignTeamPage
                   employees={employees}
                   setEmployees={setEmployees}
+                  teams={teams}
                 />
               </ProtectedRoute>
             }
