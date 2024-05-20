@@ -5,7 +5,7 @@ import AssignTeam from "../components/AssignTeam";
 import EmployeeList from "../components/EmployeeList";
 import { generateCSV } from "../utils/csvUtils";
 
-const HomePage = ({ employees, setEmployees }) => {
+const EmployeeManagement = ({ employees, setEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
   const [currentPage, setCurrentPage] = useState(0);
@@ -109,4 +109,4 @@ const HomePage = ({ employees, setEmployees }) => {
   );
 };
 
-export default HomePage;
+export default EmployeeManagement;

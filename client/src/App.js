@@ -6,9 +6,10 @@ import Navbar from "./components/Navbar";
 import { AuthProvider } from "./context/AuthContext";
 import employeeData from "./data/employeeData";
 import AddEmployeePage from "./pages/AddEmployeePage";
+import Dashboard from "./pages/Dashboard";
 import EditEmployeePage from "./pages/EditEmployeePage";
 import EmployeeDetails from "./pages/EmployeeDetails";
-import HomePage from "./pages/HomePage";
+import EmployeeManagement from "./pages/EmployeeManagement";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
@@ -33,10 +34,14 @@ function App() {
       <div>
         <Navbar />
         <Routes>
+          <Route path="/" element={<Dashboard employees={employees} />} />
           <Route
-            path="/"
+            path="/manage"
             element={
-              <HomePage employees={employees} setEmployees={setEmployees} />
+              <EmployeeManagement
+                employees={employees}
+                setEmployees={setEmployees}
+              />
             }
           />
           <Route
