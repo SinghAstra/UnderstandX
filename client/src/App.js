@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import { AuthProvider } from "./context/AuthContext";
 import employeeData from "./data/employeeData";
 import AddEmployeePage from "./pages/AddEmployeePage";
+import AssignTeamPage from "./pages/AssignTeamPage";
 import Dashboard from "./pages/Dashboard";
 import EditEmployeePage from "./pages/EditEmployeePage";
 import EmployeeDetails from "./pages/EmployeeDetails";
@@ -73,6 +74,17 @@ function App() {
             element={<ExportPage employees={employees} />}
           />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/assign-team"
+            element={
+              <ProtectedRoute roles={["admin", "manager"]}>
+                <AssignTeamPage
+                  employees={employees}
+                  setEmployees={setEmployees}
+                />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </AuthProvider>

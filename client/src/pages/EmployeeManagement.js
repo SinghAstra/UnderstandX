@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
-import AssignTeam from "../components/AssignTeam";
 import EmployeeList from "../components/EmployeeList";
+import SearchFilter from "../components/SearchFilter";
 
 const EmployeeManagement = ({ employees, setEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,28 +53,19 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
   return (
     <div>
       <h1>Employee Management App</h1>
-      <input
-        type="text"
-        placeholder="Search employees by name or team"
-        value={searchTerm}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-          setCurrentPage(0);
-          if (e.target.value && !filteredEmployees.length) {
-            toast.info("No employees found matching the search criteria.");
-          }
-        }}
+      <SearchFilter
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setCurrentPage={setCurrentPage}
+        sortType={sortType}
+        setSortType={setSortType}
+        filteredEmployees={filteredEmployees}
       />
-      <select onChange={(e) => setSortType(e.target.value)}>
-        <option value="name">Sort by Name</option>
-        <option value="team">Sort by Team</option>
-      </select>
       <EmployeeList
         employees={filteredEmployees.slice(offset, offset + employeesPerPage)}
         onDelete={deleteEmployee}
         currentPage={currentPage}
       />
-      <AssignTeam employees={employees} onUpdate={updateTeam} />
       <ReactPaginate
         previousLabel={"<"}
         nextLabel={">"}
