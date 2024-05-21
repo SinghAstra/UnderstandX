@@ -10,12 +10,13 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   console.log("error in register page is ", error);
 
   const initialValues = {
     username: "sharma",
-    password: "a",
-    confirmPassword: "a",
+    password: "a123ASD@#",
+    confirmPassword: "a123ASD@#",
     firstName: "a",
     lastName: "a",
     email: "sharma@gmail.com",
@@ -23,12 +24,29 @@ const RegisterPage = () => {
 
   const validationSchema = Yup.object({
     username: Yup.string().required("Username is required"),
-    password: Yup.string().required("Password is  required"),
+    password: Yup.string()
+      .required("Password is  required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
+      .matches(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "Password must contain at least one special character"
+      ),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Confirm Password is required"),
-    firstName: Yup.string().required("First Name is required"),
-    lastName: Yup.string().required("Last Name is required"),
+    firstName: Yup.string()
+      .required("First Name is required")
+      .matches(/^[a-zA-Z]+$/, "First Name must contain only letters")
+      .min(2, "First Name must be at least 2 characters")
+      .max(50, "First Name must be less than 50 characters"),
+    lastName: Yup.string()
+      .required("Last Name is required")
+      .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
+      .min(2, "Last Name must be at least 2 characters")
+      .max(50, "Last Name must be less than 50 characters"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
@@ -57,9 +75,9 @@ const RegisterPage = () => {
   return (
     <div>
       <h2>Register</h2>
-      {/* {error && (
+      {error && (
         <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>
-      )} */}
+      )}
       <form onSubmit={formik.handleSubmit}>
         <div>
           <label>Username</label>

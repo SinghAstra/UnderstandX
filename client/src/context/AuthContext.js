@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
           "error.response.data.message : ",
           error.response.data.message
         );
-        throw new Error(error.response.data.message);
+        throw error.response.data.message;
       } else {
         console.log("Registration Error : AuthContext", error);
         throw new Error("Registration failed. Please try again.");
