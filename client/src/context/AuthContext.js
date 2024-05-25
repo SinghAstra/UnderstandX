@@ -9,18 +9,19 @@ export const AuthProvider = ({ children }) => {
   );
   console.log("user is ", user);
   const navigate = useNavigate();
-  const login = async (credentials) => {
+  const login = async (userData) => {
     try {
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
-        credentials
+        userData
       );
       console.log("data --login : " + data);
       setUser(data);
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      throw error.response.data.message || "Login failed";
     }
   };
 

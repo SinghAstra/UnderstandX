@@ -1,18 +1,30 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
   const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleSubmit = (values) => {
-    login(values);
+  const handleSubmit = async (userData) => {
+    setLoading(true);
+    setErrorMessage(null);
+    try {
+      await login(userData);
+      toast.success("Login successful!");
+    } catch (error) {
+      setErrorMessage(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const initialValues = {
-    username: "",
-    password: "",
+    username: "sharmaunique",
+    password: "a123ASD@#",
   };
 
   const validationSchema = Yup.object({
@@ -29,6 +41,7 @@ const LoginPage = () => {
   return (
     <div>
       <h2>Login</h2>
+      {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
       <form onSubmit={formik.handleSubmit}>
         <div>
           <label>Username</label>
@@ -56,7 +69,9 @@ const LoginPage = () => {
             <div style={{ color: "red" }}>{formik.errors.password}</div>
           ) : null}
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
     </div>
   );

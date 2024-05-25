@@ -9,8 +9,6 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log("error in register page is ", error);
-
   const initialValues = {
     username: "sharmaunique",
     password: "a123ASD@#",
