@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const cors = require("cors");
+const { deleteUserByEmail } = require("./controllers/authController");
 
 dotenv.config();
 

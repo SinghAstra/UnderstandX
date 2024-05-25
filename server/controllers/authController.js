@@ -106,7 +106,7 @@ const registerController = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: user.email,
       subject: "Email Verification",
-      text: `Please verify your email by clicking the following link: http://your-domain.com/verify-email?token=${verificationToken}`,
+      text: `Please verify your email by clicking the following link: http://localhost:3000/verify-email?token=${verificationToken}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
