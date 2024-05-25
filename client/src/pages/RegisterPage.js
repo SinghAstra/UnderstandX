@@ -1,25 +1,23 @@
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { useAuth } from "../context/AuthContext";
 
 const RegisterPage = () => {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   console.log("error in register page is ", error);
 
   const initialValues = {
-    username: "sharma",
+    username: "sharmaunique",
     password: "a123ASD@#",
     confirmPassword: "a123ASD@#",
-    firstName: "a",
-    lastName: "a",
-    email: "sharma@gmail.com",
+    firstName: "firstName",
+    lastName: "lastName",
+    email: "singhisabhaypratap@gmail.com",
   };
 
   const validationSchema = Yup.object({
@@ -57,7 +55,9 @@ const RegisterPage = () => {
     setError(null);
     try {
       await register(values);
-      toast.success("Registration successful!");
+      toast.success(
+        "Registration successful! Please check your email for verification."
+      );
     } catch (error) {
       setError(error);
       console.log("Registration error : Register Page ", error);

@@ -24,31 +24,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (credentials) => {
+  const register = async (userData) => {
     try {
-      const { data } = await axios.post(
+      const response = await axios.post(
         "http://localhost:5000/api/auth/register",
-        credentials
+        userData
       );
-      console.log("data --register : ", data);
-      setUser(data);
-      localStorage.setItem("user", JSON.stringify(data));
+      console.log("response.data in register : ", response.data);
+      setUser(response.data);
+      localStorage.setItem("user", JSON.stringify(response.data));
       navigate("/");
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        console.log(
-          "error.response.data.message : ",
-          error.response.data.message
-        );
-        throw error.response.data.message;
-      } else {
-        console.log("Registration Error : AuthContext", error);
-        throw new Error("Registration failed. Please try again.");
-      }
+      // if (
+      //   error.response &&
+      //   error.response.data &&
+      //   error.response.data.message
+      // ) {
+      //   console.log(
+      //     "error.response.data.message : ",
+      //     error.response.data.message
+      //   );
+      //   throw error.response.data.message;
+      // } else {
+      //   console.log("Registration Error : AuthContext", error);
+      //   throw new Error("Registration failed. Please try again.");
+      // }
+      throw error.response.data.message || "Registration failed";
     }
   };
 
