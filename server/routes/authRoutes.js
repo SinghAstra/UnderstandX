@@ -5,6 +5,7 @@ const {
   registerValidationRules,
   registerLimiter,
   verifyEmailController,
+  checkAuthController,
 } = require("../controllers/authController");
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.post(
 );
 router.get("/verify-email", verifyEmailController);
 router.post("/login", loginController);
+router.get("/check-auth", checkAuthController);
 
 module.exports = router;
