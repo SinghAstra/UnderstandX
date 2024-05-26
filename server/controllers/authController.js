@@ -5,12 +5,6 @@ const rateLimit = require("express-rate-limit");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
-};
-
 // Validator middleware
 const registerValidationRules = () => {
   return [
@@ -128,7 +122,6 @@ const registerController = async (req, res) => {
         data: {
           _id: user._id,
           username: user.username,
-          token: generateToken(user._id,user.role),
         },
       });
     } else {
@@ -152,10 +145,13 @@ const loginController = async (req, res) => {
     const user = await User.findOne({ username });
 
     if (user && (await user.matchPassword(password))) {
+      req.session.user = {
+        _id: user._id,
+        username: user.username,
+      };
       res.json({
         _id: user._id,
         username: user.username,
-        token: generateToken(user._id,user.role),
       });
     } else {
       res.status(401).json({ message: "Invalid username or password" });
