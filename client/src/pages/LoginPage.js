@@ -1,5 +1,6 @@
 import { useFormik } from "formik";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { useAuth } from "../context/AuthContext";
@@ -25,6 +26,7 @@ const LoginPage = () => {
   const initialValues = {
     username: "sharmaunique",
     password: "a123ASD@#",
+    rememberMe: false,
   };
 
   const validationSchema = Yup.object({
@@ -38,6 +40,11 @@ const LoginPage = () => {
     onSubmit: handleSubmit,
   });
 
+  const handleInputChange = (e) => {
+    formik.handleChange(e);
+    if (errorMessage) setErrorMessage(null); // Clear error message on input change
+  };
+
   return (
     <div>
       <h2>Login</h2>
@@ -48,7 +55,7 @@ const LoginPage = () => {
           <input
             type="text"
             name="username"
-            onChange={formik.handleChange}
+            onChange={handleInputChange}
             onBlur={formik.handleBlur}
             value={formik.values.username}
           />
@@ -61,7 +68,7 @@ const LoginPage = () => {
           <input
             type="password"
             name="password"
-            onChange={formik.handleChange}
+            onChange={handleInputChange}
             onBlur={formik.handleBlur}
             value={formik.values.password}
           />
@@ -69,10 +76,24 @@ const LoginPage = () => {
             <div style={{ color: "red" }}>{formik.errors.password}</div>
           ) : null}
         </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="rememberMe"
+              onChange={formik.handleChange}
+              checked={formik.values.rememberMe}
+            />
+            Remember Me
+          </label>
+        </div>
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      <div>
+        <Link to="/forgot-password">Forgot Password?</Link>
+      </div>
     </div>
   );
 };
