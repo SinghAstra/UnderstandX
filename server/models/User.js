@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
+  role: { type: String, enum: ["user", "admin", "manager"], default: "user" },
 });
 
 userSchema.pre("save", async function (next) {

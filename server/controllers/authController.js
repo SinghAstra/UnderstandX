@@ -5,8 +5,8 @@ const rateLimit = require("express-rate-limit");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
@@ -45,7 +45,7 @@ const registerLimiter = rateLimit({
 });
 
 const registerController = async (req, res) => {
-  const { username, password, firstName, lastName, email } = req.body;
+  const { username, password, firstName, lastName, email, role } = req.body;
 
   // Check for missing fields
   if (!username || !password || !firstName || !lastName || !email) {
@@ -57,27 +57,30 @@ const registerController = async (req, res) => {
     if (!lastName) missingFields.push("lastName");
     if (!email) missingFields.push("email");
 
-    return res
-      .status(400)
-      .json({ error: `Missing required fields: ${missingFields.join(", ")}` });
+    return res.status(400).json({
+      success: false,
+      error: `Missing required fields: ${missingFields.join(", ")}`,
+    });
   }
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ success: false, errors: errors.array() });
   }
 
   try {
-    // Check if the username already exists
-    const userExists = await User.findOne({ username });
-    if (userExists) {
-      return res.status(400).json({ message: "Username already taken!" });
-    }
-
-    // Check if the email already exists
-    const emailExists = await User.findOne({ email });
-    if (emailExists) {
-      return res.status(400).json({ message: "Email already registered!" });
+    // Check if the user already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      if (existingUser.username === username) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Username already taken!" });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already registered!" });
+      }
     }
 
     // Generate a verification token
@@ -91,6 +94,7 @@ const registerController = async (req, res) => {
       lastName,
       email,
       verificationToken,
+      role: role || "user",
     });
 
     // Send verification email
@@ -120,15 +124,18 @@ const registerController = async (req, res) => {
     // Respond with the new user data
     if (user) {
       res.status(201).json({
-        _id: user._id,
-        username: user.username,
-        token: generateToken(user._id),
+        success: true,
+        data: {
+          _id: user._id,
+          username: user.username,
+          token: generateToken(user._id,user.role),
+        },
       });
     } else {
-      res.status(400).json({ message: "Invalid user data" });
+      res.status(400).json({ success: false, message: "Invalid user data" });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -148,7 +155,7 @@ const loginController = async (req, res) => {
       res.json({
         _id: user._id,
         username: user.username,
-        token: generateToken(user._id),
+        token: generateToken(user._id,user.role),
       });
     } else {
       res.status(401).json({ message: "Invalid username or password" });
