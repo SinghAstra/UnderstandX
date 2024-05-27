@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { toast } from "react-toastify";
-import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "./components/Navbar";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 import { AuthProvider } from "./context/AuthContext";
 import employeeData from "./data/employeeData";
 import AddEmployeePage from "./pages/AddEmployeePage";
@@ -60,52 +61,83 @@ function App() {
           <Route
             path="/manage"
             element={
-              <EmployeeManagement
-                employees={employees}
-                setEmployees={setEmployees}
-              />
+              <PrivateRoute>
+                <EmployeeManagement
+                  employees={employees}
+                  setEmployees={setEmployees}
+                />
+              </PrivateRoute>
             }
           />
           <Route
             path="/details/:id"
-            element={<EmployeeDetails employees={employees} />}
+            element={
+              <PrivateRoute>
+                <EmployeeDetails employees={employees} />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/edit/:id"
             element={
-              <ProtectedRoute roles={["admin", "manager"]}>
+              <PrivateRoute>
                 <EditEmployeePage
                   employees={employees}
                   onUpdate={updateEmployee}
                 />
-              </ProtectedRoute>
+              </PrivateRoute>
             }
           />
           <Route
             path="/add"
             element={
-              <ProtectedRoute roles={["admin"]}>
+              <PrivateRoute>
                 <AddEmployeePage onAdd={addEmployee} />
-              </ProtectedRoute>
+              </PrivateRoute>
             }
           />
           <Route
             path="/export"
-            element={<ExportPage employees={employees} />}
+            element={
+              <PrivateRoute>
+                <ExportPage employees={employees} />
+              </PrivateRoute>
+            }
           />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route
             path="/assign-team"
             element={
-              <ProtectedRoute roles={["admin", "manager"]}>
+              <PrivateRoute>
                 <AssignTeamPage
                   employees={employees}
                   setEmployees={setEmployees}
                   teams={teams}
                 />
-              </ProtectedRoute>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/verify-email"
+            element={
+              <PublicRoute>
+                <VerifyEmailPage />
+              </PublicRoute>
             }
           />
         </Routes>

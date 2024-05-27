@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
       } catch (error) {
         console.log(error);
-        navigate("/login");
       }
     };
     checkAuth();
