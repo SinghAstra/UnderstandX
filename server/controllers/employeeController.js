@@ -57,4 +57,19 @@ const createEmployee = async (req, res) => {
   }
 };
 
-module.exports = { createEmployee };
+const getEmployees = async (req, res) => {
+  try {
+    const employees = await Employee.find({});
+    res.status(200).json({ success: true, employees });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error fetching employees",
+        error: error.message,
+      });
+  }
+};
+
+module.exports = { createEmployee, getEmployees };
