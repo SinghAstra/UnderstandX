@@ -150,9 +150,70 @@ const deleteEmployeeById = async (req, res) => {
   }
 };
 
+const updateEmployeeById = async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
+  // Check if the provided ID is a valid MongoDB ObjectID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Employee ID" });
+  }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  try {
+    // Check if the email or phone number already exists for another employee
+    const existingEmployee = await Employee.findOne({
+      $or: [
+        { email: updateData.email, _id: { $ne: id } },
+        { phoneNumber: updateData.phoneNumber, _id: { $ne: id } },
+      ],
+    });
+
+    if (existingEmployee) {
+      if (existingEmployee.email === updateData.email) {
+        return res.status(400).json({ message: "Email already registered!" });
+      }
+      if (existingEmployee.phoneNumber === updateData.phoneNumber) {
+        return res
+          .status(400)
+          .json({ message: "Phone number already registered!" });
+      }
+    }
+    const employee = await Employee.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    if (!employee) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Employee not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Employee updated successfully",
+      employee,
+    });
+  } catch (error) {
+    console.error("Error updating employee by ID:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating employee",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createEmployee,
   getEmployees,
   getEmployeeById,
   deleteEmployeeById,
+  updateEmployeeById,
 };
