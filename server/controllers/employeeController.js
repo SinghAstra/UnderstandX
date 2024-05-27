@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const Employee = require("../models/Employee");
+const { default: mongoose } = require("mongoose");
 
 const createEmployee = async (req, res) => {
   const {
@@ -90,6 +91,13 @@ const getEmployees = async (req, res) => {
 const getEmployeeById = async (req, res) => {
   const { id } = req.params;
 
+  // Check if the provided ID is a valid MongoDB ObjectID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Employee ID" });
+  }
+
   try {
     const employee = await Employee.findById(id);
 
@@ -110,4 +118,41 @@ const getEmployeeById = async (req, res) => {
   }
 };
 
-module.exports = { createEmployee, getEmployees, getEmployeeById };
+const deleteEmployeeById = async (req, res) => {
+  const { id } = req.params;
+
+  // Check if the provided ID is a valid MongoDB ObjectID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Employee ID" });
+  }
+
+  try {
+    const employee = await Employee.findByIdAndDelete(id);
+
+    if (!employee) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Employee not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Employee deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting employee by ID:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error deleting employee",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  createEmployee,
+  getEmployees,
+  getEmployeeById,
+  deleteEmployeeById,
+};
