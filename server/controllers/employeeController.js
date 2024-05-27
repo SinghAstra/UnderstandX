@@ -58,17 +58,32 @@ const createEmployee = async (req, res) => {
 };
 
 const getEmployees = async (req, res) => {
+  const { page = 1, limit = 10, sort = "createdAt", order = "asc" } = req.query;
+
   try {
-    const employees = await Employee.find({});
-    res.status(200).json({ success: true, employees });
+    const employees = await Employee.find({})
+      .sort({ [sort]: order === "asc" ? 1 : -1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const totalEmployees = await Employee.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      employees,
+      pagination: {
+        total: totalEmployees,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(totalEmployees / limit),
+      },
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error fetching employees",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching employees",
+      error: error.message,
+    });
   }
 };
 
