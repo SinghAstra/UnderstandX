@@ -1,34 +1,8 @@
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
-const { body, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const rateLimit = require("express-rate-limit");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-
-// Validator middleware
-const registerValidationRules = () => {
-  return [
-    body("username")
-      .isLength({ min: 3 })
-      .withMessage("Username must be at least 3 characters long."),
-    body("password")
-      .isStrongPassword()
-      .withMessage(
-        "Password must be strong (include upper and lower case letters, numbers, and symbols)."
-      ),
-    body("email").isEmail().withMessage("Email must be a valid email address."),
-    body("firstName")
-      .isAlpha()
-      .withMessage("First name must contain only alphabetic characters.")
-      .isLength({ min: 1 })
-      .withMessage("First name is required."),
-    body("lastName")
-      .isAlpha()
-      .withMessage("Last name must contain only alphabetic characters.")
-      .isLength({ min: 1 })
-      .withMessage("Last name is required."),
-  ];
-};
 
 // Rate limiter middleware to prevent brute force attacks
 const registerLimiter = rateLimit({
@@ -40,22 +14,6 @@ const registerLimiter = rateLimit({
 
 const registerController = async (req, res) => {
   const { username, password, firstName, lastName, email, role } = req.body;
-
-  // Check for missing fields
-  if (!username || !password || !firstName || !lastName || !email) {
-    let missingFields = [];
-
-    if (!username) missingFields.push("username");
-    if (!password) missingFields.push("password");
-    if (!firstName) missingFields.push("firstName");
-    if (!lastName) missingFields.push("lastName");
-    if (!email) missingFields.push("email");
-
-    return res.status(400).json({
-      success: false,
-      error: `Missing required fields: ${missingFields.join(", ")}`,
-    });
-  }
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -191,7 +149,6 @@ const checkAuthController = (req, res) => {
 module.exports = {
   registerController,
   loginController,
-  registerValidationRules,
   registerLimiter,
   verifyEmailController,
   checkAuthController,

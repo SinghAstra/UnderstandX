@@ -2,11 +2,11 @@ const express = require("express");
 const {
   registerController,
   loginController,
-  registerValidationRules,
   registerLimiter,
   verifyEmailController,
   checkAuthController,
 } = require("../controllers/authController");
+const registerValidationRules = require("../middleware/registerValidationRules");
 const router = express.Router();
 
 router.post(
