@@ -11,8 +11,14 @@ const createEmployee = async (req, res) => {
     jobTitle,
     team,
     dateOfHire,
-    profilePicture,
   } = req.body;
+
+  console.log("req.body is ", req.body);
+  console.log("firstName is ", firstName);
+
+  const profilePicture = req.file ? req.file.path : null;
+
+  console.log("profilePicture is : ", profilePicture);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -48,6 +54,8 @@ const createEmployee = async (req, res) => {
     });
 
     await newEmployee.save();
+
+    console.log("newEmployee is ", newEmployee);
     res
       .status(201)
       .json({ message: "Employee added successfully", employee: newEmployee });

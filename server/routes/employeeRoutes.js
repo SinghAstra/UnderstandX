@@ -7,9 +7,23 @@ const {
   updateEmployeeById,
 } = require("../controllers/employeeController");
 const employeeValidationRules = require("../middleware/employeeValidationRules");
+const upload = require("../middleware/upload");
 const router = express.Router();
 
-router.post("/add", employeeValidationRules(), createEmployee);
+const testController = (req, res) => {
+  console.log("req.body is ", req.body);
+  console.log("req.file is ", req.file);
+  res.status(200).json({
+    message: "This is a test route",
+  });
+};
+
+router.post(
+  "/add",
+  upload.single("profilePicture"),
+  employeeValidationRules(),
+  createEmployee
+);
 router.get("/", getEmployees);
 router.get("/:id", getEmployeeById);
 router.delete("/:id", deleteEmployeeById);
