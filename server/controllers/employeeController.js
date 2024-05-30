@@ -16,9 +16,9 @@ const createEmployee = async (req, res) => {
   console.log("req.body is ", req.body);
   console.log("firstName is ", firstName);
 
-  const profilePicture = req.file ? req.file.path : null;
+  const profilePictureUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-  console.log("profilePicture is : ", profilePicture);
+  console.log("profilePictureUrl is : ", profilePictureUrl);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -50,7 +50,7 @@ const createEmployee = async (req, res) => {
       jobTitle,
       team,
       dateOfHire,
-      profilePicture,
+      profilePicture: profilePictureUrl,
     });
 
     await newEmployee.save();

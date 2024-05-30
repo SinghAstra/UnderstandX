@@ -7,6 +7,7 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
+const path = require("path");
 dotenv.config();
 
 const app = express();
@@ -14,18 +15,17 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+// Serve static files from the 'uploads' directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(
   cors({
-    origin: "http://localhost:3000", // Change to your frontend URL
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
 
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to the database successfully."))
   .catch((err) => console.log(err));
 
