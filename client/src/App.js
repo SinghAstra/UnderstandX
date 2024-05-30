@@ -34,16 +34,6 @@ function App() {
     }
   };
 
-  const addEmployee = (employee) => {
-    try {
-      setEmployees([{ ...employee, id: employees.length + 1 }, ...employees]);
-      toast.success("Employee added successfully!");
-    } catch (error) {
-      toast.error("Failed to add employee. Please try again.");
-      console.error("Add employee error:", error);
-    }
-  };
-
   const getUniqueTeams = (employees) => {
     const teams = employees.map((employee) => employee.team);
     const uniqueTeams = [...new Set(teams)];
@@ -92,7 +82,7 @@ function App() {
             path="/add"
             element={
               <PrivateRoute>
-                <AddEmployeePage onAdd={addEmployee} />
+                <AddEmployeePage />
               </PrivateRoute>
             }
           />

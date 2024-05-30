@@ -2,9 +2,10 @@ import axios from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-const AddEmployeePage = ({ onAdd }) => {
+const AddEmployeePage = () => {
   const navigate = useNavigate();
   const [profilePicture, setProfilePicture] = useState(null);
 
@@ -32,7 +33,6 @@ const AddEmployeePage = ({ onAdd }) => {
     dateOfHire: Yup.date()
       .required("Date of hire is required.")
       .typeError("Date of hire must be a valid date."),
-    // profilePicture: Yup.mixed().url("Profile picture is required."),
   });
 
   const initialValues = {
@@ -47,48 +47,35 @@ const AddEmployeePage = ({ onAdd }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     const formData = new FormData();
-    console.log("{");
+
     for (const key in values) {
-      console.log(`${key} : ${values[key]}`);
       formData.append(key, values[key]);
     }
-    console.log("}");
-    console.log("profilePicture is : ", profilePicture);
+
     if (profilePicture) {
       formData.append("profilePicture", profilePicture);
     }
+
     setSubmitting(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/employees/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Response:", response.data);
-      // handle success response, e.g., navigate to another page
+      await axios.post("http://localhost:5000/api/employees/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success("Employee added successfully!");
+      navigate("/");
     } catch (error) {
-      console.error("Error:", error);
-      // handle error response
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "Failed to add employee. Please try again."
+      );
+      console.log("Error:", error);
     } finally {
       setSubmitting(false);
     }
   };
-
-  // const handleSubmit = (values) => {
-  //   const newEmployee = {
-  //     ...values,
-  //     profilePicture: profilePicture
-  //       ? URL.createObjectURL(profilePicture)
-  //       : null,
-  //   };
-  //   console.log("newEmployee: " + newEmployee);
-  //   onAdd(newEmployee);
-  //   navigate("/");
-  // };
 
   const formik = useFormik({
     initialValues,
