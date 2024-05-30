@@ -7,6 +7,7 @@ axios.defaults.withCredentials = true;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,10 +16,11 @@ export const AuthProvider = ({ children }) => {
         const response = await axios.get(
           "http://localhost:5000/api/auth/check-auth"
         );
-        console.log("In check auth response.data", response.data);
         setUser(response.data.user);
       } catch (error) {
-        console.log(error);
+        console.log("In check auth error is ", error);
+      } finally {
+        setLoading(false);
       }
     };
     checkAuth();
@@ -26,6 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (userData) => {
     try {
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         userData
@@ -36,11 +39,14 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       throw error.response.data.message || "Login failed";
+    } finally {
+      setLoading(false);
     }
   };
 
   const register = async (userData) => {
     try {
+      setLoading(true);
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
         userData
@@ -50,6 +56,8 @@ export const AuthProvider = ({ children }) => {
       navigate("/");
     } catch (error) {
       throw error.response.data.message || "Registration failed";
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,7 +72,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

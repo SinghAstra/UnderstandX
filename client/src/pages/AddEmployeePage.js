@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,33 +8,87 @@ const AddEmployeePage = ({ onAdd }) => {
   const navigate = useNavigate();
   const [profilePicture, setProfilePicture] = useState(null);
 
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    team: Yup.string().required("Team is required"),
-    contactInfo: Yup.string().required("Contact information is required"),
-    jobTitle: Yup.string().required("Job title is required"),
-    dateOfHire: Yup.date().required("Date of hire is required").nullable(),
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string()
+      .required("First name is required.")
+      .matches(
+        /^[A-Za-z]+$/,
+        "First name must contain only alphabetic characters."
+      ),
+    lastName: Yup.string()
+      .required("Last name is required.")
+      .matches(
+        /^[A-Za-z\s]+$/,
+        "Last name must contain only alphabetic characters and spaces."
+      ),
+    email: Yup.string()
+      .required("Email is required.")
+      .email("Email must be a valid email address."),
+    phoneNumber: Yup.string()
+      .required("Phone number is required.")
+      .matches(/^[0-9]+$/, "Phone number must contain only digits."),
+    jobTitle: Yup.string().required("Job title is required."),
+    team: Yup.string().required("Team is required."),
+    dateOfHire: Yup.date()
+      .required("Date of hire is required.")
+      .typeError("Date of hire must be a valid date."),
+    // profilePicture: Yup.mixed().url("Profile picture is required."),
   });
 
   const initialValues = {
-    name: "",
-    team: "",
-    contactInfo: "",
-    jobTitle: "",
-    dateOfHire: "",
+    firstName: "firstName",
+    lastName: "lastName",
+    email: "email@firstname.com",
+    phoneNumber: "6387661992",
+    jobTitle: "jobtitle",
+    team: "team",
+    dateOfHire: "13-04-2003",
   };
 
-  const handleSubmit = (values) => {
-    const newEmployee = {
-      ...values,
-      profilePicture: profilePicture
-        ? URL.createObjectURL(profilePicture)
-        : null,
-    };
-    console.log("newEmployee: " + newEmployee);
-    onAdd(newEmployee);
-    navigate("/");
+  const handleSubmit = async (values, { setSubmitting }) => {
+    const formData = new FormData();
+    console.log("{");
+    for (const key in values) {
+      console.log(`${key} : ${values[key]}`);
+      formData.append(key, values[key]);
+    }
+    console.log("}");
+    console.log("profilePicture is : ", profilePicture);
+    if (profilePicture) {
+      formData.append("profilePicture", profilePicture);
+    }
+    setSubmitting(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/employees/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response:", response.data);
+      // handle success response, e.g., navigate to another page
+    } catch (error) {
+      console.error("Error:", error);
+      // handle error response
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  // const handleSubmit = (values) => {
+  //   const newEmployee = {
+  //     ...values,
+  //     profilePicture: profilePicture
+  //       ? URL.createObjectURL(profilePicture)
+  //       : null,
+  //   };
+  //   console.log("newEmployee: " + newEmployee);
+  //   onAdd(newEmployee);
+  //   navigate("/");
+  // };
 
   const formik = useFormik({
     initialValues,
@@ -56,47 +111,57 @@ const AddEmployeePage = ({ onAdd }) => {
   return (
     <div>
       <h2>Add Employee</h2>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
         <div>
           <input
             type="text"
-            placeholder="Name"
-            name="name"
-            value={formik.values.name}
+            placeholder="First Name"
+            name="firstName"
+            value={formik.values.firstName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.name ? (
-            <div style={{ color: "red" }}>{formik.errors.name}</div>
+          {formik.touched.firstName && formik.errors.firstName ? (
+            <div style={{ color: "red" }}>{formik.errors.firstName}</div>
           ) : null}
         </div>
         <div>
           <input
             type="text"
-            placeholder="Team"
-            name="team"
-            value={formik.values.team}
+            placeholder="Last Name"
+            name="lastName"
+            value={formik.values.lastName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.team && formik.errors.team ? (
-            <div style={{ color: "red" }}>{formik.errors.team}</div>
+          {formik.touched.lastName && formik.errors.lastName ? (
+            <div style={{ color: "red" }}>{formik.errors.lastName}</div>
           ) : null}
-        </div>
-        <div>
-          <input type="file" onChange={handleFileChange} />
         </div>
         <div>
           <input
             type="text"
-            placeholder="Contact Information"
-            name="contactInfo"
-            value={formik.values.contactInfo}
+            placeholder="Email"
+            name="email"
+            value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.contactInfo && formik.errors.contactInfo ? (
-            <div style={{ color: "red" }}>{formik.errors.contactInfo}</div>
+          {formik.touched.email && formik.errors.email ? (
+            <div style={{ color: "red" }}>{formik.errors.email}</div>
+          ) : null}
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Phone Number"
+            name="phoneNumber"
+            value={formik.values.phoneNumber}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+            <div style={{ color: "red" }}>{formik.errors.phoneNumber}</div>
           ) : null}
         </div>
         <div>
@@ -114,6 +179,19 @@ const AddEmployeePage = ({ onAdd }) => {
         </div>
         <div>
           <input
+            type="text"
+            placeholder="Team"
+            name="team"
+            value={formik.values.team}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.team && formik.errors.team ? (
+            <div style={{ color: "red" }}>{formik.errors.team}</div>
+          ) : null}
+        </div>
+        <div>
+          <input
             type="date"
             placeholder="Date of Hire"
             name="dateOfHire"
@@ -124,6 +202,9 @@ const AddEmployeePage = ({ onAdd }) => {
           {formik.touched.dateOfHire && formik.errors.dateOfHire ? (
             <div style={{ color: "red" }}>{formik.errors.dateOfHire}</div>
           ) : null}
+        </div>
+        <div>
+          <input type="file" onChange={handleFileChange} />
         </div>
         <button type="submit">Add Employee</button>
       </form>
