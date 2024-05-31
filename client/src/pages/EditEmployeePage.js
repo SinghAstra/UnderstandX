@@ -17,8 +17,6 @@ const EditEmployee = ({ employees, refetchEmployees }) => {
   );
   const [profilePictureFile, setProfilePictureFile] = useState(null);
 
-  console.log("profile picture is ", profilePicture);
-
   const validationSchema = Yup.object().shape({
     firstName: Yup.string()
       .required("First name is required.")
@@ -68,11 +66,15 @@ const EditEmployee = ({ employees, refetchEmployees }) => {
 
     setSubmitting(true);
     try {
-      await axios.put(`http://localhost:5000/api/employees/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/employees/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       toast.success("Employee updated successfully!");
       refetchEmployees();
       navigate("/");
@@ -98,7 +100,7 @@ const EditEmployee = ({ employees, refetchEmployees }) => {
       setProfilePicture(URL.createObjectURL(file));
       setProfilePictureFile(file);
     } else {
-      alert("Please upload a valid image file (max size 5MB)");
+      toast.error("Please upload a valid image file (max size 5MB)");
     }
   };
 
