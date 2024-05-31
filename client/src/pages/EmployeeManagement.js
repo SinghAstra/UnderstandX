@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
@@ -5,7 +6,7 @@ import ConfirmationModal from "../components/ConfirmationModal";
 import EmployeeList from "../components/EmployeeList";
 import SearchFilter from "../components/SearchFilter";
 
-const EmployeeManagement = ({ employees, setEmployees }) => {
+const EmployeeManagement = ({ employees, refetchEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
   const [currentPage, setCurrentPage] = useState(0);
@@ -34,7 +35,7 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
     });
 
   const handleDeleteClick = (id) => {
-    const employee = employees.find((employee) => employee.id === id);
+    const employee = employees.find((employee) => employee._id === id);
     setEmployeeToDelete(employee);
     setDeleteModalIsOpen(true);
   };
@@ -42,20 +43,23 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
   const handleCloseDeleteModal = () => {
     setDeleteModalIsOpen(false);
   };
-
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
+    console.log("handleCONFIRMDELETE is called");
     if (!employeeToDelete) {
       setDeleteModalIsOpen(false);
       return;
     }
-    toast.info("Deleting employee...");
-    setTimeout(() => {
-      setEmployees(
-        employees.filter((employee) => employee.id !== employeeToDelete.id)
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/employees/${employeeToDelete._id}`
       );
       setDeleteModalIsOpen(false);
       toast.success("Employee deleted successfully!");
-    }, 1000);
+      refetchEmployees();
+    } catch (error) {
+      toast.error("Failed to delete employee. Please try again.");
+      console.log("Error deleting employee:", error);
+    }
   };
 
   const pageCount = Math.ceil(filteredEmployees.length / employeesPerPage);
@@ -90,7 +94,7 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
         isOpen={deleteModalIsOpen}
         closeModal={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
-        message={`Are you sure you want to delete ${employeeToDelete?.name}?`}
+        message={`Are you sure you want to delete ${employeeToDelete?.firstName} ${employeeToDelete?.lastName}?`}
       />
     </div>
   );

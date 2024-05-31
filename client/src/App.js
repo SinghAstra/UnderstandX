@@ -78,6 +78,7 @@ function App() {
                 <EmployeeManagement
                   employees={employees}
                   setEmployees={setEmployees}
+                  refetchEmployees={fetchEmployees}
                 />
               </PrivateRoute>
             }

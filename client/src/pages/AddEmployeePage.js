@@ -42,7 +42,7 @@ const AddEmployeePage = ({ refetchEmployees }) => {
     phoneNumber: "6387661992",
     jobTitle: "jobtitle",
     team: "team",
-    dateOfHire: "13-04-2003",
+    dateOfHire: "2003-04-13",
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {

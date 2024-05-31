@@ -16,10 +16,10 @@ const EmployeeList = ({ employees, onDelete }) => {
     <div>
       <h2>Employee List</h2>
       {employees.map((employee) => (
-        <div key={employee.id}>
+        <div key={employee._id}>
           {employee.profilePicture && (
             <img
-              src={employee.profilePicture}
+              src={"http://localhost:5000" + employee.profilePicture}
               alt={employee.name}
               width="50"
               height="50"
@@ -29,11 +29,13 @@ const EmployeeList = ({ employees, onDelete }) => {
             onClick={() => handleDetails(employee)}
             style={{ cursor: "pointer", color: "blue" }}
           >
-            <h3>{employee.name}</h3>
+            <h3>
+              {employee.firstName} {employee.lastName}
+            </h3>
             <p>Team: {employee.team}</p>
           </span>
           <button onClick={() => handleEdit(employee)}>Edit</button>
-          <button onClick={() => onDelete(employee.id)}>Delete</button>
+          <button onClick={() => onDelete(employee._id)}>Delete</button>
         </div>
       ))}
     </div>
