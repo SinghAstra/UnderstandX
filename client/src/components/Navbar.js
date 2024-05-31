@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
-  console.log("user is " + user);
   return (
     <nav>
       <ul>

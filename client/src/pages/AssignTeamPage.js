@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
@@ -24,18 +25,29 @@ const AssignTeamPage = ({ employees, setEmployees, teams }) => {
     );
   };
 
-  const assignTeam = () => {
+  const assignTeam = async () => {
     if (selectedEmployees.length && newTeam) {
-      setEmployees((prevEmployees) =>
-        prevEmployees.map((employee) =>
-          selectedEmployees.includes(employee.id)
-            ? { ...employee, team: newTeam }
-            : employee
-        )
-      );
-      toast.success("Team assigned successfully!");
-      setSelectedEmployees([]);
-      setNewTeam("");
+      try {
+        await axios.put("http://localhost:5000/api/employees/assign-team", {
+          employeeIds: selectedEmployees,
+          team: newTeam,
+        });
+
+        setEmployees((prevEmployees) =>
+          prevEmployees.map((employee) =>
+            selectedEmployees.includes(employee._id)
+              ? { ...employee, team: newTeam }
+              : employee
+          )
+        );
+
+        toast.success("Team assigned successfully!");
+        setSelectedEmployees([]);
+        setNewTeam("");
+      } catch (error) {
+        toast.error("Failed to assign team. Please try again.");
+        console.error("Assignment error:", error);
+      }
     } else {
       toast.error("Please select employees and a team");
     }
@@ -44,12 +56,13 @@ const AssignTeamPage = ({ employees, setEmployees, teams }) => {
   const filteredEmployees = employees
     .filter(
       (employee) =>
-        employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.team.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       if (sortType === "name") {
-        return a.name.localeCompare(b.name);
+        return a.firstName.localeCompare(b.firstName);
       }
       return a.team.localeCompare(b.team);
     });
@@ -88,9 +101,9 @@ const AssignTeamPage = ({ employees, setEmployees, teams }) => {
         {displayedEmployees.map((employee) => (
           <div
             key={employee.id}
-            onClick={() => toggleEmployeeSelection(employee.id)}
+            onClick={() => toggleEmployeeSelection(employee._id)}
             style={{
-              border: selectedEmployees.includes(employee.id)
+              border: selectedEmployees.includes(employee._id)
                 ? "2px solid blue"
                 : "1px solid gray",
               padding: "10px",
@@ -98,7 +111,7 @@ const AssignTeamPage = ({ employees, setEmployees, teams }) => {
               cursor: "pointer",
             }}
           >
-            {employee.name}
+            {employee.firstName} {employee.lastName}
           </div>
         ))}
       </div>

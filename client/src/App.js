@@ -1,11 +1,11 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import { AuthProvider } from "./context/AuthContext";
-import employeeData from "./data/employeeData";
 import AddEmployeePage from "./pages/AddEmployeePage";
 import AssignTeamPage from "./pages/AssignTeamPage";
 import Dashboard from "./pages/Dashboard";
@@ -18,7 +18,26 @@ import RegisterPage from "./pages/RegisterPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 function App() {
-  const [employees, setEmployees] = useState(employeeData);
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/employees");
+        setEmployees(response.data.employees);
+      } catch (error) {
+        toast.error("Failed to fetch employees. Please try again.");
+        console.error("Fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  console.log("employees is ", employees);
 
   const updateEmployee = (id, updatedEmployee) => {
     try {
@@ -41,6 +60,10 @@ function App() {
   };
 
   const teams = getUniqueTeams(employees);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <AuthProvider>
