@@ -97,6 +97,7 @@ const AssignTeamPage = ({ employees, teams, refetchEmployees }) => {
           <p>{selectedEmployees.length} employee(s) selected</p>
         </div>
       )}
+      {isLoading && <p>Assigning team, please wait...</p>}
       <div>
         {displayedEmployees.map((employee) => (
           <EmployeeCard
@@ -107,7 +108,6 @@ const AssignTeamPage = ({ employees, teams, refetchEmployees }) => {
           />
         ))}
       </div>
-      {isLoading && <p>Assigning team, please wait...</p>}
       <ReactPaginate
         previousLabel={"<"}
         nextLabel={">"}

@@ -11,7 +11,9 @@ const EditEmployee = ({ employees, refetchEmployees }) => {
   const employee = employees.find((employee) => employee._id === id);
 
   const [profilePicture, setProfilePicture] = useState(
-    employee ? `http://localhost:5000${employee.profilePicture}` : null
+    employee
+      ? `${process.env.REACT_APP_API_URL}${employee.profilePicture}`
+      : null
   );
   const [profilePictureFile, setProfilePictureFile] = useState(null);
 
