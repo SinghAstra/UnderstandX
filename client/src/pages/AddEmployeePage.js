@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-const AddEmployeePage = () => {
+const AddEmployeePage = ({ refetchEmployees }) => {
   const navigate = useNavigate();
   const [profilePicture, setProfilePicture] = useState(null);
 
@@ -64,6 +64,7 @@ const AddEmployeePage = () => {
         },
       });
       toast.success("Employee added successfully!");
+      refetchEmployees();
       navigate("/");
     } catch (error) {
       toast.error(

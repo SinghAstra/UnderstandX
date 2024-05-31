@@ -21,19 +21,19 @@ function App() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/employees");
-        setEmployees(response.data.employees);
-      } catch (error) {
-        toast.error("Failed to fetch employees. Please try again.");
-        console.error("Fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/employees");
+      setEmployees(response.data.employees);
+    } catch (error) {
+      toast.error("Failed to fetch employees. Please try again.");
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEmployees();
   }, []);
 
@@ -105,7 +105,7 @@ function App() {
             path="/add"
             element={
               <PrivateRoute>
-                <AddEmployeePage />
+                <AddEmployeePage refetchEmployees={fetchEmployees} />
               </PrivateRoute>
             }
           />
@@ -125,6 +125,7 @@ function App() {
                   employees={employees}
                   setEmployees={setEmployees}
                   teams={teams}
+                  refetchEmployees={fetchEmployees}
                 />
               </PrivateRoute>
             }

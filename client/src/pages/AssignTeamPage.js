@@ -4,7 +4,12 @@ import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
 import SearchFilter from "../components/SearchFilter";
 
-const AssignTeamPage = ({ employees, setEmployees, teams }) => {
+const AssignTeamPage = ({
+  employees,
+  setEmployees,
+  teams,
+  refetchEmployees,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -33,17 +38,10 @@ const AssignTeamPage = ({ employees, setEmployees, teams }) => {
           team: newTeam,
         });
 
-        setEmployees((prevEmployees) =>
-          prevEmployees.map((employee) =>
-            selectedEmployees.includes(employee._id)
-              ? { ...employee, team: newTeam }
-              : employee
-          )
-        );
-
         toast.success("Team assigned successfully!");
         setSelectedEmployees([]);
         setNewTeam("");
+        refetchEmployees();
       } catch (error) {
         toast.error("Failed to assign team. Please try again.");
         console.error("Assignment error:", error);

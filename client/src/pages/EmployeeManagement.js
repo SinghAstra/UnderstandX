@@ -22,12 +22,13 @@ const EmployeeManagement = ({ employees, setEmployees }) => {
   const filteredEmployees = employees
     .filter(
       (employee) =>
-        employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.team.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       if (sortType === "name") {
-        return a.name.localeCompare(b.name);
+        return a.firstName.localeCompare(b.firstName);
       }
       return a.team.localeCompare(b.team);
     });
