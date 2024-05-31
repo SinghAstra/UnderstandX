@@ -155,6 +155,8 @@ const deleteEmployeeById = async (req, res) => {
 const updateEmployeeById = async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
+  console.log("id is ", id);
+  console.log("req.body is ", req.body);
 
   // Check if the provided ID is a valid MongoDB ObjectID
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -187,6 +189,11 @@ const updateEmployeeById = async (req, res) => {
           .json({ message: "Phone number already registered!" });
       }
     }
+
+    if (req.file) {
+      updateData.profilePicture = `/uploads/${req.file.filename}`;
+    }
+
     const employee = await Employee.findByIdAndUpdate(id, updateData, {
       new: true,
     });
@@ -213,11 +220,7 @@ const updateEmployeeById = async (req, res) => {
 };
 
 const assignTeam = async (req, res) => {
-  console.log("req.body is ", req.body);
-
   const { employeeIds, team } = req.body;
-
-  console.log("employeeIds : ", employeeIds);
 
   if (!employeeIds || !team) {
     return res

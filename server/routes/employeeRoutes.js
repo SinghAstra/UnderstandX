@@ -21,6 +21,11 @@ router.get("/", getEmployees);
 router.get("/:id", getEmployeeById);
 router.delete("/:id", deleteEmployeeById);
 router.put("/assign-team", assignTeam);
-router.put("/:id", employeeValidationRules(), updateEmployeeById);
+router.put(
+  "/:id",
+  upload.single("profilePicture"),
+  employeeValidationRules(),
+  updateEmployeeById
+);
 
 module.exports = router;
