@@ -43,6 +43,7 @@ const EmployeeManagement = ({ employees, refetchEmployees }) => {
   const handleCloseDeleteModal = () => {
     setDeleteModalIsOpen(false);
   };
+
   const handleConfirmDelete = async () => {
     console.log("handleCONFIRMDELETE is called");
     if (!employeeToDelete) {

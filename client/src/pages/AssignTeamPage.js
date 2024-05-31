@@ -109,7 +109,17 @@ const AssignTeamPage = ({
               cursor: "pointer",
             }}
           >
-            {employee.firstName} {employee.lastName}
+            {employee.profilePicture && (
+              <img
+                src={"http://localhost:5000" + employee.profilePicture}
+                alt={employee.name}
+                width="50"
+                height="50"
+              />
+            )}
+            <h2>
+              {employee.firstName} {employee.lastName}
+            </h2>
           </div>
         ))}
       </div>

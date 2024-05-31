@@ -26,8 +26,11 @@ function App() {
       const response = await axios.get("http://localhost:5000/api/employees");
       setEmployees(response.data.employees);
     } catch (error) {
-      toast.error("Failed to fetch employees. Please try again.");
-      console.error("Fetch error:", error);
+      const errorMsg =
+        error.response?.data?.message ||
+        "Failed to fetch employees. Please try again.";
+      toast.error(errorMsg);
+      console.log("Fetch error:", error);
     } finally {
       setLoading(false);
     }
@@ -38,20 +41,6 @@ function App() {
   }, []);
 
   console.log("employees is ", employees);
-
-  const updateEmployee = (id, updatedEmployee) => {
-    try {
-      setEmployees(
-        employees.map((employee) =>
-          employee.id === id ? { ...employee, ...updatedEmployee } : employee
-        )
-      );
-      toast.success("Team updated successfully!");
-    } catch (error) {
-      toast.error("Failed to update team. Please try again.");
-      console.error("Update error:", error);
-    }
-  };
 
   const getUniqueTeams = (employees) => {
     const teams = employees.map((employee) => employee.team);
@@ -97,7 +86,6 @@ function App() {
               <PrivateRoute>
                 <EditEmployeePage
                   employees={employees}
-                  onUpdate={updateEmployee}
                   refetchEmployees={fetchEmployees}
                 />
               </PrivateRoute>
