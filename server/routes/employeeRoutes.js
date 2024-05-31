@@ -5,18 +5,11 @@ const {
   getEmployeeById,
   deleteEmployeeById,
   updateEmployeeById,
+  assignTeam,
 } = require("../controllers/employeeController");
 const employeeValidationRules = require("../middleware/employeeValidationRules");
 const upload = require("../middleware/upload");
 const router = express.Router();
-
-const testController = (req, res) => {
-  console.log("req.body is ", req.body);
-  console.log("req.file is ", req.file);
-  res.status(200).json({
-    message: "This is a test route",
-  });
-};
 
 router.post(
   "/add",
@@ -27,6 +20,7 @@ router.post(
 router.get("/", getEmployees);
 router.get("/:id", getEmployeeById);
 router.delete("/:id", deleteEmployeeById);
+router.put("/assign-team", assignTeam);
 router.put("/:id", employeeValidationRules(), updateEmployeeById);
 
 module.exports = router;

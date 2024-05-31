@@ -13,12 +13,7 @@ const createEmployee = async (req, res) => {
     dateOfHire,
   } = req.body;
 
-  console.log("req.body is ", req.body);
-  console.log("firstName is ", firstName);
-
   const profilePictureUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-  console.log("profilePictureUrl is : ", profilePictureUrl);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -55,7 +50,6 @@ const createEmployee = async (req, res) => {
 
     await newEmployee.save();
 
-    console.log("newEmployee is ", newEmployee);
     res
       .status(201)
       .json({ message: "Employee added successfully", employee: newEmployee });
@@ -218,10 +212,36 @@ const updateEmployeeById = async (req, res) => {
   }
 };
 
+const assignTeam = async (req, res) => {
+  console.log("req.body is ", req.body);
+
+  const { employeeIds, team } = req.body;
+
+  console.log("employeeIds : ", employeeIds);
+
+  if (!employeeIds || !team) {
+    return res
+      .status(400)
+      .json({ message: "Employee IDs and team are required" });
+  }
+
+  try {
+    // Update team for all employees whose IDs are in the employeeIds array
+    await Employee.updateMany({ _id: { $in: employeeIds } }, { team });
+
+    res.status(200).json({ message: "Team assigned successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error assigning team", error: error.message });
+  }
+};
+
 module.exports = {
   createEmployee,
   getEmployees,
   getEmployeeById,
   deleteEmployeeById,
   updateEmployeeById,
+  assignTeam,
 };
