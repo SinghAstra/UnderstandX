@@ -5,11 +5,11 @@ const EmployeeList = ({ employees, onDelete }) => {
   const navigate = useNavigate();
 
   const handleEdit = (employee) => {
-    navigate(`/edit/${employee.id}`);
+    navigate(`/edit/${employee._id}`);
   };
 
   const handleDetails = (employee) => {
-    navigate(`/details/${employee.id}`);
+    navigate(`/details/${employee._id}`);
   };
 
   return (

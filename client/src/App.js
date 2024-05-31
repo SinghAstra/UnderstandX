@@ -98,6 +98,7 @@ function App() {
                 <EditEmployeePage
                   employees={employees}
                   onUpdate={updateEmployee}
+                  refetchEmployees={fetchEmployees}
                 />
               </PrivateRoute>
             }

@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 
 const EmployeeDetails = ({ employees }) => {
   const { id } = useParams();
-  const employee = employees.find((emp) => emp.id === parseInt(id));
+  const employee = employees.find((emp) => emp._id === parseInt(id));
 
   if (!employee) {
     return <div>Employee not found</div>;
