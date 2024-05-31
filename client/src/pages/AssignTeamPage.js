@@ -2,19 +2,17 @@ import axios from "axios";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-toastify";
+import EmployeeCard from "../components/EmployeeCard";
 import SearchFilter from "../components/SearchFilter";
+import TeamSelector from "../components/TeamSelector";
 
-const AssignTeamPage = ({
-  employees,
-  setEmployees,
-  teams,
-  refetchEmployees,
-}) => {
+const AssignTeamPage = ({ employees, teams, refetchEmployees }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("name");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [newTeam, setNewTeam] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const employeesPerPage = 5;
   const offset = currentPage * employeesPerPage;
 
@@ -32,6 +30,7 @@ const AssignTeamPage = ({
 
   const assignTeam = async () => {
     if (selectedEmployees.length && newTeam) {
+      setIsLoading(true);
       try {
         await axios.put("http://localhost:5000/api/employees/assign-team", {
           employeeIds: selectedEmployees,
@@ -43,8 +42,13 @@ const AssignTeamPage = ({
         setNewTeam("");
         refetchEmployees();
       } catch (error) {
-        toast.error("Failed to assign team. Please try again.");
-        console.error("Assignment error:", error);
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to assign team. Please try again."
+        );
+        console.log("Assignment error:", error);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       toast.error("Please select employees and a team");
@@ -84,45 +88,26 @@ const AssignTeamPage = ({
       />
       {selectedEmployees.length > 0 && (
         <div>
-          <select value={newTeam} onChange={(e) => setNewTeam(e.target.value)}>
-            <option value="">Select Team</option>
-            {teams.map((team) => (
-              <option key={team} value={team}>
-                {team}
-              </option>
-            ))}
-          </select>
-          <button onClick={assignTeam}>Assign Team</button>
+          <TeamSelector
+            teams={teams}
+            newTeam={newTeam}
+            onChange={(e) => setNewTeam(e.target.value)}
+            onSubmit={assignTeam}
+          />
+          <p>{selectedEmployees.length} employee(s) selected</p>
         </div>
       )}
       <div>
         {displayedEmployees.map((employee) => (
-          <div
-            key={employee.id}
-            onClick={() => toggleEmployeeSelection(employee._id)}
-            style={{
-              border: selectedEmployees.includes(employee._id)
-                ? "2px solid blue"
-                : "1px solid gray",
-              padding: "10px",
-              margin: "5px",
-              cursor: "pointer",
-            }}
-          >
-            {employee.profilePicture && (
-              <img
-                src={"http://localhost:5000" + employee.profilePicture}
-                alt={employee.name}
-                width="50"
-                height="50"
-              />
-            )}
-            <h2>
-              {employee.firstName} {employee.lastName}
-            </h2>
-          </div>
+          <EmployeeCard
+            key={employee._id}
+            employee={employee}
+            isSelected={selectedEmployees.includes(employee._id)}
+            onToggle={toggleEmployeeSelection}
+          />
         ))}
       </div>
+      {isLoading && <p>Assigning team, please wait...</p>}
       <ReactPaginate
         previousLabel={"<"}
         nextLabel={">"}

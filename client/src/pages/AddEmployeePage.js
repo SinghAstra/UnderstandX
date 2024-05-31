@@ -36,16 +36,16 @@ const AddEmployeePage = ({ refetchEmployees }) => {
   });
 
   const initialValues = {
-    firstName: "firstName",
-    lastName: "lastName",
-    email: "email@firstname.com",
-    phoneNumber: "6387661992",
-    jobTitle: "jobtitle",
-    team: "team",
-    dateOfHire: "2003-04-13",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    jobTitle: "",
+    team: "",
+    dateOfHire: "",
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const formData = new FormData();
 
     for (const key in values) {
@@ -64,11 +64,12 @@ const AddEmployeePage = ({ refetchEmployees }) => {
         },
       });
       toast.success("Employee added successfully!");
+      resetForm();
       refetchEmployees();
       navigate("/");
     } catch (error) {
       toast.error(
-        error.response.data.message
+        error.response?.data?.message
           ? error.response.data.message
           : "Failed to add employee. Please try again."
       );
@@ -93,7 +94,7 @@ const AddEmployeePage = ({ refetchEmployees }) => {
     ) {
       setProfilePicture(file);
     } else {
-      alert("Please upload a valid image file (max size 5MB)");
+      toast.error("Please upload a valid image file (max size 5MB)");
     }
   };
   return (

@@ -23,7 +23,9 @@ function App() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/employees");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/employees`
+      );
       setEmployees(response.data.employees);
     } catch (error) {
       const errorMsg =
@@ -39,8 +41,6 @@ function App() {
   useEffect(() => {
     fetchEmployees();
   }, []);
-
-  console.log("employees is ", employees);
 
   const getUniqueTeams = (employees) => {
     const teams = employees.map((employee) => employee.team);
