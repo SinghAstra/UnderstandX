@@ -1,3 +1,4 @@
+import "@/styles/globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className="min-h-screen bg-background text-foreground antialiased !font-default overflow-x-hidden">
+        {children}
+      </body>
     </html>
   );
 }
