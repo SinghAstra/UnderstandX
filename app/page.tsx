@@ -1,3 +1,5 @@
+"use client";
+
 export default function Home() {
-  return <h1>Home</h1>;
+  return <div className="container mx-auto p-4 space-y-8"></div>;
 }
