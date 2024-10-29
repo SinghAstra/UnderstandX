@@ -1,5 +1,6 @@
 "use client";
 
+import AnalysisHeader from "@/components/analyze/analysis-header";
 import {
   AnalysisResult,
   AnalysisResults,
@@ -7,7 +8,7 @@ import {
 import { AnalysisSteps, Step } from "@/components/analyze/analysis-steps";
 import { URLInput } from "@/components/analyze/url-input";
 import { FadeIn } from "@/components/animations/fade-in";
-import { TextGenerateEffect } from "@/components/animations/text-generate-effect";
+import { GitHubService } from "@/services/githubService";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -21,7 +22,7 @@ export default function AnalyzePage() {
   const router = useRouter();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string>();
-  const [steps, setSteps] = useState<Step[]>(initialSteps);
+  const [steps, setSteps] = useState(initialSteps);
   const [currentStep, setCurrentStep] = useState(0);
   const [results, setResults] = useState<AnalysisResult>();
 
@@ -31,43 +32,53 @@ export default function AnalyzePage() {
     );
   };
 
-  const simulateAnalysis = async (url: string) => {
+  const handleAnalysis = async (url: string) => {
     setIsAnalyzing(true);
     setError(undefined);
+    const githubService = new GitHubService(
+      process.env.NEXT_PUBLIC_GITHUB_TOKEN
+    );
 
     try {
-      console.log("url --simulate-analysis is ", url);
-      // Simulate API calls with delays
-      for (let i = 0; i < steps.length; i++) {
-        setCurrentStep(i);
-        updateStep(i + 1, "in-progress");
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        updateStep(i + 1, "complete");
+      // Step 1: Fetch repository data
+      setCurrentStep(0);
+      updateStep(1, "in-progress");
+
+      const analysisResult = await githubService.analyzeRepository(url);
+      updateStep(1, "complete");
+
+      // Step 2: Analyze codebase
+      setCurrentStep(1);
+      updateStep(2, "in-progress");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate analysis time
+      updateStep(2, "complete");
+
+      // Step 3: Generate prompt
+      setCurrentStep(2);
+      updateStep(3, "in-progress");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate generation time
+      updateStep(3, "complete");
+
+      setResults(analysisResult);
+    } catch (err) {
+      console.error("Error analyzing repository:", err);
+      let errorMessage = "Failed to analyze repository. Please try again.";
+
+      if (err instanceof Error) {
+        // Handle specific error cases
+        if (err.message.includes("404")) {
+          errorMessage =
+            "Repository not found. Please check the URL and ensure you have access.";
+        } else if (err.message.includes("401")) {
+          errorMessage =
+            "Unable to access private repository. Please check your authentication token.";
+        } else if (err.message.includes("403")) {
+          errorMessage =
+            "Access forbidden. Please verify your permissions for this repository.";
+        }
       }
 
-      // Simulate results
-      setResults({
-        repository: {
-          name: "next.js",
-          description: "The React Framework for the Web",
-          language: "TypeScript",
-          stars: 12500,
-          forks: 3200,
-        },
-        technicalDetails: {
-          languages: [
-            { name: "TypeScript", percentage: 65 },
-            { name: "JavaScript", percentage: 25 },
-            { name: "CSS", percentage: 10 },
-          ],
-          frameworks: ["React", "Next.js", "Tailwind CSS"],
-          dependencies: ["react", "next", "tailwindcss"],
-        },
-        generatedPrompt: "Analysis complete",
-      });
-    } catch (err) {
-      console.log("err --simulate-analysis", err);
-      setError("Failed to analyze repository. Please try again.");
+      setError(errorMessage);
       steps.forEach((step) => {
         if (step.status === "in-progress") {
           updateStep(step.id, "error");
@@ -83,33 +94,36 @@ export default function AnalyzePage() {
   };
 
   return (
-    <main className="container max-w-4xl py-24">
-      <FadeIn>
-        <h1 className="text-center text-4xl font-bold tracking-tight">
-          <TextGenerateEffect words="Analyze Your Repository" />
-        </h1>
-        <p className="mt-4 text-center text-muted-foreground">
-          Enter your GitHub repository URL to begin the analysis
-        </p>
-      </FadeIn>
+    <div className="flex flex-1 flex-col items-center justify-center p-4">
+      <div className="w-full max-w-xl space-y-8">
+        <AnalysisHeader
+          isAnalyzing={isAnalyzing}
+          error={error}
+          results={results}
+        />
 
-      <div className="mt-12 space-y-8">
         <URLInput
-          onAnalyze={simulateAnalysis}
+          onAnalyze={handleAnalysis}
           isAnalyzing={isAnalyzing}
           error={error}
         />
 
         {isAnalyzing && (
           <FadeIn>
-            <AnalysisSteps steps={steps} currentStep={currentStep} />
+            <div className="flex flex-col space-y-6">
+              <AnalysisSteps steps={steps} currentStep={currentStep} />
+            </div>
           </FadeIn>
         )}
 
         {results && !isAnalyzing && (
-          <AnalysisResults results={results} onContinue={handleContinue} />
+          <FadeIn>
+            <div className="space-y-6">
+              <AnalysisResults results={results} onContinue={handleContinue} />
+            </div>
+          </FadeIn>
         )}
       </div>
-    </main>
+    </div>
   );
 }

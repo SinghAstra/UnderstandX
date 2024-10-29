@@ -40,7 +40,7 @@ export class GitHubService {
       const languages = Object.entries(languageData).map(([name, bytes]) => {
         return {
           name,
-          percentage: Math.round((bytes / totalBytes) * 100),
+          percentage: parseFloat(((bytes / totalBytes) * 100).toFixed(1)),
         };
       });
 
@@ -66,7 +66,6 @@ export class GitHubService {
             ...Object.keys(content.devDependencies || {}),
           ];
 
-          // Detect common frameworks
           frameworks = this.detectFrameworks(dependencies);
         }
       } catch (error) {

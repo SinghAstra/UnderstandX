@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { RepoCard } from "@/components/ui/repo-card";
-import { motion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
+import { FadeIn } from "../animations/fade-in";
 
 export interface AnalysisResult {
   repository: {
@@ -28,11 +28,7 @@ interface AnalysisResultsProps {
 
 export function AnalysisResults({ results, onContinue }: AnalysisResultsProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-8"
-    >
+    <FadeIn>
       <RepoCard
         name={results.repository.name}
         description={results.repository.description}
@@ -85,6 +81,6 @@ export function AnalysisResults({ results, onContinue }: AnalysisResultsProps) {
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
-    </motion.div>
+    </FadeIn>
   );
 }
