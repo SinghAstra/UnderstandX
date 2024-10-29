@@ -2,6 +2,7 @@ import Providers from "@/components/providers/provider";
 import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: {
@@ -63,7 +64,10 @@ export default function RootLayout({
       <body
         className={`min-h-screen bg-background text-foreground antialiased !font-default overflow-x-hidden`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
+          {children}
+        </Providers>
       </body>
     </html>
   );
