@@ -2,6 +2,7 @@
 import { LogOut, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { ScaleIn } from "./animations/scale-in";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,37 +29,39 @@ export function UserAvatar() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild className="cursor-pointer">
-        {user?.name && user?.image ? (
-          <Image
-            src={user?.image}
-            alt={user?.name}
-            width={36}
-            height={36}
-            className="rounded-full hidden md:block bg-primary p-1"
-          />
-        ) : (
-          <span className="w-8 h-8 rounded-full flex items-center justify-center bg-primary">
-            {user?.name?.charAt(0)}
-          </span>
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 cursor-pointer m-2">
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => signOut()}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <ScaleIn delay={0.1}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild className="cursor-pointer">
+          {user?.name && user?.image ? (
+            <Image
+              src={user?.image}
+              alt={user?.name}
+              width={36}
+              height={36}
+              className="rounded-full hidden md:block bg-primary w-10 h-10"
+            />
+          ) : (
+            <span className="w-10 h-10 rounded-full flex items-center justify-center bg-primary">
+              {user?.name?.charAt(0)}
+            </span>
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56 cursor-pointer m-2">
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => signOut()}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </ScaleIn>
   );
 }
