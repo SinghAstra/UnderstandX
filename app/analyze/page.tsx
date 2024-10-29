@@ -36,6 +36,7 @@ export default function AnalyzePage() {
     setError(undefined);
 
     try {
+      console.log("url --simulate-analysis is ", url);
       // Simulate API calls with delays
       for (let i = 0; i < steps.length; i++) {
         setCurrentStep(i);
@@ -65,6 +66,7 @@ export default function AnalyzePage() {
         generatedPrompt: "Analysis complete",
       });
     } catch (err) {
+      console.log("err --simulate-analysis", err);
       setError("Failed to analyze repository. Please try again.");
       steps.forEach((step) => {
         if (step.status === "in-progress") {
