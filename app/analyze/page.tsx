@@ -1,25 +1,87 @@
 "use client";
 
+import {
+  AnalysisResult,
+  AnalysisResults,
+} from "@/components/analyze/analysis-results";
+import { AnalysisSteps, Step } from "@/components/analyze/analysis-steps";
+import { URLInput } from "@/components/analyze/url-input";
 import { FadeIn } from "@/components/animations/fade-in";
 import { TextGenerateEffect } from "@/components/animations/text-generate-effect";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { RepoCard } from "@/components/ui/repo-card";
-import { motion } from "framer-motion";
-import { Loader2, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function AnalyzePage() {
-  const [url, setUrl] = useState("");
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+const initialSteps: Step[] = [
+  { id: 1, label: "Fetching repository data", status: "pending" },
+  { id: 2, label: "Analyzing codebase structure", status: "pending" },
+  { id: 3, label: "Generating comprehensive prompt", status: "pending" },
+];
 
-  const handleAnalyze = () => {
+export default function AnalyzePage() {
+  const router = useRouter();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string>();
+  const [steps, setSteps] = useState<Step[]>(initialSteps);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [results, setResults] = useState<AnalysisResult>();
+
+  const updateStep = (stepId: number, status: Step["status"]) => {
+    setSteps((prev) =>
+      prev.map((step) => (step.id === stepId ? { ...step, status } : step))
+    );
+  };
+
+  const simulateAnalysis = async (url: string) => {
     setIsAnalyzing(true);
-    setTimeout(() => setIsAnalyzing(false), 2000);
+    setError(undefined);
+
+    try {
+      // Simulate API calls with delays
+      for (let i = 0; i < steps.length; i++) {
+        setCurrentStep(i);
+        updateStep(i + 1, "in-progress");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        updateStep(i + 1, "complete");
+      }
+
+      // Simulate results
+      setResults({
+        repository: {
+          name: "next.js",
+          description: "The React Framework for the Web",
+          language: "TypeScript",
+          stars: 12500,
+          forks: 3200,
+        },
+        technicalDetails: {
+          languages: [
+            { name: "TypeScript", percentage: 65 },
+            { name: "JavaScript", percentage: 25 },
+            { name: "CSS", percentage: 10 },
+          ],
+          frameworks: ["React", "Next.js", "Tailwind CSS"],
+          dependencies: ["react", "next", "tailwindcss"],
+        },
+        generatedPrompt: "Analysis complete",
+      });
+    } catch (err) {
+      setError("Failed to analyze repository. Please try again.");
+      steps.forEach((step) => {
+        if (step.status === "in-progress") {
+          updateStep(step.id, "error");
+        }
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleContinue = () => {
+    router.push("/refine");
   };
 
   return (
-    <main className="container flex min-h-screen flex-col gap-8 py-24">
+    <main className="container max-w-4xl py-24">
       <FadeIn>
         <h1 className="text-center text-4xl font-bold tracking-tight">
           <TextGenerateEffect words="Analyze Your Repository" />
@@ -29,53 +91,23 @@ export default function AnalyzePage() {
         </p>
       </FadeIn>
 
-      <FadeIn delay={0.2} className="mx-auto w-full max-w-2xl">
-        <div className="flex gap-4">
-          <Input
-            placeholder="https://github.com/username/repository"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="h-12"
-          />
-          <Button
-            className="h-12 px-6"
-            onClick={handleAnalyze}
-            disabled={isAnalyzing}
-          >
-            {isAnalyzing ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Search className="mr-2 h-4 w-4" />
-            )}
-            Analyze
-          </Button>
-        </div>
-      </FadeIn>
+      <div className="mt-12 space-y-8">
+        <URLInput
+          onAnalyze={simulateAnalysis}
+          isAnalyzing={isAnalyzing}
+          error={error}
+        />
 
-      <motion.div layout className="grid gap-6 md:grid-cols-2">
-        <RepoCard
-          name="next.js"
-          description="The React Framework for the Web"
-          language="TypeScript"
-          stars={12500}
-          forks={3200}
-          className="md:col-span-2"
-        />
-        <RepoCard
-          name="react"
-          description="A JavaScript library for building user interfaces"
-          language="JavaScript"
-          stars={15800}
-          forks={4100}
-        />
-        <RepoCard
-          name="tailwindcss"
-          description="A utility-first CSS framework"
-          language="CSS"
-          stars={9200}
-          forks={2800}
-        />
-      </motion.div>
+        {isAnalyzing && (
+          <FadeIn>
+            <AnalysisSteps steps={steps} currentStep={currentStep} />
+          </FadeIn>
+        )}
+
+        {results && !isAnalyzing && (
+          <AnalysisResults results={results} onContinue={handleContinue} />
+        )}
+      </div>
     </main>
   );
 }
