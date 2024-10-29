@@ -1,9 +1,13 @@
 "use client";
 
 import { FadeIn } from "@/components/animations/fade-in";
+import { ScaleIn } from "@/components/animations/scale-in";
+import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/ui/Icons";
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
+import GetStarted from "./GetStarted";
 
 export default function Home() {
   return (
@@ -40,6 +44,21 @@ export default function Home() {
           Analyze your GitHub repositories, generate comprehensive prompts, and
           collaborate with AI to enhance your development workflow.
         </FadeIn>
+
+        <div className="flex items-center justify-center gap-4">
+          <ScaleIn>
+            <GetStarted />
+          </ScaleIn>
+          <ScaleIn>
+            <Link
+              href={siteConfig.links.github}
+              target="_blank"
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            >
+              GitHub
+            </Link>
+          </ScaleIn>
+        </div>
       </section>
     </main>
   );

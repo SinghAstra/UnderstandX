@@ -2,7 +2,7 @@
 import { LogOut, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { ScaleIn } from "./animations/scale-in";
+import { ScaleIn } from "../animations/scale-in";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "./dropdown-menu";
 
 export function UserAvatar() {
   const session = useSession();

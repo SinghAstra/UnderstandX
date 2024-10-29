@@ -11,7 +11,7 @@ import { FadeIn } from "../animations/fade-in";
 import { ScaleIn } from "../animations/scale-in";
 import MaxWidthWrapper from "../global/max-width-wrapper";
 import { Icons } from "../ui/Icons";
-import { UserAvatar } from "../user-avatar";
+import { UserAvatar } from "../ui/user-avatar";
 
 const Navbar = () => {
   const [scroll, setScroll] = useState(false);
@@ -87,6 +87,7 @@ const Navbar = () => {
                     className: "rounded-full h-10 w-10 bg-neutral-900 ml-4",
                   })
                 )}
+                target="_blank"
               >
                 <Icons.gitHub className="h-5 w-5" />
               </Link>
