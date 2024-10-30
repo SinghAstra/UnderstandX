@@ -1,13 +1,13 @@
 import { SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
-  name: "DevAssistX",
+  name: "SchemaX",
   description:
-    "DevAssistX is a web application that simplifies codebase understanding for developers.",
-  url: "https://devassistx.vercel.app",
+    "Instantly visualize database schemas and generate AI-ready prompts for faster, smarter codebase understanding",
+  url: "https://schemax.vercel.app",
   links: {
     twitter: "https://x.com/XSinghAstra",
-    github: "https://github.com/SinghAstra/DevAssistX",
+    github: "https://github.com/SinghAstra/SchemaX",
     linkedIn: "https://www.linkedin.com/in/singhastra",
   },
 };

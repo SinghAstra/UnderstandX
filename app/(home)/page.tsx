@@ -32,7 +32,7 @@ export default function Home() {
             Transform Your Code with
             <br />
             <span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
-              AI-Powered Analysis
+              AI-Powered Insights
             </span>
           </h1>
         </FadeIn>
@@ -41,8 +41,9 @@ export default function Home() {
           className="max-w-[42rem] text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           delay={0.2}
         >
-          Analyze your GitHub repositories, generate comprehensive prompts, and
-          collaborate with AI to enhance your development workflow.
+          Instantly visualize database schemas, generate comprehensive prompts
+          for GitHub repositories, and collaborate with AI to supercharge your
+          development workflow.
         </FadeIn>
 
         <div className="flex items-center justify-center gap-4">
