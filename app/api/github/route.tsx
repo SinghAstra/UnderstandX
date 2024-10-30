@@ -6,8 +6,9 @@ export async function GET() {
     const githubService = new GitHubService(
       process.env.GITHUB_PUBLIC_ACCESS_TOKEN
     );
-    const code = await githubService.fetchRepositoryCode(
-      "https://github.com/SinghAstra/DevAssistX"
+    const code = await githubService.fetchFilesByExtension(
+      "https://github.com/SinghAstra/SchemaVizX",
+      ".prisma"
     );
     return NextResponse.json({ code }, { status: 200 });
   } catch (error) {

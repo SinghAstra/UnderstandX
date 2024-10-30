@@ -39,6 +39,63 @@ export class GitHubService {
     }
   }
 
+  async fetchFilesByExtension(
+    url: string,
+    extension: string,
+    path: string = ""
+  ) {
+    const { owner, repo } = this.parseGitHubUrl(url);
+    const files: FileNode[] = [];
+
+    try {
+      const response = await this.octokit.repos.getContent({
+        owner,
+        repo,
+        path,
+      });
+
+      const contents = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
+      for (const item of contents) {
+        if (this.shouldSkipPath(item.name)) {
+          continue;
+        }
+
+        if (item.type === "dir") {
+          const subFiles = await this.fetchFilesByExtension(
+            url,
+            extension,
+            item.path
+          );
+          files.push(...subFiles);
+        } else if (item.type === "file" && item.name.endsWith(extension)) {
+          const fileContent = await this.fetchFileContent(
+            owner,
+            repo,
+            item.path
+          );
+          files.push({
+            type: "file",
+            name: item.name,
+            path: item.path,
+            content: fileContent,
+            size: item.size,
+          });
+        }
+      }
+
+      return files;
+    } catch (error) {
+      console.log(
+        `Error fetching files with extension ${extension} for path ${path}:`,
+        error
+      );
+      throw new Error(`Failed to fetch files: ${(error as Error).message}`);
+    }
+  }
+
   async fetchRepositoryCode(url: string, path: string = "") {
     const { owner, repo } = this.parseGitHubUrl(url);
     try {
@@ -125,6 +182,8 @@ export class GitHubService {
       "build",
       ".next",
       ".env",
+      "public",
+      "assets",
     ];
     return ignorePaths.includes(name);
   }
