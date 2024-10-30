@@ -13,7 +13,7 @@ const GetStarted = () => {
 
   const handleClick = () => {
     if (isAuthenticated) {
-      router.push("/analyze");
+      router.push("/new");
     } else if (!isAuthenticated && !isAuthenticating) {
       router.push("/auth/sign-in");
     }

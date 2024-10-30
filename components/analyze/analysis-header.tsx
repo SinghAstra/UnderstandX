@@ -1,27 +1,26 @@
 import { FadeIn } from "@/components/animations/fade-in";
 import { TextGenerateEffect } from "@/components/animations/text-generate-effect";
 import React from "react";
-import { AnalysisResult } from "./analysis-results";
 
 interface AnalysisHeaderProps {
   isAnalyzing: boolean;
   error: string | undefined;
-  results: AnalysisResult | undefined;
+  // results: AnalysisResult | undefined;
 }
 
 const AnalysisHeader = ({
   isAnalyzing,
   error,
-  results,
-}: AnalysisHeaderProps) => {
+}: // results,
+AnalysisHeaderProps) => {
   const getMessage = () => {
     if (error) {
       return "Please check the repository URL and try again";
     }
 
-    if (results) {
-      return "Analysis completed! Review the results below";
-    }
+    // if (results) {
+    //   return "Analysis completed! Review the results below";
+    // }
 
     if (isAnalyzing) {
       return "Analyzing repository structure and dependencies...";
