@@ -15,7 +15,7 @@ const Footer = () => {
               <Icons.logo className="w-7 h-7" />
             </div>
             <p className="text-muted-foreground mt-4 text-sm text-start">
-              Automated GitHub PR management with AI.
+              {siteConfig.description}
             </p>
             <span className="mt-4 text-neutral-200 text-sm flex items-center">
               Made by{" "}
