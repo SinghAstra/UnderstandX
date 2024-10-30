@@ -29,7 +29,7 @@ export default function Home() {
         </FadeIn>
         <FadeIn className="text-center">
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Transform Your Code with
+            Visualize Schema with
             <br />
             <span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
               AI-Powered Insights
