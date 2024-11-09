@@ -1,5 +1,5 @@
-import Header from "@/components/layout/Header";
 import Providers from "@/components/providers/provider";
+import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
@@ -67,7 +67,7 @@ export default function RootLayout({
       >
         <Providers>
           <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
-          <Header />
+          <Toaster richColors theme="dark" position="top-right" />
           {children}
         </Providers>
       </body>

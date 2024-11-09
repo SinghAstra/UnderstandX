@@ -30,7 +30,7 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { RiTwitterXFill } from "react-icons/ri";
-const icons = {
+const Icons = {
   sparcle: Sparkles,
   rightarrow: ArrowRight,
   menu: Menu,
@@ -60,4 +60,4 @@ const icons = {
   alert: AlertCircle,
   zap: Zap,
 };
-export default icons;
+export default Icons;
