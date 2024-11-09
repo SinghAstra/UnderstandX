@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     creator: "@XSinghAstra",
   },
   icons: {
-    icon: "/assets/images/favicon.ico",
+    icon: "/images/favicon.ico",
   },
 };
 
