@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import APP_PATHS from "@/config/path.config";
-import { siteConfig } from "@/config/site";
 import {
   SignInSchema,
   SignInSchemaType,
@@ -40,7 +39,7 @@ const SignInForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSignIn)}
-          className="space-y-6 w-full "
+          className="space-y-6 w-full p-2"
         >
           <FormField
             control={form.control}

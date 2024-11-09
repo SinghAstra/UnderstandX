@@ -18,7 +18,7 @@ const SignInPage = () => {
           className="rounded"
           priority
         />
-        <h1 className="text-lg font-medium">{siteConfig.name}</h1>
+        <h1 className="text-lg font-medium text-primary">{siteConfig.name}</h1>
       </Link>
 
       <SignInForm />
