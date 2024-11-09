@@ -1,3 +1,4 @@
+import Header from "@/components/layout/Header";
 import Providers from "@/components/providers/provider";
 import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
@@ -66,6 +67,7 @@ export default function RootLayout({
       >
         <Providers>
           <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
+          <Header />
           {children}
         </Providers>
       </body>
