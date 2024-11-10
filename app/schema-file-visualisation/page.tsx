@@ -11,17 +11,138 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   ChartArea,
+  CheckSquare,
   ChevronRight,
   Database,
   FileCode,
   Grid,
   List,
   Search,
+  Trash2,
 } from "lucide-react";
 import React, { useState } from "react";
+
+const TopBar = ({
+  viewMode,
+  setViewMode,
+  searchQuery,
+  setSearchQuery,
+  projectName,
+}: {
+  viewMode: string;
+  setViewMode: (mode: string) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  projectName: string;
+}) => (
+  <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 p-4 flex items-center justify-between">
+    <div className="flex items-center gap-4">
+      <h2 className="text-xl font-bold">{projectName}</h2>
+      <div className="relative">
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search files..."
+          className="pl-8 w-[300px]"
+        />
+      </div>
+    </div>
+    <div className="flex items-center gap-2 bg-muted p-1 rounded-lg">
+      <Button
+        variant={viewMode === "list" ? "secondary" : "ghost"}
+        size="sm"
+        onClick={() => setViewMode("list")}
+        className="gap-2"
+      >
+        <List className="h-4 w-4" />
+        List
+      </Button>
+      <Button
+        variant={viewMode === "grid" ? "secondary" : "ghost"}
+        size="sm"
+        onClick={() => setViewMode("grid")}
+        className="gap-2"
+      >
+        <Grid className="h-4 w-4" />
+        Grid
+      </Button>
+    </div>
+  </div>
+);
+
+const ActionBar = ({
+  selectedCount,
+  totalCount,
+  selectedSize,
+  onSelectAll,
+  onClear,
+  onContinue,
+  allSelected,
+}: {
+  selectedCount: number;
+  totalCount: number;
+  selectedSize: number;
+  onSelectAll: () => void;
+  onClear: () => void;
+  onContinue: () => void;
+  allSelected: boolean;
+}) => (
+  <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-[73px] z-10 p-4 flex items-center justify-between">
+    <div className="flex items-center gap-4">
+      {selectedCount > 0 ? (
+        <>
+          <span className="font-medium">
+            {selectedCount} of {totalCount} files selected
+          </span>
+          <Separator orientation="vertical" className="h-6" />
+          <span className="text-muted-foreground">
+            Total size: {selectedSize} KB
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onClear}
+            className="gap-2"
+          >
+            <Trash2 className="h-4 w-4" />
+            Clear Selection
+          </Button>
+        </>
+      ) : (
+        <span className="text-muted-foreground">No files selected</span>
+      )}
+      {!allSelected && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSelectAll}
+          className="gap-2"
+        >
+          <CheckSquare className="h-4 w-4" />
+          Select All
+        </Button>
+      )}
+    </div>
+    <Button
+      className="gap-2"
+      disabled={selectedCount === 0}
+      onClick={onContinue}
+    >
+      Continue
+      <ChevronRight className="h-4 w-4" />
+    </Button>
+  </div>
+);
 
 const SchemaFileSelection = () => {
   const [viewMode, setViewMode] = useState("list");
@@ -29,6 +150,7 @@ const SchemaFileSelection = () => {
   const [previewFile, setPreviewFile] = useState<(typeof files)[0] | null>(
     null
   );
+  const [searchQuery, setSearchQuery] = useState("");
 
   const files = [
     {
@@ -38,7 +160,6 @@ const SchemaFileSelection = () => {
       size: "12KB",
       path: "/prisma/schema.prisma",
       lastModified: "2 mins ago",
-      preview: 'generator client { provider = "prisma-client-js" }',
       content: `
 generator client {
   provider = "prisma-client-js"
@@ -82,7 +203,6 @@ model Post {
       size: "8KB",
       path: "/migrations/001_init.sql",
       lastModified: "2 days ago",
-      preview: "CREATE TABLE users ( id INTEGER PRIMARY KEY )",
       content: `
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -148,21 +268,22 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
     setPreviewFile(file || null);
   };
 
-  const getSelectedFilesInfo = () => {
-    const selectedCount = selectedFiles.length;
-    const selectedSize = files
+  const getTotalSelectedSize = () => {
+    return files
       .filter((file) => selectedFiles.includes(file.id))
       .reduce((total, file) => {
         const sizeInKB = parseInt(file.size);
         return total + sizeInKB;
       }, 0);
-    return `Selected: ${selectedCount} files (${selectedSize} KB)`;
   };
 
   return (
-    <div className="h-screen bg-background flex">
+    <ResizablePanelGroup
+      direction="horizontal"
+      className="min-h-screen bg-background flex"
+    >
       {/* Left Sidebar */}
-      <div className="w-64 border-r p-4 flex flex-col gap-6">
+      <ResizablePanel className="w-64 border-r p-4 flex flex-col gap-6">
         <div>
           <h3 className="text-lg font-semibold mb-4">File Types</h3>
           <RadioGroup defaultValue="all" className="space-y-2">
@@ -194,53 +315,28 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
             </div>
           </div>
         </div>
-      </div>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <div className="border-b p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-bold">Project Name</h2>
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search files..." className="pl-8 w-[300px]" />
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === "list" ? "secondary" : "ghost"}
-              size="icon"
-              onClick={() => setViewMode("list")}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === "grid" ? "secondary" : "ghost"}
-              size="icon"
-              onClick={() => setViewMode("grid")}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+      <ResizablePanel className="flex-1 flex flex-col">
+        <TopBar
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          projectName="Project Name"
+        />
 
-        {/* Action Bar */}
-        <div className="border-b p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span>{getSelectedFilesInfo()}</span>
-            <Button variant="outline" size="sm" onClick={handleSelectAll}>
-              Select All
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleClear}>
-              Clear
-            </Button>
-          </div>
-          <Button className="flex items-center gap-2">
-            Continue
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
+        <ActionBar
+          selectedCount={selectedFiles.length}
+          totalCount={files.length}
+          selectedSize={getTotalSelectedSize()}
+          onSelectAll={handleSelectAll}
+          onClear={handleClear}
+          onContinue={() => {}}
+          allSelected={selectedFiles.length === files.length}
+        />
 
         {/* File List/Grid */}
         <ScrollArea className="flex-1 p-4">
@@ -276,9 +372,6 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {file.path}
-                    </div>
-                    <div className="mt-2 p-2 bg-muted rounded text-sm font-mono">
-                      {file.preview}
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -319,16 +412,13 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
                         {file.size}
                       </span>
                     </div>
-                    <div className="p-2 bg-muted rounded text-sm font-mono">
-                      {file.preview}
-                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           )}
         </ScrollArea>
-      </div>
+      </ResizablePanel>
       {/* Preview Modal */}
       <Dialog
         open={previewFile !== null}
@@ -356,7 +446,7 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
           </ScrollArea>
         </DialogContent>
       </Dialog>
-    </div>
+    </ResizablePanelGroup>
   );
 };
 
