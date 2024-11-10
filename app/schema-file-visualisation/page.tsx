@@ -78,55 +78,25 @@ const TopBar = ({
 
 const ActionBar = ({
   selectedCount,
-  totalCount,
   selectedSize,
-  onSelectAll,
-  onClear,
   onContinue,
-  allSelected,
 }: {
   selectedCount: number;
-  totalCount: number;
   selectedSize: number;
-  onSelectAll: () => void;
-  onClear: () => void;
   onContinue: () => void;
-  allSelected: boolean;
 }) => (
   <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-[73px] z-10 p-4 flex items-center justify-between">
     <div className="flex items-center gap-4">
       {selectedCount > 0 ? (
         <>
-          <span className="font-medium">
-            {selectedCount} of {totalCount} files selected
-          </span>
+          <span className="font-medium">{selectedCount} files selected</span>
           <Separator orientation="vertical" className="h-6" />
           <span className="text-muted-foreground">
             Total size: {selectedSize} KB
           </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onClear}
-            className="gap-2"
-          >
-            <Trash2 className="h-4 w-4" />
-            Clear Selection
-          </Button>
         </>
       ) : (
         <span className="text-muted-foreground">No files selected</span>
-      )}
-      {!allSelected && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onSelectAll}
-          className="gap-2"
-        >
-          <CheckSquare className="h-4 w-4" />
-          Select All
-        </Button>
       )}
     </div>
     <Button
@@ -147,6 +117,7 @@ const SchemaFileSelection = () => {
     null
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
 
   const files = [
     {
@@ -255,7 +226,7 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
     setSelectedFiles(allFileIds);
   };
 
-  const handleClear = () => {
+  const handleClearAll = () => {
     setSelectedFiles([]);
   };
 
@@ -286,12 +257,36 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
         maxSize={30}
       >
         <div>
-          <h3 className="text-lg font-semibold mb-4">File Types</h3>
-          <RadioGroup defaultValue="all" className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="all" />
-              <label htmlFor="all">All Types (23)</label>
-            </div>
+          <div className="flex justify-between">
+            <h3 className="text-lg font-semibold">File Types</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={
+                selectedFiles.length === 0 ? handleSelectAll : handleClearAll
+              }
+            >
+              {selectedFiles.length === 0 ? (
+                <span className="flex items-center gap-2">
+                  <CheckSquare className="h-4 w-4" />
+                  Select All
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Trash2 className="h-4 w-4" />
+                  Clear All
+                </span>
+              )}
+            </Button>
+          </div>
+          <RadioGroup
+            value={selectedType}
+            onValueChange={(value) => {
+              setSelectedType(value);
+              setSelectedFiles([]);
+            }}
+            className="space-y-2"
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="sql" id="sql" />
               <label htmlFor="sql">SQL (12)</label>
@@ -335,12 +330,8 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
 
         <ActionBar
           selectedCount={selectedFiles.length}
-          totalCount={files.length}
           selectedSize={getTotalSelectedSize()}
-          onSelectAll={handleSelectAll}
-          onClear={handleClear}
           onContinue={() => {}}
-          allSelected={selectedFiles.length === files.length}
         />
 
         {/* File List/Grid */}
@@ -368,7 +359,7 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
                       <div className="flex items-center gap-2 mb-1">
                         {getFileIcon(file.type)}
                         <span className="font-medium">{file.name}</span>
-                        <Badge variant="secondary">{file.type}</Badge>
+                        <Badge>{file.type}</Badge>
                         <span className="text-sm text-muted-foreground">
                           {file.size}
                         </span>
@@ -405,7 +396,7 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
                       <div>
                         <div className="flex items-center gap-2">
                           {getFileIcon(file.type)}
-                          <span className="font-medium">{file.name}</span>
+                          <span className="font-medium ">{file.name}</span>
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {file.path}
@@ -414,7 +405,7 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">{file.type}</Badge>
+                        <Badge>{file.type}</Badge>
                         <span className="text-sm text-muted-foreground">
                           {file.size}
                         </span>
