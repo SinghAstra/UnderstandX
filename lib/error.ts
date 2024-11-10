@@ -1,18 +1,18 @@
 import { ERROR_CODE, ERROR_NAME } from "@/config/error.config";
-import { ZodError } from "zod";
+import { ZodError, ZodIssue } from "zod";
 
 export type ErrorResponseType = {
   name: string;
   message: string;
   code: number;
   status: false;
-  error?: any;
+  error?: unknown;
 };
 class ErrorHandler extends Error {
   status: false;
-  error?: any;
+  error?: unknown;
   code: number;
-  constructor(message: string, code: keyof typeof ERROR_CODE, error?: any) {
+  constructor(message: string, code: keyof typeof ERROR_CODE, error?: unknown) {
     super(message);
     this.status = false;
     this.error = error;
@@ -21,7 +21,7 @@ class ErrorHandler extends Error {
   }
 }
 
-function formatZodError(issues: any[]): string {
+function formatZodError(issues: ZodIssue[]): string {
   return issues
     .slice(0, 2)
     .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
