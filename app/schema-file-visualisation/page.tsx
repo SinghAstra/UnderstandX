@@ -3,6 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,8 +25,11 @@ import React, { useState } from "react";
 
 const SchemaFileSelection = () => {
   const [viewMode, setViewMode] = useState("list");
+  const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
+  const [previewFile, setPreviewFile] = useState<(typeof files)[0] | null>(
+    null
+  );
 
-  // Sample data - replace with your actual data
   const files = [
     {
       id: 1,
@@ -30,6 +39,41 @@ const SchemaFileSelection = () => {
       path: "/prisma/schema.prisma",
       lastModified: "2 mins ago",
       preview: 'generator client { provider = "prisma-client-js" }',
+      content: `
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  posts     Post[]
+  profile   Profile?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+}`,
     },
     {
       id: 2,
@@ -39,6 +83,33 @@ const SchemaFileSelection = () => {
       path: "/migrations/001_init.sql",
       lastModified: "2 days ago",
       preview: "CREATE TABLE users ( id INTEGER PRIMARY KEY )",
+      content: `
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE profiles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    bio TEXT,
+    user_id INTEGER UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT,
+    published BOOLEAN DEFAULT FALSE,
+    author_id INTEGER,
+    FOREIGN KEY (author_id) REFERENCES users (id)
+);
+
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_posts_author ON posts(author_id);`,
     },
   ];
 
@@ -53,6 +124,39 @@ const SchemaFileSelection = () => {
       default:
         return <FileCode className="h-4 w-4" />;
     }
+  };
+
+  const handleFileSelection = (fileId: number) => {
+    setSelectedFiles((prev) =>
+      prev.includes(fileId)
+        ? prev.filter((id) => id !== fileId)
+        : [...prev, fileId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    const allFileIds = files.map((file) => file.id);
+    setSelectedFiles(allFileIds);
+  };
+
+  const handleClear = () => {
+    setSelectedFiles([]);
+  };
+
+  const handlePreview = (fileId: number) => {
+    const file = files.find((f) => f.id === fileId);
+    setPreviewFile(file || null);
+  };
+
+  const getSelectedFilesInfo = () => {
+    const selectedCount = selectedFiles.length;
+    const selectedSize = files
+      .filter((file) => selectedFiles.includes(file.id))
+      .reduce((total, file) => {
+        const sizeInKB = parseInt(file.size);
+        return total + sizeInKB;
+      }, 0);
+    return `Selected: ${selectedCount} files (${selectedSize} KB)`;
   };
 
   return (
@@ -124,11 +228,11 @@ const SchemaFileSelection = () => {
         {/* Action Bar */}
         <div className="border-b p-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span>Selected: 5 files (24 KB)</span>
-            <Button variant="outline" size="sm">
+            <span>{getSelectedFilesInfo()}</span>
+            <Button variant="outline" size="sm" onClick={handleSelectAll}>
               Select All
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleClear}>
               Clear
             </Button>
           </div>
@@ -145,9 +249,19 @@ const SchemaFileSelection = () => {
               {files.map((file) => (
                 <div
                   key={file.id}
-                  className="flex items-center gap-4 p-4 border rounded-lg hover:bg-accent transition-colors"
+                  onClick={() => handleFileSelection(file.id)}
+                  className={`
+                  flex items-center gap-4 p-4 border rounded-lg 
+                  cursor-pointer
+                  transition-colors
+                  hover:bg-accent/50
+                  ${selectedFiles.includes(file.id) ? "bg-accent" : ""}
+                `}
                 >
-                  <Checkbox />
+                  <Checkbox
+                    checked={selectedFiles.includes(file.id)}
+                    className="pointer-events-none"
+                  />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       {getFileIcon(file.type)}
@@ -168,11 +282,15 @@ const SchemaFileSelection = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePreview(file.id);
+                      }}
+                    >
                       Preview
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Select File
                     </Button>
                   </div>
                 </div>
@@ -211,6 +329,33 @@ const SchemaFileSelection = () => {
           )}
         </ScrollArea>
       </div>
+      {/* Preview Modal */}
+      <Dialog
+        open={previewFile !== null}
+        onOpenChange={() => setPreviewFile(null)}
+      >
+        <DialogContent className="max-w-3xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {previewFile && (
+                <>
+                  {getFileIcon(previewFile.type)}
+                  {previewFile.name}
+                  <Badge variant="secondary">{previewFile.type}</Badge>
+                  <span className="text-sm font-normal text-muted-foreground">
+                    {previewFile.path}
+                  </span>
+                </>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="mt-4 h-[60vh]">
+            <div className="p-4 bg-muted rounded text-sm font-mono whitespace-pre">
+              {previewFile?.content}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
