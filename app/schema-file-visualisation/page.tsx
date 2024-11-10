@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ChartArea,
   CheckSquare,
@@ -32,21 +33,21 @@ import {
 import React, { useState } from "react";
 
 const TopBar = ({
-  viewMode,
-  setViewMode,
   searchQuery,
   setSearchQuery,
   projectName,
+  activeView,
+  setActiveView,
 }: {
-  viewMode: string;
-  setViewMode: (mode: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   projectName: string;
+  activeView: string;
+  setActiveView: (view: string) => void;
 }) => (
   <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 p-4 flex items-center justify-between">
+    <h2 className="text-xl font-bold">{projectName}</h2>
     <div className="flex items-center gap-4">
-      <h2 className="text-xl font-bold">{projectName}</h2>
       <div className="relative">
         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
@@ -56,26 +57,21 @@ const TopBar = ({
           className="pl-8 w-[300px]"
         />
       </div>
-    </div>
-    <div className="flex items-center gap-2 bg-muted p-1 rounded-lg">
-      <Button
-        variant={viewMode === "list" ? "secondary" : "ghost"}
-        size="sm"
-        onClick={() => setViewMode("list")}
-        className="gap-2"
+
+      <Tabs
+        value={activeView}
+        onValueChange={setActiveView}
+        className="w-[100px] rounded-md"
       >
-        <List className="h-4 w-4" />
-        List
-      </Button>
-      <Button
-        variant={viewMode === "grid" ? "secondary" : "ghost"}
-        size="sm"
-        onClick={() => setViewMode("grid")}
-        className="gap-2"
-      >
-        <Grid className="h-4 w-4" />
-        Grid
-      </Button>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="list">
+            <List className="h-4 w-4" />
+          </TabsTrigger>
+          <TabsTrigger value="grid">
+            <Grid className="h-4 w-4" />
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
     </div>
   </div>
 );
@@ -145,7 +141,7 @@ const ActionBar = ({
 );
 
 const SchemaFileSelection = () => {
-  const [viewMode, setViewMode] = useState("list");
+  const [activeView, setActiveView] = useState("list");
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [previewFile, setPreviewFile] = useState<(typeof files)[0] | null>(
     null
@@ -283,7 +279,12 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
       className="min-h-screen bg-background flex"
     >
       {/* Left Sidebar */}
-      <ResizablePanel className="w-64 border-r p-4 flex flex-col gap-6">
+      <ResizablePanel
+        className="border-r p-4 flex flex-col gap-6"
+        defaultSize={20}
+        minSize={15}
+        maxSize={30}
+      >
         <div>
           <h3 className="text-lg font-semibold mb-4">File Types</h3>
           <RadioGroup defaultValue="all" className="space-y-2">
@@ -319,13 +320,17 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
       <ResizableHandle withHandle />
 
       {/* Main Content */}
-      <ResizablePanel className="flex-1 flex flex-col">
+      <ResizablePanel
+        className="flex-1 flex flex-col"
+        minSize={70}
+        defaultSize={80}
+      >
         <TopBar
-          viewMode={viewMode}
-          setViewMode={setViewMode}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           projectName="Project Name"
+          activeView={activeView}
+          setActiveView={setActiveView}
         />
 
         <ActionBar
@@ -340,83 +345,86 @@ CREATE INDEX idx_posts_author ON posts(author_id);`,
 
         {/* File List/Grid */}
         <ScrollArea className="flex-1 p-4">
-          {viewMode === "list" ? (
-            <div className="space-y-2">
-              {files.map((file) => (
-                <div
-                  key={file.id}
-                  onClick={() => handleFileSelection(file.id)}
-                  className={`
+          <Tabs value={activeView} className="w-full">
+            <TabsContent value="list" className="mt-0">
+              <div className="space-y-2">
+                {files.map((file) => (
+                  <div
+                    key={file.id}
+                    onClick={() => handleFileSelection(file.id)}
+                    className={`
                   flex items-center gap-4 p-4 border rounded-lg 
                   cursor-pointer
                   transition-colors
                   hover:bg-accent/50
                   ${selectedFiles.includes(file.id) ? "bg-accent" : ""}
                 `}
-                >
-                  <Checkbox
-                    checked={selectedFiles.includes(file.id)}
-                    className="pointer-events-none"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      {getFileIcon(file.type)}
-                      <span className="font-medium">{file.name}</span>
-                      <Badge variant="secondary">{file.type}</Badge>
-                      <span className="text-sm text-muted-foreground">
-                        {file.size}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {file.lastModified}
-                      </span>
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {file.path}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePreview(file.id);
-                      }}
-                    >
-                      Preview
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-3 gap-4">
-              {files.map((file) => (
-                <Card key={file.id}>
-                  <CardHeader className="flex flex-row items-center gap-2">
-                    <Checkbox />
-                    <div>
-                      <div className="flex items-center gap-2">
+                  >
+                    <Checkbox
+                      checked={selectedFiles.includes(file.id)}
+                      className="pointer-events-none"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
                         {getFileIcon(file.type)}
                         <span className="font-medium">{file.name}</span>
+                        <Badge variant="secondary">{file.type}</Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {file.size}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {file.lastModified}
+                        </span>
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {file.path}
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">{file.type}</Badge>
-                      <span className="text-sm text-muted-foreground">
-                        {file.size}
-                      </span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePreview(file.id);
+                        }}
+                      >
+                        Preview
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="grid" className="mt-0">
+              <div className="grid grid-cols-3 gap-4">
+                {files.map((file) => (
+                  <Card key={file.id}>
+                    <CardHeader className="flex flex-row items-center gap-2">
+                      <Checkbox />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          {getFileIcon(file.type)}
+                          <span className="font-medium">{file.name}</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {file.path}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="secondary">{file.type}</Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {file.size}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </ScrollArea>
       </ResizablePanel>
       {/* Preview Modal */}
