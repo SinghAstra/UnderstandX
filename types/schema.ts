@@ -1,19 +1,17 @@
-// Interfaces for the parsed schema structure
 export interface Field {
   name: string;
   type: string;
   isRequired: boolean;
   isList: boolean;
   isRelation: boolean;
-  relationTo?: string;
   isForeignKey?: boolean;
   referencedModel?: string;
   referencedField?: string;
   onDelete?: string;
   attributes?: string[];
-  displayOrder: number; // Order in which fields should be displayed
-  isUnique: boolean; // Field has @unique attribute
-  isPrimaryKey: boolean; // Field is a primary key (@id)
+  displayOrder: number;
+  isUnique: boolean;
+  isPrimaryKey: boolean;
 }
 
 export interface Model {
@@ -22,10 +20,6 @@ export interface Model {
   position: {
     x: number;
     y: number;
-  };
-  dimensions: {
-    width: number;
-    height: number;
   };
   tableName?: string;
   uniqueConstraints?: string[][];
@@ -118,30 +112,16 @@ export const parseSchema = (
   schemaString: string = defaultSchemaString
 ): Model[] => {
   const models: Model[] = [];
-  const VERTICAL_SPACING = 250; // Space between rows
-  const HORIZONTAL_SPACING = 400; // Space between columns
-  const MAX_MODELS_PER_ROW = 3; // Number of models per row for grid layout
-
-  // Split the schema into model definitions, skipping the first element (empty or config)
   const modelDefinitions = schemaString.split("model ").slice(1);
 
   modelDefinitions.forEach((modelDef, index) => {
-    // Calculate grid-based position
-    const row = Math.floor(index / MAX_MODELS_PER_ROW);
-    const col = index % MAX_MODELS_PER_ROW;
-
-    // Split model definition into lines and clean them
     const lines = modelDef.split("\n").map((line) => line.trim());
     const modelName = lines[0].split(" ")[0];
     const fields: Field[] = [];
-    const position = {
-      x: col * HORIZONTAL_SPACING + 50, // Add 50px padding
-      y: row * VERTICAL_SPACING + 50, // Add 50px padding
-    };
     let tableName: string | undefined;
     const uniqueConstraints: string[][] = [];
+    console.log("lines[0] is ", lines[0]);
 
-    // Process each line in the model definition
     lines.slice(1).forEach((line) => {
       if (!line || line.startsWith("}")) return;
 
@@ -197,19 +177,28 @@ export const parseSchema = (
             isForeignKey: false,
           });
 
-          fields.push({
-            name: relationFields,
-            type: "String",
-            isRequired: true,
-            isList: false,
-            isRelation: false,
-            isForeignKey: true,
-            referencedModel: fieldType,
-            referencedField: referencedFields,
-            displayOrder: fields.length,
-            isUnique: line.includes("@unique"),
-            isPrimaryKey: false,
-          });
+          const existingForeignKeyField = fields.find(
+            (f) => f.name === relationFields
+          );
+          if (existingForeignKeyField) {
+            existingForeignKeyField.isForeignKey = true;
+            existingForeignKeyField.referencedModel = fieldType;
+            existingForeignKeyField.referencedField = referencedFields;
+          } else {
+            fields.push({
+              name: relationFields,
+              type: "String",
+              isRequired: true,
+              isList: false,
+              isRelation: false,
+              isForeignKey: true,
+              referencedModel: fieldType,
+              referencedField: referencedFields,
+              displayOrder: fields.length,
+              isUnique: line.includes("@unique"),
+              isPrimaryKey: false,
+            });
+          }
         }
       }
       // Parse array relations (one-to-many)
@@ -238,34 +227,30 @@ export const parseSchema = (
         if (parts.length >= 2) {
           const fieldName = parts[0];
           const fieldType = parts[1];
-
-          fields.push({
-            name: fieldName,
-            type: fieldType,
-            isRequired: !line.includes("?"),
-            isList: false,
-            isRelation: false,
-            attributes: parseAttributes(line),
-            displayOrder: fields.length, // Add display order for visualization
-            isUnique: line.includes("@unique"),
-            isPrimaryKey: line.includes("@id"),
-            isForeignKey: false,
-          });
+          const existingField = fields.find((f) => f.name === fieldName);
+          if (!existingField) {
+            fields.push({
+              name: fieldName,
+              type: fieldType,
+              isRequired: !line.includes("?"),
+              isList: false,
+              isRelation: false,
+              attributes: parseAttributes(line),
+              displayOrder: fields.length,
+              isUnique: line.includes("@unique"),
+              isPrimaryKey: line.includes("@id"),
+              isForeignKey: false,
+            });
+          }
         }
       }
     });
 
-    // Calculate model dimensions based on number of fields
-    const modelHeight = fields.length * 30 + 60; // 30px per field + padding
-    const modelWidth = 250; // Fixed width for now
-
-    // Create the model with dimensions
     models.push({
       name: modelName,
-      position,
-      dimensions: {
-        width: modelWidth,
-        height: modelHeight,
+      position: {
+        x: index * 200,
+        y: 0,
       },
       fields,
       tableName,
@@ -290,52 +275,21 @@ function parseAttributes(line: string): string[] | undefined {
 function linkRelationships(models: Model[]): void {
   models.forEach((model) => {
     model.fields.forEach((field) => {
-      if (field.isRelation || field.isForeignKey) {
-        if (model.tableName === "accounts") {
-          console.log("Start: field is ", field);
-        }
+      if (field.isRelation && field.isList) {
+        console.log("START:field --linkRelationship is ", field);
         const referencedModel = models.find(
           (m) => m.name === field.referencedModel
         );
-        if (model.tableName === "accounts") {
-          console.log("referencedModel is ", referencedModel);
-        }
 
         if (referencedModel) {
-          // Handle one-to-many relationships
-          if (field.isList) {
-            if (model.tableName === "accounts") {
-              console.log("In field.isList ");
-            }
-            const foreignKey = referencedModel.fields.find(
-              (f) => f.isForeignKey && f.referencedModel === model.name
-            );
-            if (model.tableName === "accounts") {
-              console.log("foreignKey is ", foreignKey);
-            }
-            if (foreignKey) {
-              field.relationTo = foreignKey.name;
-            }
-          }
-          // Handle many-to-one relationships
-          else if (field.isForeignKey) {
-            if (model.tableName === "accounts") {
-              console.log("In field.isForeignKey");
-            }
-            const relationField = model.fields.find(
-              (f) => f.isRelation && f.referencedModel === field.referencedModel
-            );
-            if (model.tableName === "accounts") {
-              console.log("relationField is ", relationField);
-            }
-            if (relationField) {
-              field.relationTo = relationField.referencedField;
-            }
+          const foreignKey = referencedModel.fields.find(
+            (f) => f.isForeignKey && f.referencedModel === model.name
+          );
+          if (foreignKey) {
+            field.referencedField = foreignKey.name;
           }
         }
-        if (model.tableName === "accounts") {
-          console.log("End: field is ", field);
-        }
+        console.log("END:field --linkRelationship is ", field);
       }
     });
   });

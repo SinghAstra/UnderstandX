@@ -150,8 +150,8 @@ const SchemaVisualizer = () => {
   };
 
   return (
-    <div className="w-full h-screen p-4 bg-white relative overflow-hidden">
-      <div className="w-full h-full relative bg-secondary/10 rounded-lg border border-border bg-white">
+    <div className="w-full h-screen p-4 bg-background relative overflow-hidden">
+      <div className="w-full h-full relative bg-secondary/10 rounded-lg border border-border ">
         <RelationshipLines models={models} />
         {models.map((model) => (
           <ModelTable
