@@ -1,8 +1,9 @@
 "use client";
-import { Field, Model, parseSchema } from "@/types/schema";
+import { Field, Model } from "@/types/schema";
 import { Grip } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Draggable from "react-draggable";
+import { parseSchemaAction } from "../actions/schema/parse-schema";
 
 // Helper to get center points of a model box
 const getModelCenter = (model: Model) => ({
@@ -138,8 +139,23 @@ const RelationshipLines = ({ models }: { models: Model[] }) => {
 };
 
 const SchemaVisualizer = () => {
-  const [models, setModels] = useState(parseSchema());
+  const [models, setModels] = useState<Model[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
+
+  useEffect(() => {
+    const loadSchema = async () => {
+      try {
+        const result = await parseSchemaAction();
+        setModels(result.models);
+      } catch (err) {
+        setError("Failed to load schema");
+        console.error("Error loading schema:", err);
+      }
+    };
+
+    loadSchema();
+  }, []);
 
   const handleUpdatePosition = (name: string, x: number, y: number) => {
     setModels((prevModels) =>
@@ -149,9 +165,25 @@ const SchemaVisualizer = () => {
     );
   };
 
+  if (error) {
+    return (
+      <div className="w-full h-screen p-4 flex items-center justify-center text-destructive">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
+  if (models.length === 0) {
+    return (
+      <div className="w-full h-screen p-4 flex items-center justify-center">
+        <p>Loading schema...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-screen p-4 bg-background relative overflow-hidden">
-      <div className="w-full h-full relative bg-secondary/10 rounded-lg border border-border ">
+      <div className="w-full h-full relative bg-secondary/10 rounded-lg border border-border">
         <RelationshipLines models={models} />
         {models.map((model) => (
           <ModelTable

@@ -1,8 +1,6 @@
 import { defaultSchemaString, Field, Model } from "@/types/schema";
 
-export const parseSchema = (
-  schemaString: string = defaultSchemaString
-): Model[] => {
+export const parseSchema = (schemaString: string): Model[] => {
   const models: Model[] = [];
   const modelDefinitions = schemaString.split("model ").slice(1);
 
@@ -185,7 +183,9 @@ function parseAttributes(line: string): string[] | undefined {
   return attributes ? attributes : undefined;
 }
 
-export async function parseSchemaAction(schema: string): Promise<{
+export async function parseSchemaAction(
+  schema: string = defaultSchemaString
+): Promise<{
   models: Model[];
   error?: string;
 }> {
