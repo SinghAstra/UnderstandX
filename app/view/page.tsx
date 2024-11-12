@@ -1,5 +1,6 @@
 "use client";
 import { Field, Model, parseSchema } from "@/types/schema";
+import { Grip } from "lucide-react";
 import React, { useState } from "react";
 import Draggable from "react-draggable";
 
@@ -12,12 +13,7 @@ interface FieldProps {
   field: Field;
 }
 
-interface CanvasProps {
-  models: Model[];
-  onUpdatePosition: (name: string, x: number, y: number) => void;
-}
-
-const ModelTable: React.FC<ModelTableProps> = ({ model, onDragStop }) => {
+const ModelTable = ({ model, onDragStop }: ModelTableProps) => {
   const handleDragStop = (_e: unknown, data: { x: number; y: number }) => {
     onDragStop(model.name, data.x, data.y);
   };
@@ -33,8 +29,9 @@ const ModelTable: React.FC<ModelTableProps> = ({ model, onDragStop }) => {
         className="absolute bg-card rounded-lg shadow-xl border border-border"
         style={{ minWidth: "200px" }}
       >
-        <div className="bg-primary text-primary-foreground px-4 py-2 rounded-t-lg font-medium drag-handle cursor-move">
+        <div className="bg-primary text-primary-foreground px-4 py-2 rounded-t-lg font-medium flex justify-between">
           {model.name}
+          <Grip className="w-5 h-5 drag-handle cursor-move" />
         </div>
         <div className="p-4">
           {model.fields.map((field) => (
@@ -46,7 +43,7 @@ const ModelTable: React.FC<ModelTableProps> = ({ model, onDragStop }) => {
   );
 };
 
-const FieldComp: React.FC<FieldProps> = ({ field }) => {
+const FieldComp = ({ field }: FieldProps) => {
   return (
     <div className="flex items-center gap-2 py-1">
       <span className="font-medium text-foreground">{field.name}</span>
@@ -59,27 +56,6 @@ const FieldComp: React.FC<FieldProps> = ({ field }) => {
           → {field.relationTo}
         </span>
       )}
-    </div>
-  );
-};
-
-export const Canvas: React.FC<CanvasProps> = ({ models, onUpdatePosition }) => {
-  return (
-    <div
-      className="w-full h-full relative bg-background overflow-hidden"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle, hsl(217.2 32.6% 17.5%) 1px, transparent 1px)",
-        backgroundSize: "20px 20px",
-      }}
-    >
-      {models.map((model) => (
-        <ModelTable
-          key={model.name}
-          model={model}
-          onDragStop={onUpdatePosition}
-        />
-      ))}
     </div>
   );
 };
@@ -97,7 +73,15 @@ const SchemaVisualizer = () => {
 
   return (
     <div className="w-full h-screen p-4 bg-background">
-      <Canvas models={models} onUpdatePosition={handleUpdatePosition} />
+      <div className="w-full h-full relative bg-background overflow-hidden">
+        {models.map((model) => (
+          <ModelTable
+            key={model.name}
+            model={model}
+            onDragStop={handleUpdatePosition}
+          />
+        ))}
+      </div>
     </div>
   );
 };

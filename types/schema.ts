@@ -162,5 +162,19 @@ export const parseSchema = (
     });
   });
 
+  models.forEach((model) => {
+    model.fields.forEach((field) => {
+      if (field.isRelation) {
+        const relationField = model.fields.find(
+          (f) => f.name === field.name + "Id"
+        );
+        if (relationField) {
+          relationField.isRelation = true;
+          relationField.relationTo = field.relationTo;
+        }
+      }
+    });
+  });
+
   return models;
 };
