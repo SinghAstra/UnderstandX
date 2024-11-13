@@ -29,17 +29,14 @@ const FieldRow = ({ field }: { field: Field }) => {
         {field.name}
         {!field.isRequired && "?"}
       </div>
-      <div className="font-mono text-sm text-muted-foreground">
-        {field.isList ? `${field.type}[]` : field.type}
-      </div>
       {field.isUnique && (
-        <Badge
-          variant="outline"
-          className="h-5 opacity-0 group-hover:opacity-100"
-        >
+        <Badge variant="outline" className="h-5">
           unique
         </Badge>
       )}
+      <div className="font-mono text-sm text-muted-foreground">
+        {field.isList ? `${field.type}[]` : field.type}
+      </div>
     </div>
   );
 };
