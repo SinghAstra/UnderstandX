@@ -4,13 +4,12 @@ export const parseSchema = (schemaString: string): Model[] => {
   const models: Model[] = [];
   const modelDefinitions = schemaString.split("model ").slice(1);
 
-  modelDefinitions.forEach((modelDef, index) => {
+  modelDefinitions.forEach((modelDef) => {
     const lines = modelDef.split("\n").map((line) => line.trim());
     const modelName = lines[0].split(" ")[0];
     const fields: Field[] = [];
     let tableName: string | undefined;
     const uniqueConstraints: string[][] = [];
-    console.log("lines[0] is ", lines[0]);
 
     lines.slice(1).forEach((line) => {
       if (!line || line.startsWith("}")) return;
@@ -138,10 +137,6 @@ export const parseSchema = (schemaString: string): Model[] => {
 
     models.push({
       name: modelName,
-      position: {
-        x: index * 200,
-        y: 0,
-      },
       fields,
       tableName,
       uniqueConstraints:
@@ -159,7 +154,6 @@ function linkRelationships(models: Model[]): void {
   models.forEach((model) => {
     model.fields.forEach((field) => {
       if (field.isRelation && field.isList) {
-        console.log("START:field --linkRelationship is ", field);
         const referencedModel = models.find(
           (m) => m.name === field.referencedModel
         );
@@ -172,7 +166,6 @@ function linkRelationships(models: Model[]): void {
             field.referencedField = foreignKey.name;
           }
         }
-        console.log("END:field --linkRelationship is ", field);
       }
     });
   });
@@ -193,7 +186,7 @@ export async function parseSchemaAction(
     const models = parseSchema(schema);
     return { models };
   } catch (error) {
-    console.error("Error parsing schema:", error);
+    console.log("Error parsing schema:", error);
     return {
       models: [],
       error: "Failed to parse schema. Please check the format and try again.",

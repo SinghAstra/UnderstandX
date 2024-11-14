@@ -7,6 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, Model } from "@/types/schema";
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import { Database, Key, KeyRound, List } from "lucide-react";
 
 interface ModelTableProps {
@@ -42,39 +44,59 @@ const FieldRow = ({ field }: { field: Field }) => {
 };
 
 export function ModelTable({ model }: ModelTableProps) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: model.name,
+    // data: model,
+  });
+
+  const style = transform
+    ? {
+        transform: CSS.Transform.toString(transform),
+        zIndex: 999,
+      }
+    : undefined;
+
   return (
-    <Card className="w-[300px] shadow-lg">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <Database className="h-5 w-5" />
-          <CardTitle className="text-lg">{model.name}</CardTitle>
-        </div>
-        {model.tableName && (
-          <CardDescription className="font-mono text-xs">
-            {model.tableName}
-          </CardDescription>
-        )}
-      </CardHeader>
-      <CardContent className="grid gap-1">
-        {model.fields.map((field) => (
-          <FieldRow key={field.name} field={field} />
-        ))}
-        {model.uniqueConstraints && model.uniqueConstraints.length > 0 && (
-          <div className="mt-3 border-t pt-3">
-            <div className="text-xs font-medium text-muted-foreground mb-1">
-              Unique Constraints
-            </div>
-            {model.uniqueConstraints.map((constraint, i) => (
-              <div
-                key={i}
-                className="text-xs font-mono px-2 py-1 bg-muted rounded-sm"
-              >
-                [{constraint.join(", ")}]
-              </div>
-            ))}
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className="cursor-move touch-none"
+    >
+      <Card className="w-full shadow-lg">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <Database className="h-5 w-5" />
+            <CardTitle className="text-lg">{model.name}</CardTitle>
           </div>
-        )}
-      </CardContent>
-    </Card>
+          {model.tableName && (
+            <CardDescription className="font-mono text-xs">
+              {model.tableName}
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent className="grid gap-1">
+          {model.fields.map((field) => (
+            <FieldRow key={field.name} field={field} />
+          ))}
+          {model.uniqueConstraints && model.uniqueConstraints.length > 0 && (
+            <div className="mt-3 border-t pt-3">
+              <div className="text-xs font-medium text-muted-foreground mb-1">
+                Unique Constraints
+              </div>
+              {model.uniqueConstraints.map((constraint, i) => (
+                <div
+                  key={i}
+                  className="text-xs font-mono px-2 py-1 bg-muted rounded-sm"
+                >
+                  [{constraint.join(", ")}]
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }

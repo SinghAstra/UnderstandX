@@ -17,10 +17,6 @@ export interface Field {
 export interface Model {
   name: string;
   fields: Field[];
-  position: {
-    x: number;
-    y: number;
-  };
   tableName?: string;
   uniqueConstraints?: string[][];
 }
