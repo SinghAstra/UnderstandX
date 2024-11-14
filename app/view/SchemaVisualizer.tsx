@@ -77,17 +77,92 @@ export function SchemaVisualizer({ models, error }: SchemaVisualizerProps) {
     })
   );
 
-  // Initialize positions in a grid layout
+  const calculateTableDimensions = (model) => {
+    // Base padding and spacing constants
+    const HEADER_HEIGHT = 48; // Height for the table header
+    const FIELD_HEIGHT = 40; // Height per field row
+    const PADDING = 16; // Padding inside the table
+    const MIN_WIDTH = 280; // Minimum table width
+    const MAX_WIDTH = 400; // Maximum table width
+
+    // Calculate height based on number of fields
+    const contentHeight = (model.fields?.length || 0) * FIELD_HEIGHT;
+    const totalHeight = HEADER_HEIGHT + contentHeight + PADDING * 2;
+
+    // Calculate width based on field names and types
+    const maxFieldWidth =
+      model.fields?.reduce((max, field) => {
+        // Estimate text width (rough approximation)
+        const nameLength = field.name.length * 8; // 8px per character
+        const typeLength = field.type.length * 8;
+        const rowWidth = nameLength + typeLength + 80; // 80px for padding and icons
+        return Math.max(max, rowWidth);
+      }, MIN_WIDTH) || MIN_WIDTH;
+
+    const totalWidth = Math.min(
+      MAX_WIDTH,
+      Math.max(MIN_WIDTH, maxFieldWidth + PADDING * 2)
+    );
+
+    return {
+      width: totalWidth,
+      height: totalHeight,
+    };
+  };
+
   useEffect(() => {
-    const gridCols = 3;
-    const spacing = 320;
-    const initialPositions = models.map((model, index) => ({
-      id: model.name,
-      position: {
-        x: (index % gridCols) * spacing + 20,
-        y: Math.floor(index / gridCols) * spacing + 20,
-      },
+    // Get viewport dimensions
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const MARGIN = 40; // Margin between tables
+
+    // Calculate dimensions for each table
+    const tablesWithDimensions = models.map((model) => ({
+      ...model,
+      dimensions: calculateTableDimensions(model),
     }));
+
+    // Find the widest and tallest tables for grid calculations
+    const maxTableWidth = Math.max(
+      ...tablesWithDimensions.map((t) => t.dimensions.width)
+    );
+    const maxTableHeight = Math.max(
+      ...tablesWithDimensions.map((t) => t.dimensions.height)
+    );
+
+    // Calculate number of columns that can fit
+    const effectiveWidth = maxTableWidth + MARGIN;
+    const maxCols = Math.floor((viewportWidth - MARGIN) / effectiveWidth);
+    const numCols = Math.min(maxCols, Math.ceil(Math.sqrt(models.length)));
+
+    // Calculate grid position
+    const numRows = Math.ceil(models.length / numCols);
+    const totalGridWidth = numCols * effectiveWidth;
+    const totalGridHeight = numRows * (maxTableHeight + MARGIN);
+
+    // Center the entire grid
+    const startX = Math.max(MARGIN, (viewportWidth - totalGridWidth) / 2);
+    const startY = Math.max(MARGIN, (viewportHeight - totalGridHeight) / 2);
+
+    // Calculate positions
+    const initialPositions = tablesWithDimensions.map((model, index) => {
+      const col = index % numCols;
+      const row = Math.floor(index / numCols);
+
+      // Center smaller tables within their grid cell
+      const widthDiff = maxTableWidth - model.dimensions.width;
+      const heightDiff = maxTableHeight - model.dimensions.height;
+
+      return {
+        id: model.name,
+        dimensions: model.dimensions,
+        position: {
+          x: startX + col * effectiveWidth + widthDiff / 2,
+          y: startY + row * (maxTableHeight + MARGIN) + heightDiff / 2,
+        },
+      };
+    });
+
     setPositions(initialPositions);
   }, [models]);
 
@@ -131,7 +206,7 @@ export function SchemaVisualizer({ models, error }: SchemaVisualizerProps) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="relative w-full flex-1">
+      <div className="relative w-full flex-1 mt-16">
         <div className="absolute inset-0">
           {models.map((model) => {
             const position = positions.find((p) => p.id === model.name)
