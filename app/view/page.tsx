@@ -19,13 +19,13 @@ function SchemaViz() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <header className="border-b">
+    <div className="flex flex-col min-h-screen">
+      <header className="fixed top-0 left-0 right-0 bg-background border-b z-50">
         <div className="container mx-auto py-4">
           <h1 className="text-2xl font-bold">Schema Visualizer</h1>
         </div>
       </header>
-      <main className="container mx-auto flex-1  flex">
+      <main className="container mx-auto flex-1 flex">
         <SchemaVisualizer models={schemaData.models} error={schemaData.error} />
       </main>
     </div>

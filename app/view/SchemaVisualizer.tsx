@@ -146,15 +146,15 @@ export function SchemaVisualizer({ models, error }: SchemaVisualizerProps) {
             );
           })}
         </div>
-      </div>
 
-      <DragOverlay>
-        {activeId && models.find((m) => m.name === activeId) ? (
-          <div className="opacity-80">
-            <ModelTable model={models.find((m) => m.name === activeId)!} />
-          </div>
-        ) : null}
-      </DragOverlay>
+        <DragOverlay>
+          {activeId && models.find((m) => m.name === activeId) ? (
+            <div className="opacity-80">
+              <ModelTable model={models.find((m) => m.name === activeId)!} />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </div>
     </DndContext>
   );
 }
