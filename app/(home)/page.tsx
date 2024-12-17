@@ -1,13 +1,9 @@
-import { Features } from "@/components/home/features";
-import { HeroSection } from "@/components/home/hero-section";
-import { ProblemSolution } from "@/components/home/problem-solution";
+import HeroSection from "@/components/home/hero-section";
 
 export default function Home() {
   return (
-    <main className="mt-32">
+    <main className="mt-20">
       <HeroSection />
-      <ProblemSolution />
-      <Features />
     </main>
   );
 }
