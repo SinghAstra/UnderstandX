@@ -1,7 +1,7 @@
 import { SiteConfig } from "@/types/site";
 
 export const siteConfig: SiteConfig = {
-  name: "RepoChatX",
+  name: "NavX",
   url: "https://navx.vercel.app",
   description:
     "An intelligent tool that transforms complex repository documentation into accessible, searchable knowledge landscapes.",

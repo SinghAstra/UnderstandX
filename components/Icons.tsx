@@ -4,12 +4,14 @@ import {
   ArrowLeft,
   BarChart3Icon,
   Bot,
+  Brain,
   BugIcon,
   ClockIcon,
   FileTextIcon,
   GitBranchIcon,
   LayoutDashboardIcon,
   LoaderCircle,
+  Network,
   SettingsIcon,
   Swords,
 } from "lucide-react";
@@ -31,4 +33,6 @@ export const Icons = {
   barChart: BarChart3Icon,
   fileText: FileTextIcon,
   bot: Bot,
+  networkGraph: Network,
+  brainCircuit: Brain,
 };
