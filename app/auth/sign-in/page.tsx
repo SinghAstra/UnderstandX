@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 const features = [
@@ -64,12 +65,14 @@ export default function SignIn() {
     <div className="flex min-h-screen">
       {/* Left Panel - Info Section */}
       <div className="hidden lg:flex bg-gradient-to-br from-background via-secondary to-background relative">
-        <div className="absolute inset-0 bg-grid-white/20" />
+        <div className="absolute inset-0 bg-grid-white" />
         <div className="z-10 w-full p-12 flex flex-col justify-between">
           <div>
-            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-primary">
-              {siteConfig.name}
-            </h1>
+            <Link href="/">
+              <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-primary">
+                {siteConfig.name}
+              </h1>
+            </Link>
             <p className="text-muted-foreground mt-2 text-lg">
               {siteConfig.tagline}
             </p>

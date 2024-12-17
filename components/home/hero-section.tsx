@@ -1,9 +1,37 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import { useToast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { GradientText } from "../custom-ui/gradient-text";
 import { Icons } from "../Icons";
 import DemoCard from "./demo-card";
 
 const HeroSection = () => {
+  const { status } = useSession();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleGetStarted = () => {
+    if (status === "loading") {
+      toast({
+        title: "Authenticating",
+        description: "Checking your authentication status...",
+      });
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      router.push("/auth/sign-in");
+      return;
+    }
+
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  };
   return (
     <section className="relative min-h-screen w-full overflow-hidden">
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -20,9 +48,7 @@ const HeroSection = () => {
             </a>
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
               Understand Repo with{" "}
-              <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                Semantic Searching
-              </span>
+              <GradientText animate>Semantic Searching</GradientText>
             </h1>
 
             <p className="text-lg text-muted-foreground">
@@ -31,7 +57,12 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button size="lg" className="group">
+              <Button
+                size="lg"
+                className="group"
+                onClick={handleGetStarted}
+                disabled={status === "loading"}
+              >
                 Try {siteConfig.name} Free
                 <Icons.arrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
