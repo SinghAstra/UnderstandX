@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GradientText } from "../custom-ui/gradient-text";
 import { Icons } from "../Icons";
@@ -68,9 +69,11 @@ const HeroSection = () => {
               </Button>
             </div>
           </div>
-          <div className="relative lg:flex items-center justify-center hidden">
-            <DemoCard />
-          </div>
+          <Link href="/search">
+            <div className="relative lg:flex items-center justify-center hidden">
+              <DemoCard />
+            </div>
+          </Link>
         </div>
       </div>
     </section>
