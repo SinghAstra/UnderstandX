@@ -64,7 +64,7 @@ export default function SignIn() {
     <div className="flex min-h-screen">
       {/* Left Panel - Info Section */}
       <div className="hidden lg:flex bg-gradient-to-br from-background via-secondary to-background relative">
-        <div className="absolute inset-0 bg-grid-white/[0.02]" />
+        <div className="absolute inset-0 bg-grid-white" />
         <div className="z-10 w-full p-12 flex flex-col justify-between">
           <div>
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-primary">
