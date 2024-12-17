@@ -1,6 +1,5 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Icons } from "../Icons";
 import { Skeleton } from "../ui/skeleton";
 import { AvatarMenu } from "./avatar-menu";
+import SignInButton from "./sign-in-button";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -27,10 +27,10 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 w-full border-b transition-all duration-200 py-2 px-4 ",
+        "fixed top-0 z-50 w-full transition-all duration-200 py-2 px-4",
         scrolled
-          ? "border-border/40 bg-background/80 backdrop-blur-lg"
-          : "border-transparent bg-transparent"
+          ? "backdrop-blur-sm border-b border-border/40"
+          : "bg-transparent"
       )}
     >
       <nav className="container flex h-16 items-center justify-between">
@@ -50,17 +50,7 @@ export function Navbar() {
           ) : session?.user ? (
             <AvatarMenu />
           ) : (
-            <Button asChild>
-              <Link
-                href="/auth/sign-in"
-                className={buttonVariants({
-                  variant: "default",
-                  size: "sm",
-                })}
-              >
-                Sign In
-              </Link>
-            </Button>
+            <SignInButton />
           )}
         </div>
       </nav>

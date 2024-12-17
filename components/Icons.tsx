@@ -10,18 +10,32 @@ import {
   BugIcon,
   ClockIcon,
   Code2,
+  Database,
+  DatabaseZap,
+  File,
   FileTextIcon,
   GitBranchIcon,
   LayoutDashboardIcon,
   LoaderCircle,
+  LogIn,
+  LucideIcon,
   Network,
+  Search,
   SettingsIcon,
   Swords,
+  User,
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
+import { IconType } from "react-icons/lib";
 
 export const Icons = {
+  login: LogIn,
   alertCircle: AlertCircle,
+  database: Database,
+  user: User,
+  api: DatabaseZap,
+  search: Search,
+  file: File,
   bookOpen: BookOpen,
   code: Code2,
   clock: ClockIcon,
@@ -42,3 +56,5 @@ export const Icons = {
   networkGraph: Network,
   brainCircuit: Brain,
 };
+
+export type IconsType = LucideIcon | IconType;

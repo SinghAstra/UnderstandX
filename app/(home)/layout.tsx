@@ -8,8 +8,7 @@ export default async function HomeLayout({ children }: HomeLayoutProps) {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        {/* TODO: Replace this with bg-gradient class */}
-        <div className="absolute inset-0 bg-grid-white [mask-image:linear-gradient(0deg,transparent,black)] dark:opacity-20"></div>
+        <div className="absolute inset-0 bg-grid-white "></div>
         <Navbar />
         {children}
       </div>

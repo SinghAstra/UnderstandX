@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { Icons } from "../Icons";
-import { RepoExplorer } from "./repo-explorer";
+import DemoCard from "./demo-card";
 
 const HeroSection = () => {
   return (
@@ -9,10 +9,15 @@ const HeroSection = () => {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid min-h-screen grid-cols-1 items-center gap-8 lg:grid-cols-2">
           <div className="flex flex-col items-start justify-center space-y-8 pt-20 lg:pt-0">
-            <div className="flex h-10 items-center rounded-full bg-primary/10 px-4 text-primary">
+            <a
+              href={siteConfig.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 items-center rounded-full bg-primary/10 px-4 text-primary hover:bg-primary/20 transition-colors"
+            >
               <Icons.gitLogo className="mr-2 h-5 w-5" />
               <span className="text-sm font-medium">Now on GitHub</span>
-            </div>
+            </a>
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
               Understand Repo with{" "}
               <span className="bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
@@ -32,8 +37,9 @@ const HeroSection = () => {
               </Button>
             </div>
           </div>
-
-          <RepoExplorer />
+          <div className="relative lg:flex items-center justify-center hidden">
+            <DemoCard />
+          </div>
         </div>
       </div>
     </section>
