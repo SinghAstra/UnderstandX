@@ -1,4 +1,11 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+
+// Constants for time calculations
+const TIME_CONSTANTS = {
+  BASE_TIME_PER_STEP_MS: 30000, // 30 seconds
+  SIZE_FACTOR_MS: 1000, // 1 second per MB
+  UPDATE_INTERVAL_MS: 1000, // Update every second
+} as const;
 
 interface EstimatedTimeProps {
   repoSize: number;
@@ -6,45 +13,89 @@ interface EstimatedTimeProps {
   completedSteps: number;
   totalSteps: number;
   error?: boolean;
+  onComplete?: () => void;
 }
 
-export const EstimatedTime: React.FC<EstimatedTimeProps> = ({
+interface TimeDisplay {
+  minutes: number;
+  seconds: number;
+  formatted: string;
+}
+
+export const EstimatedTime = ({
   repoSize,
   startTime,
   completedSteps,
   totalSteps,
-  error,
-}) => {
-  const calculateEstimatedTime = () => {
-    // Base time per step in milliseconds (30 seconds per step)
-    const baseTimePerStep = 30000;
-    // Additional time based on repo size (1 second per MB)
-    const sizeBasedTime = repoSize * 1000;
+  error = false,
+  onComplete,
+}: EstimatedTimeProps) => {
+  const [currentTime, setCurrentTime] = useState<number>(Date.now());
 
-    const totalEstimatedTime = baseTimePerStep * totalSteps + sizeBasedTime;
-    const timeElapsed = Date.now() - startTime.getTime();
-    const remainingTime = totalEstimatedTime - timeElapsed;
+  // Memoize the estimated time calculation
+  const estimatedTime = useMemo(() => {
+    const calculateTimeRemaining = (): number => {
+      const baseTime = TIME_CONSTANTS.BASE_TIME_PER_STEP_MS * totalSteps;
+      const sizeBasedTime = repoSize * TIME_CONSTANTS.SIZE_FACTOR_MS;
+      const totalEstimatedTime = baseTime + sizeBasedTime;
+      const timeElapsed = currentTime - startTime.getTime();
 
-    return Math.max(0, remainingTime);
-  };
+      // Adjust remaining time based on completed steps
+      const stepProgress = completedSteps / totalSteps;
+      const adjustedRemaining =
+        totalEstimatedTime * (1 - stepProgress) - timeElapsed;
 
-  const formatTime = (ms: number): string => {
-    if (ms === 0) return "Almost done...";
+      return Math.max(0, adjustedRemaining);
+    };
 
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
+    const formatTimeDisplay = (ms: number): TimeDisplay => {
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const formatted =
+        minutes > 0
+          ? `${minutes}m ${seconds}s remaining`
+          : seconds > 0
+          ? `${seconds}s remaining`
+          : "Almost done...";
 
-    if (minutes > 0) {
-      return `~${minutes}m ${seconds}s remaining`;
+      return { minutes, seconds, formatted };
+    };
+
+    return formatTimeDisplay(calculateTimeRemaining());
+  }, [currentTime, startTime, repoSize, completedSteps, totalSteps]);
+
+  // Set up timer for real-time updates
+  useEffect(() => {
+    if (error || completedSteps === totalSteps) return;
+
+    const timer = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, TIME_CONSTANTS.UPDATE_INTERVAL_MS);
+
+    return () => clearInterval(timer);
+  }, [error, completedSteps, totalSteps]);
+
+  // Trigger onComplete callback when processing is done
+  useEffect(() => {
+    if (completedSteps === totalSteps && onComplete) {
+      onComplete();
     }
-    return `~${seconds}s remaining`;
+  }, [completedSteps, totalSteps, onComplete]);
+
+  const getElapsedTimeDisplay = (): string => {
+    const elapsed = currentTime - startTime.getTime();
+    const minutes = Math.floor(elapsed / 60000);
+    const seconds = Math.floor((elapsed % 60000) / 1000);
+    return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
   };
 
   if (error) {
     return (
       <div className="text-center">
         <p className="text-sm font-medium text-red-500">Processing failed</p>
-        <p className="text-xs text-muted-foreground mt-1">Please try again</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Stopped after {getElapsedTimeDisplay()}
+        </p>
       </div>
     );
   }
@@ -56,7 +107,7 @@ export const EstimatedTime: React.FC<EstimatedTimeProps> = ({
           Processing complete
         </p>
         <p className="text-xs text-muted-foreground mt-1">
-          Finished in {formatTime(Date.now() - startTime.getTime())}
+          Finished in {getElapsedTimeDisplay()}
         </p>
       </div>
     );
@@ -65,10 +116,7 @@ export const EstimatedTime: React.FC<EstimatedTimeProps> = ({
   return (
     <div className="text-center">
       <p className="text-sm font-medium text-blue-500">
-        {formatTime(calculateEstimatedTime())}
-      </p>
-      <p className="text-xs text-muted-foreground mt-1">
-        Processing {repoSize}MB repository
+        {estimatedTime.formatted}
       </p>
     </div>
   );

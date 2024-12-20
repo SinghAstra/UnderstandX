@@ -29,14 +29,6 @@ export interface Repository {
   avatarUrl?: string;
 }
 
-export interface ProcessingStatus {
-  currentJob: JobStatus;
-  error?: string;
-  startTime: string;
-  repoSize: number;
-  repository: Repository;
-}
-
 // Constants for the processing steps
 export const PROCESSING_STEPS: ProcessStep[] = [
   {

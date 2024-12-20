@@ -1,13 +1,13 @@
 "use client";
 
+import RepositoryHeaderBreadCrumb from "@/components/progress/breadcrumb";
 import { ProgressVisualization } from "@/components/progress/progress-visualization";
-import { RepositoryHeader } from "@/components/repository/RepositoryHeader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ProcessingStatus } from "@/types/repository";
+import { ProcessingStatus } from "@/types/jobs";
 import { AlertCircle, CheckCircle2, Github, RefreshCcw } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ const ProcessingStatusPage = () => {
       name: "next-semantic-search",
       fullName: "acme/next-semantic-search",
       description: "A powerful semantic search engine built with Next.js",
-      status: "PROCESSING",
+      status: "PENDING",
       owner: "acme",
       url: "https://github.com/acme/next-semantic-search",
       startedAt: new Date().toISOString(),
@@ -62,9 +62,12 @@ const ProcessingStatusPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <RepositoryHeader owner={repository.owner} name={repository.name} />
+      <RepositoryHeaderBreadCrumb
+        owner={repository.owner}
+        name={repository.name}
+      />
       <div className="container mx-auto">
-        <div className="w-full py-8 px-4">
+        <div className="w-full px-4">
           <Card>
             <CardHeader className="border-b">
               <div className="flex items-start justify-between">

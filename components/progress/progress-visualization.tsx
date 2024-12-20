@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import {
   JOB_STEP_MAP,
   JobStatus,
@@ -95,8 +95,8 @@ export function ProgressVisualization({
 
   return (
     <Card>
-      <CardContent className="grid grid-cols-[1fr_2fr] gap-8 p-6">
-        <div className="flex flex-col items-center gap-4">
+      <CardContent className="flex gap-6 p-4">
+        <div className="flex flex-col items-center justify-center gap-4 flex-1">
           <CircularProgress progress={progress} error={isError} />
           <EstimatedTime
             repoSize={repoSize}
@@ -107,7 +107,7 @@ export function ProgressVisualization({
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 flex-[2]">
           {steps.map((step) => (
             <div
               key={step.id}

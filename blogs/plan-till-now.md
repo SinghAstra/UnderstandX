@@ -68,14 +68,11 @@ Processing Pipeline flow :
 - There might be users who login with google for them i cannot give option of import github repo
 - Users who login with github should have both options either enter github repo url or import github repo
 
-Can you help me plan the User Flow too ?
-You can make necessary changes to ui routes
-
 1. Public Routes
    / # Landing/Home Page
    /search # Repository Search Interface
-   /processing/[id] # Repository Processing Interface - Showing Status Update of the Job
-   /repository/[id]/process # Individual Repository Details
+   /repository/[id]/process # Repository Processing Interface - Showing Status Update of the Job
+   /repository/[id] # Individual Repository Details
    /explore # Knowledge Graph Visualization
    /auth/login # GitHub Authentication / Google Authentication
 
@@ -83,3 +80,11 @@ You can make necessary changes to ui routes
    /dashboard # User's Saved Repositories
    /profile # User Profile and Settings
    /repository/add, # Interface to add a repository
+
+Also you suggest me how to handle the navigation as i was thinking that my repository model is independent of user so why to do navigation on basis of repoId instead we can use owner name / repo name for navigation and job creation what are your thoughts ? but in that case what if someone wants to ass his private repo but i also want to give user freindly navigation using slug
+Write No code only form functions with comments as placeholder for now so that proper file and folder structure can be formed
+I want to implement the required backend for once user enters github repo url in /search page
+I want to implement the three jobs using pg boss since i am already using supabase and next auth
+
+Can you help me plan the User Flow too ?
+You can make necessary changes to ui routes

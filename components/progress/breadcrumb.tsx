@@ -7,28 +7,29 @@ import {
 } from "@/components/ui/breadcrumb";
 import React from "react";
 
-interface RepositoryHeaderProps {
+interface RepositoryHeaderBreadCrumbProps {
   owner: string;
   name: string;
 }
 
-export function RepositoryHeader({ owner, name }: RepositoryHeaderProps) {
+const RepositoryHeaderBreadCrumb = ({
+  owner,
+  name,
+}: RepositoryHeaderBreadCrumbProps) => {
   return (
     <div className="container p-4 flex flex-col gap-4">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/repositories">Repositories</BreadcrumbLink>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/repositories/processing">
-              Processing
-            </BreadcrumbLink>
+            <BreadcrumbLink href="/search">Search</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/repositories/${owner}/${name}`}>
+            <BreadcrumbLink href={`/repositories/${owner}/${name}/process`}>
               {owner}/{name}
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -36,4 +37,6 @@ export function RepositoryHeader({ owner, name }: RepositoryHeaderProps) {
       </Breadcrumb>
     </div>
   );
-}
+};
+
+export default RepositoryHeaderBreadCrumb;

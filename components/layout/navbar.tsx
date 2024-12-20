@@ -1,7 +1,7 @@
 "use client";
 
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";

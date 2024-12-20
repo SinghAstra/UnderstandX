@@ -7,8 +7,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { validateGithubUrl } from "@/lib/utils/validate-github-url";
+import { validateGithubUrl } from "@/lib/utils/github";
+import { cn } from "@/lib/utils/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon, ClockIcon, SearchIcon, SparklesIcon } from "lucide-react";
 import { useState } from "react";
