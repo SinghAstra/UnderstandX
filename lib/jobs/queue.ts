@@ -1,7 +1,9 @@
 import { JobMetadata } from "@/types/jobs";
-import { RepositoryChunk } from "@prisma/client";
 import PgBoss from "pg-boss";
-import { prisma } from "../prisma";
+import { batchGenerateEmbeddings } from "../utils/gemini";
+import { fetchGitHubRepoData } from "../utils/github";
+import { prisma } from "../utils/prisma";
+import { processFilesIntoChunks } from "../utils/repository";
 import { getPgBoss } from "./pg-boss";
 
 export const JOB_NAMES = {
@@ -14,19 +16,32 @@ export const JOB_NAMES = {
 export async function initializeJobQueue() {
   const pgBoss = await getPgBoss();
 
-  // Register job handlers
-  pgBoss.work(JOB_NAMES.PROCESS_REPOSITORY, processRepositoryHandler);
-  pgBoss.work(JOB_NAMES.GENERATE_CHUNKS, generateChunksHandler);
-  pgBoss.work(JOB_NAMES.GENERATE_EMBEDDINGS, generateEmbeddingsHandler);
+  pgBoss.work<JobMetadata>(
+    JOB_NAMES.PROCESS_REPOSITORY,
+    async (jobs) => await Promise.all(jobs.map(processRepositoryHandler))
+  );
+  pgBoss.work<JobMetadata>(
+    JOB_NAMES.GENERATE_CHUNKS,
+    async (jobs) => await Promise.all(jobs.map(generateChunksHandler))
+  );
+  pgBoss.work<JobMetadata>(
+    JOB_NAMES.GENERATE_EMBEDDINGS,
+    async (jobs) => await Promise.all(jobs.map(generateEmbeddingsHandler))
+  );
 }
 
 // Job Handlers
 async function processRepositoryHandler(job: PgBoss.Job<JobMetadata>) {
-  const { repositoryId, userId, githubUrl, isPrivate } = job.data;
+  const { repositoryId, githubUrl, isPrivate } = job.data;
 
   try {
     // 1. Fetch repository data from GitHub API
     const repoData = await fetchGitHubRepoData(githubUrl, isPrivate);
+
+    if (!repoData.success) {
+      await updateJobError(repositoryId, "REPO_FETCH");
+      return { success: false };
+    }
 
     // 2. Queue the chunk generation job
     const pgBoss = await getPgBoss();
@@ -34,28 +49,32 @@ async function processRepositoryHandler(job: PgBoss.Job<JobMetadata>) {
       repositoryId,
       githubUrl,
       isPrivate,
+      repoData,
     });
 
     return { success: true };
   } catch (error) {
-    await updateJobError(repositoryId, "REPO_PROCESSING", error);
-    throw error;
+    await updateJobError(repositoryId, "REPO_PROCESSING");
+    console.log("error --processRepositoryHandler");
+    console.log("error is ", error);
   }
 }
 
 async function generateChunksHandler(job: PgBoss.Job<JobMetadata>) {
-  const { repositoryId, githubUrl, isPrivate } = job.data;
+  const { repositoryId, repoData } = job.data;
 
   try {
-    // 1. Fetch Data from github api
-    const repoData = await fetchGitHubRepoData(githubUrl, isPrivate);
+    // Use the repoData passed from the previous job
+    if (!repoData) {
+      throw new Error("Repository data not provided from previous job");
+    }
 
-    // 2. Process files and generate chunks
+    // 1. Process files and generate chunks
     const chunks = await processFilesIntoChunks(repoData);
 
-    // 3. Store chunks in database using Prisma
+    // 2. Store chunks in database using Prisma
     await prisma.repositoryChunk.createMany({
-      data: chunks.map((chunk: RepositoryChunk) => ({
+      data: chunks.map((chunk) => ({
         repositoryId,
         content: chunk.content,
         type: chunk.type,
@@ -64,7 +83,7 @@ async function generateChunksHandler(job: PgBoss.Job<JobMetadata>) {
       })),
     });
 
-    // 4. Queue embedding generation job
+    // 3. Queue embedding generation job
     const pgBoss = await getPgBoss();
     await pgBoss.send(JOB_NAMES.GENERATE_EMBEDDINGS, {
       repositoryId,
@@ -72,13 +91,15 @@ async function generateChunksHandler(job: PgBoss.Job<JobMetadata>) {
 
     return { success: true };
   } catch (error) {
-    await updateJobError(repositoryId, "CHUNK_GENERATION", error);
-    throw error;
+    await updateJobError(repositoryId, "CHUNK_GENERATION");
+    console.log("error --generateChunksHandler");
+    console.log("error is ", error);
   }
 }
 
 async function generateEmbeddingsHandler(job: PgBoss.Job<JobMetadata>) {
   const { repositoryId } = job.data;
+  const BATCH_SIZE = 5;
 
   try {
     // 1. Fetch all chunks without embeddings using Prisma
@@ -95,32 +116,74 @@ async function generateEmbeddingsHandler(job: PgBoss.Job<JobMetadata>) {
       },
     });
 
-    // 2. Generate embeddings for each chunk
-    for (const chunk of chunks!) {
-      const embedding = await generateEmbedding(chunk.content);
-
-      // 3. Update chunk with embedding
-      await prisma.repositoryChunk.update({
-        where: { id: chunk.id },
-        data: { embeddings: embedding },
-      });
+    if (!chunks.length) {
+      console.log("No chunks found without embeddings");
+      return { success: true };
     }
 
-    // 4. Update repository status to SUCCESS
-    await prisma.repository.update({
-      where: { id: repositoryId },
-      data: { status: "SUCCESS" },
+    const chunkTexts = chunks.map((chunk) => chunk.content);
+    const embeddingResults = await batchGenerateEmbeddings(
+      chunkTexts,
+      BATCH_SIZE
+    );
+
+    // 3. Update chunks with embeddings
+    const updates = chunks.map((chunk, index) => {
+      const result = embeddingResults[index];
+
+      if (result.error) {
+        console.log(
+          `Error generating embedding for chunk ${chunk.id}:`,
+          result.error
+        );
+        return null;
+      }
+
+      return prisma.repositoryChunk.update({
+        where: { id: chunk.id },
+        data: { embeddings: result.embeddings },
+      });
     });
 
-    return { success: true };
+    // Filter out null values and execute updates
+    const validUpdates = updates.filter(Boolean);
+    await Promise.all(validUpdates);
+
+    // 4. Check if all embeddings were generated successfully
+    const remainingChunks = await prisma.repositoryChunk.count({
+      where: {
+        repositoryId,
+        embeddings: {
+          equals: [],
+        },
+      },
+    });
+
+    // 5. Update repository status if all chunks are processed
+    if (remainingChunks === 0) {
+      await prisma.repository.update({
+        where: { id: repositoryId },
+        data: { status: "SUCCESS" },
+      });
+    } else {
+      console.log(`${remainingChunks} chunks still need embeddings`);
+    }
+
+    return {
+      success: true,
+      processedChunks: validUpdates.length,
+      remainingChunks,
+    };
   } catch (error) {
-    await updateJobError(repositoryId, "EMBEDDING_GENERATION", error);
-    throw error;
+    await updateJobError(repositoryId, "EMBEDDING_GENERATION");
+    console.log("Error in generateEmbeddingsHandler.");
+    console.log("error is ", error);
   }
 }
 
-async function updateJobError(repositoryId: string, stage: string, error: any) {
-  // Delete the repository if any error occurs
-  // await prisma.repository.update({
-  //   where: { id: repositoryId },
+async function updateJobError(repositoryId: string, stage: string) {
+  await prisma.repository.delete({
+    where: { id: repositoryId },
+  });
+  console.log(`Error in ${stage} --updateJobError.`);
 }

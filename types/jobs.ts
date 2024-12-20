@@ -1,3 +1,4 @@
+import { GitHubRepoData } from "./github";
 import { JobStatus } from "./repository";
 
 export interface JobMetadata {
@@ -5,6 +6,7 @@ export interface JobMetadata {
   userId: string;
   githubUrl: string;
   isPrivate: boolean;
+  repoData: GitHubRepoData;
 }
 
 export interface ProcessingStatus {

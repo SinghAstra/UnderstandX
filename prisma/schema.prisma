@@ -76,7 +76,7 @@ model Repository {
 model RepositoryChunk {
   id String @id @default(cuid())
   repositoryId String
-  repository Repository @relation(fields: [repositoryId], references: [id])
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
   content String
   type String
   filepath String

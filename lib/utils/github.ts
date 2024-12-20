@@ -5,6 +5,18 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN,
 });
 
+export interface GitHubSuccessResponse extends GitHubRepoData {
+  success: boolean;
+  error?: string;
+}
+
+export interface GitHubErrorResponse {
+  error: string;
+  success: false;
+}
+
+export type GitHubRepoResponse = GitHubSuccessResponse | GitHubErrorResponse;
+
 export function parseGithubUrl(url: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)/;
 
@@ -69,12 +81,15 @@ export async function fetchGitHubRepoDetails(owner: string, repo: string) {
 }
 
 export async function fetchGitHubRepoData(
-  url: string
-): Promise<GitHubRepoData | { error: string }> {
+  url: string,
+  isPrivate: boolean
+): Promise<GitHubRepoResponse> {
   const { owner, repo, isValid, error } = parseGithubUrl(url);
+  console.log("isPrivate --fetchGitHubRepoData is ", isPrivate);
 
   if (!isValid || !owner) {
     return {
+      success: false,
       error: error ? error : "Failed to Fetch GitHub Repository Data.",
     };
   }
@@ -99,6 +114,7 @@ export async function fetchGitHubRepoData(
   return {
     ...repoData,
     files,
+    success: true,
   };
 }
 
