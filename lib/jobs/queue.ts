@@ -33,7 +33,6 @@ async function processRepositoryHandler(job: PgBoss.Job<JobMetadata>) {
     await pgBoss.send(JOB_NAMES.GENERATE_CHUNKS, {
       repositoryId,
       githubUrl,
-      userId,
       isPrivate,
     });
 
@@ -86,7 +85,9 @@ async function generateEmbeddingsHandler(job: PgBoss.Job<JobMetadata>) {
     const chunks = await prisma.repositoryChunk.findMany({
       where: {
         repositoryId,
-        embeddings: null,
+        embeddings: {
+          equals: [], // Empty array instead of null
+        },
       },
       select: {
         id: true,
@@ -119,11 +120,7 @@ async function generateEmbeddingsHandler(job: PgBoss.Job<JobMetadata>) {
 }
 
 async function updateJobError(repositoryId: string, stage: string, error: any) {
-  await supabase
-    .from("Repository")
-    .update({
-      status: "ERROR",
-      error: `Error in ${stage}: ${error.message}`,
-    })
-    .eq("id", repositoryId);
+  // Delete the repository if any error occurs
+  // await prisma.repository.update({
+  //   where: { id: repositoryId },
 }

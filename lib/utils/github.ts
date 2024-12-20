@@ -1,3 +1,10 @@
+import { GitHubFile, GitHubRepoData } from "@/types/github";
+import { Octokit } from "@octokit/rest";
+
+const octokit = new Octokit({
+  auth: process.env.GITHUB_ACCESS_TOKEN,
+});
+
 export function parseGithubUrl(url: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)/;
 
@@ -59,4 +66,135 @@ export async function fetchGitHubRepoDetails(owner: string, repo: string) {
     isPrivate: data.private,
     avatarUrl: data.owner.avatar_url,
   };
+}
+
+export async function fetchGitHubRepoData(
+  url: string
+): Promise<GitHubRepoData | { error: string }> {
+  const { owner, repo, isValid, error } = parseGithubUrl(url);
+
+  if (!isValid || !owner) {
+    return {
+      error: error ? error : "Failed to Fetch GitHub Repository Data.",
+    };
+  }
+
+  // Fetch repository metadata
+  const { data: repoData } = await octokit.repos.get({
+    owner,
+    repo,
+  });
+
+  console.log("repoData --repositoryMetaData is ", repoData);
+
+  // Fetch repository content
+  const files = await fetchRepositoryContent(
+    owner,
+    repo,
+    repoData.default_branch
+  );
+
+  console.log("files --fetchRepositoryContent is ", files);
+
+  return {
+    ...repoData,
+    files,
+  };
+}
+
+async function fetchRepositoryContent(
+  owner: string,
+  repo: string,
+  branch: string,
+  path: string = ""
+): Promise<GitHubFile[]> {
+  const files: GitHubFile[] = [];
+
+  try {
+    const { data: contents } = await octokit.repos.getContent({
+      owner,
+      repo,
+      path,
+      ref: branch,
+    });
+
+    for (const item of Array.isArray(contents) ? contents : [contents]) {
+      if (item.type === "file" && isProcessableFile(item.name)) {
+        const { data: fileData } = await octokit.repos.getContent({
+          owner,
+          repo,
+          path: item.path,
+          ref: branch,
+        });
+
+        if ("content" in fileData) {
+          files.push({
+            name: item.name,
+            path: item.path,
+            content: Buffer.from(fileData.content, "base64").toString("utf-8"),
+            type: getFileType(item.name),
+          });
+        }
+      } else if (item.type === "dir") {
+        const subFiles = await fetchRepositoryContent(
+          owner,
+          repo,
+          branch,
+          item.path
+        );
+        files.push(...subFiles);
+      }
+    }
+  } catch (error) {
+    console.log(`Error fetching content for ${owner}/${repo}/${path}:`, error);
+  }
+
+  return files;
+}
+
+function isProcessableFile(filename: string): boolean {
+  const processableExtensions = [
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".py",
+    ".java",
+    ".c",
+    ".cpp",
+    ".h",
+    ".hpp",
+    ".cs",
+    ".go",
+    ".rb",
+    ".php",
+    ".swift",
+    ".kt",
+    ".rs",
+    ".md",
+    ".txt",
+    ".json",
+    ".yaml",
+    ".yml",
+    ".toml",
+    ".ini",
+    ".css",
+    ".scss",
+    ".less",
+    ".html",
+    ".xml",
+    ".sql",
+    ".sh",
+    ".bash",
+    ".zsh",
+    ".fish",
+  ];
+
+  const extension = filename.toLowerCase().split(".").pop();
+  return extension ? processableExtensions.includes(`.${extension}`) : false;
+}
+
+function getFileType(filename: string): string {
+  const extension = filename.toLowerCase().split(".").pop() || "";
+  return extension;
 }
