@@ -52,7 +52,7 @@ export function SearchRepositoryForm() {
   };
 
   return (
-    <div className="w-full max-w-3xl bg-background/80 backdrop-blur-lg rounded-2xl border shadow-2xl p-8 space-y-6">
+    <div className="w-full max-w-3xl backdrop-blur-lg rounded-2xl border shadow-2xl p-8 space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="relative group">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -60,8 +60,8 @@ export function SearchRepositoryForm() {
               className={cn(
                 "w-5 h-5 transition-colors duration-300",
                 error
-                  ? "text-red-500"
-                  : "text-gray-400 group-focus-within:text-primary"
+                  ? "text-red-500 group-focus-within:text-gray-400"
+                  : "text-gray-400"
               )}
             />
           </div>

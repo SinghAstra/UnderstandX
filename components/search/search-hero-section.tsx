@@ -8,7 +8,7 @@ export function SearchHeroSection() {
       </div>
       <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
         <GradientText animate className="block">
-          Transform GitHub Repositories
+          Understand GitHub Repositories
         </GradientText>
         into Intelligent Knowledge Bases
       </h1>

@@ -1,6 +1,7 @@
 1. Public Routes
    / # Landing/Home Page
    /search # Repository Search Interface
+   /processing/[repositoryId] # status of the repository
    /repository/[id] # Individual Repository Details
    /explore # Knowledge Graph Visualization
    /auth/login # GitHub Authentication / Google Authentication
