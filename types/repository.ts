@@ -5,12 +5,15 @@ export type JobStatus =
   | "COMPLETED"
   | "ERROR";
 
-export type ProcessingStep = {
+export type StepStatus = "COMPLETED" | "PROCESSING" | "PENDING" | "ERROR";
+
+export type ProcessStep = {
   id: string;
   title: string;
   description: string;
   jobStatus: JobStatus;
   completedAt?: string;
+  error?: string;
 };
 
 export interface Repository {
@@ -19,7 +22,7 @@ export interface Repository {
   name: string;
   fullName: string;
   description: string;
-  status: "PENDING" | "PROCESSING" | "COMPLETED" | "ERROR";
+  status: StepStatus;
   owner: string;
   url: string;
   startedAt: string;
@@ -27,7 +30,6 @@ export interface Repository {
 }
 
 export interface ProcessingStatus {
-  currentStep: number;
   currentJob: JobStatus;
   error?: string;
   startTime: string;
@@ -36,7 +38,7 @@ export interface ProcessingStatus {
 }
 
 // Constants for the processing steps
-export const PROCESSING_STEPS: ProcessingStep[] = [
+export const PROCESSING_STEPS: ProcessStep[] = [
   {
     id: "repo",
     title: "Repository Processing",

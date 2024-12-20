@@ -1,41 +1,75 @@
-import { Clock } from "lucide-react";
 import React from "react";
 
 interface EstimatedTimeProps {
-  repoSize: number; // in KB
+  repoSize: number;
   startTime: Date;
   completedSteps: number;
   totalSteps: number;
+  error?: boolean;
 }
 
-export function EstimatedTime({
+export const EstimatedTime: React.FC<EstimatedTimeProps> = ({
   repoSize,
   startTime,
   completedSteps,
   totalSteps,
-}: EstimatedTimeProps) {
+  error,
+}) => {
   const calculateEstimatedTime = () => {
-    const avgTimePerKB = 0.05; // 50ms per KB as baseline
-    const totalEstimatedSeconds = (repoSize * avgTimePerKB) / 1000;
-    const elapsedTime = (new Date().getTime() - startTime.getTime()) / 1000;
-    const remainingTime =
-      totalEstimatedSeconds * (1 - completedSteps / totalSteps);
+    // Base time per step in milliseconds (30 seconds per step)
+    const baseTimePerStep = 30000;
+    // Additional time based on repo size (1 second per MB)
+    const sizeBasedTime = repoSize * 1000;
 
-    return Math.max(0, Math.ceil(remainingTime));
+    const totalEstimatedTime = baseTimePerStep * totalSteps + sizeBasedTime;
+    const timeElapsed = Date.now() - startTime.getTime();
+    const remainingTime = totalEstimatedTime - timeElapsed;
+
+    return Math.max(0, remainingTime);
   };
 
-  const formatTime = (seconds: number) => {
-    if (seconds < 60) return `${seconds} seconds`;
-    const minutes = Math.floor(seconds / 60);
-    return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+  const formatTime = (ms: number): string => {
+    if (ms === 0) return "Almost done...";
+
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+
+    if (minutes > 0) {
+      return `~${minutes}m ${seconds}s remaining`;
+    }
+    return `~${seconds}s remaining`;
   };
+
+  if (error) {
+    return (
+      <div className="text-center">
+        <p className="text-sm font-medium text-red-500">Processing failed</p>
+        <p className="text-xs text-muted-foreground mt-1">Please try again</p>
+      </div>
+    );
+  }
+
+  if (completedSteps === totalSteps) {
+    return (
+      <div className="text-center">
+        <p className="text-sm font-medium text-green-500">
+          Processing complete
+        </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Finished in {formatTime(Date.now() - startTime.getTime())}
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <Clock className="h-4 w-4" />
-      <span>
-        Estimated time remaining: {formatTime(calculateEstimatedTime())}
-      </span>
+    <div className="text-center">
+      <p className="text-sm font-medium text-blue-500">
+        {formatTime(calculateEstimatedTime())}
+      </p>
+      <p className="text-xs text-muted-foreground mt-1">
+        Processing {repoSize}MB repository
+      </p>
     </div>
   );
-}
+};

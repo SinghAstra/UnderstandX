@@ -9,15 +9,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ProcessingStatus } from "@/types/repository";
 import { AlertCircle, CheckCircle2, Github, RefreshCcw } from "lucide-react";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const ProcessingStatusPage = () => {
   const [status, setStatus] = useState<ProcessingStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const repositoryId = params.repositoryId as string;
   //   const [error, setError] = useState(null);
 
   const mockStatus: ProcessingStatus = {
-    currentStep: 1,
     currentJob: "CHUNK_GENERATION",
     startTime: new Date().toISOString(),
     repoSize: 1024,
@@ -34,39 +36,6 @@ const ProcessingStatusPage = () => {
       avatarUrl: "https://avatars.githubusercontent.com/u/12345678?v=4",
     },
   };
-
-  //   const repository = {
-  //     id: "clq8g9x4z000008jt3rfg4qk1",
-  //     githubId: 123456789,
-  //     name: "next-semantic-search",
-  //     fullName: "acme/next-semantic-search",
-  //     description: "A powerful semantic search engine built with Next.js",
-  //     status: "PENDING",
-  //     owner: "acme",
-  //     url: "https://github.com/acme/next-semantic-search",
-  //     startedAt: new Date().toISOString(),
-  //   };
-
-  const steps = [
-    {
-      id: "repo",
-      title: "Repository Processing",
-      description: "Fetching repository content and metadata",
-      jobStatus: "REPOSITORY_PROCESSING",
-    },
-    {
-      id: "chunks",
-      title: "Content Chunking",
-      description: "Breaking down content into semantic chunks",
-      jobStatus: "CHUNK_GENERATION",
-    },
-    {
-      id: "embeddings",
-      title: "Embedding Generation",
-      description: "Generating vector embeddings for search",
-      jobStatus: "EMBEDDING_GENERATION",
-    },
-  ];
 
   useEffect(() => {
     // Replace with actual API call
@@ -147,10 +116,9 @@ const ProcessingStatusPage = () => {
             </CardHeader>
             <CardContent className="pt-6">
               <ProgressVisualization
-                steps={steps}
-                currentStep={2}
-                repoSize={1024}
-                startTime={new Date("2024-01-10T10:30:00Z")}
+                currentJob={status.currentJob}
+                repoSize={status.repoSize}
+                startTime={new Date()}
               />
 
               {status.error && (

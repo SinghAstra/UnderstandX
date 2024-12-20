@@ -6,6 +6,7 @@ interface CircularProgressProps {
   size?: number;
   strokeWidth?: number;
   className?: string;
+  error?: boolean;
 }
 
 export function CircularProgress({
@@ -13,6 +14,7 @@ export function CircularProgress({
   size = 120,
   strokeWidth = 8,
   className,
+  error,
 }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -30,7 +32,10 @@ export function CircularProgress({
           cy={size / 2}
         />
         <circle
-          className="text-primary stroke-current transition-all duration-300 ease-in-out"
+          className={cn(
+            "transition-all duration-500 ease-in-out",
+            error ? "stroke-red-500" : "stroke-blue-500"
+          )}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -42,7 +47,14 @@ export function CircularProgress({
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-2xl font-semibold">{Math.round(progress)}%</span>
+        <span
+          className={cn(
+            "text-2xl font-semibold",
+            error ? "text-red-500" : "text-blue-500"
+          )}
+        >
+          {Math.round(progress)}%
+        </span>
       </div>
     </div>
   );
