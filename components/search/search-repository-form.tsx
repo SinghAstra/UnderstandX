@@ -7,10 +7,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { validateGithubUrl } from "@/lib/utils/github";
+import { parseGithubUrl } from "@/lib/utils/github";
 import { cn } from "@/lib/utils/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckIcon, ClockIcon, SearchIcon, SparklesIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Icons } from "../Icons";
 
@@ -19,10 +20,11 @@ export function SearchRepositoryForm() {
   const [error, setError] = useState<string | undefined>();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const validation = validateGithubUrl(url);
+    const validation = parseGithubUrl(url);
 
     if (!validation.isValid) {
       setError(validation.error);
@@ -33,20 +35,24 @@ export function SearchRepositoryForm() {
     setIsProcessing(true);
 
     try {
-      // Simulated async processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch("/api/repository/process", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ githubUrl: url }),
+      });
 
-      // TODO: Actual repository processing logic
+      const data = await response.json();
+
       setIsSuccess(true);
 
-      // Reset after success
-      setTimeout(() => {
-        setIsProcessing(false);
-        setIsSuccess(false);
-        setUrl("");
-      }, 2000);
+      router.push(`/repository/${data.repositoryId}`);
     } catch (err) {
-      setError("Failed to process repository");
+      setError(
+        err instanceof Error ? err.message : "Failed to process repository"
+      );
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -108,7 +114,7 @@ export function SearchRepositoryForm() {
           {isSuccess ? (
             <div className="flex items-center">
               <CheckIcon className="mr-2 h-5 w-5" />
-              Repository Queued
+              Redirecting...
             </div>
           ) : isProcessing ? (
             <div className="flex items-center">

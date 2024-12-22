@@ -3,9 +3,6 @@ import { fetchGitHubRepoDetails, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import PgBoss from "pg-boss";
-
-const pgBoss = new PgBoss(process.env.DATABASE_URL!);
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +25,8 @@ export async function POST(req: NextRequest) {
       urlInfo.repo
     );
 
+    console.log("repoDetails is ", repoDetails);
+
     // 3. Check if repository already exists using GitHub ID
     const existingRepo = await prisma.repository.findUnique({
       where: {
@@ -48,10 +47,20 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      return NextResponse.json({
-        repositoryId: existingRepo.id,
-        status: existingRepo.status,
-      });
+      if (existingRepo.status === "PENDING") {
+        console.log("Deleted existing repository with status PENDING");
+        await prisma.repository.delete({
+          where: {
+            id: existingRepo.id,
+            userId: session.user.id,
+          },
+        });
+      } else {
+        return NextResponse.json({
+          repositoryId: existingRepo.id,
+          status: existingRepo.status,
+        });
+      }
     }
 
     // 4. Create new repository record
@@ -66,14 +75,6 @@ export async function POST(req: NextRequest) {
         status: "PENDING",
         userId: session.user.id,
       },
-    });
-
-    // 5. Queue initial processing job
-    await pgBoss.send("process-repository", {
-      repositoryId: newRepo.id,
-      userId: session.user.id,
-      githubUrl: repoDetails.url,
-      isPrivate: repoDetails.isPrivate,
     });
 
     return NextResponse.json({
