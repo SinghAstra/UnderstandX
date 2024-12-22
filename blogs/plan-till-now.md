@@ -114,9 +114,3 @@ enum RepositoryStatus {
 PENDING
 SUCCESS
 }
-
-Help me Plan the UI For /repository/[repositoryId]
-Take Inspiration From SAAS
-Suggest me 3 approach
-Write No code
-Let us Plan first draw mock UI if possible
