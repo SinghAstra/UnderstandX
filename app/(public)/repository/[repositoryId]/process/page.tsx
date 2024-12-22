@@ -7,35 +7,29 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ProcessingStatus } from "@/types/jobs";
 import { AlertCircle, CheckCircle2, Github, RefreshCcw } from "lucide-react";
-import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const ProcessingStatusPage = () => {
-  const [status, setStatus] = useState<ProcessingStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const params = useParams();
-  const repositoryId = params.repositoryId as string;
-  //   const [error, setError] = useState(null);
+const mockStatus = {
+  currentJob: "CHUNK_GENERATION",
+  startTime: new Date().toISOString(),
+  repoSize: 1024,
+  repository: {
+    githubId: 123456789,
+    name: "next-semantic-search",
+    fullName: "acme/next-semantic-search",
+    description: "A powerful semantic search engine built with Next.js",
+    status: "PENDING",
+    owner: "acme",
+    url: "https://github.com/acme/next-semantic-search",
+    startedAt: new Date().toISOString(),
+    avatarUrl: "https://avatars.githubusercontent.com/u/12345678?v=4",
+  },
+};
 
-  const mockStatus: ProcessingStatus = {
-    currentJob: "CHUNK_GENERATION",
-    startTime: new Date().toISOString(),
-    repoSize: 1024,
-    repository: {
-      id: repositoryId,
-      githubId: 123456789,
-      name: "next-semantic-search",
-      fullName: "acme/next-semantic-search",
-      description: "A powerful semantic search engine built with Next.js",
-      status: "PENDING",
-      owner: "acme",
-      url: "https://github.com/acme/next-semantic-search",
-      startedAt: new Date().toISOString(),
-      avatarUrl: "https://avatars.githubusercontent.com/u/12345678?v=4",
-    },
-  };
+const ProcessingStatusPage = () => {
+  const [status, setStatus] = useState(mockStatus);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Replace with actual API call
@@ -119,18 +113,16 @@ const ProcessingStatusPage = () => {
             </CardHeader>
             <CardContent className="pt-6">
               <ProgressVisualization
-                currentJob={status.currentJob}
+                currentJob={"CHUNK_GENERATION"}
                 repoSize={status.repoSize}
                 startTime={new Date()}
               />
 
-              {status.error && (
-                <Alert className="mt-6" variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>{status.error}</AlertDescription>
-                </Alert>
-              )}
+              <Alert className="mt-6" variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>Error Description</AlertDescription>
+              </Alert>
 
               {status.currentJob !== "COMPLETED" && (
                 <Alert className="mt-6">

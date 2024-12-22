@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
       where: {
         repositoryId: newRepo.id,
         embeddings: {
-          equals: [],
+          equals: null,
         },
       },
       select: {
@@ -128,14 +128,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log("chunksForEmbedding.length is ", chunksForEmbedding.length);
+
     const BATCH_SIZE = 5;
     if (chunksForEmbedding.length > 0) {
-      const chunkText = chunksForEmbedding.map((chunk) => chunk.content);
-      console.log("chunkText.length is ", chunkText.length);
+      const chunkTexts = chunksForEmbedding.map((chunk) => chunk.content);
+      console.log("chunkTexts.length is ", chunkTexts.length);
       const embeddingResults = await batchGenerateEmbeddings(
-        chunkText,
+        chunkTexts,
         BATCH_SIZE
       );
+      console.log("embeddingResults.length is ", embeddingResults.length);
 
       // Update chunks with embeddings
       await Promise.all(
@@ -152,10 +155,10 @@ export async function POST(req: NextRequest) {
     }
 
     // 9. Update repository status to success
-    // await prisma.repository.update({
-    //   where: { id: newRepo.id },
-    //   data: { status: "SUCCESS" },
-    // });
+    await prisma.repository.update({
+      where: { id: newRepo.id },
+      data: { status: "SUCCESS" },
+    });
 
     return NextResponse.json({
       repositoryId: newRepo.id,
