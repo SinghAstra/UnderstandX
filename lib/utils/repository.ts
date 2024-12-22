@@ -11,15 +11,15 @@ export async function processFilesIntoChunks(repoData: GitHubRepoData) {
       continue;
     }
 
-    const content = file.content;
+    const fileContent = file.content;
 
     // For very small files, create a single chunk
-    if (content.length <= CHUNK_SIZE) {
+    if (fileContent.length <= CHUNK_SIZE) {
       chunks.push({
-        content: content,
+        content: fileContent,
         filepath: file.path,
         type: file.type,
-        keywords: extractKeywords(content),
+        keywords: extractKeywords(fileContent),
         embeddings: [], // Will be populated later
       });
       continue;
@@ -27,13 +27,14 @@ export async function processFilesIntoChunks(repoData: GitHubRepoData) {
 
     // For larger files, create overlapping chunks
     let startIndex = 0;
-    while (startIndex < content.length) {
-      const endIndex = Math.min(startIndex + CHUNK_SIZE, content.length);
+    while (startIndex < fileContent.length) {
+      const endIndex = Math.min(startIndex + CHUNK_SIZE, fileContent.length);
 
       // Find a good break point (end of sentence or line)
-      const adjustedEndIndex = findBreakPoint(content, endIndex);
+      const adjustedEndIndex = findBreakPoint(fileContent, endIndex);
 
-      const chunkContent = content.slice(startIndex, adjustedEndIndex);
+      const chunkContent = fileContent.slice(startIndex, adjustedEndIndex);
+      // console.log("chunkContent is ", chunkContent);
 
       chunks.push({
         content: chunkContent,
@@ -43,9 +44,14 @@ export async function processFilesIntoChunks(repoData: GitHubRepoData) {
         embeddings: [], // Will be populated later
       });
 
-      // Move start index forward, accounting for overlap
-      startIndex = adjustedEndIndex - OVERLAP;
-      if (startIndex < 0) startIndex = 0;
+      // Move to next chunk, ensuring forward progress
+      if (adjustedEndIndex <= startIndex + OVERLAP) {
+        // If we couldn't find a good break point that makes progress,
+        // force moving forward by CHUNK_SIZE/2 to prevent infinite loop
+        startIndex += Math.floor(CHUNK_SIZE / 2);
+      } else {
+        startIndex = adjustedEndIndex - OVERLAP;
+      }
     }
   }
 

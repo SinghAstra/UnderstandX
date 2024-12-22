@@ -100,8 +100,6 @@ export async function fetchGitHubRepoData(
     repo,
   });
 
-  console.log("repoData --repositoryMetaData is ", repoData);
-
   // Fetch repository content
   const files = await fetchRepositoryContent(
     owner,
@@ -109,7 +107,7 @@ export async function fetchGitHubRepoData(
     repoData.default_branch
   );
 
-  console.log("files --fetchRepositoryContent is ", files);
+  console.log("files.length --fetchRepositoryContent is ", files.length);
 
   return {
     ...repoData,
@@ -127,6 +125,7 @@ async function fetchRepositoryContent(
   const files: GitHubFile[] = [];
 
   try {
+    console.log("Inside fetchRepositoryContent");
     const { data: contents } = await octokit.repos.getContent({
       owner,
       repo,

@@ -1,6 +1,12 @@
 import { authOptions } from "@/lib/auth/auth-options";
-import { fetchGitHubRepoDetails, parseGithubUrl } from "@/lib/utils/github";
+import { batchGenerateEmbeddings } from "@/lib/utils/gemini";
+import {
+  fetchGitHubRepoData,
+  fetchGitHubRepoDetails,
+  parseGithubUrl,
+} from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
+import { processFilesIntoChunks } from "@/lib/utils/repository";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,6 +24,8 @@ export async function POST(req: NextRequest) {
     if (!urlInfo.isValid || !urlInfo.owner) {
       return NextResponse.json({ error: urlInfo.error }, { status: 400 });
     }
+
+    console.log("urlInfo is ", urlInfo);
 
     // 2. Fetch repository details from GitHub API
     const repoDetails = await fetchGitHubRepoDetails(
@@ -71,15 +79,87 @@ export async function POST(req: NextRequest) {
         fullName: repoDetails.fullName,
         description: repoDetails.description,
         owner: repoDetails.owner,
-        url: repoDetails.url,
+        url: githubUrl,
         status: "PENDING",
         userId: session.user.id,
       },
     });
 
+    console.log("newRepo is ", newRepo);
+
+    // 5. Fetch repository details and data
+    const repoData = await fetchGitHubRepoData(githubUrl, false);
+    if (!repoData.success) {
+      return NextResponse.json(
+        { error: "Failed to fetch repository data" },
+        { status: 400 }
+      );
+    }
+
+    console.log("repoData is ", repoData.files.length);
+
+    // 6. Process files into chunks
+    const chunks = await processFilesIntoChunks(repoData);
+
+    console.log("chunks.length is ", chunks.length);
+
+    // 7. Save chunks to database
+    await prisma.repositoryChunk.createMany({
+      data: chunks.map((chunk) => ({
+        repositoryId: newRepo.id,
+        content: chunk.content,
+        type: chunk.type,
+        filepath: chunk.filepath,
+        keywords: chunk.keywords,
+      })),
+    });
+
+    // 8. Generate embeddings for chunks
+    const chunksForEmbedding = await prisma.repositoryChunk.findMany({
+      where: {
+        repositoryId: newRepo.id,
+        embeddings: {
+          equals: [],
+        },
+      },
+      select: {
+        id: true,
+        content: true,
+      },
+    });
+
+    const BATCH_SIZE = 5;
+    if (chunksForEmbedding.length > 0) {
+      const chunkText = chunksForEmbedding.map((chunk) => chunk.content);
+      console.log("chunkText.length is ", chunkText.length);
+      const embeddingResults = await batchGenerateEmbeddings(
+        chunkText,
+        BATCH_SIZE
+      );
+
+      // Update chunks with embeddings
+      await Promise.all(
+        chunksForEmbedding.map((chunk, index) => {
+          const result = embeddingResults[index];
+          if (!result.error) {
+            return prisma.repositoryChunk.update({
+              where: { id: chunk.id },
+              data: { embeddings: result.embeddings },
+            });
+          }
+        })
+      );
+    }
+
+    // 9. Update repository status to success
+    // await prisma.repository.update({
+    //   where: { id: newRepo.id },
+    //   data: { status: "SUCCESS" },
+    // });
+
     return NextResponse.json({
       repositoryId: newRepo.id,
-      status: "PENDING",
+      status: "SUCCESS",
     });
   } catch (error) {
     console.log("Error processing repository:", error);
