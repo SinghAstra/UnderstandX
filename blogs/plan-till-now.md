@@ -1,23 +1,82 @@
 I want to build Semantic Search Web app which fetches content from github api and makes it semantic friendly.
 
-Next Js + Next Auth + Shadcn + Supabase
+In future i will be building pipeline for now i am just using api route since the goal for now is build to working MVP
 
-Three Jobs in System
+Tech Stack : Next Js + Shadcn + Supabase
 
-1. Process Repository Job
-2. Chunk Generation Job
-3. Embedding Generation Job
+1. Public Routes
+   / # Landing/Home Page
+   /auth/login # GitHub Authentication / Google Authentication
 
-This is Schema
+2. Private Routes
+   /search # Repository Search Interface
+   /processing/[repositoryId] # status of the repository
+   /repository/[id] # Individual Repository Details
+   /explore # Knowledge Graph Visualization
+   /dashboard # User's Saved Repositories
+   /profile # User Profile and Settings
+   /repository/new, # New Repository Submission
+   /repository/import # GitHub Repository Import
+
+This is my schema
+generator client {
+provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "postgresql"
+url = env("DATABASE_URL")
+}
 
 model User {
 id String @id @default(cuid())
-name String?
-email String? @unique
+email String @unique
 emailVerified DateTime?
+name String?
 image String?
-role UserRole @default(USER)
+
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+
+// Relationships
+accounts Account[]
+sessions Session[]
 repositories Repository[]
+}
+
+model Account {
+id String @id @default(cuid())
+userId String
+type String
+provider String
+providerAccountId String
+refresh_token String?
+access_token String?
+expires_at Int?
+token_type String?
+scope String?
+id_token String?
+session_state String?
+
+user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+@@unique([provider, providerAccountId])
+}
+
+model Session {
+id String @id @default(cuid())
+sessionToken String @unique
+userId String
+expires DateTime
+user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+identifier String
+token String @unique
+expires DateTime
+
+@@unique([identifier, token])
 }
 
 model Repository {
@@ -37,7 +96,7 @@ chunks RepositoryChunk[]
 model RepositoryChunk {
 id String @id @default(cuid())
 repositoryId String
-repository Repository @relation(fields: [repositoryId], references: [id])
+repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 content String
 type String
 filepath String
@@ -46,9 +105,9 @@ keywords String[]
 }
 
 enum UserRole {
-GUEST,  
- USER,  
- ADMIN  
+GUEST
+USER
+ADMIN  
 }
 
 enum RepositoryStatus {
@@ -56,27 +115,8 @@ PENDING
 SUCCESS
 }
 
-Processing Pipeline flow :
-
-1. Repo Submission
-   - User enter github repo url
-   - Frontend validates url -
-   - if status is PENDing then start listening
-   - if status is Success redirect to /repo/id
-   - if repo does not exist then start processing
-
-- There might be users who login with google for them i cannot give option of import github repo
-- Users who login with github should have both options either enter github repo url or import github repo
-
-1. Public Routes
-   / # Landing/Home Page
-   /search # Repository Search Interface
-   /repository/[id]/process # Repository Processing Interface - Showing Status Update of the Job
-   /repository/[id] # Individual Repository Details
-   /explore # Knowledge Graph Visualization
-   /auth/login # GitHub Authentication / Google Authentication
-
-2. Private Routes
-   /dashboard # User's Saved Repositories
-   /profile # User Profile and Settings
-   /repository/add, # Interface to add a repository
+Help me Plan the UI For /repository/[repositoryId]
+Take Inspiration From SAAS
+Suggest me 3 approach
+Write No code
+Let us Plan first draw mock UI if possible
