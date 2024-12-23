@@ -41,7 +41,6 @@ export default function SignIn() {
 
       await signIn("github", {
         callbackUrl: "/dashboard",
-        scope: "read:user user:email",
       });
     } catch (error) {
       console.error("Google Sign-In Error:", error);
