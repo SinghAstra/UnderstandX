@@ -99,12 +99,6 @@ export async function POST(req: NextRequest) {
 
     // 5. Fetch repository details and data
     const repoData = await fetchGitHubRepoData(githubUrl, false);
-    if (!repoData.success) {
-      return NextResponse.json(
-        { error: "Failed to fetch repository data" },
-        { status: 400 }
-      );
-    }
 
     console.log("repoData is ", repoData.files.length);
 

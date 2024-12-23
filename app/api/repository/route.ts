@@ -78,8 +78,13 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.log("Repository list error.");
-    // console.log("error is ", error);
+    console.log("Fetch User All Repository error.");
+    if (error instanceof Error) {
+      console.log("Error message:", error.message);
+      console.log("Error stack:", error.stack);
+    } else {
+      console.log("Unknown error:", error);
+    }
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

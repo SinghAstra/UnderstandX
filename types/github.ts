@@ -5,17 +5,8 @@ export interface GitHubFile {
   type: string;
 }
 
-export interface GitHubRepoData {
-  id: number;
-  name: string;
-  full_name: string;
-  description: string | null;
-  owner: {
-    login: string;
-  };
-  html_url: string;
-  private: boolean;
-  default_branch: string;
-  files: GitHubFile[];
-  avatarUrl?: string;
+export interface GitHubStats {
+  stargazers_count: number;
+  watchers_count: number;
+  forks_count: number;
 }

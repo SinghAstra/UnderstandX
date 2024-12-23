@@ -131,7 +131,8 @@ export default function DashboardPage() {
                 {repositories.map((repo) => (
                   <TableRow
                     key={repo.id}
-                    className="hover:bg-accent/5 transition-colors"
+                    className="hover:bg-accent/5 transition-colors cursor-pointer"
+                    onClick={() => router.push(`/repository/${repo.id}`)}
                   >
                     <TableCell className="text-center flex items-center justify-center">
                       <div className="h-8 w-8 rounded-md bg-accent/30 flex items-center justify-center overflow-hidden relative mr-4">

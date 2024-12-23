@@ -1,21 +1,9 @@
-import { GitHubFile, GitHubRepoData } from "@/types/github";
+import { GitHubFile } from "@/types/github";
 import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN,
 });
-
-export interface GitHubSuccessResponse extends GitHubRepoData {
-  success: boolean;
-  error?: string;
-}
-
-export interface GitHubErrorResponse {
-  error: string;
-  success: false;
-}
-
-export type GitHubRepoResponse = GitHubSuccessResponse | GitHubErrorResponse;
 
 export function parseGithubUrl(url: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)/;
@@ -77,21 +65,18 @@ export async function fetchGitHubRepoDetails(owner: string, repo: string) {
     url: data.html_url,
     isPrivate: data.private,
     avatarUrl: data.owner.avatar_url,
+    stargazersCount: data.stargazers_count,
+    watchersCount: data.watchers_count,
+    forksCount: data.forks_count,
   };
 }
 
-export async function fetchGitHubRepoData(
-  url: string,
-  isPrivate: boolean
-): Promise<GitHubRepoResponse> {
-  const { owner, repo, isValid, error } = parseGithubUrl(url);
+export async function fetchGitHubRepoData(url: string, isPrivate: boolean) {
+  const { owner, repo, isValid } = parseGithubUrl(url);
   console.log("isPrivate --fetchGitHubRepoData is ", isPrivate);
 
   if (!isValid || !owner) {
-    return {
-      success: false,
-      error: error ? error : "Failed to Fetch GitHub Repository Data.",
-    };
+    throw new Error("Failed to fetch GitHubRepoData");
   }
 
   // Fetch repository metadata
@@ -112,7 +97,6 @@ export async function fetchGitHubRepoData(
   return {
     ...repoData,
     files,
-    success: true,
   };
 }
 
@@ -121,7 +105,7 @@ async function fetchRepositoryContent(
   repo: string,
   branch: string,
   path: string = ""
-): Promise<GitHubFile[]> {
+) {
   const files: GitHubFile[] = [];
 
   try {
