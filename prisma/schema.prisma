@@ -68,6 +68,7 @@ model Repository {
   status RepositoryStatus @default(PENDING)
   owner String
   url String
+  avatarUrl String? 
   userId String
   user User @relation(fields: [userId], references: [id])
   chunks RepositoryChunk[]

@@ -17,4 +17,5 @@ export interface GitHubRepoData {
   private: boolean;
   default_branch: string;
   files: GitHubFile[];
+  avatarUrl?: string;
 }

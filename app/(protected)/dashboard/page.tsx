@@ -14,6 +14,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { Repository } from "@prisma/client";
 import { Code, Plus, Search } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 export default function DashboardPage() {
@@ -22,6 +23,9 @@ export default function DashboardPage() {
   const [status, setStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  if (repositories.length > 0) {
+    console.log("repositories[0].status is ", repositories[0].status);
+  }
 
   const fetchRepositories = useCallback(async () => {
     try {
@@ -111,11 +115,21 @@ export default function DashboardPage() {
                   className="hover:bg-accent/5 transition-colors"
                 >
                   <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <div className="h-8 w-8 rounded-md bg-accent/30 flex items-center justify-center">
-                        <Code className="h-4 w-4 text-primary" />
+                    <div className="flex items-center">
+                      <div className="h-8 w-8 rounded-md bg-accent/30 flex items-center justify-center overflow-hidden relative mr-4">
+                        {repo.avatarUrl ? (
+                          <Image
+                            src={repo.avatarUrl}
+                            alt={`${repo.owner}'s avatar`}
+                            fill
+                            sizes="32px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <Code className="h-4 w-4 text-primary" />
+                        )}
                       </div>
-                      <span className="font-medium">{repo.name}</span>
+                      {repo.name}
                     </div>
                   </TableCell>
                   <TableCell>

@@ -55,6 +55,15 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      if (existingRepo.url !== repoDetails.avatarUrl) {
+        await prisma.repository.update({
+          where: { id: existingRepo.id, userId: session.user.id },
+          data: {
+            avatarUrl: repoDetails.avatarUrl,
+          },
+        });
+      }
+
       if (existingRepo.status === "PENDING") {
         console.log("Deleted existing repository with status PENDING");
         await prisma.repository.delete({
@@ -82,6 +91,7 @@ export async function POST(req: NextRequest) {
         url: githubUrl,
         status: "PENDING",
         userId: session.user.id,
+        avatarUrl: repoDetails.avatarUrl,
       },
     });
 
