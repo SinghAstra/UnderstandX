@@ -1,7 +1,7 @@
 "use client";
+import { StatusBadge } from "@/components/custom-ui/status-badge";
 import { DashboardNavbar } from "@/components/layout/dashboard-navbar";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
+import { getRelativeTimeString } from "@/lib/utils/date";
 import { Repository } from "@prisma/client";
 import { Code, Plus, Search } from "lucide-react";
 import Image from "next/image";
@@ -150,16 +151,10 @@ export default function DashboardPage() {
                       {repo.name}
                     </TableCell>
                     <TableCell className="text-center">
-                      <Badge
-                        variant={
-                          repo.status === "SUCCESS" ? "outline" : "destructive"
-                        }
-                      >
-                        {repo.status}
-                      </Badge>
+                      <StatusBadge status={repo.status} />
                     </TableCell>
                     <TableCell className="text-muted-foreground text-center">
-                      {new Date(repo.createdAt).toLocaleDateString()}
+                      {getRelativeTimeString(repo.updatedAt)}
                     </TableCell>
                   </TableRow>
                 ))}
