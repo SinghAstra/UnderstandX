@@ -18,6 +18,7 @@ import { Code, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function DashboardPage() {
   const [repositories, setRepositories] = useState<Repository[]>([]);
@@ -32,34 +33,48 @@ export default function DashboardPage() {
     console.log("repositories[0].status is ", repositories[0].status);
   }
 
-  const fetchRepositories = useCallback(async () => {
-    try {
-      setLoading(true);
-      const queryParams = new URLSearchParams({
-        page: String(page),
-        limit: "10",
-        // ...(status && { status }),
-        ...(searchQuery && { search: searchQuery }),
-      });
-      const response = await fetch(`/api/repository?${queryParams}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch repositories.");
-      }
-      const data = await response.json();
-      console.log("data.repositories is ", data.repositories);
+  const fetchRepositories = useCallback(
+    async (search?: string) => {
+      try {
+        setLoading(true);
+        const queryParams = new URLSearchParams({
+          page: String(page),
+          limit: "10",
+          // ...(status && { status }),
+          ...(search && { search }),
+        });
+        const response = await fetch(`/api/repository?${queryParams}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch repositories.");
+        }
+        const data = await response.json();
+        console.log("data.repositories is ", data.repositories);
 
-      setRepositories(data.repositories);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch repositories. Please try again later.",
-      });
-      console.log("error --fetchRepositories: ", error);
-      console.log("Failed to fetch repositories at DashboardPage.tsx");
-    } finally {
-      setLoading(false);
-    }
-  }, [searchQuery]);
+        setRepositories(data.repositories);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch repositories. Please try again later.",
+        });
+        console.log("error --fetchRepositories: ", error);
+        console.log("Failed to fetch repositories at DashboardPage.tsx");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [page]
+  );
+
+  // Debounce the search to avoid too many API calls
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    fetchRepositories(value);
+  }, 300);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    debouncedSearch(value);
+  };
 
   useEffect(() => {
     fetchRepositories();
@@ -79,7 +94,7 @@ export default function DashboardPage() {
             <Input
               placeholder="Search repositories..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="pl-10 bg-card border-border/40"
             />
           </div>

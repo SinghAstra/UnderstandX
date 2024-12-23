@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { prisma } from "@/lib/utils/prisma";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -9,6 +10,7 @@ const QuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
   status: z.enum(["PENDING", "SUCCESS"]).optional(),
+  search: z.string().optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -27,28 +29,32 @@ export async function GET(request: NextRequest) {
     console.log("session.user.id is ", session.user.id);
 
     // Validate query parameters
-    const { page, limit, status } = QuerySchema.parse(queryParams);
+    const { page, limit, status, search } = QuerySchema.parse(queryParams);
 
     // Calculate pagination
     const skip = (page - 1) * limit;
-
     // Build query filters
-    const where = {
+    const where: Prisma.RepositoryWhereInput = {
       userId: session.user.id,
       ...(status && { status }),
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { owner: { contains: search, mode: "insensitive" } },
+          { fullName: { contains: search, mode: "insensitive" } },
+        ],
+      }),
     };
-    console.log("where is ", where);
 
-    // const repositories = await prisma.repository.findMany({
-    //   where,
-    // orderBy: {
-    //   createdAt: "desc",
-    // },
-    // skip,
-    // take: limit,
-    // });
+    const repositories = await prisma.repository.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: limit,
+    });
 
-    const repositories = await prisma.repository.findMany({});
     console.log("repositories.length is ", repositories.length);
 
     const totalCount = await prisma.repository.count({ where });
