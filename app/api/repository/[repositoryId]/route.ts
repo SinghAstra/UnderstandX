@@ -24,7 +24,6 @@ export async function GET(
         userId: session.user.id,
       },
     });
-    console.log("repository is ", repository);
 
     // If repository doesn't exist or doesn't belong to user
     if (!repository) {
@@ -35,8 +34,6 @@ export async function GET(
       repository.owner,
       repository.name
     );
-
-    console.log("githubData is ", githubData);
 
     return NextResponse.json({
       repository,

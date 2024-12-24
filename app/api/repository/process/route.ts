@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
     console.log("repoData is ", repoData.files.length);
 
     // 6. Process files into chunks
-    const chunks = await processFilesIntoChunks(repoData);
+    const chunks = await processFilesIntoChunks(repoData.files);
 
     console.log("chunks.length is ", chunks.length);
 

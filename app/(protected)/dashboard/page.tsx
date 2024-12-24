@@ -30,10 +30,6 @@ export default function DashboardPage() {
   const page = 1;
   const router = useRouter();
 
-  if (repositories.length > 0) {
-    console.log("repositories[0].status is ", repositories[0].status);
-  }
-
   const fetchRepositories = useCallback(
     async (search?: string) => {
       try {
@@ -49,7 +45,6 @@ export default function DashboardPage() {
           throw new Error("Failed to fetch repositories.");
         }
         const data = await response.json();
-        console.log("data.repositories is ", data.repositories);
 
         setRepositories(data.repositories);
       } catch (error) {
@@ -141,6 +136,7 @@ export default function DashboardPage() {
                             src={repo.avatarUrl}
                             alt={`${repo.owner}'s avatar`}
                             fill
+                            sizes="32px"
                             className="object-cover"
                           />
                         ) : (

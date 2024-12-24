@@ -1,11 +1,11 @@
-import { GitHubFile, GitHubRepoData } from "@/types/github";
+import { GitHubFile } from "@/types/github";
 
-export async function processFilesIntoChunks(repoData: GitHubRepoData) {
+export async function processFilesIntoChunks(repoFiles: GitHubFile[]) {
   const chunks = [];
   const CHUNK_SIZE = 1000; // Characters per chunk
   const OVERLAP = 100; // Overlap between chunks to maintain context
 
-  for (const file of repoData.files) {
+  for (const file of repoFiles) {
     // Skip binary files, large files, or unwanted file types
     if (shouldSkipFile(file)) {
       continue;
@@ -127,15 +127,12 @@ function findBreakPoint(content: string, index: number): number {
 }
 
 function extractKeywords(content: string): string[] {
-  // Extract important keywords from the content
-  // This is a simple implementation - could be enhanced with NLP
   const words = content
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
     .filter((word) => word.length > 3); // Filter out short words
 
-  // Remove duplicates and common words
   const commonWords = new Set(["from", "this", "that", "with", "have", "what"]);
   const uniqueWords = [...new Set(words)]
     .filter((word) => !commonWords.has(word))

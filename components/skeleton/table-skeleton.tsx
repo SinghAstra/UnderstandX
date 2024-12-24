@@ -31,7 +31,7 @@ const TableSkeleton = () => {
                   <div className="flex items-center">
                     <Skeleton className="h-8 w-8 rounded-md mr-4" />
                     <Skeleton className="h-4 w-24 mr-2" />
-                    <span className="mx-1 text-muted-foreground">/</span>
+                    <span className="mx-1 text-gray-500">/</span>
                     <Skeleton className="h-4 w-32" />
                   </div>
                 </div>
