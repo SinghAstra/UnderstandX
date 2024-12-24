@@ -5,21 +5,47 @@ import RepositoryHeader from "@/components/repository/repository-header";
 import { SearchBar } from "@/components/repository/search-bar";
 import { SearchResults } from "@/components/repository/search-results";
 import { Card, CardContent } from "@/components/ui/card";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
 const RepositoryPage = () => {
+  const params = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isLoadingResults, setIsLoadingResults] = useState(false);
+  // const [selectedResult, setSelectedResult] = useState(null);
 
-  const results = [
-    {
-      id: 1,
-      fileName: "SearchEngine.ts",
-      path: "src/lib/search",
-      language: "TypeScript",
-      preview: "export class SearchEngine implements ISearchEngine {",
-      matches: ["search", "engine"],
-    },
-  ];
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    setIsLoadingResults(true);
+    try {
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query,
+          repositoryId: params.repositoryId,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("data --repositoryPage is ", data);
+      // setResults(data.results);
+    } catch (error) {
+      console.log("Search error:", error);
+    } finally {
+      setIsLoadingResults(false);
+    }
+  };
+
+  console.log("isLoadingResults is ", isLoadingResults);
+  console.log("results is ", results);
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,7 +57,13 @@ const RepositoryPage = () => {
         <div className="space-y-6">
           {/* Search Bar */}
           <div className="space-y-4 mb-6">
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <SearchBar
+              value={searchQuery}
+              onChange={(value) => {
+                setSearchQuery(value);
+                handleSearch(value);
+              }}
+            />
           </div>
         </div>
 
