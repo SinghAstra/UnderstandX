@@ -2,25 +2,28 @@ import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoDetails } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { repositoryId: string } }
+  req: NextRequest,
+  context: { params: { repositoryId: string } }
 ) {
   try {
+    const params = await context.params;
+    const { repositoryId } = params;
+
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("params.id is ", params.repositoryId);
+    console.log("repositoryId is ", repositoryId);
     console.log("session.user.id is ", session.user.id);
 
     // Fetch repository with user check
     const repository = await prisma.repository.findUnique({
       where: {
-        id: params.repositoryId,
+        id: repositoryId,
         userId: session.user.id,
       },
     });

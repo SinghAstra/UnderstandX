@@ -1,12 +1,5 @@
 import useRepository from "@/hooks/use-repository";
-import {
-  AlertCircle,
-  BookOpen,
-  Eye,
-  GitFork,
-  Share2,
-  Star,
-} from "lucide-react";
+import { AlertCircle, BookOpen, Eye, GitFork, Star } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
@@ -51,9 +44,8 @@ const RepositoryHeader = () => {
 
   return (
     <header className="border-b border-border relative overflow-hidden">
-      <div className="container mx-auto p-6 relative">
-        {/* Top Section */}
-        <div className="flex items-start justify-between mb-6">
+      <div className="container mx-auto pt-6 pb-3 relative">
+        <div className="flex items-start justify-between">
           <div className="space-y-3">
             {/* TODO: Make this link to github repo url with target blank */}
             <a href={repository.url} target="_blank" rel="noopener noreferrer">
@@ -78,6 +70,26 @@ const RepositoryHeader = () => {
                   <Badge variant="secondary" className="ml-2">
                     Public
                   </Badge>
+                  <a
+                    href={githubUrls.issues}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" size="sm" className="space-x-2">
+                      <AlertCircle className="h-4 w-4 mr-2" />
+                      Issues
+                    </Button>
+                  </a>
+                  <a
+                    href={githubUrls.wiki}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" size="sm" className="space-x-2">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Wiki
+                    </Button>
+                  </a>
                 </div>
               </div>
             </a>
@@ -115,44 +127,6 @@ const RepositoryHeader = () => {
                 <Badge variant="secondary" className="ml-1 bg-primary/20">
                   {stats?.stargazers_count ?? 0}
                 </Badge>
-              </Button>
-            </a>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="flex items-center justify-end">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
-            </Button>
-            <a
-              href={githubUrls.issues}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <AlertCircle className="h-4 w-4 mr-2" />
-                Issues
-              </Button>
-            </a>
-            <a href={githubUrls.wiki} target="_blank" rel="noopener noreferrer">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <BookOpen className="h-4 w-4 mr-2" />
-                Wiki
               </Button>
             </a>
           </div>
