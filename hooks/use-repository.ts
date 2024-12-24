@@ -18,7 +18,6 @@ const useRepository = (repositoryId: string) => {
   useEffect(() => {
     const fetchRepository = async () => {
       try {
-        console.log("repositoryId is ", repositoryId);
         const response = await fetch(`/api/repository/${repositoryId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch repository");

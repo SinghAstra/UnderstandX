@@ -26,7 +26,7 @@ const RepositoryPage = () => {
       <RepositoryHeader />
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto py-4">
         {/* Search and Filters Section */}
         <div className="space-y-6">
           {/* Search Bar */}
