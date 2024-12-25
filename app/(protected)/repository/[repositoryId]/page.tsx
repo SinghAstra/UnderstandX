@@ -101,7 +101,7 @@ const RepositoryPage = () => {
           <div className="lg:col-span-7">
             <Card className="bg-card/50 backdrop-blur-sm border-border/50">
               <CardContent className="p-6">
-                <FilePreview />
+                <FilePreview file={selectedFile} />
               </CardContent>
             </Card>
           </div>
