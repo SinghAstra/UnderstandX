@@ -8,17 +8,29 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
+interface SelectedFile {
+  filepath: string;
+  type: string;
+  repositoryName: string;
+  matches: Array<{
+    id: string;
+    content: string;
+    similarity: number;
+  }>;
+}
+
 const RepositoryPage = () => {
   const params = useParams();
   console.log("params is ", params);
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoadingResults, setIsLoadingResults] = useState(false);
-  // const [selectedResult, setSelectedResult] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
       setResults([]);
+      setSelectedFile(null);
       return;
     }
 
@@ -38,6 +50,7 @@ const RepositoryPage = () => {
       const data = await response.json();
       console.log("data --repositoryPage is ", data);
       setResults(data.results);
+      setSelectedFile(null);
     } catch (error) {
       console.log("Search error:", error);
     } finally {
@@ -74,7 +87,12 @@ const RepositoryPage = () => {
           <div className="lg:col-span-5">
             <Card className="bg-card/50 backdrop-blur-sm border-border/50">
               <CardContent className="p-6">
-                <SearchResults results={results} />
+                <SearchResults
+                  results={results}
+                  selectedFile={selectedFile}
+                  onFileSelect={setSelectedFile}
+                  isLoading={isLoadingResults}
+                />
               </CardContent>
             </Card>
           </div>
