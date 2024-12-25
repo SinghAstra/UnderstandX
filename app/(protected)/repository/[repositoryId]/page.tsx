@@ -10,6 +10,7 @@ import React, { useState } from "react";
 
 const RepositoryPage = () => {
   const params = useParams();
+  console.log("params is ", params);
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoadingResults, setIsLoadingResults] = useState(false);

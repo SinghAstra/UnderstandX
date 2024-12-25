@@ -1,7 +1,7 @@
 import useRepository from "@/hooks/use-repository";
 import { AlertCircle, BookOpen, Eye, GitFork, Star } from "lucide-react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import React from "react";
 import { Icons } from "../Icons";
 import RepositoryHeaderSkeleton from "../skeleton/repository-header-skeleton";
@@ -9,7 +9,6 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 
 const RepositoryHeader = () => {
-  const router = useRouter();
   const params = useParams();
   const { repositoryInfo, loading, error } = useRepository(
     params.repositoryId as string
@@ -22,8 +21,7 @@ const RepositoryHeader = () => {
   }
 
   if (error || !repository) {
-    router.push("/dashboard");
-    return null;
+    notFound();
   }
 
   const githubUrls = {

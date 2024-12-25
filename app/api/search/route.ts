@@ -106,7 +106,13 @@ export async function POST(req: Request) {
       })),
     });
   } catch (error) {
-    console.error("Search error:", error);
+    console.log("Error while Performing Semantic Search on Repository");
+    if (error instanceof Error) {
+      console.log("Error message:", error.message);
+      console.log("Error stack:", error.stack);
+    } else {
+      console.log("Unknown error:", error);
+    }
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
