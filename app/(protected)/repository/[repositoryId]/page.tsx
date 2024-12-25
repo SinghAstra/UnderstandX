@@ -37,7 +37,7 @@ const RepositoryPage = () => {
 
       const data = await response.json();
       console.log("data --repositoryPage is ", data);
-      // setResults(data.results);
+      setResults(data.results);
     } catch (error) {
       console.log("Search error:", error);
     } finally {

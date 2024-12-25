@@ -10,15 +10,17 @@ const NotFound = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Icons.logo className="h-8 w-8 text-primary" />
-            <span className="font-semibold text-lg">{siteConfig.name}</span>
+      <Link href="/">
+        <header className="border-b border-border">
+          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Icons.logo className="h-8 w-8 text-primary" />
+              <span className="font-semibold text-lg">{siteConfig.name}</span>
+            </div>
+            <AvatarMenu />
           </div>
-          <AvatarMenu />
-        </div>
-      </header>
+        </header>
+      </Link>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)]">
