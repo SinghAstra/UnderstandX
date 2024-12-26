@@ -5,7 +5,9 @@ import RepositoryHeader from "@/components/repository/repository-header";
 import { SearchBar } from "@/components/repository/search-bar";
 import { SearchResults } from "@/components/repository/search-results";
 import { Card, CardContent } from "@/components/ui/card";
-import { useParams } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
+import useRepository from "@/hooks/use-repository";
+import { notFound, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -22,11 +24,26 @@ interface SelectedFile {
 
 const RepositoryPage = () => {
   const params = useParams();
+  const {
+    repositoryInfo,
+    loading: loadingRepositoryInfo,
+    error,
+  } = useRepository(params.repositoryId as string);
   console.log("params is ", params);
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoadingResults, setIsLoadingResults] = useState(false);
   const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
+
+  const LoadingCard = () => (
+    <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+      <CardContent className="p-6 space-y-4">
+        <Skeleton className="h-8 w-3/4" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
+      </CardContent>
+    </Card>
+  );
 
   const handleSearch = async (query: string) => {
     setIsLoadingResults(true);
@@ -63,20 +80,46 @@ const RepositoryPage = () => {
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (!value.trim()) {
-      handleSearch();
+      setResults([]);
+      setSelectedFile(null);
       return;
     }
     debouncedSearch(value);
   };
 
-  console.log("results is ", results);
+  if (loadingRepositoryInfo) {
+    return (
+      <div className="min-h-screen bg-background">
+        <RepositoryHeader isLoading={loadingRepositoryInfo} />
+        <main className="container mx-auto py-4 animate-in fade-in">
+          <div className="space-y-6">
+            <Skeleton className="h-12 w-full max-w-2xl" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+            <div className="lg:col-span-5">
+              <LoadingCard />
+            </div>
+            <div className="lg:col-span-7">
+              <LoadingCard />
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !repositoryInfo) {
+    notFound();
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <RepositoryHeader />
+      <RepositoryHeader
+        repository={repositoryInfo.repository}
+        githubStats={repositoryInfo.githubStats}
+      />
 
-      {/* Main Content */}
-      <main className="container mx-auto py-4">
+      <main className="container mx-auto py-4 animate-in fade-in">
         {/* Search and Filters Section */}
         <div className="space-y-6">
           {/* Search Bar */}
