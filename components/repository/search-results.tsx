@@ -56,10 +56,6 @@ export function SearchResults({
 
   const uniqueFiles = Object.values(groupedResults);
 
-  if (uniqueFiles.length > 0) {
-    console.log("uniqueFiles[0].matches is ", uniqueFiles[0].matches);
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">

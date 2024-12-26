@@ -7,6 +7,7 @@ import { SearchResults } from "@/components/repository/search-results";
 import { Card, CardContent } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 interface SelectedFile {
   filepath: string;
@@ -28,12 +29,6 @@ const RepositoryPage = () => {
   const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
 
   const handleSearch = async (query: string) => {
-    if (!query.trim()) {
-      setResults([]);
-      setSelectedFile(null);
-      return;
-    }
-
     setIsLoadingResults(true);
     try {
       const response = await fetch("/api/search", {
@@ -47,18 +42,33 @@ const RepositoryPage = () => {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch search results");
+      }
       const data = await response.json();
-      console.log("data --repositoryPage is ", data);
       setResults(data.results);
       setSelectedFile(null);
     } catch (error) {
       console.log("Search error:", error);
+      setResults([]);
     } finally {
       setIsLoadingResults(false);
     }
   };
 
-  console.log("isLoadingResults is ", isLoadingResults);
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    handleSearch(value);
+  }, 300);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (!value.trim()) {
+      handleSearch();
+      return;
+    }
+    debouncedSearch(value);
+  };
+
   console.log("results is ", results);
 
   return (
@@ -71,13 +81,7 @@ const RepositoryPage = () => {
         <div className="space-y-6">
           {/* Search Bar */}
           <div className="space-y-4 mb-6">
-            <SearchBar
-              value={searchQuery}
-              onChange={(value) => {
-                setSearchQuery(value);
-                handleSearch(value);
-              }}
-            />
+            <SearchBar value={searchQuery} onChange={handleSearchChange} />
           </div>
         </div>
 

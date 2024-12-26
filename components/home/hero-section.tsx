@@ -38,15 +38,26 @@ const HeroSection = () => {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid min-h-screen grid-cols-1 items-center gap-8 lg:grid-cols-2">
           <div className="flex flex-col items-start justify-center space-y-8 pt-20 lg:pt-0">
-            <a
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-10 items-center rounded-full bg-primary/10 px-4 text-primary hover:bg-primary/20 transition-colors"
-            >
-              <Icons.gitLogo className="mr-2 h-5 w-5" />
-              <span className="text-sm font-medium">Now on GitHub</span>
-            </a>
+            <div className="flex space-x-3">
+              <a
+                href={siteConfig.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 items-center rounded-full bg-primary/10 px-4 text-primary hover:bg-primary/20 transition-colors"
+              >
+                <Icons.gitLogo className="mr-2 h-5 w-5" />
+                <span className="text-sm font-medium">Now on GitHub</span>
+              </a>
+              <a
+                href={siteConfig.links.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 items-center rounded-full bg-primary/10 px-4 text-primary hover:bg-primary/20 transition-colors"
+              >
+                <Icons.twitter className="mr-2 h-5 w-5" />
+                <span className="text-sm font-medium">Connect on X</span>
+              </a>
+            </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
               Understand Repo with{" "}
               <GradientText animate>Semantic Searching</GradientText>

@@ -69,6 +69,10 @@ export default function DashboardPage() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
+    if(!value.trim()) {
+      fetchRepositories();
+      return;
+    }
     debouncedSearch(value);
   };
 

@@ -70,8 +70,8 @@ export async function POST(req: Request) {
       .map((chunk) => {
         const similarity = cosineSimilarity(queryEmbeddings, chunk.embeddings);
         const highlightedContent = highlightText(chunk.content, query);
-        console.log("similarity is ", similarity);
-        console.log("highlightedContent is ", highlightedContent);
+        // console.log("similarity is ", similarity);
+        // console.log("highlightedContent is ", highlightedContent);
         return {
           ...chunk,
           similarity,
@@ -82,16 +82,16 @@ export async function POST(req: Request) {
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, 10); // Return top 10 results
 
-    const sampleObj = {
-      id: results[0].id,
-      filepath: results[0].filepath,
-      type: results[0].type,
-      repositoryName: results[0].repository.name,
-      content: results[0].highlightedContent,
-      similarity: results[0].similarity,
-    };
+    // const sampleObj = {
+    //   id: results[0].id,
+    //   filepath: results[0].filepath,
+    //   type: results[0].type,
+    //   repositoryName: results[0].repository.name,
+    //   content: results[0].highlightedContent,
+    //   similarity: results[0].similarity,
+    // };
 
-    console.log("sampleObj is ", sampleObj);
+    // console.log("sampleObj is ", sampleObj);
 
     // console.log("results is ", results);
 

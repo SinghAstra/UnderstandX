@@ -25,10 +25,11 @@ import {
   Swords,
   User,
 } from "lucide-react";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 
 export const Icons = {
+  twitter: FaTwitter,
   login: LogIn,
   alertCircle: AlertCircle,
   database: Database,
