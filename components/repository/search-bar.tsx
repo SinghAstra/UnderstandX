@@ -2,13 +2,18 @@
 
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { SearchBarSkeleton } from "../skeleton/search-bar-skeleton";
 
 interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
+  isLoading?: boolean;
 }
 
-export function SearchBar({ value, onChange }: SearchBarProps) {
+export function SearchBar({ value, onChange, isLoading }: SearchBarProps) {
+  if (isLoading || !onChange) {
+    return <SearchBarSkeleton />;
+  }
   return (
     <div className="relative">
       <Search className="absolute left-3 top-3 h-5 w-5 text-primary" />

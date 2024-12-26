@@ -91,13 +91,15 @@ const RepositoryPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <RepositoryHeader isLoading={loadingRepositoryInfo} />
-        <main className="container mx-auto py-4 animate-in fade-in">
-          <div className="space-y-6">
-            <Skeleton className="h-12 w-full max-w-2xl" />
-          </div>
+        <main className="container mx-auto  flex flex-col gap-2 py-2 animate-in fade-in">
+          <SearchBar isLoading={loadingRepositoryInfo} />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
             <div className="lg:col-span-5">
-              <LoadingCard />
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+                <CardContent className="p-6">
+                  <SearchResults isLoading={loadingRepositoryInfo} />
+                </CardContent>
+              </Card>
             </div>
             <div className="lg:col-span-7">
               <LoadingCard />
@@ -119,14 +121,8 @@ const RepositoryPage = () => {
         githubStats={repositoryInfo.githubStats}
       />
 
-      <main className="container mx-auto py-4 animate-in fade-in">
-        {/* Search and Filters Section */}
-        <div className="space-y-6">
-          {/* Search Bar */}
-          <div className="space-y-4 mb-6">
-            <SearchBar value={searchQuery} onChange={handleSearchChange} />
-          </div>
-        </div>
+      <main className="container mx-auto py-2 flex flex-col gap-2 animate-in fade-in">
+        <SearchBar value={searchQuery} onChange={handleSearchChange} />
 
         {/* Results and Preview Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
