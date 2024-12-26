@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import FilePreviewSkeleton from "../skeleton/file-preview-skeleton";
 
 interface Match {
   id: string;
@@ -12,16 +13,21 @@ interface Match {
 }
 
 interface FilePreviewProps {
-  file: {
+  file?: {
     filepath: string;
     type: string;
     repositoryName: string;
     matches: Match[];
   } | null;
+  isLoading?: boolean;
 }
 
-export function FilePreview({ file }: FilePreviewProps) {
+export function FilePreview({ file, isLoading }: FilePreviewProps) {
   const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+
+  if (isLoading) {
+    return <FilePreviewSkeleton />;
+  }
 
   if (!file) {
     return (

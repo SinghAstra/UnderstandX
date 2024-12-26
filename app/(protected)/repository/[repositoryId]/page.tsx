@@ -4,8 +4,8 @@ import { FilePreview } from "@/components/repository/file-preview";
 import RepositoryHeader from "@/components/repository/repository-header";
 import { SearchBar } from "@/components/repository/search-bar";
 import { SearchResults } from "@/components/repository/search-results";
+import RepositoryPageSkeleton from "@/components/skeleton/repository-page-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import useRepository from "@/hooks/use-repository";
 import { notFound, useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -34,16 +34,6 @@ const RepositoryPage = () => {
   const [results, setResults] = useState([]);
   const [isLoadingResults, setIsLoadingResults] = useState(false);
   const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
-
-  const LoadingCard = () => (
-    <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-      <CardContent className="p-6 space-y-4">
-        <Skeleton className="h-8 w-3/4" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-24 w-full" />
-      </CardContent>
-    </Card>
-  );
 
   const handleSearch = async (query: string) => {
     setIsLoadingResults(true);
@@ -89,24 +79,7 @@ const RepositoryPage = () => {
 
   if (loadingRepositoryInfo) {
     return (
-      <div className="min-h-screen bg-background">
-        <RepositoryHeader isLoading={loadingRepositoryInfo} />
-        <main className="container mx-auto  flex flex-col gap-2 py-2 animate-in fade-in">
-          <SearchBar isLoading={loadingRepositoryInfo} />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
-            <div className="lg:col-span-5">
-              <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-                <CardContent className="p-6">
-                  <SearchResults isLoading={loadingRepositoryInfo} />
-                </CardContent>
-              </Card>
-            </div>
-            <div className="lg:col-span-7">
-              <LoadingCard />
-            </div>
-          </div>
-        </main>
-      </div>
+      <RepositoryPageSkeleton loadingRepositoryInfo={loadingRepositoryInfo} />
     );
   }
 
