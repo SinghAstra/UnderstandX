@@ -7,6 +7,8 @@ import { NextResponse } from "next/server";
 
 // Helper to highlight matching text
 function highlightText(text: string, query: string): string {
+  // What is highlight ext ?
+
   const regex = new RegExp(query, "gi");
   return text.replace(regex, (match) => `<mark>${match}</mark>`);
 }
@@ -78,9 +80,11 @@ export async function POST(req: Request) {
           highlightedContent,
         };
       })
-      //   .filter((result) => result.similarity > 0.4)
+      .filter((result) => result.similarity > 0.4)
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, 10); // Return top 10 results
+
+    console.log("results[0] is ", results[0]);
 
     // const sampleObj = {
     //   id: results[0].id,
