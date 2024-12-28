@@ -5,13 +5,8 @@ import { cosineSimilarity } from "@/lib/utils/utils";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-// Helper to highlight matching text
-function highlightText(text: string, query: string): string {
-  // What is highlight ext ?
-
-  const regex = new RegExp(query, "gi");
-  return text.replace(regex, (match) => `<mark>${match}</mark>`);
-}
+const SIMILARITY_THRESHOLD = 0.6; // Adjust based on testing
+const PAGE_SIZE = 10;
 
 export async function POST(req: Request) {
   try {
@@ -71,18 +66,16 @@ export async function POST(req: Request) {
     const results = chunks
       .map((chunk) => {
         const similarity = cosineSimilarity(queryEmbeddings, chunk.embeddings);
-        const highlightedContent = highlightText(chunk.content, query);
         // console.log("similarity is ", similarity);
         // console.log("highlightedContent is ", highlightedContent);
         return {
           ...chunk,
           similarity,
-          highlightedContent,
         };
       })
-      .filter((result) => result.similarity > 0.4)
+      .filter((result) => result.similarity > SIMILARITY_THRESHOLD)
       .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, 10); // Return top 10 results
+      .slice(0, PAGE_SIZE);
 
     console.log("results[0] is ", results[0]);
 
@@ -105,7 +98,7 @@ export async function POST(req: Request) {
         filepath: result.filepath,
         type: result.type,
         repositoryName: result.repository.name,
-        content: result.highlightedContent,
+        content: result.content,
         similarity: result.similarity,
       })),
     });
