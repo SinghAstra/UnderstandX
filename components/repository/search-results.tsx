@@ -2,61 +2,43 @@
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/utils";
+import { SearchResultFile, SimilarChunk } from "@/types/search-result";
 import { FileText } from "lucide-react";
 import { SearchResultsSkeleton } from "../skeleton/search-results-skeleton";
-interface Match {
-  id: string;
-  content: string;
-  similarity: number;
-}
-
-interface SearchResult {
-  filepath: string;
-  type: string;
-  repositoryName: string;
-  matches: Match[];
-}
 
 interface SearchResultsProps {
-  results?: Array<{
-    id: string;
-    filepath: string;
-    type: string;
-    repositoryName: string;
-    content: string;
-    similarity: number;
-  }>;
-  selectedFile?: SearchResult | null;
-  onFileSelect?: (file: SearchResult) => void;
+  similarChunks?: SimilarChunk[];
+  selectedFile?: SearchResultFile | null;
+  onFileSelect?: (file: SearchResultFile) => void;
   isLoading?: boolean;
 }
 
 export function SearchResults({
-  results,
+  similarChunks,
   selectedFile,
   onFileSelect,
   isLoading,
 }: SearchResultsProps) {
-  if (isLoading || !results || !onFileSelect) {
+  if (isLoading || !similarChunks || !onFileSelect) {
     return <SearchResultsSkeleton />;
   }
-  const groupedResults = results.reduce((acc, result) => {
-    const key = result.filepath;
+  const groupedResults = similarChunks.reduce((acc, similarChunk) => {
+    const key = similarChunk.filepath;
     if (!acc[key]) {
       acc[key] = {
-        filepath: result.filepath,
-        type: result.type,
-        repositoryName: result.repositoryName,
+        filepath: similarChunk.filepath,
+        type: similarChunk.type,
+        repositoryName: similarChunk.repositoryName,
         matches: [],
       };
     }
     acc[key].matches.push({
-      id: result.id,
-      content: result.content,
-      similarity: result.similarity,
+      id: similarChunk.id,
+      content: similarChunk.content,
+      similarity: similarChunk.similarity,
     });
     return acc;
-  }, {} as Record<string, SearchResult>);
+  }, {} as Record<string, SearchResultFile>);
 
   const uniqueFiles = Object.values(groupedResults);
 

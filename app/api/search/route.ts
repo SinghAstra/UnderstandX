@@ -2,13 +2,19 @@ import { authOptions } from "@/lib/auth/auth-options";
 import { generateEmbedding } from "@/lib/utils/gemini";
 import { prisma } from "@/lib/utils/prisma";
 import { cosineSimilarity } from "@/lib/utils/utils";
+import { SimilarChunk } from "@/types/search-result";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 const SIMILARITY_THRESHOLD = 0.6; // Adjust based on testing
 const PAGE_SIZE = 10;
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request
+): Promise<
+  | NextResponse<{ similarChunks: SimilarChunk[] }>
+  | NextResponse<{ message: string }>
+> {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -63,11 +69,9 @@ export async function POST(req: Request) {
     console.log("chunks.length is ", chunks.length);
 
     // Calculate similarity scores and rank results
-    const results = chunks
+    const similarChunks = chunks
       .map((chunk) => {
         const similarity = cosineSimilarity(queryEmbeddings, chunk.embeddings);
-        // console.log("similarity is ", similarity);
-        // console.log("highlightedContent is ", highlightedContent);
         return {
           ...chunk,
           similarity,
@@ -77,29 +81,14 @@ export async function POST(req: Request) {
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, PAGE_SIZE);
 
-    console.log("results[0] is ", results[0]);
-
-    // const sampleObj = {
-    //   id: results[0].id,
-    //   filepath: results[0].filepath,
-    //   type: results[0].type,
-    //   repositoryName: results[0].repository.name,
-    //   content: results[0].highlightedContent,
-    //   similarity: results[0].similarity,
-    // };
-
-    // console.log("sampleObj is ", sampleObj);
-
-    // console.log("results is ", results);
-
     return NextResponse.json({
-      results: results.map((result) => ({
-        id: result.id,
-        filepath: result.filepath,
-        type: result.type,
-        repositoryName: result.repository.name,
-        content: result.content,
-        similarity: result.similarity,
+      similarChunks: similarChunks.map((similarChunk) => ({
+        id: similarChunk.id,
+        filepath: similarChunk.filepath,
+        type: similarChunk.type,
+        repositoryName: similarChunk.repository.name,
+        content: similarChunk.content,
+        similarity: similarChunk.similarity,
       })),
     });
   } catch (error) {
@@ -111,7 +100,7 @@ export async function POST(req: Request) {
       console.log("Unknown error:", error);
     }
     return NextResponse.json(
-      { error: "Internal server error" },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }

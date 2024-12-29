@@ -7,20 +7,10 @@ import { SearchResults } from "@/components/repository/search-results";
 import RepositoryPageSkeleton from "@/components/skeleton/repository-page-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import useRepository from "@/hooks/use-repository";
+import { SearchResultFile } from "@/types/search-result";
 import { notFound, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-
-interface SelectedFile {
-  filepath: string;
-  type: string;
-  repositoryName: string;
-  matches: Array<{
-    id: string;
-    content: string;
-    similarity: number;
-  }>;
-}
 
 const RepositoryPage = () => {
   const params = useParams();
@@ -31,9 +21,11 @@ const RepositoryPage = () => {
   } = useRepository(params.repositoryId as string);
   console.log("params is ", params);
   const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<SearchResultFile[]>();
   const [isLoadingResults, setIsLoadingResults] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
+  const [selectedFile, setSelectedFile] = useState<SearchResultFile | null>(
+    null
+  );
 
   const handleSearch = async (query: string) => {
     setIsLoadingResults(true);

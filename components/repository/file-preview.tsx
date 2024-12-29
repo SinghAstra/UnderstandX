@@ -51,7 +51,7 @@ export function FilePreview({ file, isLoading }: FilePreviewProps) {
   };
 
   return (
-    <div className="flex flex-col h-[600px]">
+    <div className="flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex flex-col">
