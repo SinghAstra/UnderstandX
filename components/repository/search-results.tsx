@@ -23,15 +23,6 @@ export function SearchResults({
     return <SearchResultsSkeleton />;
   }
 
-  console.log(
-    "In SearchResults, searchResultUniqueFiles is ",
-    searchResultUniqueFiles
-  );
-  console.log(
-    "In SearchResults, searchResultUniqueFiles.length is ",
-    searchResultUniqueFiles.length
-  );
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">

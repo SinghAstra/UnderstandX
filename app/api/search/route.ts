@@ -87,6 +87,7 @@ export async function POST(
         filepath: similarChunk.filepath,
         type: similarChunk.type,
         repositoryName: similarChunk.repository.name,
+        repositoryFullName: similarChunk.repository.fullName,
         content: similarChunk.content,
         similarity: similarChunk.similarity,
       })),

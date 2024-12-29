@@ -72,7 +72,7 @@ model Repository {
   userId String
   user User @relation(fields: [userId], references: [id])
   chunks RepositoryChunk[]
-   createdAt     DateTime  @default(now())
+  createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
 

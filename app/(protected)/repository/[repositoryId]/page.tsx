@@ -86,6 +86,7 @@ const RepositoryPage = () => {
         type: similarChunk.type,
         repositoryName: similarChunk.repositoryName,
         similarChunks: [],
+        repositoryFullName: similarChunk.repositoryFullName,
       };
     }
     acc[key].similarChunks.push({
@@ -95,6 +96,7 @@ const RepositoryPage = () => {
       repositoryName: similarChunk.repositoryName,
       content: similarChunk.content,
       similarity: similarChunk.similarity,
+      repositoryFullName: similarChunk.repositoryFullName,
     });
     return acc;
   }, {} as Record<string, SearchResultFile>);
