@@ -2,7 +2,7 @@ export interface SearchResultFile {
   filepath: string;
   type: string;
   repositoryName: string;
-  matches: SimilarChunk[];
+  similarChunks: SimilarChunk[];
 }
 
 export interface SimilarChunk {

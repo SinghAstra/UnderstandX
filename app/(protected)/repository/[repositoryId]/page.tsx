@@ -7,7 +7,7 @@ import { SearchResults } from "@/components/repository/search-results";
 import RepositoryPageSkeleton from "@/components/skeleton/repository-page-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import useRepository from "@/hooks/use-repository";
-import { SearchResultFile } from "@/types/search-result";
+import { SearchResultFile, SimilarChunk } from "@/types/search-result";
 import { notFound, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -19,16 +19,15 @@ const RepositoryPage = () => {
     loading: loadingRepositoryInfo,
     error,
   } = useRepository(params.repositoryId as string);
-  console.log("params is ", params);
   const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState<SearchResultFile[]>();
-  const [isLoadingResults, setIsLoadingResults] = useState(false);
+  const [similarChunks, setSimilarChunks] = useState<SimilarChunk[]>([]);
+  const [isLoadingSimilarChunks, setIsLoadingSimilarChunks] = useState(false);
   const [selectedFile, setSelectedFile] = useState<SearchResultFile | null>(
     null
   );
 
   const handleSearch = async (query: string) => {
-    setIsLoadingResults(true);
+    setIsLoadingSimilarChunks(true);
     try {
       const response = await fetch("/api/search", {
         method: "POST",
@@ -45,13 +44,13 @@ const RepositoryPage = () => {
         throw new Error("Failed to fetch search results");
       }
       const data = await response.json();
-      setResults(data.results);
+      setSimilarChunks(data.similarChunks);
       setSelectedFile(null);
     } catch (error) {
       console.log("Search error:", error);
-      setResults([]);
+      setSimilarChunks([]);
     } finally {
-      setIsLoadingResults(false);
+      setIsLoadingSimilarChunks(false);
     }
   };
 
@@ -62,7 +61,7 @@ const RepositoryPage = () => {
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (!value.trim()) {
-      setResults([]);
+      setSimilarChunks([]);
       setSelectedFile(null);
       return;
     }
@@ -78,6 +77,29 @@ const RepositoryPage = () => {
   if (error || !repositoryInfo) {
     notFound();
   }
+
+  const groupedResults = similarChunks.reduce((acc, similarChunk) => {
+    const key = similarChunk.filepath;
+    if (!acc[key]) {
+      acc[key] = {
+        filepath: similarChunk.filepath,
+        type: similarChunk.type,
+        repositoryName: similarChunk.repositoryName,
+        similarChunks: [],
+      };
+    }
+    acc[key].similarChunks.push({
+      id: similarChunk.id,
+      filepath: similarChunk.filepath,
+      type: similarChunk.type,
+      repositoryName: similarChunk.repositoryName,
+      content: similarChunk.content,
+      similarity: similarChunk.similarity,
+    });
+    return acc;
+  }, {} as Record<string, SearchResultFile>);
+
+  const searchResultUniqueFiles = Object.values(groupedResults);
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,10 +118,10 @@ const RepositoryPage = () => {
             <Card className="bg-card/50 backdrop-blur-sm border-border/50">
               <CardContent className="p-6">
                 <SearchResults
-                  results={results}
+                  searchResultUniqueFiles={searchResultUniqueFiles}
                   selectedFile={selectedFile}
                   onFileSelect={setSelectedFile}
-                  isLoading={isLoadingResults}
+                  isLoading={isLoadingSimilarChunks}
                 />
               </CardContent>
             </Card>
