@@ -9,7 +9,7 @@
 
 @layer base {
   :root {
-    /* Core background and surface colors */
+    /* Core background and surface colors - Dark blue theme */
     --background: 222 47% 5%;
     --foreground: 213 31% 91%;
 
@@ -44,17 +44,12 @@
     --input: 222 20% 15%;
     --ring: 214 95% 65%;
 
+    /* Match highlight */
+    --match-highlight: 214 95% 40%;
+    --match-highlight-border: 214 95% 50%;
+
     /* Radius */
     --radius: 0.875rem;
-
-    --stats-blue: 210 40% 50%; /* Vibrant blue */
-    --stats-purple: 270 50% 50%; /* Deep purple */
-    --stats-pink: 330 60% 50%; /* Bright pink */
-    --stats-teal: 180 50% 40%; /* Teal green */
-    --stats-orange: 25 90% 50%; /* Warm orange */
-
-    --stats-green: 120 50% 40%; /* Verdant green */
-    --stats-red: 0 70% 50%;
   }
 }
 
@@ -67,19 +62,11 @@
   }
 }
 
+/* Scrollbar styling */
 body {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 ::-webkit-scrollbar {
@@ -94,6 +81,40 @@ body {
 
 ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0);
+}
+
+/* Code preview styles */
+.code-preview {
+  background: linear-gradient(
+    to bottom right,
+    hsl(222 47% 9%) 0%,
+    hsl(222 47% 5%) 100%
+  );
+  border: 1px solid hsl(222 47% 13%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.code-preview pre {
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Match highlight animation */
+@keyframes highlight-pulse {
+  0% {
+    background-color: hsla(214, 95%, 40%, 0.15);
+  }
+  50% {
+    background-color: hsla(214, 95%, 40%, 0.25);
+  }
+  100% {
+    background-color: hsla(214, 95%, 40%, 0.15);
+  }
+}
+
+.match-highlight {
+  animation: highlight-pulse 2s ease-in-out infinite;
+  border: 1px solid hsla(214, 95%, 50%, 0.2);
 }
 
 input:-webkit-autofill,
