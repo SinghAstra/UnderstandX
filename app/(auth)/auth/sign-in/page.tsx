@@ -39,9 +39,7 @@ export default function SignIn() {
       //       ? "read:user user:email repo"
       //       : "read:user user:email";
 
-      await signIn("github", {
-        callbackUrl: "/dashboard",
-      });
+      await signIn("github");
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       setIsGithubLoading(false);
@@ -51,9 +49,7 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     try {
       setIsGoogleLoading(true);
-      await signIn("google", {
-        callbackUrl: "/dashboard",
-      });
+      await signIn("google");
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       setIsGoogleLoading(false);
