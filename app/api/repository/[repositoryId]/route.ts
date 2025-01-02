@@ -6,10 +6,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  context: { params: { repositoryId: string } }
+  { params }: { params: { repositoryId: string } }
 ) {
   try {
-    const params = await context.params;
     const { repositoryId } = params;
 
     const session = await getServerSession(authOptions);
