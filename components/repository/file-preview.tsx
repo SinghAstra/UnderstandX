@@ -22,18 +22,11 @@ interface FilePreviewProps {
   isLoading?: boolean;
 }
 
-interface ChunkPosition {
-  chunk: SimilarChunk;
-  startIndex: number;
-  endIndex: number;
-}
-
 function FilePreview({ file, isLoading }: FilePreviewProps) {
   const [content, setContent] = useState<string | null>(null);
   const [loadingGithubFileContent, setLoadingGithubFileContent] =
     useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [chunkPositions, setChunkPositions] = useState<ChunkPosition[]>([]);
 
   // Function to detect language from file extension
   const detectLanguage = (filepath: string): string => {
@@ -50,75 +43,86 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     return languageMap[extension || ""] || "plaintext";
   };
 
-  const findChunkPositions = (fullContent: string, chunks: SimilarChunk[]) => {
-    const positions: ChunkPosition[] = [];
+  const findMatchingLines = (
+    fileContent: string,
+    chunks: SimilarChunk[]
+  ): Set<number> => {
+    const lines = fileContent.split("\n");
+    const matchedLines = new Set<number>();
 
     chunks.forEach((chunk) => {
-      const cleanChunkContent = chunk.content.trim();
-      const startIndex = fullContent.indexOf(cleanChunkContent);
+      const chunkContent = chunk.content.trim();
+      let startLine = -1;
 
-      if (startIndex !== -1) {
-        positions.push({
-          chunk,
-          startIndex,
-          endIndex: startIndex + cleanChunkContent.length,
-        });
+      // Find the starting line of the chunk
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(chunkContent.split("\n")[0])) {
+          startLine = i;
+          break;
+        }
+      }
+
+      if (startLine !== -1) {
+        // Add all lines that are part of this chunk
+        const chunkLines = chunkContent.split("\n");
+        for (let i = 0; i < chunkLines.length; i++) {
+          if (startLine + i < lines.length) {
+            // Verify the line actually contains the chunk content
+            if (lines[startLine + i].includes(chunkLines[i])) {
+              matchedLines.add(startLine + i);
+            }
+          }
+        }
       }
     });
 
-    return positions.sort((a, b) => a.startIndex - b.startIndex);
+    return matchedLines;
   };
 
-  const renderHighlightedContent = () => {
-    if (!content || !file) return null;
+  // Render the content with highlighting
+  const renderHighlightedContent = (
+    fileContent: string,
+    chunks: SimilarChunk[]
+  ) => {
+    const lines = fileContent.split("\n");
+    const matchedLines = findMatchingLines(fileContent, chunks);
+    const language = detectLanguage(file?.filepath || "");
 
-    // Get syntax highlighted HTML from Prism
-    const language = detectLanguage(file.filepath);
-    const highlightedCode = Prism.highlight(
-      content,
-      Prism.languages[language] || Prism.languages.plaintext,
-      language
-    );
+    const highlightedContent = lines.map((line, index) => {
+      const highlighted = Prism.highlight(
+        line,
+        Prism.languages[language] || Prism.languages.plaintext,
+        language
+      );
 
-    const segments: { html: string; isHighlighted: boolean }[] = [];
-    let currentIndex = 0;
-
-    chunkPositions.forEach((position) => {
-      // Add non-highlighted segment before match
-      if (position.startIndex > currentIndex) {
-        segments.push({
-          html: highlightedCode.slice(currentIndex, position.startIndex),
-          isHighlighted: false,
-        });
-      }
-
-      // Add highlighted segment
-      segments.push({
-        html: highlightedCode.slice(position.startIndex, position.endIndex),
-        isHighlighted: true,
-      });
-
-      currentIndex = position.endIndex;
+      return (
+        <div
+          key={index}
+          className={cn(
+            "code-line flex",
+            matchedLines.has(index) && "bg-yellow-900/30"
+          )}
+        >
+          {/* Line number */}
+          <span className="inline-block w-12 shrink-0 text-right pr-4 select-none text-slate-500">
+            {index + 1}
+          </span>
+          {/* Code content */}
+          <span
+            className="flex-1"
+            dangerouslySetInnerHTML={{ __html: highlighted }}
+          />
+        </div>
+      );
     });
 
-    // Add remaining non-highlighted content
-    if (currentIndex < highlightedCode.length) {
-      segments.push({
-        html: highlightedCode.slice(currentIndex),
-        isHighlighted: false,
-      });
-    }
-
-    return segments.map((segment, index) => (
-      <span
-        key={index}
-        className={cn(
-          segment.isHighlighted &&
-            "match-highlight bg-yellow-100 dark:bg-yellow-900/30"
-        )}
-        dangerouslySetInnerHTML={{ __html: segment.html }}
-      />
-    ));
+    return (
+      <pre className="code-preview overflow-x-auto font-mono text-sm leading-6">
+        <code className={`language-${language} block`}>
+          {highlightedContent}
+        </code>
+      </pre>
+    );
   };
 
   useEffect(() => {
@@ -140,7 +144,6 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
         );
 
         setContent(fileContent);
-        setChunkPositions(findChunkPositions(fileContent, file.similarChunks));
       } catch (err) {
         setError("Failed to load file content. Please try again.");
         console.error("Error loading file:", err);
@@ -186,7 +189,7 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
       <div className="relative">
         <pre className="code-preview p-4 rounded-lg overflow-x-auto font-mono text-sm leading-relaxed">
           <code className={`language-${detectLanguage(file.filepath)}`}>
-            {renderHighlightedContent()}
+            {content && renderHighlightedContent(content, file.similarChunks)}
           </code>
         </pre>
       </div>
