@@ -5,7 +5,6 @@ import RepositoryHeader from "@/components/repository/repository-header";
 import { SearchBar } from "@/components/repository/search-bar";
 import { SearchResults } from "@/components/repository/search-results";
 import RepositoryPageSkeleton from "@/components/skeleton/repository-page-skeleton";
-import { Card, CardContent } from "@/components/ui/card";
 import useRepository from "@/hooks/use-repository";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
 import { notFound, useParams } from "next/navigation";
