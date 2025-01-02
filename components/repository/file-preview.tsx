@@ -85,7 +85,9 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     chunks: SimilarChunk[]
   ) => {
     const lines = fileContent.split("\n");
+    console.log("lines.length is ", lines.length);
     const matchedLines = findMatchingLines(fileContent, chunks);
+    console.log("matchedLines.length is ", matchedLines.size);
     const language = detectLanguage(file?.filepath || "");
 
     const highlightedContent = lines.map((line, index) => {
@@ -99,17 +101,17 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
         <div
           key={index}
           className={cn(
-            "code-line flex",
+            "whitespace-pre",
             matchedLines.has(index) && "bg-yellow-900/30"
           )}
         >
           {/* Line number */}
-          <span className="inline-block w-12 shrink-0 text-right pr-4 select-none text-slate-500">
+          <span className="inline-block w-12 select-none text-right pr-4 text-slate-500">
             {index + 1}
-          </span>
+          </span>{" "}
           {/* Code content */}
           <span
-            className="flex-1"
+            className="flex-1 pr-4"
             dangerouslySetInnerHTML={{ __html: highlighted }}
           />
         </div>
@@ -117,7 +119,7 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     });
 
     return (
-      <pre className="code-preview overflow-x-auto font-mono text-sm leading-6">
+      <pre className="code-preview font-mono text-sm leading-6">
         <code className={`language-${language} block`}>
           {highlightedContent}
         </code>
@@ -184,14 +186,11 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
   }
 
   return (
-    <div className="flex flex-col">
-      {/* File Content */}
-      <div className="relative">
-        <pre className="code-preview p-4 rounded-lg overflow-x-auto font-mono text-sm leading-relaxed">
-          <code className={`language-${detectLanguage(file.filepath)}`}>
-            {content && renderHighlightedContent(content, file.similarChunks)}
-          </code>
-        </pre>
+    <div className="h-[calc(100vh-12rem)] flex flex-col">
+      <div className="border rounded-md flex-1 overflow-auto">
+        <div className="min-w-max">
+          {content && renderHighlightedContent(content, file.similarChunks)}
+        </div>
       </div>
     </div>
   );

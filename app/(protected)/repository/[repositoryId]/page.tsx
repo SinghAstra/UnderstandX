@@ -112,28 +112,20 @@ const RepositoryPage = () => {
         <SearchBar value={searchQuery} onChange={handleSearchChange} />
 
         {/* Results and Preview Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           {/* Results List */}
-          <div className="lg:col-span-5">
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardContent className="p-6">
-                <SearchResults
-                  searchResultUniqueFiles={searchResultUniqueFiles}
-                  selectedFile={selectedFile}
-                  onFileSelect={setSelectedFile}
-                  isLoading={isLoadingSimilarChunks}
-                />
-              </CardContent>
-            </Card>
+          <div className="lg:col-span-4">
+            <SearchResults
+              searchResultUniqueFiles={searchResultUniqueFiles}
+              selectedFile={selectedFile}
+              onFileSelect={setSelectedFile}
+              isLoading={isLoadingSimilarChunks}
+            />
           </div>
 
           {/* Preview Panel */}
-          <div className="lg:col-span-7">
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardContent className="p-6">
-                <FilePreview file={selectedFile} />
-              </CardContent>
-            </Card>
+          <div className="lg:col-span-8">
+            <FilePreview file={selectedFile} />
           </div>
         </div>
       </main>

@@ -26,7 +26,7 @@ export function SearchResults({
 
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] gap-4">
-      <ScrollArea className="h-full pr-4">
+      <ScrollArea className="h-full ">
         <div className="space-y-3">
           {searchResultUniqueFiles.map((file) => (
             <div
