@@ -4,10 +4,12 @@ import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { repositoryId: string } }
-) {
+type Context = {
+  params: { repositoryId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function GET(req: NextRequest, context: Context) {
   try {
     const { repositoryId } = context.params;
 
