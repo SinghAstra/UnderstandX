@@ -4,12 +4,15 @@ import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { repositoryId: string } }
-) {
+type Props = {
+  params: {
+    repositoryId: string;
+  };
+};
+
+export async function GET(req: NextRequest, props: Props) {
   try {
-    const { repositoryId } = params;
+    const { repositoryId } = props.params;
 
     const session = await getServerSession(authOptions);
     if (!session?.user) {
