@@ -1,13 +1,13 @@
 "use client";
 
-import { FilePreview } from "@/components/repository/file-preview";
+import FilePreview from "@/components/repository/file-preview";
 import RepositoryHeader from "@/components/repository/repository-header";
 import { SearchBar } from "@/components/repository/search-bar";
 import { SearchResults } from "@/components/repository/search-results";
 import RepositoryPageSkeleton from "@/components/skeleton/repository-page-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import useRepository from "@/hooks/use-repository";
-import { SearchResultFile, SimilarChunk } from "@/types/search-result";
+import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
 import { notFound, useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -22,9 +22,7 @@ const RepositoryPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [similarChunks, setSimilarChunks] = useState<SimilarChunk[]>([]);
   const [isLoadingSimilarChunks, setIsLoadingSimilarChunks] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<SearchResultFile | null>(
-    null
-  );
+  const [selectedFile, setSelectedFile] = useState<SearchResultFile>();
 
   const handleSearch = async (query: string) => {
     setIsLoadingSimilarChunks(true);
@@ -45,7 +43,7 @@ const RepositoryPage = () => {
       }
       const data = await response.json();
       setSimilarChunks(data.similarChunks);
-      setSelectedFile(null);
+      setSelectedFile(undefined);
     } catch (error) {
       console.log("Search error:", error);
       setSimilarChunks([]);
@@ -62,7 +60,7 @@ const RepositoryPage = () => {
     setSearchQuery(value);
     if (!value.trim()) {
       setSimilarChunks([]);
-      setSelectedFile(null);
+      setSelectedFile(undefined);
       return;
     }
     debouncedSearch(value);

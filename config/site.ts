@@ -1,4 +1,4 @@
-import { SiteConfig } from "@/types/site";
+import { SiteConfig } from "@/interfaces/site";
 
 export const siteConfig: SiteConfig = {
   name: "NavX",
@@ -8,6 +8,7 @@ export const siteConfig: SiteConfig = {
   tagline: "Navigate Code, Understand Repositories",
   headline: "Understand Code Like Never Before",
   subHeadline: "Semantic Search Meets Code Exploration",
+  features: ["Quick Conversion", "AI Writing", "URL Import"],
   links: {
     twitter: "https://x.com/XSinghAstra",
     github: "https://github.com/SinghAstra/navx",

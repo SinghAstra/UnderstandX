@@ -1,4 +1,4 @@
-import { GitHubFile } from "@/types/github";
+import { GitHubFile } from "@/interfaces/github";
 
 export async function processFilesIntoChunks(repoFiles: GitHubFile[]) {
   const chunks = [];

@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "./github-syntax-theme.css";
 * {
   font-family: "Poppins", system-ui;
 }
@@ -83,18 +84,6 @@ body {
   background: rgba(0, 0, 0, 0);
 }
 
-/* Code preview styles */
-.code-preview {
-  background: linear-gradient(
-    to bottom right,
-    hsl(222 47% 9%) 0%,
-    hsl(222 47% 5%) 100%
-  );
-  border: 1px solid hsl(222 47% 13%);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2),
-    0 2px 4px -1px rgba(0, 0, 0, 0.1);
-}
-
 .code-preview pre {
   font-family: "JetBrains Mono", monospace;
 }
@@ -113,8 +102,11 @@ body {
 }
 
 .match-highlight {
-  animation: highlight-pulse 2s ease-in-out infinite;
-  border: 1px solid hsla(214, 95%, 50%, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.match-highlight:hover {
+  background-color: rgba(255, 255, 0, 0.2);
 }
 
 input:-webkit-autofill,

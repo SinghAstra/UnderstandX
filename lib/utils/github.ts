@@ -1,4 +1,4 @@
-import { GitHubFile } from "@/types/github";
+import { GitHubFile } from "@/interfaces/github";
 import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({

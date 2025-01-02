@@ -68,23 +68,21 @@ export async function GET() {
                 marginTop: "32px",
               }}
             >
-              {["Quick Conversion", "AI Writing", "URL Import"].map(
-                (feature) => (
-                  <div
-                    key={feature}
-                    style={{
-                      display: "flex",
-                      padding: "12px 24px",
-                      borderRadius: "8px",
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      color: "#ffffff",
-                      fontSize: "24px",
-                    }}
-                  >
-                    {feature}
-                  </div>
-                )
-              )}
+              {siteConfig.features.map((feature) => (
+                <div
+                  key={feature}
+                  style={{
+                    display: "flex",
+                    padding: "12px 24px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "#ffffff",
+                    fontSize: "24px",
+                  }}
+                >
+                  {feature}
+                </div>
+              ))}
             </div>
 
             {/* Footer Section */}

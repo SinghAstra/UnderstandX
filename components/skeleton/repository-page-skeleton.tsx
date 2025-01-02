@@ -1,5 +1,5 @@
 import React from "react";
-import { FilePreview } from "../repository/file-preview";
+import FilePreview from "../repository/file-preview";
 import RepositoryHeader from "../repository/repository-header";
 import { SearchBar } from "../repository/search-bar";
 import { SearchResults } from "../repository/search-results";

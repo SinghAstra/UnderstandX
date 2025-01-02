@@ -1,4 +1,4 @@
-import { GitHubStats } from "@/types/github";
+import { GitHubStats } from "@/interfaces/github";
 import { Repository } from "@prisma/client";
 import { useEffect, useState } from "react";
 
