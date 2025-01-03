@@ -28,24 +28,26 @@ const mockRepositories = [
 
 export function Sidebar() {
   return (
-    <div className="flex h-screen w-64 flex-col border-r bg-card">
-      <div className="p-4">
-        <Button className="w-full" size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          New Repository
-        </Button>
-        <div className="relative mt-4">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search repositories..." className="pl-8" />
+    <div className="fixed inset-y-0 left-0 w-96 bg-background border-r pt-16">
+      <div className="flex flex-col">
+        <div className="p-4">
+          <Button className="w-full" size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            New Repository
+          </Button>
+          <div className="relative mt-4">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search repositories..." className="pl-8" />
+          </div>
         </div>
+        <ScrollArea className="flex-1 px-4">
+          <div className="space-y-2 pb-4">
+            {mockRepositories.map((repo) => (
+              <RepositoryCard key={repo.id} repository={repo} />
+            ))}
+          </div>
+        </ScrollArea>
       </div>
-      <ScrollArea className="flex-1 px-4">
-        <div className="space-y-2 pb-4">
-          {mockRepositories.map((repo) => (
-            <RepositoryCard key={repo.id} repository={repo} />
-          ))}
-        </div>
-      </ScrollArea>
     </div>
   );
 }
