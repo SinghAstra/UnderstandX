@@ -8,6 +8,7 @@ import { siteConfig } from "@/config/site";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const features = [
@@ -28,18 +29,16 @@ const features = [
 export default function SignIn() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isGithubLoading, setIsGithubLoading] = useState(false);
-  // const [showRepoAccessDialog, setShowRepoAccessDialog] = useState(false);
-  //   const [repoAccessType, setRepoAccessType] = useState("public");
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const handleGitHubSignIn = async () => {
     try {
       setIsGithubLoading(true);
-      //   const scopes =
-      //     repoAccessType === "private"
-      //       ? "read:user user:email repo"
-      //       : "read:user user:email";
-
-      await signIn("github");
+      await signIn("github", {
+        callbackUrl: callbackUrl,
+        redirect: true,
+      });
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       setIsGithubLoading(false);
@@ -49,7 +48,10 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     try {
       setIsGoogleLoading(true);
-      await signIn("google");
+      await signIn("google", {
+        callbackUrl: callbackUrl,
+        redirect: true,
+      });
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       setIsGoogleLoading(false);
