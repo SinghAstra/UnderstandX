@@ -36,10 +36,6 @@ export function Hero() {
 
   return (
     <div className="relative min-h-[90vh] flex items-center justify-center">
-      <div className="absolute inset-0">
-        {/* <div className="absolute inset-0 bg-grid-white z-10" /> */}
-        <div className="absolute inset-0 bg-gradient-to-b  from-background/40 to-background/80" />
-      </div>
       <div className="container px-4 md:px-6 relative">
         <div className="flex flex-col items-center space-y-8 text-center">
           <FadeInUp>

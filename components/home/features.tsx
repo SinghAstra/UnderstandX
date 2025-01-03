@@ -1,10 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { ColorVariant, Feature } from "@/interfaces/feature";
 import React from "react";
+import { FadeInUp } from "../animation/fade-in-up";
 
 const colorMap: Record<ColorVariant, string> = {
   "stats-blue":
-    "bg-stats-blue/20 text-stats-blue from-stats-blue/0 to-stats-blue/5 hover:shadow-stats-blue/10",
+    "bg-primary/20 text-primary from-primary/0 to-primary/5 hover:shadow-primary/10",
   "stats-purple":
     "bg-stats-purple/20 text-stats-purple from-stats-purple/0 to-stats-purple/5 hover:shadow-stats-purple/10",
   "stats-pink":
@@ -28,7 +29,7 @@ function FeatureCard({ feature }: FeatureCardProps) {
 
   return (
     <Card
-      className={`group relative p-6 bg-card/50 backdrop-blur-sm border-gray-800 transition-all duration-300 ease-in-out hover:shadow-lg ${shadowClass} hover:-translate-y-1`}
+      className={`group relative h-full p-6 bg-card/50 backdrop-blur-sm border-gray-800 transition-all duration-300 ease-in-out hover:shadow-lg ${shadowClass} hover:-translate-y-1`}
     >
       <div className="relative z-10">
         <div
@@ -69,9 +70,13 @@ export function Features({ features }: FeaturesProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature) => (
-            <FeatureCard key={feature.title} feature={feature} />
-          ))}
+          {features.map((feature, index) => {
+            return (
+              <FadeInUp delay={index * 0.2} key={index}>
+                <FeatureCard feature={feature} />
+              </FadeInUp>
+            );
+          })}
         </div>
       </div>
     </section>

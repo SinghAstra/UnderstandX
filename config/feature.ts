@@ -21,13 +21,13 @@ export const features: Feature[] = [
     description:
       "Analyze your GitHub repository with visualizations and insights into code structure, dependencies, and usage.",
     icon: Globe,
-    colorClass: "stats-pink",
+    colorClass: "stats-blue",
   },
   {
     title: "Database Schema Visualization",
     description:
       "Automatically generate and visualize database schemas from your GitHub codebase for better understanding.",
     icon: Database,
-    colorClass: "stats-orange",
+    colorClass: "stats-purple",
   },
 ];

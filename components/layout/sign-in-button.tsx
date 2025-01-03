@@ -18,7 +18,6 @@ export default function SignInButton() {
           Sign In
         </span>
       </Link>
-      <div className="absolute inset-0 rounded-md bg-primary/20 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 -z-10" />
     </div>
   );
 }

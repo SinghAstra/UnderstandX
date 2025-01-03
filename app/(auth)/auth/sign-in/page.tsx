@@ -57,9 +57,9 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen overflow-hidden">
       {/* Left Panel - Info Section */}
-      <div className="hidden lg:flex bg-gradient-to-br from-background via-secondary to-background relative">
+      <div className="hidden lg:flex lg:w-3/5 bg-gradient-to-br from-background via-secondary to-background relative z-10">
         <div className="absolute inset-0 bg-grid-white" />
         <div className="z-10 w-full p-12 flex flex-col justify-between">
           <div>
@@ -110,93 +110,100 @@ export default function SignIn() {
       </div>
 
       {/* Right Panel - Auth Section */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md p-8 bg-card/50 backdrop-blur-sm">
-          <div className="space-y-6">
-            <div className="space-y-2 text-center">
-              <h2 className="text-2xl font-semibold">
-                Welcome to{" "}
-                <span className="text-primary">{siteConfig.name}</span>
-              </h2>
-              <p className="text-muted-foreground">
-                Sign in to start analyzing your repositories
-              </p>
-            </div>
+      <div className="w-full lg:w-2/5 flex items-center justify-center">
+        <div className=" flex items-center justify-center p-8 relative">
+          {/* Decorative elements */}
+          <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
 
-            <div className="space-y-4">
-              <Button
-                onClick={handleGitHubSignIn}
-                disabled={isGithubLoading}
-                variant="default"
-                className="w-full bg-[#24292F] text-white hover:bg-[#24292F]/90 group"
-              >
-                {isGithubLoading ? (
-                  <>
-                    <Icons.loader className="w-5 h-5 animate-spin" />
-                    Wait ...
-                  </>
-                ) : (
-                  <>
-                    <Icons.gitLogo className="mr-2 h-5 w-5" />
-                    <span className="text-center">Continue with GitHub</span>
-                    <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full ml-2 animate-pulse">
-                      Recommended
-                    </span>
-                  </>
-                )}
-              </Button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
-                </div>
+          <Card className="w-full max-w-md p-8 bg-card/50 backdrop-blur-sm ">
+            <div className="space-y-6">
+              <div className="space-y-2 text-center">
+                <h2 className="text-2xl font-semibold">
+                  Welcome to{" "}
+                  <span className="text-primary">{siteConfig.name}</span>
+                </h2>
+                <p className="text-muted-foreground">
+                  Sign in to start analyzing your repositories
+                </p>
               </div>
 
-              <Button
-                variant="outline"
-                className="w-full text-primary"
-                onClick={handleGoogleSignIn}
-                disabled={isGoogleLoading}
-              >
-                {isGoogleLoading ? (
-                  <>
-                    <Icons.loader className="w-5 h-5 animate-spin" />
-                    Wait ...
-                  </>
-                ) : (
-                  <>
-                    <Image
-                      src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                      alt="Google"
-                      width={18}
-                      height={18}
-                      className="mr-2"
-                    />
-                    Continue with Google
-                  </>
-                )}
-              </Button>
-            </div>
+              <div className="space-y-4">
+                <Button
+                  onClick={handleGitHubSignIn}
+                  disabled={isGithubLoading}
+                  variant="default"
+                  className="w-full bg-[#24292F] text-white hover:bg-[#24292F]/90 group"
+                >
+                  {isGithubLoading ? (
+                    <>
+                      <Icons.loader className="w-5 h-5 animate-spin" />
+                      Wait ...
+                    </>
+                  ) : (
+                    <>
+                      <Icons.gitLogo className="mr-2 h-5 w-5" />
+                      <span className="text-center">Continue with GitHub</span>
+                      <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full ml-2 animate-pulse">
+                        Recommended
+                      </span>
+                    </>
+                  )}
+                </Button>
 
-            <div className="text-center text-sm text-muted-foreground">
-              <p>
-                By continuing, you agree to our{" "}
-                <a href="#" className="underline hover:text-primary">
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a href="#" className="underline hover:text-primary">
-                  Privacy Policy
-                </a>
-              </p>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="w-full text-primary"
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleLoading}
+                >
+                  {isGoogleLoading ? (
+                    <>
+                      <Icons.loader className="w-5 h-5 animate-spin" />
+                      Wait ...
+                    </>
+                  ) : (
+                    <>
+                      <Image
+                        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                        alt="Google"
+                        width={18}
+                        height={18}
+                        className="mr-2"
+                      />
+                      Continue with Google
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <div className="text-center text-sm text-muted-foreground">
+                <p>
+                  By continuing, you agree to our{" "}
+                  <a href="#" className="underline hover:text-primary">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="underline hover:text-primary">
+                    Privacy Policy
+                  </a>
+                </p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+          {/* </div> */}
+        </div>
       </div>
     </div>
   );
