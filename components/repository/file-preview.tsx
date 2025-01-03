@@ -27,6 +27,7 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
   const [loadingGithubFileContent, setLoadingGithubFileContent] =
     useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   // Function to detect language from file extension
   const detectLanguage = (filepath: string): string => {
@@ -100,13 +101,10 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
       return (
         <div
           key={index}
-          className={cn(
-            "whitespace-pre",
-            matchedLines.has(index) && "bg-yellow-900/30"
-          )}
+          className={cn("", matchedLines.has(index) && "bg-yellow-900/30")}
         >
           {/* Line number */}
-          <span className="inline-block w-12 select-none text-right pr-4 text-slate-500">
+          <span className=" w-12 select-none text-right pl-2 pr-4 text-slate-500">
             {index + 1}
           </span>{" "}
           {/* Code content */}
@@ -119,10 +117,8 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     });
 
     return (
-      <pre className="code-preview font-mono text-sm leading-6">
-        <code className={`language-${language} block`}>
-          {highlightedContent}
-        </code>
+      <pre className="code-preview font-mono text-sm leading-6 px-4 py-2 ">
+        = <code>{highlightedContent}</code>
       </pre>
     );
   };
@@ -131,11 +127,13 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     async function fetchFileContent() {
       if (!file) {
         setContent(null);
+        setIsContentReady(false);
         return;
       }
 
       setLoadingGithubFileContent(true);
       setError(null);
+      setIsContentReady(false);
 
       try {
         const [owner, repo] = file.repositoryFullName.split("/");
@@ -161,7 +159,7 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     if (content) {
       Prism.highlightAll();
     }
-  }, [content]);
+  }, [content, isContentReady]);
 
   if (isLoading || loadingGithubFileContent) {
     return <FilePreviewSkeleton />;

@@ -49,8 +49,7 @@ export function SearchResults({
                       {file.filepath.split("/").pop()}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {file.similarChunks.length}{" "}
-                      {file.similarChunks.length === 1 ? "match" : "matches"}
+                      {file.filepath}
                     </span>
                   </div>
                 </div>
@@ -58,12 +57,10 @@ export function SearchResults({
                   variant="secondary"
                   className="bg-primary/10 text-primary border-primary/20"
                 >
-                  {file.type}
+                  {file.similarChunks.length}{" "}
+                  {file.similarChunks.length === 1 ? "match" : "matches"}
                 </Badge>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {file.filepath}
-              </p>
             </div>
           ))}
         </div>
