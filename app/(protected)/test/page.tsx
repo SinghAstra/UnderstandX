@@ -24,8 +24,6 @@ import { useDebouncedCallback } from "use-debounce";
 export default function DashboardPage() {
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [status, setStatus] = useState("");
-  // const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const page = 1;
   const router = useRouter();
