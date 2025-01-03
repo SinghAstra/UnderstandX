@@ -72,13 +72,32 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      console.log("url is ", url);
-      console.log("baseUrl is ", baseUrl);
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
+      console.log("Redirect callback - URL:", url);
+      console.log("Redirect callback - Base URL:", baseUrl);
+
+      // Ensure URL is properly formatted
+      try {
+        // Handle relative URLs
+        if (url.startsWith("/")) {
+          const finalUrl = `${baseUrl}${url}`;
+          console.log("Redirecting to:", finalUrl);
+          return finalUrl;
+        }
+
+        // Handle absolute URLs
+        const urlObject = new URL(url);
+        if (urlObject.origin === baseUrl) {
+          console.log("Redirecting to same-origin URL:", url);
+          return url;
+        }
+
+        // Default fallback
+        console.log("Falling back to base URL:", baseUrl);
+        return baseUrl;
+      } catch (error) {
+        console.error("Error in redirect callback:", error);
+        return baseUrl;
+      }
     },
   },
 
@@ -88,5 +107,5 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
   },
 
-  debug: process.env.NODE_ENV === "development",
+  // debug: process.env.NODE_ENV === "development",
 };

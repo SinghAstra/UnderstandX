@@ -9,7 +9,10 @@ const authRequiredPaths = ["/dashboard", "/settings", "/profile"];
 const authPages = ["/auth/sign-in", "/auth/sign-up"];
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXT_AUTH_SECRET,
+  });
   console.log("token is ", token);
   const { pathname } = request.nextUrl;
 
@@ -20,6 +23,10 @@ export async function middleware(request: NextRequest) {
 
   // Check if the current path is an auth page
   const isAuthPage = authPages.some((path) => pathname.startsWith(path));
+
+  console.log("pathname is ", pathname);
+  console.log("isAuthRequired is ", isAuthRequired);
+  console.log("isAuthPage is ", isAuthPage);
 
   // If the path requires authentication and user isn't logged in
   if (isAuthRequired && !token) {
