@@ -4,9 +4,12 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 // Authentication required paths
-const authRequiredPaths = ["/dashboard", "/settings", "/profile"];
+const authRequiredPaths = ["/dashboard", "/settings", "/profile", "/test"];
 // Authentication pages (sign in, sign up, etc)
 const authPages = ["/auth/sign-in", "/auth/sign-up"];
+
+// Public pages that don't require authentication
+const publicPages = ["/", "/about", "/contact", "/pricing", "/blog"];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({
@@ -23,6 +26,8 @@ export async function middleware(request: NextRequest) {
 
   // Check if the current path is an auth page
   const isAuthPage = authPages.some((path) => pathname.startsWith(path));
+
+  const isPublicPage = publicPages.some((path) => pathname.startsWith(path));
 
   console.log("pathname is ", pathname);
   console.log("isAuthRequired is ", isAuthRequired);
@@ -41,9 +46,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // For all other paths that don't match our known routes
-  if (!isAuthRequired && !isAuthPage && pathname !== "/") {
+  if (!isAuthRequired && !isAuthPage && !isPublicPage && pathname !== "/404") {
+    console.log("At 50");
     return NextResponse.redirect(new URL("/404", request.url));
   }
+
+  console.log("At 53");
 
   return NextResponse.next();
 }

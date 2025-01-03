@@ -3,10 +3,10 @@
 import { siteConfig } from "@/config/site";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { AvatarMenu } from "../custom-ui/avatar-menu";
+import SignInButton from "../custom-ui/sign-in-button";
 import { Icons } from "../Icons";
 import { Skeleton } from "../ui/skeleton";
-import { AvatarMenu } from "./avatar-menu";
-import SignInButton from "./sign-in-button";
 
 export function DashboardNavbar() {
   const { data: session, status } = useSession();

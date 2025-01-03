@@ -1,5 +1,5 @@
 import { Icons } from "@/components/Icons";
-import { AvatarMenu } from "@/components/layout/avatar-menu";
+import { AvatarMenu } from "@/components/custom-ui/avatar-menu";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { Home } from "lucide-react";

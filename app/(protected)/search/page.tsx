@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/layout/navbar";
+import { Navbar } from "@/components/home/home-navbar";
 import { SearchHeroSection } from "@/components/search/search-hero-section";
 import { SearchRepositoryForm } from "@/components/search/search-repository-form";
 

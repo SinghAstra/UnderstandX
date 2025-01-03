@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils/utils";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AvatarMenu } from "../custom-ui/avatar-menu";
+import SignInButton from "../custom-ui/sign-in-button";
 import { Skeleton } from "../ui/skeleton";
-import { AvatarMenu } from "./avatar-menu";
-import SignInButton from "./sign-in-button";
 
 export function Navbar() {
   const { data: session, status } = useSession();
