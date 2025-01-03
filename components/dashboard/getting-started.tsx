@@ -8,19 +8,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { GitBranch, Search, Zap } from "lucide-react";
+import { siteConfig } from "@/config/site";
+import { GitBranch, Search } from "lucide-react";
 
 export function GettingStarted() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Getting Started with NavX</h1>
+        <h1 className="text-4xl leading-tight mb-2">
+          Getting Started with {siteConfig.name}
+        </h1>
         <p className="text-muted-foreground">
           Follow these steps to start exploring your code semantically.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 mb-8">
         <Card>
           <CardHeader>
             <GitBranch className="h-8 w-8 mb-2 text-primary" />
@@ -59,7 +62,7 @@ export function GettingStarted() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <Zap className="h-8 w-8 mb-2 text-primary" />
             <CardTitle>Advanced Search Tips</CardTitle>
@@ -77,7 +80,7 @@ export function GettingStarted() {
               Learn More
             </Button>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       <div className="flex justify-center">

@@ -12,8 +12,8 @@ import { MessageSquare } from "lucide-react";
 
 export function ToolsSidebar() {
   return (
-    <div className="w-80 border-l bg-card p-4">
-      <h2 className="mb-4 text-lg font-semibold">NavX Ecosystem</h2>
+    <div className="w-80 bg-background p-4">
+      <h2 className="mb-4 text-lg leading-relaxed">Our Ecosystem</h2>
 
       <Card>
         <CardHeader>
