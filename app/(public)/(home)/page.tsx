@@ -1,9 +1,14 @@
-import HeroSection from "@/components/home/hero-section";
+"use client";
+
+import Features from "@/components/home/features";
+import { Hero } from "@/components/home/hero";
+import { features } from "@/config/feature";
 
 export default function Home() {
   return (
-    <main className="mt-20">
-      <HeroSection />
+    <main className="flex flex-col">
+      <Hero />
+      <Features features={features} />
     </main>
   );
 }

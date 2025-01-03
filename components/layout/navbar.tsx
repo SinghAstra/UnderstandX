@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils/utils";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Icons } from "../Icons";
 import { Skeleton } from "../ui/skeleton";
 import { AvatarMenu } from "./avatar-menu";
 import SignInButton from "./sign-in-button";
@@ -27,10 +26,8 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 w-full transition-all duration-200 py-2 px-4",
-        scrolled
-          ? "backdrop-blur-sm border-b border-border/40"
-          : "bg-transparent"
+        "fixed top-0 z-50 w-full transition-all duration-200 py-2 px-4 bg-transparent",
+        scrolled && "backdrop-blur-sm border-b border-border/40"
       )}
     >
       <nav className="container flex h-16 items-center justify-between">
@@ -38,7 +35,6 @@ export function Navbar() {
           href="/"
           className="flex items-center space-x-2 hover:opacity-80 transition-opacity ml-2"
         >
-          <Icons.logo className="h-6 w-6 text-primary" />
           <span className="tracking-wide text-2xl font-medium">
             {siteConfig.name}
           </span>
