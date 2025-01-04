@@ -1,167 +1,136 @@
 "use client";
-import { StatusBadge } from "@/components/custom-ui/status-badge";
-import { DashboardNavbar } from "@/components/layout/old-dashboard-navbar";
-import TableSkeleton from "@/components/skeleton/table-skeleton";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { toast } from "@/hooks/use-toast";
-import { getRelativeTimeString } from "@/lib/utils/date";
-import { Repository } from "@prisma/client";
-import { Code, Plus, Search } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  FileCode,
+  Folder,
+  GitFork,
+  Search,
+  Star,
+} from "lucide-react";
+import React, { useState } from "react";
 
-export default function DashboardPage() {
-  const [repositories, setRepositories] = useState<Repository[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const page = 1;
-  const router = useRouter();
-
-  const fetchRepositories = useCallback(
-    async (search?: string) => {
-      try {
-        setLoading(true);
-        const queryParams = new URLSearchParams({
-          page: String(page),
-          limit: "10",
-          // ...(status && { status }),
-          ...(search && { search }),
-        });
-        const response = await fetch(`/api/repository?${queryParams}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch repositories.");
-        }
-        const data = await response.json();
-
-        setRepositories(data.repositories);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch repositories. Please try again later.",
-        });
-        console.log("error --fetchRepositories: ", error);
-        console.log("Failed to fetch repositories at DashboardPage.tsx");
-      } finally {
-        setLoading(false);
-      }
+// Mock data based on the schema
+const repositoryData = {
+  id: "1",
+  name: "next-auth",
+  fullName: "nextauthjs/next-auth",
+  description: "Authentication for Next.js",
+  status: "SUCCESS",
+  owner: "nextauthjs",
+  url: "https://github.com/nextauthjs/next-auth",
+  avatarUrl: "/api/placeholder/40/40",
+  chunks: [
+    {
+      id: "chunk1",
+      filepath: "src/core/index.ts",
+      content: "export function NextAuth() { /* ... */ }",
+      type: "typescript",
+      keywords: ["auth", "next-auth", "core"],
     },
-    [page]
-  );
+    // More chunks...
+  ],
+};
 
-  // Debounce the search to avoid too many API calls
-  const debouncedSearch = useDebouncedCallback((value: string) => {
-    fetchRepositories(value);
-  }, 300);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    if (!value.trim()) {
-      fetchRepositories();
-      return;
-    }
-    debouncedSearch(value);
-  };
-
-  useEffect(() => {
-    fetchRepositories();
-  }, [fetchRepositories]);
+const RepositoryDetailView = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top Section */}
-      <DashboardNavbar />
-
-      {/* Main Content Area */}
-      <div className="mt-8 container mx-auto">
-        {/* Search and Filter */}
-        <div className="flex items-center space-x-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search repositories..."
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header Section */}
+      <header className="border-b border-border">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {/* <Image
+              src={repositoryData.avatarUrl}
+              alt=""
+              className="w-10 h-10 rounded-full"
+            /> */}
+            <div>
+              <div className="text-sm text-muted-foreground">
+                {repositoryData.owner} /
+                <span className="font-semibold text-foreground">
+                  {" "}
+                  {repositoryData.name}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="relative">
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+              size={20}
+            />
+            <input
+              type="text"
+              placeholder="Search code semantically..."
+              className="w-full pl-10 pr-4 py-2 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow"
               value={searchQuery}
-              onChange={handleSearchChange}
-              className="pl-10 bg-card border-border/40"
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            onClick={() => {
-              router.push("/search");
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            New Repository
-          </Button>
         </div>
-        {loading ? (
-          <TableSkeleton />
-        ) : (
-          <div className="mt-8 rounded-lg border border-border/40 bg-card overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-accent/5">
-                  <TableHead className="font-semibold text-center">
-                    Repository
-                  </TableHead>
-                  <TableHead className="font-semibold text-center">
-                    Status
-                  </TableHead>
-                  <TableHead className="font-semibold text-center">
-                    Last Updated
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {repositories.map((repo) => (
-                  <TableRow
-                    key={repo.id}
-                    className="hover:bg-accent/5 transition-colors cursor-pointer"
-                    onClick={() => router.push(`/repository/${repo.id}`)}
-                  >
-                    <TableCell className="text-center flex items-center justify-center">
-                      <div className="h-8 w-8 rounded-md bg-accent/30 flex items-center justify-center overflow-hidden relative mr-4">
-                        {repo.avatarUrl ? (
-                          <Image
-                            src={repo.avatarUrl}
-                            alt={`${repo.owner}'s avatar`}
-                            fill
-                            sizes="32px"
-                            className="object-cover"
-                          />
-                        ) : (
-                          <Code className="h-4 w-4 text-primary" />
-                        )}
-                      </div>
-                      {repo.owner}
-                      {" / "}
-                      {repo.name}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <StatusBadge status={repo.status} />
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-center">
-                      {getRelativeTimeString(repo.updatedAt)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto  py-2">
+        {/* Three Column Layout */}
+        <div className="grid grid-cols-12 gap-6">
+          {/* File Tree */}
+          <div className="col-span-3 border-r border-border">
+            <div className="space-y-1">
+              <FileTreeItem name="src" type="folder" level={0} expanded />
+              <FileTreeItem name="core" type="folder" level={1} />
+              <FileTreeItem name="index.ts" type="file" level={2} />
+            </div>
           </div>
-        )}
-      </div>
+
+          {/* Code View */}
+          <div className="col-span-9 bg-card rounded-lg p-4">
+            <div className="border-b border-border pb-3 mb-3 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FileCode size={16} className="text-primary" />
+                <span className="text-sm font-medium">src/core/index.ts</span>
+              </div>
+              <button className="p-1 hover:bg-secondary rounded-md transition-colors">
+                <Copy size={16} className="text-muted-foreground" />
+              </button>
+            </div>
+            <pre className="font-mono text-sm">
+              <code>{repositoryData.chunks[0].content}</code>
+            </pre>
+          </div>
+        </div>
+      </main>
     </div>
   );
-}
+};
+
+// File Tree Item Component
+const FileTreeItem = ({ name, type, level, expanded = false }) => {
+  const [isExpanded, setIsExpanded] = useState(expanded);
+
+  return (
+    <div
+      className="flex items-center space-x-1 px-2 py-1 hover:bg-secondary rounded-md cursor-pointer text-sm"
+      style={{ paddingLeft: `${level * 1.5}rem` }}
+    >
+      {type === "folder" && (
+        <button onClick={() => setIsExpanded(!isExpanded)} className="p-1">
+          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        </button>
+      )}
+      {type === "folder" ? (
+        <Folder size={16} className="text-primary" />
+      ) : (
+        <FileCode size={16} className="text-muted-foreground" />
+      )}
+      <span>{name}</span>
+    </div>
+  );
+};
+
+export default RepositoryDetailView;

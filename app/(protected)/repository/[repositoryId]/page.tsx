@@ -1,133 +1,215 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { SearchContainer } from "./search-container";
 
-import FilePreview from "@/components/repository/file-preview";
-import RepositoryHeader from "@/components/repository/repository-header";
-import { SearchBar } from "@/components/repository/search-bar";
-import { SearchResults } from "@/components/repository/search-results";
-import RepositoryPageSkeleton from "@/components/skeleton/repository-page-skeleton";
-import useRepository from "@/hooks/use-repository";
-import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
-import { notFound, useParams } from "next/navigation";
-import React, { useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
+interface RecommendedSearch {
+  query: string;
+  description: string;
+}
 
 const RepositoryPage = () => {
-  const params = useParams();
-  const {
-    repositoryInfo,
-    loading: loadingRepositoryInfo,
-    error,
-  } = useRepository(params.repositoryId as string);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [similarChunks, setSimilarChunks] = useState<SimilarChunk[]>([]);
-  const [isLoadingSimilarChunks, setIsLoadingSimilarChunks] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<SearchResultFile>();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleSearch = async (query: string) => {
-    setIsLoadingSimilarChunks(true);
-    try {
-      const response = await fetch("/api/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-          repositoryId: params.repositoryId,
-        }),
-      });
+  // Get current states
+  const currentSearch = searchParams.get("q") || "";
+  const selectedFile = searchParams.get("file") || "";
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch search results");
-      }
-      const data = await response.json();
-      setSimilarChunks(data.similarChunks);
-      setSelectedFile(undefined);
-    } catch (error) {
-      console.log("Search error:", error);
-      setSimilarChunks([]);
-    } finally {
-      setIsLoadingSimilarChunks(false);
+  // Local states
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState(currentSearch);
+
+  // TODO:Mock recommended searches - replace with actual data
+  const recommendedSearches: RecommendedSearch[] = [
+    {
+      query: "useEffect dependencies",
+      description: "Find examples of useEffect hook usage with dependencies",
+    },
+    {
+      query: "api endpoints",
+      description: "Locate API endpoint definitions and implementations",
+    },
+    {
+      query: "auth middleware",
+      description: "Search for authentication middleware patterns",
+    },
+  ];
+
+  const handleSearch = (query: string) => {
+    if (!query.trim()) return;
+    setIsSearchModalOpen(false);
+    const params = new URLSearchParams(searchParams);
+    if (query) {
+      params.set("q", query);
+    } else {
+      params.delete("q");
     }
+    router.push(`${pathname}?${params.toString()}`);
+    setIsSearchModalOpen(false);
   };
 
-  const debouncedSearch = useDebouncedCallback((value: string) => {
-    handleSearch(value);
-  }, 300);
+  // const handleFileSelect = (filePath: string) => {
+  //   const params = new URLSearchParams(searchParams);
+  //   params.set("file", filePath);
+  //   router.push(`${pathname}?${params.toString()}`);
+  // };
 
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    if (!value.trim()) {
-      setSimilarChunks([]);
-      setSelectedFile(undefined);
-      return;
-    }
-    debouncedSearch(value);
-  };
-
-  if (loadingRepositoryInfo) {
+  // Initial UI - Centered search when no query
+  if (!currentSearch) {
     return (
-      <RepositoryPageSkeleton loadingRepositoryInfo={loadingRepositoryInfo} />
+      // <div className=" flex items-center justify-center p-8 relative">
+      //   <div className="w-full max-w-2xl relative backdrop-blur-sm bg-background border-2 py-2 px-4 rounded-md">
+      //     {/* Decorative elements */}
+      //     <div className="absolute -top-8 -right-8 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
+      //     <div className="absolute -bottom-8 -left-8 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl" />
+      //     <div className="pt-6 z-20">
+      //       <div className="flex flex-col items-center space-y-6">
+      //         <div className="w-full relative">
+      //           <Input
+      //             type="text"
+      //             placeholder="Search code..."
+      //             className="w-full pl-10 pr-4 py-2"
+      //             value={searchInput}
+      //             onChange={(e) => setSearchInput(e.target.value)}
+      //             onKeyDown={(e) => {
+      //               if (e.key === "Enter") {
+      //                 handleSearch(searchInput);
+      //               }
+      //             }}
+      //             onClick={() => setIsSearchModalOpen(true)}
+      //           />
+      //           <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+      //         </div>
+
+      //         {/* Recommended Searches */}
+      //         <div className="w-full space-y-4">
+      //           <h2 className="text-lg font-semibold">Recommended Searches</h2>
+      //           <div className="grid gap-2">
+      //             {recommendedSearches.map((item) => (
+      //               <Button
+      //                 key={item.query}
+      //                 variant="ghost"
+      //                 className="w-full justify-start text-left h-auto py-3"
+      //                 onClick={() => handleSearch(item.query)}
+      //               >
+      //                 <div>
+      //                   <p className="font-medium">{item.query}</p>
+      //                   <p className="text-sm text-muted-foreground">
+      //                     {item.description}
+      //                   </p>
+      //                 </div>
+      //               </Button>
+      //             ))}
+      //           </div>
+      //         </div>
+      //       </div>
+      //     </div>
+      //   </div>
+      // </div>
+      <SearchContainer />
     );
   }
 
-  if (error || !repositoryInfo) {
-    notFound();
-  }
-
-  const groupedResults = similarChunks.reduce((acc, similarChunk) => {
-    const key = similarChunk.filepath;
-    if (!acc[key]) {
-      acc[key] = {
-        filepath: similarChunk.filepath,
-        type: similarChunk.type,
-        repositoryName: similarChunk.repositoryName,
-        similarChunks: [],
-        repositoryFullName: similarChunk.repositoryFullName,
-      };
-    }
-    acc[key].similarChunks.push({
-      id: similarChunk.id,
-      filepath: similarChunk.filepath,
-      type: similarChunk.type,
-      repositoryName: similarChunk.repositoryName,
-      content: similarChunk.content,
-      similarity: similarChunk.similarity,
-      repositoryFullName: similarChunk.repositoryFullName,
-    });
-    return acc;
-  }, {} as Record<string, SearchResultFile>);
-
-  const searchResultUniqueFiles = Object.values(groupedResults);
-
+  // Search results view with split pane
   return (
-    <div className="min-h-screen bg-background">
-      <RepositoryHeader
-        repository={repositoryInfo.repository}
-        githubStats={repositoryInfo.githubStats}
-      />
-
-      <main className="container mx-auto py-2 flex flex-col gap-2 animate-in fade-in">
-        <SearchBar value={searchQuery} onChange={handleSearchChange} />
-
-        {/* Results and Preview Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          {/* Results List */}
-          <div className="lg:col-span-4">
-            <SearchResults
-              searchResultUniqueFiles={searchResultUniqueFiles}
-              selectedFile={selectedFile}
-              onFileSelect={setSelectedFile}
-              isLoading={isLoadingSimilarChunks}
+    <div className="h-screen flex flex-col">
+      {/* Top Navigation with Search */}
+      <div className="border-b p-4">
+        <div className="max-w-screen-xl mx-auto flex items-center gap-4">
+          <div className="relative flex-1 max-w-xl">
+            <Input
+              type="text"
+              placeholder="Search code..."
+              className="w-full pl-10 pr-4 py-2"
+              value={currentSearch}
+              onClick={() => setIsSearchModalOpen(true)}
             />
-          </div>
-
-          {/* Preview Panel */}
-          <div className="lg:col-span-8">
-            <FilePreview file={selectedFile} />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
           </div>
         </div>
-      </main>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* File List */}
+        <div className="w-80 border-r overflow-y-auto p-4">
+          <h2 className="font-semibold mb-4">Search Results</h2>
+          {/* Add your FileList component here */}
+        </div>
+
+        {/* File Viewer */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {selectedFile ? (
+            <div>{/* Add your FileViewer component here */}</div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              Select a file to view its contents
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Search Modal */}
+      {isSearchModalOpen && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm">
+          <div className="fixed inset-x-0 top-0 p-4">
+            <Card>
+              <CardContent className="pt-6 pb-4">
+                <div className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Search code..."
+                    className="w-full pl-10 pr-4 py-2"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSearch(searchInput);
+                      }
+                    }}
+                    autoFocus
+                  />
+                  <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                </div>
+
+                {/* Modal Search Suggestions */}
+                <div className="mt-4">
+                  <h3 className="text-sm font-medium mb-2">Recommended</h3>
+                  <div className="space-y-1">
+                    {recommendedSearches.map((item) => (
+                      <Button
+                        key={item.query}
+                        variant="ghost"
+                        className="w-full justify-start text-left h-auto py-2"
+                        onClick={() => handleSearch(item.query)}
+                      >
+                        <div>
+                          <p className="font-medium">{item.query}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Click outside to close */}
+          <div
+            className="fixed inset-0 -z-10"
+            onClick={() => setIsSearchModalOpen(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };
