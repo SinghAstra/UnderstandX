@@ -72,6 +72,7 @@ export function Sidebar() {
           onChange={handleSearchChange}
         />
         <SidebarRepoList
+          searchQuery={searchQuery}
           loading={isInitialLoad || loading}
           repositories={repositories}
         />
