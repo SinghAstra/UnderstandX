@@ -72,9 +72,14 @@
   }
 }
 
-* {
+body {
   scrollbar-width: thin;
   scrollbar-color: hsl(222 47% 11%) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  scrollbar-color: #262626;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -87,9 +92,9 @@
   cursor: grab;
 }
 
-/* ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
-} */
+}
 
 .code-preview pre {
   font-family: "JetBrains Mono", monospace;

@@ -35,12 +35,17 @@ export async function POST(req: NextRequest) {
 
     console.log("repoDetails is ", repoDetails);
 
+    console.log("repoDetails.githubId is ", repoDetails.githubId);
+
     // 3. Check if repository already exists using GitHub ID
-    const existingRepo = await prisma.repository.findUnique({
+    const existingRepo = await prisma.repository.findFirst({
       where: {
         githubId: repoDetails.githubId,
+        userId: session.user.id,
       },
     });
+
+    console.log("existingRepo is ", existingRepo);
 
     if (existingRepo) {
       // Update the URL if it has changed
@@ -169,7 +174,13 @@ export async function POST(req: NextRequest) {
       status: "SUCCESS",
     });
   } catch (error) {
-    console.log("Error processing repository:", error);
+    if (error instanceof Error) {
+      console.log("Error message:", error.message);
+      console.log("Error stack:", error.stack);
+    } else {
+      console.log("Unknown error:", error);
+    }
+    console.log("error -- get /repository/process");
     return NextResponse.json(
       { error: "Failed to process repository" },
       { status: 500 }

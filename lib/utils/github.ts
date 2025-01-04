@@ -18,8 +18,7 @@ export function parseGithubUrl(url: string) {
     if (!match) {
       return {
         isValid: false,
-        error:
-          "Please enter a valid GitHub repository URL (e.g., https://github.com/username/repository)",
+        error: "Please enter a valid GitHub repository URL.",
       };
     }
 

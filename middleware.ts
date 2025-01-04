@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
 
   // If the path requires authentication and user isn't logged in
   if (isAuthRequired && !token) {
-    const signInUrl = new URL("/auth/sign-in", request.url);
+    const signInUrl = new URL("/", request.url);
     signInUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(signInUrl);
   }

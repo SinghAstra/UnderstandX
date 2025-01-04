@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { AvatarMenu } from "../custom-ui/avatar-menu";
 import SignInButton from "../custom-ui/sign-in-button";
 import { Skeleton } from "../ui/skeleton";
@@ -21,10 +22,12 @@ export function Navbar() {
         </div>
 
         <div className="ml-auto flex items-center gap-4">
-          <Button variant="outline">
-            <Plus className="h-5 w-5" />
-            Connect New Repository
-          </Button>
+          <Link href="/new">
+            <Button variant="outline">
+              <Plus className="h-5 w-5" />
+              Connect New Repository
+            </Button>
+          </Link>
           {status === "loading" ? (
             <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
           ) : session?.user ? (

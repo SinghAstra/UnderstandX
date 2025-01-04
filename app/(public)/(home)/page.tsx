@@ -6,7 +6,7 @@ import { features } from "@/config/feature";
 
 export default function Home() {
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col pt-16">
       <Hero />
       <Features features={features} />
     </main>

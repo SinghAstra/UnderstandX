@@ -61,7 +61,7 @@ model VerificationToken {
 
 model Repository {
   id String @id @default(cuid())
-  githubId Int @unique
+  githubId Int 
   name String
   fullName String
   description String?
@@ -70,7 +70,7 @@ model Repository {
   url String
   avatarUrl String? 
   userId String
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   chunks RepositoryChunk[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

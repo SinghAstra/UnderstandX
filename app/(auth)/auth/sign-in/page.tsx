@@ -8,7 +8,7 @@ import { siteConfig } from "@/config/site";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const features = [
@@ -31,40 +31,16 @@ export default function SignIn() {
   const [isGithubLoading, setIsGithubLoading] = useState(false);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-  const router = useRouter();
 
   console.log("callbackUrl is ", callbackUrl);
 
   const handleGitHubSignIn = async () => {
     try {
       setIsGithubLoading(true);
-      const result = await signIn("github", {
+      await signIn("github", {
         callbackUrl,
-        redirect: false,
+        redirect: true,
       });
-
-      console.log("GitHub Sign-In Result:", result);
-
-      if (result?.error) {
-        console.error("Sign-in error:", result.error);
-        return;
-      }
-
-      if (!result?.url) {
-        console.error("No redirect URL received");
-        return;
-      }
-
-      // Try both methods to ensure redirect happens
-      try {
-        router.replace(result.url);
-      } catch (routerError) {
-        console.log(
-          "Router replace failed, falling back to window.location",
-          routerError
-        );
-        window.location.href = result.url;
-      }
     } catch (error) {
       console.error("GitHub Sign-In Error:", error);
     } finally {
@@ -75,33 +51,10 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     try {
       setIsGoogleLoading(true);
-      const result = await signIn("google", {
+      await signIn("google", {
         callbackUrl,
-        redirect: false,
+        redirect: true,
       });
-
-      console.log("Google Sign-In Result:", result);
-
-      if (result?.error) {
-        console.error("Sign-in error:", result.error);
-        return;
-      }
-
-      if (!result?.url) {
-        console.error("No redirect URL received");
-        return;
-      }
-
-      // Try both methods to ensure redirect happens
-      try {
-        router.replace(result.url);
-      } catch (routerError) {
-        console.log(
-          "Router replace failed, falling back to window.location",
-          routerError
-        );
-        window.location.href = result.url;
-      }
     } catch (error) {
       console.error("GitHub Sign-In Error:", error);
     } finally {
