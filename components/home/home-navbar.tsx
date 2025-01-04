@@ -40,15 +40,13 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center space-x-4">
-          {status === "loading" ? (
-            <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
-          ) : session?.user ? (
-            <AvatarMenu />
-          ) : (
-            <SignInButton />
-          )}
-        </div>
+        {status === "loading" ? (
+          <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
+        ) : session?.user ? (
+          <AvatarMenu />
+        ) : (
+          <SignInButton />
+        )}
       </nav>
     </header>
   );
