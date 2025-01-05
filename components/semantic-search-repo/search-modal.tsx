@@ -31,7 +31,7 @@ export function SearchModal({
       />
 
       {/* Modal */}
-      <div className="fixed inset-x-0 top-24 max-w-3xl mx-auto p-4">
+      <div className="fixed inset-x-0 top-12 max-w-3xl mx-auto p-4">
         <Card className="border-2 bg-card/50 backdrop-blur-sm shadow-2xl">
           {/* Search Input */}
           <div className="p-4 border-b">

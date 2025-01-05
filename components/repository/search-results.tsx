@@ -10,7 +10,7 @@ import { ScrollArea } from "../ui/scroll-area";
 interface SearchResultsProps {
   searchResultUniqueFiles?: SearchResultFile[];
   selectedFile?: SearchResultFile | null;
-  onFileSelect?: (file: SearchResultFile) => void;
+  onFileSelect?: (filePath: string) => void;
   isLoading?: boolean;
 }
 
@@ -31,7 +31,7 @@ export function SearchResults({
           {searchResultUniqueFiles.map((file) => (
             <div
               key={file.filepath}
-              onClick={() => onFileSelect(file)}
+              onClick={() => onFileSelect(file.filepath)}
               className={cn(
                 "group cursor-pointer rounded-lg border p-4 transition-all",
                 selectedFile?.filepath === file.filepath

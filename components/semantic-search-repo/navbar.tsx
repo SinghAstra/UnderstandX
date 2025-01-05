@@ -18,7 +18,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   const currentSearch = searchParams.get("q") || "";
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(true);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(currentSearch);
 
   const handleSearch = (query: string) => {
@@ -27,6 +27,7 @@ export function Navbar() {
     const params = new URLSearchParams(searchParams);
     if (query) {
       params.set("q", query);
+      params.delete("file");
     }
     router.push(`${pathname}?${params.toString()}`);
   };

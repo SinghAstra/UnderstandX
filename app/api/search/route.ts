@@ -23,11 +23,10 @@ export async function POST(
 
     // Parse request body
     const body = await req.json();
-    const { query, repositoryId, filters } = body;
+    const { query, repositoryId } = body;
 
     console.log("query is ", query);
     console.log("repositoryId is ", repositoryId);
-    console.log("filters is ", filters);
 
     if (!query) {
       return NextResponse.json(
