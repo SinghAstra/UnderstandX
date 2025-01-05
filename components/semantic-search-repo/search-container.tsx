@@ -17,7 +17,7 @@ export function SearchContainer({ onSearch }: SearchContainerProps) {
           <SearchBox
             onSearch={onSearch}
             showCloseIcon={false}
-            // className="border-b mb-2"
+            className="border-b mb-2"
           />
 
           <div className="max-h-[60vh] overflow-y-auto bg-background backdrop-blur-sm border-2 border-border/50 rounded-md ">

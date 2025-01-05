@@ -1,4 +1,5 @@
 "use client";
+import FilePreview from "@/components/repository/file-preview";
 import { SearchResults } from "@/components/repository/search-results";
 import { SearchContainer } from "@/components/semantic-search-repo/search-container";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
@@ -9,11 +10,6 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-
-interface RecommendedSearch {
-  query: string;
-  description: string;
-}
 
 const RepositoryPage = () => {
   const searchParams = useSearchParams();
@@ -126,7 +122,6 @@ const RepositoryPage = () => {
       <div className="flex-1 flex overflow-hidden">
         {/* File List */}
         <div className="w-80 border-r overflow-y-auto p-4">
-          <h2 className="font-semibold mb-4">Search Results</h2>
           <SearchResults
             searchResultUniqueFiles={Object.values(groupedResults)}
             selectedFile={selectedFile}
@@ -138,7 +133,7 @@ const RepositoryPage = () => {
         {/* File Viewer */}
         <div className="flex-1 overflow-y-auto p-4">
           {selectedFile ? (
-            <div>{/* Add your FileViewer component here */}</div>
+            <FilePreview file={selectedFile} />
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground">
               Select a file to view its contents

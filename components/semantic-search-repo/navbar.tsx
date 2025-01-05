@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { siteConfig } from "@/config/site";
@@ -5,7 +7,7 @@ import { Plus, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AvatarMenu } from "../custom-ui/avatar-menu";
 import SignInButton from "../custom-ui/sign-in-button";
 import { Skeleton } from "../ui/skeleton";
@@ -19,6 +21,7 @@ export function Navbar() {
 
   const currentSearch = searchParams.get("q") || "";
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState(currentSearch);
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
@@ -30,6 +33,11 @@ export function Navbar() {
     }
     router.push(`${pathname}?${params.toString()}`);
   };
+
+  // Update local state when currentSearch changes
+  useEffect(() => {
+    setSearchValue(currentSearch);
+  }, [currentSearch]);
 
   return (
     <>
@@ -50,8 +58,9 @@ export function Navbar() {
                   type="text"
                   placeholder="Search code..."
                   className="w-full pl-10 pr-4"
-                  defaultValue={currentSearch}
+                  value={searchValue}
                   onClick={() => setIsSearchModalOpen(true)}
+                  onChange={(e) => setSearchValue(e.target.value)}
                 />
                 <Search className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
               </div>
