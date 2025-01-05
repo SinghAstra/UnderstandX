@@ -26,6 +26,8 @@ const RepositoryPage = () => {
   const [isLoadingSimilarChunks, setIsLoadingSimilarChunks] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("error is ", error);
+
   useEffect(() => {
     console.log("In the useEffect.");
     console.log("currentSearch is ", currentSearch);
