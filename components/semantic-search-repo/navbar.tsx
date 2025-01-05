@@ -19,7 +19,6 @@ export function Navbar() {
 
   const currentSearch = searchParams.get("q") || "";
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState(currentSearch);
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
@@ -37,9 +36,11 @@ export function Navbar() {
       <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center px-4">
           <div className="flex items-center gap-6">
-            <span className="text-xl leading-loose font-semibold">
-              {siteConfig.name}
-            </span>
+            <Link href="/dashboard">
+              <span className="text-xl leading-loose font-semibold">
+                {siteConfig.name}
+              </span>
+            </Link>
           </div>
 
           <div className="ml-auto flex items-center gap-4">
@@ -74,9 +75,8 @@ export function Navbar() {
 
       <SearchModal
         isOpen={isSearchModalOpen}
+        value={currentSearch}
         onClose={() => setIsSearchModalOpen(false)}
-        searchInput={searchInput}
-        onSearchChange={setSearchInput}
         onSearch={handleSearch}
       />
     </>

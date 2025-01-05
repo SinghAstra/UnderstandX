@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Command } from "lucide-react";
 
 interface SearchSuggestionsProps {
-  onSelect: (query: string) => void;
+  onSearch: (query: string) => void;
 }
 
-export function SearchSuggestions({ onSelect }: SearchSuggestionsProps) {
+export function SearchSuggestions({ onSearch }: SearchSuggestionsProps) {
   const suggestions = [
     {
       query: "useEffect dependencies",
@@ -36,7 +36,7 @@ export function SearchSuggestions({ onSelect }: SearchSuggestionsProps) {
             key={item.query}
             variant="ghost"
             className="w-full justify-start text-left h-auto p-4 hover:bg-primary/10 group"
-            onClick={() => onSelect(item.query)}
+            onClick={() => onSearch(item.query)}
           >
             <div className="flex items-center justify-between w-full">
               <div className="space-y-1">

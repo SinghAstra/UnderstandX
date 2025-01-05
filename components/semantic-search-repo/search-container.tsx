@@ -1,29 +1,12 @@
-import { useState } from "react";
-import { RecommendedSearch } from "./recommended-search";
+import { RecentSearches } from "./recent-search";
 import { SearchBox } from "./search-box";
+import { SearchSuggestions } from "./search-suggestion";
 
 interface SearchContainerProps {
   onSearch: (query: string) => void;
 }
 
-const recommendedSearches = [
-  {
-    query: "authentication flow",
-    description: "Find authentication implementation patterns",
-  },
-  {
-    query: "database schema",
-    description: "Explore database models and relationships",
-  },
-  {
-    query: "api endpoints",
-    description: "Discover API routes and handlers",
-  },
-];
-
 export function SearchContainer({ onSearch }: SearchContainerProps) {
-  const [searchInput, setSearchInput] = useState("");
-
   return (
     <div className="flex items-center justify-center p-8 relative">
       <div className="w-full max-w-2xl relative">
@@ -32,12 +15,17 @@ export function SearchContainer({ onSearch }: SearchContainerProps) {
 
         <div className="relative space-y-6">
           <SearchBox
-            value={searchInput}
-            onChange={setSearchInput}
             onSearch={onSearch}
+            showCloseIcon={false}
+            // className="border-b mb-2"
           />
 
-          <RecommendedSearch items={recommendedSearches} onSelect={onSearch} />
+          <div className="max-h-[60vh] overflow-y-auto bg-background backdrop-blur-sm border-2 border-border/50 rounded-md ">
+            <div className="p-4 space-y-6">
+              <RecentSearches onSearch={onSearch} />
+              <SearchSuggestions onSearch={onSearch} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

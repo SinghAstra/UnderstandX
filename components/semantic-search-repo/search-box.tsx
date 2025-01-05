@@ -1,30 +1,54 @@
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { cn } from "@/lib/utils/utils";
+import { Search, X } from "lucide-react";
+import { useState } from "react";
+import { Button } from "../ui/button";
 
 interface SearchBoxProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
   onSearch: (value: string) => void;
+  showCloseIcon: boolean;
+  className?: string;
+  onClose?: () => void;
 }
 
-export function SearchBox({ value, onChange, onSearch }: SearchBoxProps) {
+export function SearchBox({
+  value,
+  onSearch,
+  showCloseIcon,
+  onClose,
+  className,
+}: SearchBoxProps) {
+  const [searchInput, setSearchInput] = useState(value || "");
+
   return (
-    <div className="relative group">
-      <div className="absolute inset-0 bg-primary/10 blur-xl rounded-2xl group-hover:bg-primary/20 transition-colors" />
-      <div className="relative">
-        <Input
-          type="text"
-          placeholder="Search using natural language..."
-          className="w-full pl-12 pr-4 py-6 text-lg bg-background/50 backdrop-blur-sm border-2 border-border/50 hover:border-primary/50 focus:border-primary transition-colors rounded-xl shadow-lg"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              onSearch(value);
-            }
-          }}
-        />
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+    <div className={cn("relative flex items-center", className)}>
+      <Search className="absolute left-4 h-5 w-5 text-muted-foreground" />
+      <Input
+        type="text"
+        placeholder="Search code..."
+        className="w-full pl-12 pr-24 py-6 text-lg bg-background/50 border-2 border-border/50 focus:border-primary transition-all rounded-lg"
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onSearch(searchInput);
+          }
+        }}
+        autoFocus
+      />
+      <div className="absolute right-4 flex items-center gap-2">
+        <kbd className="px-2 py-1 text-xs font-mono bg-muted rounded">↵</kbd>
+        {showCloseIcon && onClose && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -3,10 +3,10 @@ import { Clock, History, X } from "lucide-react";
 import { useState } from "react";
 
 interface RecentSearchesProps {
-  onSelect: (query: string) => void;
+  onSearch: (query: string) => void;
 }
 
-export function RecentSearches({ onSelect }: RecentSearchesProps) {
+export function RecentSearches({ onSearch }: RecentSearchesProps) {
   const [isVisible, setIsVisible] = useState(true);
   const recentSearches = ["React hooks", "Authentication flow", "API routes"];
 
@@ -16,8 +16,8 @@ export function RecentSearches({ onSelect }: RecentSearchesProps) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Clock className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold">Recent Searches</h3>
+          <Clock className="h-5 w-5 text-muted-foreground" />
+          <h3 className="leading-tight">Recent Search</h3>
         </div>
         <Button
           variant="ghost"
@@ -35,7 +35,7 @@ export function RecentSearches({ onSelect }: RecentSearchesProps) {
             variant="outline"
             size="sm"
             className="hover:bg-primary/10 hover:text-primary transition-colors"
-            onClick={() => onSelect(query)}
+            onClick={() => onSearch(query)}
           >
             <History className="mr-2 h-4 w-4" />
             {query}
