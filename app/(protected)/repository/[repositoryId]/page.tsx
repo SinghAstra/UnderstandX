@@ -3,6 +3,7 @@ import FilePreview from "@/components/repository/file-preview";
 import { SearchResults } from "@/components/repository/search-results";
 import { SearchContainer } from "@/components/semantic-search-repo/search-container";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
+import { Repository } from "@prisma/client";
 import {
   useParams,
   usePathname,
@@ -17,26 +18,66 @@ const RepositoryPage = () => {
   const pathname = usePathname();
   const params = useParams();
 
-  // Get current states
-  const currentSearch = searchParams.get("q") || "";
+  // current states
+  const searchQuery = searchParams.get("q") || "";
   const selectedFilePath = searchParams.get("file") || "";
   const repositoryId = params.repositoryId;
 
+  // Repository State
+  const [repository, setRepository] = useState<Repository | null>(null);
+  const [isLoadingRepository, setIsLoadingRepository] = useState(true);
+  const [repositoryError, setRepositoryError] = useState<string | null>(null);
+
   const [similarChunks, setSimilarChunks] = useState<SimilarChunk[]>([]);
   const [isLoadingSimilarChunks, setIsLoadingSimilarChunks] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
-  console.log("error is ", error);
+  useEffect(() => {
+    const fetchRepository = async () => {
+      if (!repositoryId) {
+        setRepositoryError("Repository ID is required");
+        setIsLoadingRepository(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/repository/${repositoryId}`);
+
+        if (!response.ok) {
+          console.log("response.status is ", response.status);
+          if (response.status === 404) {
+            router.push("/404");
+            return;
+          }
+          throw new Error("Failed to fetch repository");
+        }
+
+        const data = await response.json();
+        setRepository(data);
+      } catch (error) {
+        console.log("Repository fetch error:", error);
+        setRepositoryError(
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch repository details"
+        );
+      } finally {
+        setIsLoadingRepository(false);
+      }
+    };
+
+    fetchRepository();
+  }, [repositoryId, router]);
 
   useEffect(() => {
     console.log("In the useEffect.");
-    console.log("currentSearch is ", currentSearch);
+    console.log("searchQuery is ", searchQuery);
     console.log("repositoryId is ", repositoryId);
-    if (!currentSearch || !repositoryId) return;
+    if (!searchQuery || !repositoryId || !repository) return;
 
     const fetchSimilarChunks = async () => {
       setIsLoadingSimilarChunks(true);
-      setError(null);
+      setSearchError(null);
 
       try {
         const response = await fetch("/api/search", {
@@ -45,7 +86,7 @@ const RepositoryPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            query: currentSearch,
+            query: searchQuery,
             repositoryId,
           }),
         });
@@ -58,7 +99,7 @@ const RepositoryPage = () => {
         setSimilarChunks(data.similarChunks);
       } catch (error) {
         console.log("Search error:", error);
-        setError(
+        setSearchError(
           error instanceof Error
             ? error.message
             : "Something Went wrong while fetching results"
@@ -70,7 +111,7 @@ const RepositoryPage = () => {
     };
 
     fetchSimilarChunks();
-  }, [currentSearch, repositoryId]);
+  }, [searchQuery, repositoryId, repository, router]);
 
   const groupedResults = useMemo(() => {
     return similarChunks.reduce((acc, chunk) => {
@@ -110,12 +151,32 @@ const RepositoryPage = () => {
   };
 
   // Initial UI - Centered search when no query
-  if (!currentSearch) {
+  if (!searchQuery) {
     return <SearchContainer onSearch={handleSearch} />;
   }
 
   console.log("groupedResults is ", groupedResults);
   console.log("isLoadingSimilarChunks is ", isLoadingSimilarChunks);
+
+  if (isLoadingRepository) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (repositoryError) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-destructive">{repositoryError}</div>
+      </div>
+    );
+  }
+
+  if (!repository) {
+    return null;
+  }
 
   // Search results view with split pane
   return (

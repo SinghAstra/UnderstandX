@@ -4,12 +4,11 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 // Authentication required paths
-const authRequiredPaths = ["/dashboard", "/settings", "/profile", "/test"];
+const authRequiredPaths = ["/dashboard", "/repository"];
 // Authentication pages (sign in, sign up, etc)
 const authPages = ["/auth/sign-in", "/auth/sign-up"];
-
 // Public pages that don't require authentication
-const publicPages = ["/", "/about", "/contact", "/pricing", "/blog"];
+const publicPages = ["/"];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({
@@ -35,13 +34,14 @@ export async function middleware(request: NextRequest) {
 
   // If the path requires authentication and user isn't logged in
   if (isAuthRequired && !token) {
-    const signInUrl = new URL("/", request.url);
+    const signInUrl = new URL("/auth/sign-in", request.url);
     signInUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(signInUrl);
   }
 
-  // If user is logged in and trying to access auth pages
-  if (token && isAuthPage) {
+  // If user is logged in and trying to access auth pages or if user is authenticated make the dashboard
+  // the landing page
+  if ((token && isAuthPage) || (token && pathname === "/")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

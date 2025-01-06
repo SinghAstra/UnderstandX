@@ -47,7 +47,7 @@ export function AvatarMenu() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => signOut()}
+          onClick={() => signOut({ callbackUrl: "/" })}
           className="text-destructive"
         >
           <LogOut className="mr-2 h-4 w-4" />

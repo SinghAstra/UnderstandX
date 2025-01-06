@@ -81,6 +81,7 @@
   /* Target all elements that can scroll */
   *::-webkit-scrollbar {
     width: 6px;
+    border-radius: 3px;
     height: 6px; /* For horizontal scrollbars */
   }
 
@@ -104,29 +105,24 @@
   }
 }
 
-/* body {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(222 47% 11%) transparent;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  caret-color: hsl(var(--foreground)) !important;
+  box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-  scrollbar-color: #262626;
+input:-webkit-autofill:not(:focus) {
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: hsl(222 47% 11%);
-  border-radius: 8px;
+.bg-grid-white {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' fill='none' stroke='rgb(255 255 255 / 0.02)'%3e%3cpath d='M0 .5H63.5V64'/%3e%3c/svg%3e");
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(222 47% 15%);
-  cursor: grab;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-} */
 
 .code-preview pre {
   font-family: "JetBrains Mono", monospace;
@@ -151,23 +147,4 @@
 
 .match-highlight:hover {
   background-color: rgba(255, 255, 0, 0.2);
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
-  -webkit-text-fill-color: hsl(var(--foreground)) !important;
-  caret-color: hsl(var(--foreground)) !important;
-  box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
-}
-
-input:-webkit-autofill:not(:focus) {
-  -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
-  -webkit-text-fill-color: hsl(var(--foreground)) !important;
-}
-
-.bg-grid-white {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' fill='none' stroke='rgb(255 255 255 / 0.02)'%3e%3cpath d='M0 .5H63.5V64'/%3e%3c/svg%3e");
 }

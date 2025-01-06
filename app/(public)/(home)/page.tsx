@@ -2,7 +2,7 @@
 
 import Features from "@/components/home/features";
 import { Hero } from "@/components/home/hero";
-import { features } from "@/config/feature";
+import { features } from "@/config/features";
 
 export default function Home() {
   return (
