@@ -11,7 +11,7 @@ const NotFound = () => {
         {/* Top Section with Large Number */}
         <div className="relative">
           <h1 className="text-[180px] font-bold text-gray-200 select-none">
-            404
+            404 / Same Directory
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="space-y-2">

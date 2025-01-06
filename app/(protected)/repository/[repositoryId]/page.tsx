@@ -5,6 +5,7 @@ import { SearchContainer } from "@/components/semantic-search-repo/search-contai
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
 import { Repository } from "@prisma/client";
 import {
+  notFound,
   useParams,
   usePathname,
   useRouter,
@@ -46,8 +47,7 @@ const RepositoryPage = () => {
         if (!response.ok) {
           console.log("response.status is ", response.status);
           if (response.status === 404) {
-            router.push("/404");
-            return;
+            notFound();
           }
           throw new Error("Failed to fetch repository");
         }
