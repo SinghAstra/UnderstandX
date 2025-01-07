@@ -1,11 +1,12 @@
 "use client";
+import RepositoryNotFound from "@/components/not-found/repo";
 import FilePreview from "@/components/repository/file-preview";
 import { SearchResults } from "@/components/repository/search-results";
 import { SearchContainer } from "@/components/semantic-search-repo/search-container";
+import { RepositoryLoading } from "@/components/skeleton/repo-loading";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
 import { Repository } from "@prisma/client";
 import {
-  notFound,
   useParams,
   usePathname,
   useRouter,
@@ -61,7 +62,7 @@ const RepositoryPage = () => {
             : "Failed to fetch repository details"
         );
       } finally {
-        setIsLoadingRepository(false);
+        // setIsLoadingRepository(false);
       }
     };
 
@@ -150,19 +151,11 @@ const RepositoryPage = () => {
   };
 
   if (isLoadingRepository) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <RepositoryLoading />;
   }
 
   if (isRepositoryNotFound) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-destructive">Repository not found.</div>
-      </div>
-    );
+    return <RepositoryNotFound />;
   }
 
   // Initial UI - Centered search when no query
