@@ -1,3 +1,7 @@
 # NavX
 
-NavX Helps to understand and search code in github repo through semantic searching
+The Goal of this project is to allow users to perform semantic searching on any public github repo
+
+# Wanna Contribute ?
+
+Go ahead !
