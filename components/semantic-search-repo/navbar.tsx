@@ -19,9 +19,11 @@ export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  // URL Query
   const currentSearch = searchParams.get("q") || "";
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(currentSearch);
+
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
@@ -65,7 +67,7 @@ export function Navbar() {
                 <Search className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
               </div>
             )}
-            <Link href="/new">
+            <Link href="/">
               <Button variant="outline">
                 <Plus className="h-5 w-5" />
                 Connect New Repository

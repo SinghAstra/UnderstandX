@@ -27,6 +27,7 @@ const RepositoryPage = () => {
   // Repository State
   const [repository, setRepository] = useState<Repository | null>(null);
   const [isLoadingRepository, setIsLoadingRepository] = useState(true);
+  const [isRepositoryNotFound, setIsRepositoryNotFound] = useState(false);
   const [repositoryError, setRepositoryError] = useState<string | null>(null);
 
   const [similarChunks, setSimilarChunks] = useState<SimilarChunk[]>([]);
@@ -37,19 +38,17 @@ const RepositoryPage = () => {
     const fetchRepository = async () => {
       if (!repositoryId) {
         setRepositoryError("Repository ID is required");
-        setIsLoadingRepository(false);
         return;
       }
 
       try {
+        setIsLoadingRepository(true);
         const response = await fetch(`/api/repository/${repositoryId}`);
 
         if (!response.ok) {
           console.log("response.status is ", response.status);
-          if (response.status === 404) {
-            notFound();
-          }
-          throw new Error("Failed to fetch repository");
+          setIsRepositoryNotFound(true);
+          return;
         }
 
         const data = await response.json();
@@ -150,14 +149,6 @@ const RepositoryPage = () => {
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  // Initial UI - Centered search when no query
-  if (!searchQuery) {
-    return <SearchContainer onSearch={handleSearch} />;
-  }
-
-  console.log("groupedResults is ", groupedResults);
-  console.log("isLoadingSimilarChunks is ", isLoadingSimilarChunks);
-
   if (isLoadingRepository) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -166,16 +157,28 @@ const RepositoryPage = () => {
     );
   }
 
+  if (isRepositoryNotFound) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-destructive">Repository not found.</div>
+      </div>
+    );
+  }
+
+  // Initial UI - Centered search when no query
+  if (!searchQuery) {
+    return <SearchContainer onSearch={handleSearch} />;
+  }
+
+  console.log("groupedResults is ", groupedResults);
+  console.log("isRepositoryNotFound is ", isRepositoryNotFound);
+
   if (repositoryError) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-destructive">{repositoryError}</div>
       </div>
     );
-  }
-
-  if (!repository) {
-    return null;
   }
 
   // Search results view with split pane
