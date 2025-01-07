@@ -80,9 +80,6 @@ const RepositoryPage = () => {
   }, [repositoryId, router]);
 
   useEffect(() => {
-    console.log("In the useEffect.");
-    console.log("searchQuery is ", searchQuery);
-    console.log("repositoryId is ", repositoryId);
     if (!searchQuery || !repositoryId || !repository) return;
 
     const fetchSimilarChunks = async () => {
@@ -178,9 +175,6 @@ const RepositoryPage = () => {
     return <SearchContainer onSearch={handleSearch} repository={repository} />;
   }
 
-  console.log("groupedResults is ", groupedResults);
-  console.log("isRepositoryNotFound is ", isRepositoryNotFound);
-
   if (error || !repository || !repository.avatarUrl) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -222,7 +216,13 @@ const RepositoryPage = () => {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* File List */}
-        <div className="w-80 border-r overflow-y-auto p-4">
+        <div
+          className={`
+            overflow-y-auto p-4
+            transition-all duration-300 ease-in-out
+            ${selectedFile ? "w-96 border-r" : "w-full"}
+          `}
+        >
           <SearchResults
             searchResultUniqueFiles={Object.values(groupedResults)}
             selectedFile={selectedFile}
@@ -232,14 +232,14 @@ const RepositoryPage = () => {
         </div>
 
         {/* File Viewer */}
-        <div className="flex-1 overflow-y-auto p-4">
-          {selectedFile ? (
-            <FilePreview file={selectedFile} />
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground">
-              Select a file to view its contents
-            </div>
-          )}
+        <div
+          className={`
+          overflow-y-auto p-4
+          transition-all duration-300 ease-in-out
+          ${selectedFile ? "flex-1 opacity-100" : "w-0 opacity-0"}
+        `}
+        >
+          {selectedFile && <FilePreview file={selectedFile} />}
         </div>
       </div>
       <SearchModal

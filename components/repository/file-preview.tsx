@@ -3,12 +3,13 @@
 import { getFileContent } from "@/app/actions/github";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
 import { cn } from "@/lib/utils/utils";
-import { AlertCircle, FileText } from "lucide-react";
+import { AlertCircle, FileText, X } from "lucide-react";
 import Prism from "prismjs";
 import { useEffect, useState } from "react";
 import FilePreviewSkeleton from "../skeleton/file-preview-skeleton";
 import { Alert, AlertDescription } from "../ui/alert";
 // Import commonly used languages
+import { usePathname, useRouter } from "next/navigation";
 import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-json";
@@ -28,6 +29,8 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
     useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isContentReady, setIsContentReady] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Function to detect language from file extension
   const detectLanguage = (filepath: string): string => {
@@ -118,7 +121,7 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
 
     return (
       <pre className="code-preview font-mono text-sm leading-6 px-4 py-2 ">
-        = <code>{highlightedContent}</code>
+        <code>{highlightedContent}</code>
       </pre>
     );
   };
@@ -167,7 +170,7 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
 
   if (!file) {
     return (
-      <div className="flex flex-col items-center justify-center h-[400px] text-muted-foreground gap-3">
+      <div className="flex flex-col items-center justify-center text-muted-foreground gap-3">
         <FileText className="w-8 h-8 text-muted-foreground/50" />
         <div className="text-sm">Select a file to preview</div>
       </div>
@@ -184,8 +187,24 @@ function FilePreview({ file, isLoading }: FilePreviewProps) {
   }
 
   return (
-    <div className="h-[calc(100vh-12rem)] flex flex-col">
-      <div className="border rounded-md flex-1 overflow-auto">
+    <div className="h-full overflow-y-auto flex flex-col border rounded-md flex-1">
+      <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-background/80 backdrop-blur-sm border-b">
+        <div className="text-sm text-muted-foreground truncate">
+          {file.filepath}
+        </div>
+        <button
+          onClick={() => {
+            const params = new URLSearchParams(window.location.search);
+            params.delete("file");
+            router.push(`${pathname}?${params.toString()}`);
+          }}
+          className="p-2 hover:bg-accent rounded-md transition-colors"
+          aria-label="Close file preview"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="overflow-auto relative">
         <div className="min-w-max">
           {content && renderHighlightedContent(content, file.similarChunks)}
         </div>
