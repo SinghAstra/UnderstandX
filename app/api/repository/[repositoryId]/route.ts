@@ -1,5 +1,4 @@
 import { authOptions } from "@/lib/auth/auth-options";
-import { fetchGitHubRepoDetails } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -33,18 +32,8 @@ export async function GET(req: NextRequest, props: Props) {
       return new NextResponse("Repository not found", { status: 404 });
     }
 
-    const githubData = await fetchGitHubRepoDetails(
-      repository.owner,
-      repository.name
-    );
-
     return NextResponse.json({
       repository,
-      githubStats: {
-        stargazers_count: githubData.stargazersCount,
-        watchers_count: githubData.watchersCount,
-        forks_count: githubData.forksCount,
-      },
     });
   } catch (error) {
     if (error instanceof Error) {

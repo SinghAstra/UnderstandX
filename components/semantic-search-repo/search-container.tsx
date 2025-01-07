@@ -1,24 +1,52 @@
+import { Repository } from "@prisma/client";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { RecentSearches } from "./recent-search";
 import { SearchBox } from "./search-box";
 import { SearchSuggestions } from "./search-suggestion";
 
 interface SearchContainerProps {
+  repository?: Repository;
   onSearch: (query: string) => void;
 }
 
-export function SearchContainer({ onSearch }: SearchContainerProps) {
+export const formatRepoName = (fullName: string) => {
+  const [owner, repo] = fullName.split("/");
   return (
-    <div className="flex items-center justify-center p-8 relative">
-      <div className="w-full max-w-2xl relative">
+    <>
+      {owner}
+      <span className="text-muted-foreground"> / </span>
+      {repo}
+    </>
+  );
+};
+
+export function SearchContainer({
+  repository,
+  onSearch,
+}: SearchContainerProps) {
+  if (!repository || !repository.avatarUrl) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-2 py-4 px-4 border border-b backdrop-blur-xl">
+        <Avatar className=" ring-2 ring-border shadow-lg">
+          <AvatarImage src={repository.avatarUrl} />
+          <AvatarFallback className="text-lg">
+            {repository.name[0]}
+          </AvatarFallback>
+        </Avatar>
+        <h1 className="tracking-tight">
+          {repository.fullName && formatRepoName(repository.fullName)}
+        </h1>
+      </div>
+      <div className="w-full max-w-2xl relative mx-auto">
         {/* Decorative elements */}
         <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl animate-pulse" />
 
         <div className="relative space-y-6">
-          <SearchBox
-            onSearch={onSearch}
-            showCloseIcon={false}
-            className="border-b mb-2"
-          />
+          <SearchBox onSearch={onSearch} showCloseIcon={false} />
 
           <div className="max-h-[60vh] overflow-y-auto bg-background backdrop-blur-sm border-2 border-border/50 rounded-md ">
             <div className="p-4 space-y-6">

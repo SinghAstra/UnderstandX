@@ -1,50 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { siteConfig } from "@/config/site";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { AvatarMenu } from "../custom-ui/avatar-menu";
 import SignInButton from "../custom-ui/sign-in-button";
 import { Skeleton } from "../ui/skeleton";
-import { SearchModal } from "./search-modal";
 
 export function Navbar() {
   const { data: session, status } = useSession();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  // URL Query
-  const currentSearch = searchParams.get("q") || "";
-  const [searchValue, setSearchValue] = useState(currentSearch);
-
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-
-  const handleSearch = (query: string) => {
-    if (!query.trim()) return;
-    setIsSearchModalOpen(false);
-    const params = new URLSearchParams(searchParams);
-    if (query) {
-      params.set("q", query);
-      params.delete("file");
-    }
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
-  // Update local state when currentSearch changes
-  useEffect(() => {
-    setSearchValue(currentSearch);
-  }, [currentSearch]);
 
   return (
     <>
-      <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-16 items-center px-4">
+      <nav className="fixed top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center justify-between px-2 ">
           <div className="flex items-center gap-6">
             <Link href="/dashboard">
               <span className="text-xl leading-loose font-semibold">
@@ -52,21 +23,7 @@ export function Navbar() {
               </span>
             </Link>
           </div>
-
-          <div className="ml-auto flex items-center gap-4">
-            {currentSearch && (
-              <div className="relative w-96">
-                <Input
-                  type="text"
-                  placeholder="Search code..."
-                  className="w-full pl-10 pr-4"
-                  value={searchValue}
-                  onClick={() => setIsSearchModalOpen(true)}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-                <Search className="absolute left-3 top-2 h-5 w-5 text-muted-foreground" />
-              </div>
-            )}
+          <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="outline">
                 <Plus className="h-5 w-5" />
@@ -83,13 +40,6 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        value={currentSearch}
-        onClose={() => setIsSearchModalOpen(false)}
-        onSearch={handleSearch}
-      />
     </>
   );
 }
