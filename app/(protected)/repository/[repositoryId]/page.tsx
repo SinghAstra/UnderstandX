@@ -220,7 +220,7 @@ const RepositoryPage = () => {
           className={`
             overflow-y-auto p-4
             transition-all duration-300 ease-in-out
-            ${selectedFile ? "w-96 border-r" : "w-full"}
+            ${selectedFile ? "w-96 border-r" : "max-w-lg w-full mx-auto"}
           `}
         >
           <SearchResults

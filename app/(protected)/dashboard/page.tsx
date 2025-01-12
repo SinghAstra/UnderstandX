@@ -4,17 +4,29 @@ import { Button } from "@/components/ui/button";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { cn } from "@/lib/utils/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckIcon, SearchIcon, SparklesIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { CheckIcon, SearchIcon, SparklesIcon, X } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function CommandPaletteRepoForm() {
   const [url, setUrl] = useState("");
   const [error, setError] = useState<string | undefined>();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const router = useRouter();
+  const [showGuide, setShowGuide] = useState(false);
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+  const actionQuery = searchParams.get("action");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (actionQuery === "connect") {
+      setShowGuide(true);
+      inputRef.current?.focus();
+    }
+  }, [actionQuery]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,9 +76,56 @@ function CommandPaletteRepoForm() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const dismissGuide = useCallback(() => {
+    setShowGuide(false);
+    const params = new URLSearchParams(searchParams);
+    params.delete("action");
+    router.push(`${pathName}?${params}`);
+  }, [pathName, router, searchParams]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        dismissGuide();
+      }
+    };
+
+    if (showGuide) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showGuide, dismissGuide]);
+
   return (
-    <div className="m-2">
-      <div className="relative bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-xl border shadow-lg">
+    <div className="m-2 relative">
+      {showGuide && (
+        <div className="absolute inset-0 -m-4">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute -inset-4 bg-primary/20 rounded-xl"
+          >
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={dismissGuide}
+              className="absolute top-1 right-1 h-8 w-8 p-0 hover:bg-primary/30"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </motion.div>
+        </div>
+      )}
+      <div
+        className={`relative bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-xl border shadow-lg transition-all duration-600 ${
+          showGuide && "my-12 z-50"
+        }`}
+        ref={formRef}
+      >
         {/* Search Header */}
         <form onSubmit={handleSubmit}>
           <div className="flex items-center border-b px-4 py-3">
@@ -88,55 +147,38 @@ function CommandPaletteRepoForm() {
             </kbd>
           </div>
 
-          {/* Recent/Popular Repositories */}
-          {/* <div className="p-2 max-h-72 overflow-y-auto">
-          <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5">
-            Popular repositories
-          </div>
-          {["facebook/react", "vercel/next.js", "tailwindlabs/tailwindcss"].map(
-            (repo) => (
-              <button
-                key={repo}
-                onClick={() => setUrl(`https://github.com/${repo}`)}
-                className="flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
-              >
-                <Icons.gitLogo className="w-4 h-4" />
-                {repo}
-              </button>
-            )
-          )}
-        </div> */}
-
           {/* Action Footer */}
           <div className="border-t px-4 py-3 flex justify-between items-center">
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <SparklesIcon className="w-4 h-4" />
               <span>Uses GitHub API</span>
             </div>
-            <Button
-              size="sm"
-              disabled={!url || isProcessing || isSuccess}
-              // onClick={handleSubmit}
-              type="submit"
-              className={cn(
-                "relative overflow-hidden",
-                isSuccess && "bg-green-500 hover:bg-green-600"
-              )}
-            >
-              {isSuccess ? (
-                <div className="flex items-center">
-                  <CheckIcon className="mr-2 h-5 w-5" />
-                  Redirecting...
-                </div>
-              ) : isProcessing ? (
-                <div className="flex items-center">
-                  <SearchIcon className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </div>
-              ) : (
-                "Analyze"
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                disabled={!url || isProcessing || isSuccess}
+                // onClick={handleSubmit}
+                type="submit"
+                className={cn(
+                  "relative overflow-hidden",
+                  isSuccess && "bg-green-500 hover:bg-green-600"
+                )}
+              >
+                {isSuccess ? (
+                  <div className="flex items-center">
+                    <CheckIcon className="mr-2 h-5 w-5" />
+                    Redirecting...
+                  </div>
+                ) : isProcessing ? (
+                  <div className="flex items-center">
+                    <SearchIcon className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </div>
+                ) : (
+                  "Analyze"
+                )}
+              </Button>
+            </div>
           </div>
         </form>
       </div>
