@@ -49,11 +49,11 @@ function CommandPaletteRepoForm() {
         body: JSON.stringify({ githubUrl: url }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to process repository");
+      }
 
       setIsSuccess(true);
-
-      router.push(`/repository/${data.repositoryId}`);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to process repository"
@@ -167,7 +167,7 @@ function CommandPaletteRepoForm() {
                 {isSuccess ? (
                   <div className="flex items-center">
                     <CheckIcon className="mr-2 h-5 w-5" />
-                    Redirecting...
+                    Added to the Queue...
                   </div>
                 ) : isProcessing ? (
                   <div className="flex items-center">

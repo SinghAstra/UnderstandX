@@ -36,7 +36,7 @@ export function parseGithubUrl(url: string) {
   }
 }
 
-export async function fetchGitHubRepoDetails(owner: string, repo: string) {
+export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
   const response = await fetch(
     `https://api.github.com/repos/${owner}/${repo}`,
     {

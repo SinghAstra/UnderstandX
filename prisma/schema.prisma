@@ -92,8 +92,12 @@ enum UserRole {
  USER 
  ADMIN  
 }
-
 enum RepositoryStatus {
   PENDING
+  FETCHING_GITHUB_REPO_FILES
+  CHUNKING_FILES
+  EMBEDDING_CHUNKS
   SUCCESS
+  FAILED
+  CANCELED
 }

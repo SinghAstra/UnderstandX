@@ -2,91 +2,149 @@ import { authOptions } from "@/lib/auth/auth-options";
 import { batchGenerateEmbeddings } from "@/lib/utils/gemini";
 import {
   fetchGitHubRepoData,
-  fetchGitHubRepoDetails,
+  fetchGitHubRepoMetaData,
   parseGithubUrl,
 } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { processFilesIntoChunks } from "@/lib/utils/repository";
+import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
+// Route: POST /api/repository/process
+// Purpose: Process a GitHub repository by fetching its contents and generating embeddings
+// Input: { githubUrl: string }
+// Output: { repositoryId: string, status: RepositoryStatus }
+
+/**
+ * High-level workflow:
+ * 1. Authenticate user
+ * 2. Validate input
+ * 3. Check for existing repository
+ * 4. Create/Update repository
+ * 5. Start background processing
+ * 6. Return immediate response
+ */
+
+/**
+ * Input validation:
+ * 1. Validate GitHub URL format:
+ *    - Must be valid GitHub URL
+ *    - Must contain owner and repo name
+ *    - Return 400 if invalid URL
+ *
+ * 2. Fetch basic repo details from GitHub API:
+ *    - Check if repository exists on GitHub API
+ *    - Check if repository is accessible
+ *    - Return 404 if repo not found
+ *    - Return 403 if repo not accessible
+ */
+
+/**
+ * Existing repository checks:
+ * 1. Look up repository by GitHub ID and user ID
+ *
+ * 2. If repository exists:
+ *    a. If status is PENDING:
+ *       - Update repository with new URL if changed
+ *       - Continue with processing
+ *
+ *    b. If status is in progress (FETCHING_GITHUB_REPO_FILES, CHUNKING_FILES, EMBEDDING_CHUNKS):
+ *       - Return existing repository ID and current status
+ *       - Don't start new processing
+ *       - User should use SSE endpoint to continue monitoring
+ *
+ *    c. If status is SUCCESS:
+ *       - return existing repository data
+ *
+ *    d. If status is FAILED or CANCELED:
+ *       - Reset status to PENDING
+ *       - Update repository data
+ *       - Start new processing
+ */
+
+/**
+ * Background processing:
+ * 1. Start processing in background (don't await)
+ * 2. Handle errors in background process
+ * 3. Update status throughout processing
+ */
+
+/**
+ * Response handling:
+ * 1. Success response (200):
+ *    {
+ *      repositoryId: string
+ *      status: RepositoryStatus
+ *      statusMessage: string
+ *      progress: number
+ *    }
+ *
+ * 2. Error responses:
+ *    - 400: Invalid input (bad URL)
+ *    - 401: Unauthorized
+ *    - 403: Repository not accessible
+ *    - 404: Repository not found
+ *    - 500: Server error
+ */
+
+/**
+ * Rate limiting considerations:
+ * 1. Implement rate limiting per user
+ * 2. Consider GitHub API rate limits
+ * 3. Add delay between successive requests
+ */
+
+/**
+ * Edge cases to handle: (In Future)
+ * 1. Very large repositories
+ */
+
 export async function POST(req: NextRequest) {
   try {
+    // 1. Authenticate user
     const session = await getServerSession(authOptions);
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
     }
 
-    const { githubUrl } = await req.json();
+    // 2. Get and validate input
+    const body = await req.json();
+    const { githubUrl } = body;
 
-    // 1. Parse and validate GitHub URL
+    if (!githubUrl) {
+      return NextResponse.json(
+        { error: "GitHub URL is required" },
+        { status: 400 }
+      );
+    }
+
+    console.log("githubUrl is ", githubUrl);
+
+    // 3. Parse and validate GitHub URL
     const urlInfo = parseGithubUrl(githubUrl);
     if (!urlInfo.isValid || !urlInfo.owner) {
-      return NextResponse.json({ error: urlInfo.error }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid GitHub repository URL" },
+        { status: 400 }
+      );
     }
 
     console.log("urlInfo is ", urlInfo);
 
-    // 2. Fetch repository details from GitHub API
-    const repoDetails = await fetchGitHubRepoDetails(
+    // 4. Fetch repository MetaData from GitHub API
+    const repoDetails = await fetchGitHubRepoMetaData(
       urlInfo.owner,
       urlInfo.repo
     );
 
-    console.log("repoDetails is ", repoDetails);
+    console.log("Fetched Repo Details");
 
-    console.log("repoDetails.githubId is ", repoDetails.githubId);
-
-    // 3. Check if repository already exists using GitHub ID
-    const existingRepo = await prisma.repository.findFirst({
-      where: {
-        githubId: repoDetails.githubId,
-        userId: session.user.id,
-      },
-    });
-
-    console.log("existingRepo is ", existingRepo);
-
-    if (existingRepo) {
-      // Update the URL if it has changed
-      if (existingRepo.url !== repoDetails.url) {
-        await prisma.repository.update({
-          where: { id: existingRepo.id, userId: session.user.id },
-          data: {
-            url: repoDetails.url,
-            name: repoDetails.name,
-            fullName: repoDetails.fullName,
-          },
-        });
-      }
-
-      if (existingRepo.url !== repoDetails.avatarUrl) {
-        await prisma.repository.update({
-          where: { id: existingRepo.id, userId: session.user.id },
-          data: {
-            avatarUrl: repoDetails.avatarUrl,
-          },
-        });
-      }
-
-      if (existingRepo.status === "PENDING") {
-        console.log("Deleted existing repository with status PENDING");
-        await prisma.repository.delete({
-          where: {
-            id: existingRepo.id,
-            userId: session.user.id,
-          },
-        });
-      } else {
-        return NextResponse.json({
-          repositoryId: existingRepo.id,
-          status: existingRepo.status,
-        });
-      }
-    }
-
-    // 4. Create new repository record
-    const newRepo = await prisma.repository.create({
+    // 5. Create new repository record
+    const repository = await prisma.repository.create({
       data: {
         githubId: repoDetails.githubId,
         name: repoDetails.name,
@@ -100,22 +158,61 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("newRepo is ", newRepo);
+    console.log("Created new Repository Record");
 
-    // 5. Fetch repository details and data
-    const repoData = await fetchGitHubRepoData(githubUrl, false);
+    processRepositoryInBackground(repository.id);
 
+    // 6. Return immediate response
+    return NextResponse.json({
+      repositoryId: repository.id,
+      status: "PENDING",
+      message: "Repository processing started",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error message:", error.message);
+      console.log("Error stack:", error.stack);
+    } else {
+      console.log("Unknown error:", error);
+    }
+    console.log("error -- get /repository/process");
+    return NextResponse.json(
+      { error: "Failed to process repository" },
+      { status: 500 }
+    );
+  }
+}
+
+async function processRepositoryInBackground(repositoryId: string) {
+  try {
+    // 1. Fetch repository details
+    const repository = await prisma.repository.findUnique({
+      where: { id: repositoryId },
+    });
+
+    // 2. Update status to indicate GitHub repo fetching
+    await updateRepositoryStatus(repositoryId, "FETCHING_GITHUB_REPO_FILES");
+
+    if (!repository) {
+      throw new Error("Repository not found");
+    }
+
+    // 3. Fetch GitHub repo files
+    const repoData = await fetchGitHubRepoData(repository.url, false);
     console.log("repoData is ", repoData.files.length);
 
-    // 6. Process files into chunks
+    // 4. Update Status to indicate chunking files
+    await updateRepositoryStatus(repositoryId, "CHUNKING_FILES");
+
+    // 5. Process files into chunks
     const chunks = await processFilesIntoChunks(repoData.files);
 
     console.log("chunks.length is ", chunks.length);
 
-    // 7. Save chunks to database
+    // 6. Save chunks to database
     await prisma.repositoryChunk.createMany({
       data: chunks.map((chunk) => ({
-        repositoryId: newRepo.id,
+        repositoryId: repository.id,
         content: chunk.content,
         type: chunk.type,
         filepath: chunk.filepath,
@@ -123,10 +220,13 @@ export async function POST(req: NextRequest) {
       })),
     });
 
+    // 4. Update Status to indicate embedding generation
+    await updateRepositoryStatus(repositoryId, "EMBEDDING_CHUNKS");
+
     // 8. Generate embeddings for chunks
     const chunksForEmbedding = await prisma.repositoryChunk.findMany({
       where: {
-        repositoryId: newRepo.id,
+        repositoryId: repository.id,
         embeddings: {
           equals: null,
         },
@@ -164,26 +264,26 @@ export async function POST(req: NextRequest) {
     }
 
     // 9. Update repository status to success
-    await prisma.repository.update({
-      where: { id: newRepo.id },
-      data: { status: "SUCCESS" },
-    });
-
-    return NextResponse.json({
-      repositoryId: newRepo.id,
-      status: "SUCCESS",
-    });
+    await updateRepositoryStatus(repositoryId, "SUCCESS");
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);
       console.log("Error stack:", error.stack);
     } else {
-      console.log("Unknown error:", error);
+      console.log("Background processing error:", error);
     }
-    console.log("error -- get /repository/process");
-    return NextResponse.json(
-      { error: "Failed to process repository" },
-      { status: 500 }
-    );
+    await updateRepositoryStatus(repositoryId, "FAILED");
   }
+}
+
+async function updateRepositoryStatus(
+  repositoryId: string,
+  status: RepositoryStatus
+) {
+  console.log("In update RepositoryStatus status :- ", status);
+
+  await prisma.repository.update({
+    where: { id: repositoryId },
+    data: { status },
+  });
 }

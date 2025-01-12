@@ -4,25 +4,25 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 type Props = {
-  params: Promise<{ repositoryId: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export async function GET(req: NextRequest, props: Props) {
   try {
-    const { repositoryId } = await props.params;
+    const { id } = await props.params;
 
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("repositoryId is ", repositoryId);
+    console.log("id is ", id);
     console.log("session.user.id is ", session.user.id);
 
     // Fetch repository with user check
     const repository = await prisma.repository.findUnique({
       where: {
-        id: repositoryId,
+        id,
         userId: session.user.id,
       },
     });
