@@ -1,7 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils/utils";
 import { Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -24,11 +25,12 @@ export function Navbar() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="outline">
-                <Plus className="h-5 w-5" />
-                Connect New Repository
-              </Button>
+            <Link
+              className={cn(buttonVariants({ variant: "outline" }))}
+              href="/dashboard?action=connect"
+            >
+              <Plus className="h-5 w-5" />
+              Connect New Repository
             </Link>
             {status === "loading" ? (
               <Skeleton className="h-10 w-10 rounded-full border-primary border-2" />
