@@ -82,15 +82,6 @@ export async function GET(request: NextRequest) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);
       console.log("Error stack:", error.stack);
-    } else {
-      console.log("Unknown error:", error);
-    }
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid query parameters", details: error.errors },
-        { status: 400 }
-      );
     }
 
     return NextResponse.json(

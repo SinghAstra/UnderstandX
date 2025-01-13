@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
 
     console.log("Created new Repository Record");
 
-    processRepositoryInBackground(repository.id);
+    // processRepositoryInBackground(repository.id);
 
     // 6. Return immediate response
     return NextResponse.json({
