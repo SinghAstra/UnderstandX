@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import React, { Suspense } from "react";
+import { RepositoryProvider } from "../context/repository";
 import { TooltipProvider } from "../ui/tooltip";
 
 interface Props {
@@ -20,7 +21,9 @@ const Providers = ({ children }: Props) => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <SessionProvider>
-        <TooltipProvider>{children}</TooltipProvider>
+        <RepositoryProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </RepositoryProvider>
       </SessionProvider>
     </Suspense>
   );
