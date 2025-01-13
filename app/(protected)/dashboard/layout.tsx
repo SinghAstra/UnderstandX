@@ -1,8 +1,8 @@
 "use client";
 
 import { Navbar } from "@/components/dashboard/dashboard-navbar";
+import { RightSidebar } from "@/components/dashboard/right-sidebar";
 import { Sidebar } from "@/components/dashboard/sidebar";
-import { ToolsSidebar } from "@/components/dashboard/tools-sidebar";
 
 export default function DashboardLayout({
   children,
@@ -15,7 +15,7 @@ export default function DashboardLayout({
       <div className="flex pt-16">
         <Sidebar />
         <main className="flex-1 ml-96">{children}</main>
-        <ToolsSidebar />
+        <RightSidebar />
       </div>
     </div>
   );
