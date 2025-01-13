@@ -65,17 +65,19 @@ export function Sidebar() {
 
   return (
     <div className="fixed inset-y-0 left-0 w-96 bg-background border-r pt-16">
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full">
         <SidebarRepoHeader
           loading={isInitialLoad}
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <SidebarRepoList
-          searchQuery={searchQuery}
-          loading={isInitialLoad || loading}
-          repositories={repositories}
-        />
+        <div className="flex-1 overflow-hidden">
+          <SidebarRepoList
+            searchQuery={searchQuery}
+            loading={isInitialLoad || loading}
+            repositories={repositories}
+          />
+        </div>
       </div>
     </div>
   );

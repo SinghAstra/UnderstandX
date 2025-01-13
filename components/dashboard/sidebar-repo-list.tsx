@@ -4,7 +4,6 @@ import EmptyRepositoriesSidebarRepoList from "../empty-states/empty-repo-sidebar
 import NoSearchResultsSidebarRepoList from "../empty-states/no-search-result-sidebar-repo-list";
 import { RepositoryCard } from "../repository/repository-card";
 import { SidebarRepoListSkeleton } from "../skeleton/sidebar-repo-list-skeleton";
-import { ScrollArea } from "../ui/scroll-area";
 
 interface SidebarRepoListProps {
   searchQuery?: string;
@@ -28,13 +27,13 @@ const SidebarRepoList = ({
     return <EmptyRepositoriesSidebarRepoList />;
   }
   return (
-    <ScrollArea className="flex-1 px-4">
-      <div className="space-y-2 pb-4">
+    <div className="h-full overflow-y-auto px-4">
+      <div className="flex flex-col gap-4">
         {repositories.map((repo) => (
           <RepositoryCard key={repo.id} repository={repo} />
         ))}
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 
