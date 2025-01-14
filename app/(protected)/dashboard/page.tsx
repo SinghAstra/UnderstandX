@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  addActiveRepository,
+  useRepository,
+} from "@/components/context/repository";
 import { Button } from "@/components/ui/button";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { cn } from "@/lib/utils/utils";
@@ -20,6 +24,7 @@ function CommandPaletteRepoForm() {
   const formRef = useRef<HTMLDivElement>(null);
   const actionQuery = searchParams.get("action");
   const router = useRouter();
+  const { dispatch } = useRepository();
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -52,6 +57,19 @@ function CommandPaletteRepoForm() {
       if (!response.ok) {
         throw new Error("Failed to process repository");
       }
+
+      const data = await response.json();
+      console.log("data --commandPaletteRepoForm is ", data);
+
+      const responseRepoDetails = await fetch(
+        `/api/repository/${data.repositoryId}`
+      );
+      if (!responseRepoDetails.ok) {
+        throw new Error("Failed to fetch repository details");
+      }
+      const repoDetails = await responseRepoDetails.json();
+      console.log("repoDetails --commandPaletteRepoForm is ", repoDetails);
+      dispatch(addActiveRepository(repoDetails.repository));
 
       setIsSuccess(true);
     } catch (err) {

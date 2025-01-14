@@ -13,7 +13,7 @@ export function repositoryReducer(
     case "ADD_ACTIVE_REPOSITORY":
       return {
         ...state,
-        activeRepositories: [...state.activeRepositories, action.payload],
+        activeRepositories: [action.payload, ...state.activeRepositories],
       };
     case "REMOVE_ACTIVE_REPOSITORY":
       return {
@@ -25,7 +25,7 @@ export function repositoryReducer(
     case "ADD_ACTIVE_REPOSITORIES":
       return {
         ...state,
-        activeRepositories: [...state.activeRepositories, ...action.payload],
+        activeRepositories: [...action.payload, ...state.activeRepositories],
       };
     default:
       return state;

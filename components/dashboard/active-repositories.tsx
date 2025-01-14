@@ -1,5 +1,5 @@
 import { useToast } from "@/hooks/use-toast";
-import { Repository, RepositoryStatus } from "@prisma/client";
+import { RepositoryStatus } from "@prisma/client";
 import {
   CheckCircle2,
   ChevronDown,
@@ -8,7 +8,7 @@ import {
   Loader2,
   XCircle,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   addActiveRepositories,
   removeActiveRepository,
@@ -61,49 +61,8 @@ const ActiveRepositories = () => {
   // It helps manage clean up of SSE connection
   const eventSourcesRef = useRef<{ [key: string]: EventSource }>({});
 
-  const getStepIcon = (repoId: string, stepStatus: string) => {
-    const currentStatus = processingStatus[repoId];
-
-    // Get the indices for comparison
-    const currentStepIndex = repositorySteps.findIndex(
-      (step) => step.status === currentStatus
-    );
-    const stepIndex = repositorySteps.findIndex(
-      (step) => step.status === stepStatus
-    );
-
-    // Handle failed states
-    if (currentStatus?.includes("FAILED")) {
-      if (currentStatus === `${stepStatus}_FAILED`) {
-        return <XCircle className="h-5 w-5 text-destructive" />;
-      }
-      if (
-        stepIndex <
-        repositorySteps.findIndex(
-          (step) => step.status === currentStatus.replace("_FAILED", "")
-        )
-      ) {
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-      }
-      return <Circle className="h-5 w-5 text-gray-500" />;
-    }
-
-    // Current step
-    if (stepStatus === currentStatus) {
-      return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
-    }
-
-    // Completed steps
-    if (currentStepIndex > stepIndex || currentStatus === "SUCCESS") {
-      return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-    }
-
-    // Future steps
-    return <Circle className="h-5 w-5 text-gray-500" />;
-  };
-
-  useEffect(() => {
-    const setupSSEConnection = (repoId: string) => {
+  const setupSSEConnection = useCallback(
+    (repoId: string) => {
       // Close existing connection if it exists
       // We do not want duplicate connection to same repo
       if (eventSourcesRef.current[repoId]) {
@@ -170,7 +129,52 @@ const ActiveRepositories = () => {
         eventSource.close();
         delete eventSourcesRef.current[repoId];
       };
-    };
+    },
+    [dispatch, toast]
+  );
+
+  const getStepIcon = (repoId: string, stepStatus: string) => {
+    const currentStatus = processingStatus[repoId];
+
+    // Get the indices for comparison
+    const currentStepIndex = repositorySteps.findIndex(
+      (step) => step.status === currentStatus
+    );
+    const stepIndex = repositorySteps.findIndex(
+      (step) => step.status === stepStatus
+    );
+
+    // Handle failed states
+    if (currentStatus?.includes("FAILED")) {
+      if (currentStatus === `${stepStatus}_FAILED`) {
+        return <XCircle className="h-5 w-5 text-destructive" />;
+      }
+      if (
+        stepIndex <
+        repositorySteps.findIndex(
+          (step) => step.status === currentStatus.replace("_FAILED", "")
+        )
+      ) {
+        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+      }
+      return <Circle className="h-5 w-5 text-gray-500" />;
+    }
+
+    // Current step
+    if (stepStatus === currentStatus) {
+      return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+    }
+
+    // Completed steps
+    if (currentStepIndex > stepIndex || currentStatus === "SUCCESS") {
+      return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+    }
+
+    // Future steps
+    return <Circle className="h-5 w-5 text-gray-500" />;
+  };
+
+  useEffect(() => {
     const fetchActiveRepositories = async () => {
       try {
         setError(null);
@@ -184,16 +188,6 @@ const ActiveRepositories = () => {
         if (data.hasActiveRepositories && data.activeRepositories) {
           console.log("data.activeRepositories is ", data.activeRepositories);
           dispatch(addActiveRepositories(data.activeRepositories));
-          // Setting the default collapsible state of repository to be false
-          const newOpenStates: OpenStates = {};
-          data.activeRepositories.forEach((repo: Repository) => {
-            newOpenStates[repo.id] = false;
-          });
-          setOpenStates((prev) => ({ ...prev, ...newOpenStates }));
-          // Setup SSE connection for each repository
-          data.activeRepositories.forEach((repo: Repository) => {
-            setupSSEConnection(repo.id);
-          });
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -206,13 +200,51 @@ const ActiveRepositories = () => {
       }
     };
     fetchActiveRepositories();
+  }, [toast, dispatch]);
+
+  // Effect to handle changes in activeRepos
+  useEffect(() => {
+    // Setup SSE connections and collapsible states for new repositories
+    activeRepos.forEach((repo) => {
+      // Setup SSE connection if not exists
+      if (!eventSourcesRef.current[repo.id]) {
+        setupSSEConnection(repo.id);
+      }
+
+      // Setup collapsible state if not exists
+      setOpenStates((prev) => ({
+        ...prev,
+        [repo.id]: prev[repo.id] ?? false,
+      }));
+    });
+
+    // Cleanup SSE connections and states for removed repositories
+    Object.keys(eventSourcesRef.current).forEach((repoId) => {
+      if (!activeRepos.find((repo) => repo.id === repoId)) {
+        eventSourcesRef.current[repoId].close();
+        delete eventSourcesRef.current[repoId];
+
+        setOpenStates((prev) => {
+          const newStates = { ...prev };
+          delete newStates[repoId];
+          return newStates;
+        });
+
+        setProcessingStatus((prev) => {
+          const newStatus = { ...prev };
+          delete newStatus[repoId];
+          return newStatus;
+        });
+      }
+    });
+
     return () => {
       Object.values(eventSourcesRef.current).forEach((eventSource) => {
         eventSource.close();
       });
       eventSourcesRef.current = {};
     };
-  }, [toast, dispatch]);
+  }, [activeRepos, setupSSEConnection]);
 
   useEffect(() => {
     if (error) {

@@ -2,11 +2,10 @@ import { prisma } from "@/lib/utils/prisma";
 import { RepositoryStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+type Props = { params: Promise<{ id: string }> };
+
+export async function GET(request: NextRequest, props: Props) {
+  const { id } = await props.params;
   const headers = {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
