@@ -1,18 +1,19 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import { Repository } from "@prisma/client";
 import { useCallback, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { addUserRepositories, useRepository } from "../context/repository";
 import SidebarRepoHeader from "./sidebar-repo-header";
 import SidebarRepoList from "./sidebar-repo-list";
 
 export function Sidebar() {
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const { state, dispatch } = useRepository();
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  const repositories = state.userRepositories;
 
   const fetchRepositories = useCallback(
     async (search?: string) => {
@@ -30,7 +31,7 @@ export function Sidebar() {
         }
 
         const data = await response.json();
-        setRepositories(data.repositories);
+        dispatch(addUserRepositories(data.repositories));
       } catch (error) {
         toast({
           title: "Error",
@@ -42,7 +43,7 @@ export function Sidebar() {
         setIsInitialLoad(false);
       }
     },
-    [toast]
+    [toast, dispatch]
   );
 
   const debouncedSearch = useDebouncedCallback((value: string) => {

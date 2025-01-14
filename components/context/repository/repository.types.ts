@@ -1,7 +1,7 @@
 import { Repository } from "@prisma/client";
 
 export interface RepositoryState {
-  repositories: Repository[];
+  userRepositories: Repository[];
   activeRepositories: Repository[];
 }
 
@@ -21,4 +21,12 @@ export type RepositoryAction =
   | {
       type: "ADD_ACTIVE_REPOSITORIES";
       payload: Repository[];
+    }
+  | {
+      type: "ADD_USER_REPOSITORIES";
+      payload: Repository[];
+    }
+  | {
+      type: "ADD_USER_REPOSITORY";
+      payload: Repository;
     };

@@ -2,13 +2,14 @@
 
 import {
   addActiveRepository,
+  addUserRepository,
   useRepository,
 } from "@/components/context/repository";
 import { Button } from "@/components/ui/button";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { cn } from "@/lib/utils/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckIcon, SearchIcon, SparklesIcon, X } from "lucide-react";
+import { Loader2, SearchIcon, SparklesIcon, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -70,8 +71,12 @@ function CommandPaletteRepoForm() {
       const repoDetails = await responseRepoDetails.json();
       console.log("repoDetails --commandPaletteRepoForm is ", repoDetails);
       dispatch(addActiveRepository(repoDetails.repository));
+      dispatch(addUserRepository(repoDetails.repository));
 
       setIsSuccess(true);
+      setUrl("");
+
+      setTimeout(() => setIsSuccess(false), 3000);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to process repository"
@@ -179,13 +184,13 @@ function CommandPaletteRepoForm() {
                 type="submit"
                 className={cn(
                   "relative overflow-hidden",
-                  isSuccess && "bg-green-500 hover:bg-green-600"
+                  isSuccess && "bg-yellow-400 "
                 )}
               >
                 {isSuccess ? (
                   <div className="flex items-center">
-                    <CheckIcon className="mr-2 h-5 w-5" />
-                    Added to the Queue...
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Processing Started...
                   </div>
                 ) : isProcessing ? (
                   <div className="flex items-center">

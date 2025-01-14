@@ -1,7 +1,7 @@
 import { RepositoryAction, RepositoryState } from "./repository.types";
 
 export const initialState: RepositoryState = {
-  repositories: [],
+  userRepositories: [],
   activeRepositories: [],
 };
 
@@ -10,6 +10,16 @@ export function repositoryReducer(
   action: RepositoryAction
 ): RepositoryState {
   switch (action.type) {
+    case "ADD_USER_REPOSITORIES":
+      return {
+        ...state,
+        userRepositories: [...action.payload, ...state.userRepositories],
+      };
+    case "ADD_USER_REPOSITORY":
+      return {
+        ...state,
+        userRepositories: [action.payload, ...state.userRepositories],
+      };
     case "ADD_ACTIVE_REPOSITORY":
       return {
         ...state,

@@ -23,3 +23,17 @@ export const addActiveRepositories = (
   type: "ADD_ACTIVE_REPOSITORIES",
   payload: repositories,
 });
+
+export const addUserRepositories = (
+  repositories: Repository[]
+): RepositoryAction => ({
+  type: "ADD_USER_REPOSITORIES",
+  payload: repositories,
+});
+
+export const addUserRepository = (
+  repository: Repository
+): RepositoryAction => ({
+  type: "ADD_USER_REPOSITORY",
+  payload: repository,
+});
