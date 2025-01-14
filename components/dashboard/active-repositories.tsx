@@ -9,6 +9,11 @@ import {
   XCircle,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import {
+  addActiveRepositories,
+  removeActiveRepository,
+  useRepository,
+} from "../context/repository";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Collapsible,
@@ -42,7 +47,7 @@ const TERMINAL_STATUSES: RepositoryStatus[] = [
 ];
 
 const ActiveRepositories = () => {
-  const [activeRepos, setActiveRepos] = useState<Repository[]>();
+  const { state, dispatch } = useRepository();
   const [isFetchingActiveRepositories, setIsFetchingActiveRepositories] =
     useState(true);
   const [openStates, setOpenStates] = useState<OpenStates>({});
@@ -51,6 +56,7 @@ const ActiveRepositories = () => {
   );
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const activeRepos = state.activeRepositories;
   // eventSources Ref stores reference to all SSE Connection
   // It helps manage clean up of SSE connection
   const eventSourcesRef = useRef<{ [key: string]: EventSource }>({});
@@ -142,11 +148,15 @@ const ActiveRepositories = () => {
             });
           }
 
-          setTimeout(() => {
-            setActiveRepos((prev) =>
-              prev?.filter((repo) => repo.id !== repoId)
-            );
-          }, 2000);
+          // Remove from global active repositories list
+          dispatch(removeActiveRepository(repoId));
+
+          // Clean up local status
+          setProcessingStatus((prev) => {
+            const newStatus = { ...prev };
+            delete newStatus[repoId];
+            return newStatus;
+          });
         }
       };
 
@@ -171,16 +181,17 @@ const ActiveRepositories = () => {
           throw new Error("Failed to fetch active repositories");
         }
 
-        if (data.hasActiveRepositories) {
-          setActiveRepos(data.repositories);
+        if (data.hasActiveRepositories && data.activeRepositories) {
+          console.log("data.activeRepositories is ", data.activeRepositories);
+          dispatch(addActiveRepositories(data.activeRepositories));
           // Setting the default collapsible state of repository to be false
           const newOpenStates: OpenStates = {};
-          data.repositories.forEach((repo: Repository) => {
+          data.activeRepositories.forEach((repo: Repository) => {
             newOpenStates[repo.id] = false;
           });
           setOpenStates((prev) => ({ ...prev, ...newOpenStates }));
           // Setup SSE connection for each repository
-          data.repositories.forEach((repo: Repository) => {
+          data.activeRepositories.forEach((repo: Repository) => {
             setupSSEConnection(repo.id);
           });
         }
@@ -201,7 +212,7 @@ const ActiveRepositories = () => {
       });
       eventSourcesRef.current = {};
     };
-  }, [toast]);
+  }, [toast, dispatch]);
 
   useEffect(() => {
     if (error) {

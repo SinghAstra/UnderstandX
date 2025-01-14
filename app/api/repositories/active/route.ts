@@ -38,7 +38,7 @@ export async function GET() {
     // 4. Return the response
     return NextResponse.json({
       hasActiveRepositories: activeRepositories.length > 0,
-      repositories: activeRepositories,
+      activeRepositories: activeRepositories,
     });
   } catch (error) {
     // 5. Error handling

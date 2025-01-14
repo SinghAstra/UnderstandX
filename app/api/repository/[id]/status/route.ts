@@ -6,6 +6,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
   const headers = {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
@@ -15,9 +16,9 @@ export async function GET(
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
   const encoder = new TextEncoder();
-
+  console.log("id --19 before monitorRepository is ", id);
   // Start monitoring repository status
-  void monitorRepository(params.id, writer, encoder);
+  void monitorRepository(id, writer, encoder);
 
   return new NextResponse(stream.readable, { headers });
 }

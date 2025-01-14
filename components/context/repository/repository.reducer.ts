@@ -1,6 +1,7 @@
 import { RepositoryAction, RepositoryState } from "./repository.types";
 
 export const initialState: RepositoryState = {
+  repositories: [],
   activeRepositories: [],
 };
 
@@ -13,6 +14,18 @@ export function repositoryReducer(
       return {
         ...state,
         activeRepositories: [...state.activeRepositories, action.payload],
+      };
+    case "REMOVE_ACTIVE_REPOSITORY":
+      return {
+        ...state,
+        activeRepositories: state.activeRepositories.filter(
+          (repo) => repo.id !== action.payload
+        ),
+      };
+    case "ADD_ACTIVE_REPOSITORIES":
+      return {
+        ...state,
+        activeRepositories: [...state.activeRepositories, ...action.payload],
       };
     default:
       return state;
