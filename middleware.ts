@@ -28,10 +28,6 @@ export async function middleware(request: NextRequest) {
 
   const isPublicPage = publicPages.some((path) => pathname.startsWith(path));
 
-  console.log("pathname is ", pathname);
-  console.log("isAuthRequired is ", isAuthRequired);
-  console.log("isAuthPage is ", isAuthPage);
-
   // If the path requires authentication and user isn't logged in
   if (isAuthRequired && !token) {
     const signInUrl = new URL("/auth/sign-in", request.url);
