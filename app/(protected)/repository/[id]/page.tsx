@@ -1,6 +1,7 @@
 "use client";
 import RepositoryNotFound from "@/components/not-found/repo";
 import FilePreview from "@/components/repository/file-preview";
+import { RepositoryProcessing } from "@/components/repository/repository-processing";
 import { SearchResults } from "@/components/repository/search-results";
 import {
   formatRepoName,
@@ -10,6 +11,7 @@ import { SearchModal } from "@/components/semantic-search-repo/search-modal";
 import { RepositoryLoading } from "@/components/skeleton/repo-loading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
 import { Repository } from "@prisma/client";
 import { Search } from "lucide-react";
@@ -26,11 +28,12 @@ const RepositoryPage = () => {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
+  const { toast } = useToast();
 
   // current states
   const searchQuery = searchParams.get("q") || "";
   const selectedFilePath = searchParams.get("file") || "";
-  const repositoryId = params.repositoryId;
+  const repositoryId = params.id;
 
   // URL Query
   const [searchValue, setSearchValue] = useState(searchQuery);
@@ -39,9 +42,9 @@ const RepositoryPage = () => {
   // Repository State
   const [repository, setRepository] = useState<Repository>();
   const [isLoadingRepository, setIsLoadingRepository] = useState(true);
-  const [isRepositoryNotFound, setIsRepositoryNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Search results states
   const [similarChunks, setSimilarChunks] = useState<SimilarChunk[]>([]);
   const [isLoadingSimilarChunks, setIsLoadingSimilarChunks] = useState(false);
 
@@ -58,7 +61,6 @@ const RepositoryPage = () => {
 
         if (!response.ok) {
           console.log("response.status is ", response.status);
-          setIsRepositoryNotFound(true);
           return;
         }
 
@@ -121,9 +123,19 @@ const RepositoryPage = () => {
   }, [searchQuery, repositoryId, repository, router]);
 
   useEffect(() => {
+    if (error) {
+      toast({
+        title: error,
+      });
+    }
+  }, [toast, error]);
+
+  // Keep search value in sync with URL
+  useEffect(() => {
     setSearchValue(searchQuery);
   }, [searchQuery]);
 
+  // Group search results by file
   const groupedResults = useMemo(() => {
     return similarChunks.reduce((acc, chunk) => {
       const key = chunk.filepath;
@@ -166,21 +178,17 @@ const RepositoryPage = () => {
     return <RepositoryLoading />;
   }
 
-  if (isRepositoryNotFound) {
+  if (!repository) {
     return <RepositoryNotFound />;
+  }
+
+  if (repository.status !== "SUCCESS") {
+    return <RepositoryProcessing repository={repository} />;
   }
 
   // Initial UI - Centered search when no query
   if (!searchQuery) {
     return <SearchContainer onSearch={handleSearch} repository={repository} />;
-  }
-
-  if (error || !repository || !repository.avatarUrl) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-destructive">{error}</div>
-      </div>
-    );
   }
 
   // Search results view with split pane
@@ -189,7 +197,7 @@ const RepositoryPage = () => {
       <div className="flex items-center justify-between p-2 border-b backdrop-blur-xl">
         <div className="flex items-center gap-2">
           <Avatar className="ring-2 ring-border shadow-lg">
-            <AvatarImage src={repository.avatarUrl} />
+            {repository.avatarUrl && <AvatarImage src={repository.avatarUrl} />}
             <AvatarFallback className="text-lg">
               {repository.name[0]}
             </AvatarFallback>

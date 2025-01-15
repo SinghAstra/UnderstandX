@@ -47,9 +47,8 @@ export function repositoryReducer(
       );
       return {
         ...state,
-        activeRepositories: [...action.payload, ...state.activeRepositories],
+        activeRepositories: [...action.payload],
         processingStatuses: {
-          ...state.processingStatuses,
           ...newStatuses,
         },
       };
