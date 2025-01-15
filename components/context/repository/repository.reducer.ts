@@ -31,15 +31,11 @@ export function repositoryReducer(
         },
       };
     case "REMOVE_ACTIVE_REPOSITORY":
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [action.payload]: _, ...updatedProcessingStatuses } =
-        state.processingStatuses;
       return {
         ...state,
         activeRepositories: state.activeRepositories.filter(
           (repo) => repo.id !== action.payload
         ),
-        processingStatuses: updatedProcessingStatuses,
       };
     case "ADD_ACTIVE_REPOSITORIES":
       const newStatuses = action.payload.reduce(

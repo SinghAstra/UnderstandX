@@ -1,4 +1,3 @@
-import { useToast } from "@/hooks/use-toast";
 import { RepositoryStatusManager } from "@/lib/repository/status-manager";
 import {
   createContext,
@@ -27,15 +26,10 @@ export function RepositoryProvider({
 }) {
   const [state, dispatch] = useReducer(repositoryReducer, initialState);
   const statusManagerRef = useRef<RepositoryStatusManager | null>(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     statusManagerRef.current = new RepositoryStatusManager({
       onStatusUpdate: (repoId, update) => {
-        console.log("In onStatusUpdate");
-        console.log("state.processingStatuses is ", state.processingStatuses);
-        console.log("repoId is ", repoId);
-        console.log("update is ", update);
         dispatch({
           type: "UPDATE_REPOSITORY_STATUS",
           payload: {
@@ -45,21 +39,6 @@ export function RepositoryProvider({
         });
       },
       onTerminalStatus: (repoId) => {
-        console.log("In onTerminalStatus");
-        console.log("state.processingStatuses is ", state.processingStatuses);
-        const status = state.processingStatuses[repoId];
-        const repo = state.activeRepositories.find((r) => r.id === repoId);
-
-        console.log("status --onTerminalStatuses is ", status);
-
-        toast({
-          title: status === "SUCCESS" ? "Success" : "Processing Failed",
-          description: `${repo?.name || repoId} ${
-            status === "SUCCESS" ? "processed successfully" : "failed"
-          }`,
-          variant: status === "SUCCESS" ? "default" : "destructive",
-        });
-
         dispatch({ type: "REMOVE_ACTIVE_REPOSITORY", payload: repoId });
       },
     });

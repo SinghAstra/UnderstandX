@@ -4,10 +4,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { addUserRepositories, useRepository } from "../context/repository";
-import SidebarRepoHeader from "./sidebar-repo-header";
-import SidebarRepoList from "./sidebar-repo-list";
+import SidebarRepoHeader from "./left-sidebar-repo-header";
+import SidebarRepoList from "./left-sidebar-repo-list";
 
-export function Sidebar() {
+export function LeftSidebar() {
   const { state, dispatch } = useRepository();
   const [loading, setLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
