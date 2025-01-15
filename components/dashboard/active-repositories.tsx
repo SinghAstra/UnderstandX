@@ -1,5 +1,4 @@
 import { useToast } from "@/hooks/use-toast";
-import { RepositoryStatus } from "@prisma/client";
 import {
   CheckCircle2,
   ChevronDown,
@@ -8,12 +7,8 @@ import {
   Loader2,
   XCircle,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  addActiveRepositories,
-  removeActiveRepository,
-  useRepository,
-} from "../context/repository";
+import { useEffect, useState } from "react";
+import { addActiveRepositories, useRepository } from "../context/repository";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Collapsible,
@@ -26,10 +21,6 @@ interface OpenStates {
   [key: string]: boolean;
 }
 
-interface ProcessingStatus {
-  [key: string]: RepositoryStatus;
-}
-
 const repositorySteps = [
   { status: "PENDING", label: "Initializing" },
   { status: "FETCHING_GITHUB_REPO_FILES", label: "Fetching Repository Files" },
@@ -38,28 +29,17 @@ const repositorySteps = [
   { status: "SUCCESS", label: "Completed" },
 ];
 
-const TERMINAL_STATUSES: RepositoryStatus[] = [
-  "SUCCESS",
-  "CANCELED",
-  "FETCHING_GITHUB_REPO_FILES_FAILED",
-  "CHUNKING_FILES_FAILED",
-  "EMBEDDING_CHUNKS_FAILED",
-];
-
 const ActiveRepositories = () => {
   const { state, dispatch } = useRepository();
   const [isFetchingActiveRepositories, setIsFetchingActiveRepositories] =
     useState(true);
   const [openStates, setOpenStates] = useState<OpenStates>({});
-  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>(
-    {}
-  );
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const activeRepos = state.activeRepositories;
 
   const getStepIcon = (repoId: string, stepStatus: string) => {
-    const currentStatus = processingStatus[repoId];
+    const currentStatus = state.processingStatuses[repoId];
 
     // Get the indices for comparison
     const currentStepIndex = repositorySteps.findIndex(
@@ -223,7 +203,7 @@ const ActiveRepositories = () => {
                       {getStepIcon(repo.id, step.status)}
                       <span
                         className={`text-sm ${
-                          processingStatus[repo.id] === step.status
+                          state.processingStatuses[repo.id] === step.status
                             ? "text-blue-500 font-medium"
                             : "text-gray-500"
                         }`}

@@ -32,6 +32,10 @@ export function RepositoryProvider({
   useEffect(() => {
     statusManagerRef.current = new RepositoryStatusManager({
       onStatusUpdate: (repoId, update) => {
+        console.log("In onStatusUpdate");
+        console.log("state.processingStatuses is ", state.processingStatuses);
+        console.log("repoId is ", repoId);
+        console.log("update is ", update);
         dispatch({
           type: "UPDATE_REPOSITORY_STATUS",
           payload: {
@@ -41,8 +45,12 @@ export function RepositoryProvider({
         });
       },
       onTerminalStatus: (repoId) => {
+        console.log("In onTerminalStatus");
+        console.log("state.processingStatuses is ", state.processingStatuses);
         const status = state.processingStatuses[repoId];
         const repo = state.activeRepositories.find((r) => r.id === repoId);
+
+        console.log("status --onTerminalStatuses is ", status);
 
         toast({
           title: status === "SUCCESS" ? "Success" : "Processing Failed",
@@ -59,7 +67,7 @@ export function RepositoryProvider({
     return () => {
       statusManagerRef.current?.disconnectAll();
     };
-  }, [dispatch, toast, state.activeRepositories, state.processingStatuses]);
+  }, []);
 
   useEffect(() => {
     // Connect new repositories

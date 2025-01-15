@@ -42,7 +42,8 @@ async function monitorRepository(
       });
 
       if (!repository) {
-        await writer.write(
+        await safeWrite(
+          writer,
           encoder.encode(
             `data: ${JSON.stringify({
               error: "Repository not found",
@@ -55,7 +56,8 @@ async function monitorRepository(
 
       // Only send update if status has changed
       if (lastStatus !== repository.status) {
-        await writer.write(
+        await safeWrite(
+          writer,
           encoder.encode(
             `data: ${JSON.stringify({
               id: repository.id,
@@ -85,7 +87,8 @@ async function monitorRepository(
     }
   } catch (error) {
     console.error("Error monitoring repository:", error);
-    await writer.write(
+    await safeWrite(
+      writer,
       encoder.encode(
         `data: ${JSON.stringify({
           error: "Repository monitoring failed",
@@ -94,6 +97,26 @@ async function monitorRepository(
       )
     );
   } finally {
-    await writer.close();
+    try {
+      await writer.close();
+    } catch (error) {
+      console.log("error --finally --monitorRepository is ", error);
+      // Ignore "stream already closed" errors
+      console.log("Stream already closed in finally block");
+    }
+  }
+}
+
+// Helper function to safely write to the stream
+async function safeWrite(
+  writer: WritableStreamDefaultWriter,
+  data: Uint8Array
+) {
+  try {
+    await writer.write(data);
+    return true;
+  } catch (error) {
+    console.log("Error writing to stream:", error);
+    return false;
   }
 }

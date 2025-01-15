@@ -11,6 +11,7 @@ export class RepositoryStatusManager {
   }
 
   public connect(repoId: string): void {
+    console.log("repoId --connect is ", repoId);
     // Close existing connection if it exists
     this.disconnect(repoId);
 
@@ -21,6 +22,8 @@ export class RepositoryStatusManager {
       eventSource.onerror = (error) => this.handleError(repoId, error);
 
       this.connections.set(repoId, eventSource);
+
+      console.log("this.connections is ", this.connections);
     } catch (error) {
       console.log("error --connect");
       if (error instanceof Error) {
@@ -84,7 +87,7 @@ export class RepositoryStatusManager {
 
   private handleError(repoId: string, error: Event | Error | string): void {
     let errorMessage: string;
-
+    console.log("In handleError");
     if (error instanceof Event) {
       errorMessage = "Connection error occurred";
     } else if (error instanceof Error) {
