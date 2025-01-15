@@ -57,81 +57,6 @@ const ActiveRepositories = () => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const activeRepos = state.activeRepositories;
-  // eventSources Ref stores reference to all SSE Connection
-  // It helps manage clean up of SSE connection
-  const eventSourcesRef = useRef<{ [key: string]: EventSource }>({});
-
-  const setupSSEConnection = useCallback(
-    (repoId: string) => {
-      // Close existing connection if it exists
-      // We do not want duplicate connection to same repo
-      if (eventSourcesRef.current[repoId]) {
-        eventSourcesRef.current[repoId].close();
-      }
-
-      // Create new connection
-      const eventSource = new EventSource(`/api/repository/${repoId}/status`);
-      eventSourcesRef.current[repoId] = eventSource;
-
-      eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-
-        if (data.error) {
-          setError(data.error);
-          eventSource.close();
-          delete eventSourcesRef.current[repoId];
-          return;
-        }
-
-        setProcessingStatus((prev) => ({
-          ...prev,
-          [repoId]: data.status,
-        }));
-
-        if (TERMINAL_STATUSES.includes(data.status)) {
-          eventSource.close();
-          delete eventSourcesRef.current[repoId];
-
-          if (data.status === "SUCCESS") {
-            toast({
-              title: "Success",
-              description: `${data.name || repoId} processed successfully`,
-            });
-          } else if (
-            data.status.includes("FAILED") ||
-            data.status === "CANCELED"
-          ) {
-            toast({
-              title: `Processing Failed For ${data.name || repoId}`,
-              variant: "destructive",
-            });
-          }
-
-          // Remove from global active repositories list
-          dispatch(removeActiveRepository(repoId));
-
-          // Clean up local status
-          setProcessingStatus((prev) => {
-            const newStatus = { ...prev };
-            delete newStatus[repoId];
-            return newStatus;
-          });
-        }
-      };
-
-      eventSource.onerror = () => {
-        // Only handle actual errors, not normal closures
-        // if (eventSource.readyState === EventSource.CLOSED) {
-        // Connection was already closed normally
-        // return;
-        // }
-        setError(`Error connecting to status updates for repository ${repoId}`);
-        eventSource.close();
-        delete eventSourcesRef.current[repoId];
-      };
-    },
-    [dispatch, toast]
-  );
 
   const getStepIcon = (repoId: string, stepStatus: string) => {
     const currentStatus = processingStatus[repoId];
@@ -204,13 +129,8 @@ const ActiveRepositories = () => {
 
   // Effect to handle changes in activeRepos
   useEffect(() => {
-    // Setup SSE connections and collapsible states for new repositories
+    // Setup collapsible states for new repositories
     activeRepos.forEach((repo) => {
-      // Setup SSE connection if not exists
-      if (!eventSourcesRef.current[repo.id]) {
-        setupSSEConnection(repo.id);
-      }
-
       // Setup collapsible state if not exists
       setOpenStates((prev) => ({
         ...prev,
@@ -218,33 +138,17 @@ const ActiveRepositories = () => {
       }));
     });
 
-    // Cleanup SSE connections and states for removed repositories
-    Object.keys(eventSourcesRef.current).forEach((repoId) => {
-      if (!activeRepos.find((repo) => repo.id === repoId)) {
-        eventSourcesRef.current[repoId].close();
-        delete eventSourcesRef.current[repoId];
-
-        setOpenStates((prev) => {
-          const newStates = { ...prev };
+    // Cleanup states for removed repositories
+    setOpenStates((prev) => {
+      const newStates = { ...prev };
+      Object.keys(newStates).forEach((repoId) => {
+        if (!activeRepos.find((repo) => repo.id === repoId)) {
           delete newStates[repoId];
-          return newStates;
-        });
-
-        setProcessingStatus((prev) => {
-          const newStatus = { ...prev };
-          delete newStatus[repoId];
-          return newStatus;
-        });
-      }
-    });
-
-    return () => {
-      Object.values(eventSourcesRef.current).forEach((eventSource) => {
-        eventSource.close();
+        }
       });
-      eventSourcesRef.current = {};
-    };
-  }, [activeRepos, setupSSEConnection]);
+      return newStates;
+    });
+  }, [activeRepos]);
 
   useEffect(() => {
     if (error) {
