@@ -69,7 +69,6 @@ function CommandPaletteRepoForm() {
         throw new Error("Failed to fetch repository details");
       }
       const repoDetails = await responseRepoDetails.json();
-      console.log("repoDetails --commandPaletteRepoForm is ", repoDetails);
       dispatch(addActiveRepository(repoDetails.repository));
       dispatch(addUserRepository(repoDetails.repository));
 

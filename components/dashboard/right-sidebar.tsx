@@ -9,14 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MessageSquare } from "lucide-react";
-import ActiveRepositories from "./active-repositories";
 
 export function RightSidebar() {
   return (
     <div className="w-80 bg-background p-4">
-      <ActiveRepositories />
-      {/* <h2 className="mb-4 text-lg leading-relaxed">Our Ecosystem</h2> */}
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

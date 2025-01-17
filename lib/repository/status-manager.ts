@@ -50,10 +50,6 @@ export class RepositoryStatusManager {
     return this.connections.has(repoId);
   }
 
-  // public getActiveConnections(): string[] {
-  //   return Array.from(this.connections.keys());
-  // }
-
   private handleMessage(repoId: string, event: MessageEvent): void {
     try {
       const data: StatusUpdate = JSON.parse(event.data);
@@ -68,7 +64,7 @@ export class RepositoryStatusManager {
 
       // Check for terminal status
       if (TERMINAL_STATUSES.includes(data.status)) {
-        this.config.onTerminalStatus(repoId);
+        // this.config.onTerminalStatus(repoId);
         this.disconnect(repoId);
       }
     } catch (error) {

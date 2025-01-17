@@ -17,13 +17,6 @@ export const removeActiveRepository = (
   payload: repositoryId,
 });
 
-export const addActiveRepositories = (
-  repositories: Repository[]
-): RepositoryAction => ({
-  type: "ADD_ACTIVE_REPOSITORIES",
-  payload: repositories,
-});
-
 export const addUserRepositories = (
   repositories: Repository[]
 ): RepositoryAction => ({

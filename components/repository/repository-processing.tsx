@@ -2,10 +2,6 @@ import {
   addActiveRepository,
   useRepository,
 } from "@/components/context/repository";
-import {
-  getStepIcon,
-  repositorySteps,
-} from "@/components/dashboard/active-repositories";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Repository } from "@prisma/client";
 import { useEffect } from "react";
@@ -41,22 +37,6 @@ export const RepositoryProcessing = ({
         <h1 className="tracking-tight">
           {repository.fullName && formatRepoName(repository.fullName)}
         </h1>
-      </div>
-      <div className="w-full max-w-sm border h-full mx-auto rounded-md bg-card/50 backdrop-blur-lg space-y-4 p-4 mt-20">
-        {repositorySteps.map((step) => (
-          <div key={step.status} className="flex items-center gap-3">
-            {getStepIcon(state.processingStatuses, repository.id, step.status)}
-            <span
-              className={`text-sm ${
-                state.processingStatuses[repository.id] === step.status
-                  ? "text-blue-500 font-medium"
-                  : "text-gray-500"
-              }`}
-            >
-              {step.label}
-            </span>
-          </div>
-        ))}
       </div>
     </div>
   );

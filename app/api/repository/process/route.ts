@@ -110,8 +110,6 @@ async function processRepositoryInBackground(repositoryId: string) {
     });
 
     // 2. Update status to indicate GitHub repo fetching
-    await updateRepositoryStatus(repositoryId, "FETCHING_GITHUB_REPO_FILES");
-
     if (!repository) {
       throw new Error("Repository not found");
     }
@@ -123,15 +121,10 @@ async function processRepositoryInBackground(repositoryId: string) {
       repoData = await fetchGitHubRepoData(repository.url, false);
       console.log("repoData is ", repoData.files.length);
     } catch (error) {
-      await updateRepositoryStatus(
-        repositoryId,
-        "FETCHING_GITHUB_REPO_FILES_FAILED"
-      );
       throw error;
     }
 
     // 4. Update Status to indicate chunking files
-    await updateRepositoryStatus(repositoryId, "CHUNKING_FILES");
 
     try {
       // 5. Process files into chunks
@@ -150,12 +143,10 @@ async function processRepositoryInBackground(repositoryId: string) {
         })),
       });
     } catch (error) {
-      await updateRepositoryStatus(repositoryId, "CHUNKING_FILES_FAILED");
       throw error;
     }
 
     // 4. Update Status to indicate embedding generation
-    await updateRepositoryStatus(repositoryId, "EMBEDDING_CHUNKS");
 
     try {
       // 8. Generate embeddings for chunks
@@ -198,7 +189,6 @@ async function processRepositoryInBackground(repositoryId: string) {
         );
       }
     } catch (error) {
-      await updateRepositoryStatus(repositoryId, "EMBEDDING_CHUNKS_FAILED");
       throw error;
     }
 

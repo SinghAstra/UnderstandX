@@ -37,21 +37,6 @@ export function repositoryReducer(
           (repo) => repo.id !== action.payload
         ),
       };
-    case "ADD_ACTIVE_REPOSITORIES":
-      const newStatuses = action.payload.reduce(
-        (acc, repo) => ({
-          ...acc,
-          [repo.id]: "PENDING",
-        }),
-        {}
-      );
-      return {
-        ...state,
-        activeRepositories: [...action.payload],
-        processingStatuses: {
-          ...newStatuses,
-        },
-      };
     case "UPDATE_REPOSITORY_STATUS":
       return {
         ...state,

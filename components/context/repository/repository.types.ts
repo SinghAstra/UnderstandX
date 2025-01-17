@@ -22,10 +22,6 @@ export type RepositoryAction =
       payload: string;
     }
   | {
-      type: "ADD_ACTIVE_REPOSITORIES";
-      payload: Repository[];
-    }
-  | {
       type: "ADD_USER_REPOSITORIES";
       payload: Repository[];
     }
