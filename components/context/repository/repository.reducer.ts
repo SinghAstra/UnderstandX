@@ -3,7 +3,6 @@ import { RepositoryAction, RepositoryState } from "./repository.types";
 export const initialState: RepositoryState = {
   userRepositories: [],
   activeRepositories: [],
-  processingStatuses: {},
 };
 
 export function repositoryReducer(
@@ -25,10 +24,6 @@ export function repositoryReducer(
       return {
         ...state,
         activeRepositories: [action.payload, ...state.activeRepositories],
-        processingStatuses: {
-          [action.payload.id]: "PENDING",
-          ...state.processingStatuses,
-        },
       };
     case "REMOVE_ACTIVE_REPOSITORY":
       return {
@@ -37,14 +32,10 @@ export function repositoryReducer(
           (repo) => repo.id !== action.payload
         ),
       };
-    case "UPDATE_REPOSITORY_STATUS":
-      return {
-        ...state,
-        processingStatuses: {
-          ...state.processingStatuses,
-          [action.payload.repoId]: action.payload.status,
-        },
-      };
+    // case "UPDATE_REPOSITORY_STATUS":
+    //   return {
+    //     ...state,
+    //   };
     default:
       return state;
   }

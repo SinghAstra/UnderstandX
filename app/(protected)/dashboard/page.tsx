@@ -60,7 +60,7 @@ function CommandPaletteRepoForm() {
       }
 
       const data = await response.json();
-      console.log("data --commandPaletteRepoForm is ", data);
+      console.log("data --repositoryProcess is ", data);
 
       const responseRepoDetails = await fetch(
         `/api/repository/${data.repositoryId}`

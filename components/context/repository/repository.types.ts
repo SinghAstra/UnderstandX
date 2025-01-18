@@ -1,11 +1,8 @@
-import { Repository, RepositoryStatus } from "@prisma/client";
+import { Repository } from "@prisma/client";
 
 export interface RepositoryState {
   userRepositories: Repository[];
   activeRepositories: Repository[];
-  processingStatuses: {
-    [key: string]: RepositoryStatus;
-  };
 }
 
 // RepositoryAction are used to define shape/structure of action object
@@ -28,11 +25,4 @@ export type RepositoryAction =
   | {
       type: "ADD_USER_REPOSITORY";
       payload: Repository;
-    }
-  | {
-      type: "UPDATE_REPOSITORY_STATUS";
-      payload: {
-        repoId: string;
-        status: RepositoryStatus;
-      };
     };

@@ -8,16 +8,12 @@ import {
 import { prisma } from "@/lib/utils/prisma";
 import { processFilesIntoChunks } from "@/lib/utils/repository";
 import { RepositoryStatus } from "@prisma/client";
+import { sign } from "jsonwebtoken";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-// Route: POST /api/repository/process
-// Purpose: Process a GitHub repository by fetching its contents and generating embeddings
-
-// Case to handle :
-// 1. Existing repository check
-// 2. API rate limiting
-// 3. Large Codebases
+const JWT_SECRET = process.env.JWT_SECRET!;
+const EXPRESS_API_URL = process.env.EXPRESS_API_URL!;
 
 export async function POST(req: NextRequest) {
   try {
@@ -78,14 +74,43 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("Created new Repository Record");
+    console.log("JWT_SECRET is ", JWT_SECRET);
 
-    processRepositoryInBackground(repository.id);
+    // 6. Generate JWT token for Express API authentication
+    const token = sign(
+      {
+        userId: session.user.id,
+        repositoryId: repository.id,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiration
+      },
+      JWT_SECRET
+    );
+
+    // 7. Trigger background processing on Express API
+    const triggerResponse = await fetch(
+      `${EXPRESS_API_URL}/api/repository/process`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          repositoryId: repository.id,
+          githubUrl,
+        }),
+      }
+    );
+
+    if (!triggerResponse.ok) {
+      throw new Error("Failed to trigger background processing");
+    }
 
     // 6. Return immediate response
     return NextResponse.json({
       repositoryId: repository.id,
-      status: "PENDING",
-      message: "Repository processing started",
+      token,
+      sseUrl: `${EXPRESS_API_URL}/api/repository/${repository.id}/process/stream`,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -100,117 +125,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-async function processRepositoryInBackground(repositoryId: string) {
-  try {
-    // 1. Fetch repository details
-    const repository = await prisma.repository.findUnique({
-      where: { id: repositoryId },
-    });
-
-    // 2. Update status to indicate GitHub repo fetching
-    if (!repository) {
-      throw new Error("Repository not found");
-    }
-
-    let repoData;
-
-    try {
-      // 3. Fetch GitHub repo files
-      repoData = await fetchGitHubRepoData(repository.url, false);
-      console.log("repoData is ", repoData.files.length);
-    } catch (error) {
-      throw error;
-    }
-
-    // 4. Update Status to indicate chunking files
-
-    try {
-      // 5. Process files into chunks
-      const chunks = await processFilesIntoChunks(repoData.files);
-
-      console.log("chunks.length is ", chunks.length);
-
-      // 6. Save chunks to database
-      await prisma.repositoryChunk.createMany({
-        data: chunks.map((chunk) => ({
-          repositoryId: repository.id,
-          content: chunk.content,
-          type: chunk.type,
-          filepath: chunk.filepath,
-          keywords: chunk.keywords,
-        })),
-      });
-    } catch (error) {
-      throw error;
-    }
-
-    // 4. Update Status to indicate embedding generation
-
-    try {
-      // 8. Generate embeddings for chunks
-      const chunksForEmbedding = await prisma.repositoryChunk.findMany({
-        where: {
-          repositoryId: repository.id,
-          embeddings: {
-            equals: null,
-          },
-        },
-        select: {
-          id: true,
-          content: true,
-        },
-      });
-
-      console.log("chunksForEmbedding.length is ", chunksForEmbedding.length);
-
-      const BATCH_SIZE = 5;
-      if (chunksForEmbedding.length > 0) {
-        const chunkTexts = chunksForEmbedding.map((chunk) => chunk.content);
-        console.log("chunkTexts.length is ", chunkTexts.length);
-        const embeddingResults = await batchGenerateEmbeddings(
-          chunkTexts,
-          BATCH_SIZE
-        );
-        console.log("embeddingResults.length is ", embeddingResults.length);
-
-        // Update chunks with embeddings
-        await Promise.all(
-          chunksForEmbedding.map((chunk, index) => {
-            const result = embeddingResults[index];
-            if (!result.error) {
-              return prisma.repositoryChunk.update({
-                where: { id: chunk.id },
-                data: { embeddings: result.embeddings },
-              });
-            }
-          })
-        );
-      }
-    } catch (error) {
-      throw error;
-    }
-
-    // 9. Update repository status to success
-    await updateRepositoryStatus(repositoryId, "SUCCESS");
-  } catch (error) {
-    console.log("Background processing error.");
-    if (error instanceof Error) {
-      console.log("Error message:", error.message);
-      console.log("Error stack:", error.stack);
-    }
-  }
-}
-
-async function updateRepositoryStatus(
-  repositoryId: string,
-  status: RepositoryStatus
-) {
-  console.log("In update RepositoryStatus status :- ", status);
-
-  await prisma.repository.update({
-    where: { id: repositoryId },
-    data: { status },
-  });
 }
