@@ -3,7 +3,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { addUserRepositories, useRepository } from "../context/repository";
+import { setUserRepositories, useRepository } from "../context/repository";
 import SidebarRepoHeader from "./left-sidebar-repo-header";
 import SidebarRepoList from "./left-sidebar-repo-list";
 
@@ -31,7 +31,7 @@ export function LeftSidebar() {
         }
 
         const data = await response.json();
-        dispatch(addUserRepositories(data.repositories));
+        dispatch(setUserRepositories(data.repositories));
       } catch (error) {
         toast({
           title: "Error",

@@ -31,18 +31,8 @@ const SidebarRepoList = ({
   return (
     <div className="h-full overflow-y-auto px-4">
       <div className="flex flex-col gap-4">
-        {repositories.map((repo) => {
-          // Check if there's a real-time status update
-          const realtimeStatus = state.processingStatuses[repo.id];
-          // If there is, create a new repository object with the updated status
-          const updatedRepo = realtimeStatus
-            ? { ...repo, status: realtimeStatus }
-            : repo;
-
-          if (realtimeStatus) {
-            console.log("Updating status for ", repo.id, realtimeStatus);
-          }
-          return <RepositoryCard key={repo.id} repository={updatedRepo} />;
+        {state.userRepositories.map((repo) => {
+          return <RepositoryCard key={repo.id} repository={repo} />;
         })}
       </div>
     </div>

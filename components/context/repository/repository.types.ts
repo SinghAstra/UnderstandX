@@ -1,10 +1,9 @@
-import { Repository } from "@prisma/client";
+import { Repository, RepositoryStatus } from "@prisma/client";
 
 export interface RepositoryState {
-  userRepositories: Repository[];
-  activeRepositories: Repository[];
+  userRepositories: Repository[]; // Direct from Prisma
+  activeRepositories: Repository[]; // Direct from Prisma
 }
-
 // RepositoryAction are used to define shape/structure of action object
 // What is Action Object ?
 // It is a plain object with a type property that indicates the type of action being performed.
@@ -19,10 +18,17 @@ export type RepositoryAction =
       payload: string;
     }
   | {
-      type: "ADD_USER_REPOSITORIES";
+      type: "SET_USER_REPOSITORIES";
       payload: Repository[];
     }
   | {
       type: "ADD_USER_REPOSITORY";
       payload: Repository;
+    }
+  | {
+      type: "UPDATE_REPOSITORY_STATUS";
+      payload: {
+        id: string;
+        status: RepositoryStatus;
+      };
     };

@@ -10,7 +10,7 @@ export function repositoryReducer(
   action: RepositoryAction
 ): RepositoryState {
   switch (action.type) {
-    case "ADD_USER_REPOSITORIES":
+    case "SET_USER_REPOSITORIES":
       return {
         ...state,
         userRepositories: [...action.payload],
@@ -32,10 +32,20 @@ export function repositoryReducer(
           (repo) => repo.id !== action.payload
         ),
       };
-    // case "UPDATE_REPOSITORY_STATUS":
-    //   return {
-    //     ...state,
-    //   };
+    case "UPDATE_REPOSITORY_STATUS":
+      return {
+        ...state,
+        userRepositories: state.userRepositories.map((repo) =>
+          repo.id === action.payload.id
+            ? { ...repo, status: action.payload.status }
+            : repo
+        ),
+        activeRepositories: state.activeRepositories.map((repo) =>
+          repo.id === action.payload.id
+            ? { ...repo, status: action.payload.status }
+            : repo
+        ),
+      };
     default:
       return state;
   }
