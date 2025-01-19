@@ -1,5 +1,4 @@
 "use client";
-import { useRepository } from "@/components/context/repository";
 import RepositoryNotFound from "@/components/not-found/repo";
 import FilePreview from "@/components/repository/file-preview";
 import { RepositoryProcessing } from "@/components/repository/repository-processing";
@@ -30,7 +29,6 @@ const RepositoryPage = () => {
   const pathname = usePathname();
   const params = useParams();
   const { toast } = useToast();
-  const { state } = useRepository();
 
   // current states
   const searchQuery = searchParams.get("q") || "";
@@ -185,8 +183,7 @@ const RepositoryPage = () => {
   }
 
   // Check both local repository status and context status
-  const currentStatus =
-    state.processingStatuses[repository.id] || repository.status;
+  const currentStatus = repository.status;
   if (currentStatus !== "SUCCESS") {
     return <RepositoryProcessing repository={repository} />;
   }

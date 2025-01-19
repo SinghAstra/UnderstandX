@@ -75,9 +75,7 @@ async function monitorRepository(
       if (
         repository.status === "SUCCESS" ||
         repository.status === "CANCELED" ||
-        repository.status === "FETCHING_GITHUB_REPO_FILES_FAILED" ||
-        repository.status === "CHUNKING_FILES_FAILED" ||
-        repository.status === "EMBEDDING_CHUNKS_FAILED"
+        repository.status === "FAILED"
       ) {
         break;
       }

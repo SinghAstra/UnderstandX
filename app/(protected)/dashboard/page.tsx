@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  addActiveRepository,
   addUserRepository,
   useRepository,
 } from "@/components/context/repository";
@@ -25,7 +24,8 @@ function CommandPaletteRepoForm() {
   const formRef = useRef<HTMLDivElement>(null);
   const actionQuery = searchParams.get("action");
   const router = useRouter();
-  const { dispatch } = useRepository();
+  const { state, dispatch } = useRepository();
+  console.log("state.activeRepositories is ", state.activeRepositories);
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -69,7 +69,6 @@ function CommandPaletteRepoForm() {
         throw new Error("Failed to fetch repository details");
       }
       const repoDetails = await responseRepoDetails.json();
-      dispatch(addActiveRepository(repoDetails.repository));
       dispatch(addUserRepository(repoDetails.repository));
 
       setIsSuccess(true);
