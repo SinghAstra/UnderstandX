@@ -24,8 +24,7 @@ function CommandPaletteRepoForm() {
   const formRef = useRef<HTMLDivElement>(null);
   const actionQuery = searchParams.get("action");
   const router = useRouter();
-  const { state, dispatch } = useRepository();
-  console.log("state.activeRepositories is ", state.activeRepositories);
+  const { dispatch } = useRepository();
 
   useEffect(() => {
     if (actionQuery === "connect") {

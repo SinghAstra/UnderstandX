@@ -1,10 +1,9 @@
-import {
-  addActiveRepository,
-  useRepository,
-} from "@/components/context/repository";
+// import {
+//   addActiveRepository,
+//   useRepository,
+// } from "@/components/context/repository";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Repository } from "@prisma/client";
-import { useEffect } from "react";
 import { formatRepoName } from "../semantic-search-repo/search-container";
 
 interface RepositoryProcessingProps {
@@ -14,16 +13,14 @@ interface RepositoryProcessingProps {
 export const RepositoryProcessing = ({
   repository,
 }: RepositoryProcessingProps) => {
-  const { state, dispatch } = useRepository();
+  // useEffect(() => {
+  //   dispatch(addActiveRepository(repository));
+  // }, [repository, dispatch]);
 
-  useEffect(() => {
-    dispatch(addActiveRepository(repository));
-  }, [repository, dispatch]);
-
-  console.log(
-    "state.processingStatuses[repository.id] is ",
-    state.processingStatuses[repository.id]
-  );
+  // console.log(
+  //   "state.processingStatuses[repository.id] is ",
+  //   state.processingStatuses[repository.id]
+  // );
 
   return (
     <div className="flex flex-col ">
