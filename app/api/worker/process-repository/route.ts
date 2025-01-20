@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   const { repositoryId, githubUrl } = await JSON.parse(body);
 
   try {
-    const repoData = await fetchGitHubRepoData(githubUrl, false);
+    const repoData = await fetchGitHubRepoData(githubUrl, false, repositoryId);
 
     console.log("repoData is ", repoData.files.length);
 

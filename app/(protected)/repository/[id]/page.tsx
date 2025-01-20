@@ -1,7 +1,7 @@
 "use client";
 import RepositoryNotFound from "@/components/not-found/repo";
 import FilePreview from "@/components/repository/file-preview";
-import { RepositoryProcessing } from "@/components/repository/repository-processing";
+import RepositoryProcessing from "@/components/repository/repository-processing";
 import { SearchResults } from "@/components/repository/search-results";
 import {
   formatRepoName,

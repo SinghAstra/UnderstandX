@@ -1,5 +1,6 @@
 import { GitHubFile } from "@/interfaces/github";
 import { Octokit } from "@octokit/rest";
+import { sendProcessingUpdate } from "../pusher/send-update";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN,
@@ -70,7 +71,11 @@ export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
   };
 }
 
-export async function fetchGitHubRepoData(url: string, isPrivate: boolean) {
+export async function fetchGitHubRepoData(
+  url: string,
+  isPrivate: boolean,
+  repositoryId: string
+) {
   const { owner, repo, isValid } = parseGithubUrl(url);
   console.log("isPrivate --fetchGitHubRepoData is ", isPrivate);
 
@@ -88,7 +93,9 @@ export async function fetchGitHubRepoData(url: string, isPrivate: boolean) {
   const files = await fetchRepositoryContent(
     owner,
     repo,
-    repoData.default_branch
+    repoData.default_branch,
+    "",
+    repositoryId
   );
 
   console.log("files.length --fetchRepositoryContent is ", files.length);
@@ -103,7 +110,8 @@ async function fetchRepositoryContent(
   owner: string,
   repo: string,
   branch: string,
-  path: string = ""
+  path: string,
+  repositoryId: string
 ) {
   const files: GitHubFile[] = [];
 
@@ -133,6 +141,11 @@ async function fetchRepositoryContent(
           });
         }
 
+        await sendProcessingUpdate(repositoryId, {
+          status: "PROCESSING",
+          message: `Fetching ${item.path} from Github`,
+        });
+
         console.log("Fetched File: ", item.name);
         console.log("File Path: ", item.path);
       } else if (item.type === "dir") {
@@ -140,7 +153,8 @@ async function fetchRepositoryContent(
           owner,
           repo,
           branch,
-          item.path
+          item.path,
+          repositoryId
         );
         files.push(...subFiles);
       }
