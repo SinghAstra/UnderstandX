@@ -1,18 +1,12 @@
 import { authOptions } from "@/lib/auth/auth-options";
-import { batchGenerateEmbeddings } from "@/lib/utils/gemini";
-import {
-  fetchGitHubRepoData,
-  fetchGitHubRepoMetaData,
-  parseGithubUrl,
-} from "@/lib/utils/github";
+import { BatchEmbeddingResponse } from "@/lib/utils/gemini";
+import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
-import { processFilesIntoChunks } from "@/lib/utils/repository";
-// import { sign } from "jsonwebtoken";
+import { qStash } from "@/lib/utils/qstash";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-// const NEXT_PUBLIC_EXPRESS_API_URL = process.env.NEXT_PUBLIC_EXPRESS_API_URL!;
+// const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function POST(req: NextRequest) {
   try {
@@ -72,79 +66,23 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    await qStash.publishJSON({
+      url: `${process.env.APP_URL}/api/worker/process-repository`,
+      body: {
+        repositoryId: repository.id,
+        githubUrl,
+        userId: session.user.id,
+      },
+      retries: 3,
+    });
+
     console.log("Created new Repository Record");
-    console.log("JWT_SECRET is ", JWT_SECRET);
 
     // 6. Fetch repository details and data
-    const repoData = await fetchGitHubRepoData(githubUrl, false);
-
-    console.log("repoData is ", repoData.files.length);
-
-    // 7. Process files into chunks
-    const chunks = await processFilesIntoChunks(repoData.files);
-
-    console.log("chunks.length is ", chunks.length);
-
-    // 8. Save chunks to database
-    await prisma.repositoryChunk.createMany({
-      data: chunks.map((chunk) => ({
-        repositoryId: repository.id,
-        content: chunk.content,
-        type: chunk.type,
-        filepath: chunk.filepath,
-        keywords: chunk.keywords,
-      })),
-    });
-
-    // 9. Generate embeddings for chunks
-    const chunksForEmbedding = await prisma.repositoryChunk.findMany({
-      where: {
-        repositoryId: repository.id,
-        embeddings: {
-          equals: null,
-        },
-      },
-      select: {
-        id: true,
-        content: true,
-      },
-    });
-
-    console.log("chunksForEmbedding.length is ", chunksForEmbedding.length);
-
-    const BATCH_SIZE = 5;
-    if (chunksForEmbedding.length > 0) {
-      const chunkTexts = chunksForEmbedding.map((chunk) => chunk.content);
-      console.log("chunkTexts.length is ", chunkTexts.length);
-      const embeddingResults = await batchGenerateEmbeddings(
-        chunkTexts,
-        BATCH_SIZE
-      );
-      console.log("embeddingResults.length is ", embeddingResults.length);
-
-      //10. Update chunks with embeddings
-      await Promise.all(
-        chunksForEmbedding.map((chunk, index) => {
-          const result = embeddingResults[index];
-          if (!result.error) {
-            return prisma.repositoryChunk.update({
-              where: { id: chunk.id },
-              data: { embeddings: result.embeddings },
-            });
-          }
-        })
-      );
-    }
-
-    //11. Update repository status to success
-    await prisma.repository.update({
-      where: { id: repository.id },
-      data: { status: "SUCCESS" },
-    });
 
     return NextResponse.json({
       repositoryId: repository.id,
-      status: "SUCCESS",
+      status: "PENDING",
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -159,6 +97,44 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function updateChunksWithEmbeddings(
+  chunksForEmbedding: { id: string; content: string }[],
+  embeddingResults: BatchEmbeddingResponse[]
+) {
+  const totalChunks = chunksForEmbedding.length;
+  console.log(`Starting sequential database updates for ${totalChunks} chunks`);
+
+  for (let i = 0; i < chunksForEmbedding.length; i++) {
+    const chunk = chunksForEmbedding[i];
+    const result = embeddingResults[i];
+
+    console.log(`Processing chunk ${i + 1}/${totalChunks}`);
+    console.log("result.embeddings.length is ", result.embeddings.length);
+
+    try {
+      if (result.embeddings.length > 0) {
+        await prisma.repositoryChunk.update({
+          where: { id: chunk.id },
+          data: { embeddings: result.embeddings },
+        });
+      } else {
+        console.log(
+          `Skipping chunk ${chunk.id} due to missing embeddings or error`
+        );
+      }
+
+      // Optional: Add a small delay between updates if needed
+      // await new Promise(resolve => setTimeout(resolve, 50));
+    } catch (error) {
+      console.log(`Error updating chunk ${chunk.id}:`, error);
+      // Log error but continue with next chunk
+      continue;
+    }
+  }
+
+  console.log("All database updates completed");
 }
 
 // 6. Generate JWT token for Express API authentication

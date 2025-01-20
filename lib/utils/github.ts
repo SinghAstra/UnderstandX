@@ -108,7 +108,6 @@ async function fetchRepositoryContent(
   const files: GitHubFile[] = [];
 
   try {
-    console.log("Inside fetchRepositoryContent");
     const { data: contents } = await octokit.repos.getContent({
       owner,
       repo,
@@ -133,6 +132,9 @@ async function fetchRepositoryContent(
             type: getFileType(item.name),
           });
         }
+
+        console.log("Fetched File: ", item.name);
+        console.log("File Path: ", item.path);
       } else if (item.type === "dir") {
         const subFiles = await fetchRepositoryContent(
           owner,

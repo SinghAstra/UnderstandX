@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // Initialize Gemini API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-interface BatchEmbeddingResponse {
+export interface BatchEmbeddingResponse {
   embeddings: number[];
   error?: string;
 }
@@ -32,8 +32,11 @@ export async function batchGenerateEmbeddings(
   batchSize: number = 5
 ): Promise<BatchEmbeddingResponse[]> {
   const results: BatchEmbeddingResponse[] = [];
+  const totalBatches = Math.ceil(texts.length / batchSize);
 
   for (let i = 0; i < texts.length; i += batchSize) {
+    const currentBatch = Math.floor(i / batchSize) + 1;
+    console.log(`Processing batch ${currentBatch}/${totalBatches}`);
     const batch = texts.slice(i, i + batchSize);
 
     // Process batch with delay to respect rate limits
