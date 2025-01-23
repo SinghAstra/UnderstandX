@@ -10,40 +10,33 @@
 
 @layer base {
   :root {
-    /* Core background and surface colors - Dark blue theme */
-    --background: 222 47% 5%;
-    --foreground: 213 31% 91%;
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
 
-    /* Elevated surfaces */
-    --card: 222 47% 7%;
-    --card-foreground: 213 31% 91%;
-    --popover: 222 47% 7%;
-    --popover-foreground: 213 31% 91%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
 
-    /* Primary accent - Vivid blue */
-    --primary: 214 95% 65%;
-    --primary-foreground: 222 47% 5%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Secondary - Subtle blue-gray */
-    --secondary: 222 47% 11%;
-    --secondary-foreground: 213 31% 91%;
+    --primary: 220 80% 50%;
+    --primary-foreground: 220 100% 98%;
 
-    /* Muted elements */
-    --muted: 222 47% 11%;
-    --muted-foreground: 215 20% 65%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
 
-    /* Accent - Slightly brighter than secondary */
-    --accent: 217 19% 27%;
-    --accent-foreground: 213 31% 91%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
 
-    /* Destructive actions */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
 
-    /* Borders and inputs */
-    --border: 222 47% 11%;
-    --input: 222 20% 15%;
-    --ring: 214 95% 65%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
 
     /* Match highlight */
     --match-highlight: 214 95% 40%;
