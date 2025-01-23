@@ -2,7 +2,7 @@
 
 import { siteConfig } from "@/config/site";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

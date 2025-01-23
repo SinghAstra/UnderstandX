@@ -2,7 +2,7 @@
 
 import { getFileContent } from "@/app/actions/github";
 import { SearchResultFile, SimilarChunk } from "@/interfaces/search-result";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import { AlertCircle, FileText, X } from "lucide-react";
 import Prism from "prismjs";
 import { useEffect, useState } from "react";

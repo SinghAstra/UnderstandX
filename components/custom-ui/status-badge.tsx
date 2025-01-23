@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 
 type StatusBadgeProps = {
   status: string;

@@ -2,7 +2,7 @@
 
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

@@ -1,14 +1,12 @@
-import { cn } from "@/lib/utils/utils";
-import { LucideIcon, Rocket, Shield, User, UserCircle } from "lucide-react";
-import React from "react";
+"use client";
 
-// Stage type definition
-type Stage = {
-  id: string;
-  icon: LucideIcon;
-  title?: string;
-  status: "completed" | "current" | "pending";
-};
+import MultiStepIcons, {
+  Stage,
+} from "@/components/layoutx-ui/multi-step-icons";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Rocket, Shield, User, UserCircle } from "lucide-react";
+import React, { useState } from "react";
 
 // Sample static stages array
 const initialStages: Stage[] = [
@@ -34,79 +32,26 @@ const initialStages: Stage[] = [
   },
 ];
 
-type MultiStageProcessProps = {
-  stages?: Stage[];
-  direction?: "horizontal" | "vertical";
-};
+const MultiStepIconsExample = () => {
+  const [isHorizontal, setIsHorizontal] = useState(true);
 
-const MultiStageProcess = ({
-  stages = initialStages,
-  direction = "vertical",
-}: MultiStageProcessProps) => {
-  const isHorizontal = direction === "horizontal";
+  const toggleDirection = () => {
+    setIsHorizontal((isHorizontal) => !isHorizontal);
+  };
+
   return (
-    <div
-      className={cn(
-        "flex p-4 bg-background rounded-lg border border-border shadow-md",
-        isHorizontal
-          ? "flex-row items-center justify-between"
-          : "flex-col items-start w-min"
-      )}
-    >
-      {stages.map((stage, index) => (
-        <React.Fragment key={stage.id}>
-          <div
-            className={cn(
-              "flex items-center",
-              isHorizontal ? "flex-col" : "flex-row space-x-4 items-center"
-            )}
-          >
-            <div
-              className={cn(
-                "rounded-full flex items-center justify-center mb-2",
-                "w-16 h-16",
-                {
-                  "bg-green-100/20 text-green-600":
-                    stage.status === "completed",
-                  "bg-primary/20 text-primary": stage.status === "current",
-                  "bg-muted/20 text-muted-foreground":
-                    stage.status === "pending",
-                }
-              )}
-            >
-              <stage.icon className="w-8 h-8" />
-            </div>
-            <p
-              className={cn("text-sm font-medium", {
-                "text-green-600": stage.status === "completed",
-                "text-blue-600": stage.status === "current",
-                "text-gray-400": stage.status === "pending",
-              })}
-            >
-              {stage.title}
-            </p>
-          </div>
-          {index < stages.length - 1 && (
-            <div
-              className={cn(
-                "flex-grow mx-2",
-                isHorizontal ? "" : "w-px h-8 my-2 self-center"
-              )}
-            >
-              <div
-                className={cn(isHorizontal ? "h-1 w-full" : "w-px h-full", {
-                  "bg-green-300":
-                    stages[index].status === "completed" &&
-                    stages[index + 1].status !== "pending",
-                  "bg-muted": stages[index + 1].status === "pending",
-                })}
-              />
-            </div>
-          )}
-        </React.Fragment>
-      ))}
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 max-w-5xl mx-auto">
+      <MultiStepIcons
+        stages={initialStages}
+        className={isHorizontal ? "w-full" : "h-full flex-1"}
+        direction={isHorizontal ? "horizontal" : "vertical"}
+      />
+      <Button variant={"outline"} onClick={toggleDirection} className="mt-4">
+        {isHorizontal ? "Vertical" : "Horizontal"}
+        <Rocket className="ml-2" />
+      </Button>
     </div>
   );
 };
 
-export default MultiStageProcess;
+export default MultiStepIconsExample;

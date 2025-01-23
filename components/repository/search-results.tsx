@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { SearchResultFile } from "@/interfaces/search-result";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import { FileText } from "lucide-react";
 import { SearchResultsSkeleton } from "../skeleton/search-results-skeleton";
 import { ScrollArea } from "../ui/scroll-area";

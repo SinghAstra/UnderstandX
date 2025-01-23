@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 import React from "react";

@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 export function SearchResultsSkeleton({ count = 3 }: { count?: number }) {

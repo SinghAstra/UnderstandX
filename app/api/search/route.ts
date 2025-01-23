@@ -1,8 +1,8 @@
 import { SimilarChunk } from "@/interfaces/search-result";
 import { authOptions } from "@/lib/auth/auth-options";
+import { cosineSimilarity } from "@/lib/utils";
 import { generateEmbedding } from "@/lib/utils/gemini";
 import { prisma } from "@/lib/utils/prisma";
-import { cosineSimilarity } from "@/lib/utils/utils";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
