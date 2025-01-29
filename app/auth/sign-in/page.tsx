@@ -57,11 +57,10 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     try {
       setIsGoogleLoading(true);
-      // await signIn("google", {
-      //   callbackUrl,
-      //   redirect: true,
-      // });
-      await signIn("google");
+      await signIn("google", {
+        callbackUrl,
+        redirect: true,
+      });
     } catch (error) {
       console.error("GitHub Sign-In Error:", error);
     } finally {
