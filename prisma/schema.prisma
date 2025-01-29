@@ -15,12 +15,14 @@ model User {
   name          String?
   image         String?
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
   // Relationships
   accounts      Account[]
   sessions      Session[]
+  repositories  Repository[]
+  searches      Search[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
@@ -58,9 +60,62 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-enum UserRole {
- GUEST
- USER 
- ADMIN  
+model Repository {
+  id          String   @id @default(cuid())
+  name        String
+  owner       String
+  url         String
+  userId      String
+  status      ProcessingStatus @default(PENDING)
+  summary     String?  @db.Text
+  directories Directory[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Directory {
+  id           String   @id @default(cuid())
+  path         String
+  summary      String?  @db.Text
+  repositoryId String
+  parentId     String?
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  parent       Directory? @relation("DirectoryTree", fields: [parentId], references: [id])
+  children     Directory[] @relation("DirectoryTree")
+  files        File[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+}
+
+model File {
+  id           String   @id @default(cuid())
+  path         String
+  name         String
+  content      String?  @db.Text
+  summary      String?  @db.Text
+  directoryId  String
+  directory    Directory @relation(fields: [directoryId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+}
+
+model Search {
+  id        String   @id @default(cuid())
+  query     String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

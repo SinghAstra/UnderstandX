@@ -12,7 +12,7 @@ import { MessageSquare } from "lucide-react";
 
 export function RightSidebar() {
   return (
-    <div className="w-80 bg-background p-4">
+    <div className="w-80 bg-background py-4 pr-2 ">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

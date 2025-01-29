@@ -31,7 +31,7 @@ export function Navbar() {
             Connect New Repository
           </Link>
           {status === "loading" ? (
-            <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
+            <Skeleton className="h-8 w-8 rounded-md " />
           ) : session?.user ? (
             <AvatarMenu />
           ) : (

@@ -120,7 +120,7 @@ function CommandPaletteRepoForm() {
   }, [showGuide, dismissGuide]);
 
   return (
-    <div className="m-2 relative">
+    <div className="m-2 relative ">
       {showGuide && (
         <div className="absolute inset-0 -m-4">
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
@@ -141,7 +141,7 @@ function CommandPaletteRepoForm() {
         </div>
       )}
       <div
-        className={`relative bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-xl border shadow-lg transition-all duration-600 ${
+        className={`bg-background/40 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-xl border shadow-lg transition-all duration-600 ${
           showGuide && "my-12 z-50"
         }`}
         ref={formRef}
