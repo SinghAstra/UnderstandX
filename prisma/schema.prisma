@@ -118,6 +118,7 @@ model Search {
 enum RepositoryStatus {
   PENDING
   PROCESSING
-  COMPLETED
+  SUCCESS
   FAILED
+  CANCELLED
 }
