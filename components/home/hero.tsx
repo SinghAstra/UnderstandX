@@ -3,7 +3,7 @@
 import { siteConfig } from "@/config/site";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,62 +37,137 @@ export function Hero() {
   };
 
   return (
-    <div className="relative min-h-[90vh] flex items-center justify-center">
-      <div className="container px-4 md:px-6 relative">
-        <div className="flex flex-col items-center space-y-8 text-center">
-          <FadeInUp>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href={siteConfig.links.github}
-                className={cn(buttonVariants({ variant: "outline" }))}
-                target="_blank"
-              >
-                <Icons.gitLogo />
-                Star on GitHub
-              </Link>
-              <Link
-                href={siteConfig.links.twitter}
-                className={cn(buttonVariants({ variant: "outline" }))}
-                target="_blank"
-              >
-                <Icons.twitter />
-                Follow Updates
-              </Link>
-            </div>
-          </FadeInUp>
+    <div className="max-w-3xl flex flex-col items-center text-center gap-8">
+      <FadeInUp delay={0.4}>
+        <div className="min-h-screen flex flex-col items-center justify-center text-center gap-8 max-w-3xl">
+          <h1 className="text-4xl font-bold  sm:text-5xl md:text-6xl lg:text-7xl">
+            <GradientText variant="secondary" animate>
+              Simplifying
+            </GradientText>{" "}
+            Understanding
+            <br />
+            <GradientText variant="secondary" animate>
+              Github Repo
+            </GradientText>
+          </h1>
 
-          <FadeInUp delay={0.4}>
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
-                Understand Repo with
-                <br />
-                <GradientText animate>Semantic Searching</GradientText>
-              </h1>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Transform complex repositories into accessible, searchable
-                knowledge landscapes.
-              </p>
-            </div>
-          </FadeInUp>
-
-          <FadeInUp delay={0.4}>
+          <Button
+            onClick={handleGetStarted}
+            disabled={status === "loading"}
+            variant={"outline"}
+            size={"lg"}
+          >
+            Get Started <ArrowRight />
+          </Button>
+        </div>
+      </FadeInUp>
+      <FadeInUp delay={0.4}>
+        <div className="min-h-screen flex flex-col items-center text-center gap-8 max-w-3xl">
+          <h1 className="text-2xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl ">
+            Perform{" "}
+            <GradientText variant="accent" animate>
+              Semantic Searching
+            </GradientText>{" "}
+            on Github Repo on basis of{" "}
+            <GradientText variant="accent" animate>
+              functionality
+            </GradientText>{" "}
+            of the code.
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button
               onClick={handleGetStarted}
               disabled={status === "loading"}
-              className="flex items-center gap-2 h-12 px-8 text-base bg-primary text-primary-foreground hover:bg-primary/90"
+              variant={"outline"}
+              size={"lg"}
             >
-              <span className="text-base">Get Started</span>
-              <motion.div
-                className="ml-2"
-                animate={{ x: [0, 4, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-              >
-                <Icons.arrowRight />
-              </motion.div>
+              Get Started <ArrowRight />
             </Button>
-          </FadeInUp>
+            <Link
+              href={siteConfig.links.twitter}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+              target="_blank"
+            >
+              <Icons.twitter />
+              Follow Updates
+            </Link>
+          </div>
         </div>
-      </div>
+      </FadeInUp>
+      <FadeInUp delay={0.4}>
+        <div className="min-h-screen flex flex-col items-center text-center gap-8 max-w-3xl">
+          <h1 className="text-2xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+            Find{" "}
+            <GradientText variant="success" animate>
+              Functionalities
+            </GradientText>{" "}
+            Implemented in Github Repo and their{" "}
+            <GradientText variant="success" animate>
+              Respective Code
+            </GradientText>
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              onClick={handleGetStarted}
+              disabled={status === "loading"}
+              variant={"outline"}
+              size={"lg"}
+              className="space-x-2"
+            >
+              Get Started <ArrowRight />
+            </Button>
+            <Link
+              href={siteConfig.links.github}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+              target="_blank"
+            >
+              <Icons.gitLogo />
+              Star on GitHub
+            </Link>
+          </div>
+        </div>
+      </FadeInUp>
+      <FadeInUp delay={0.4}>
+        <div className="min-h-screen flex flex-col items-center text-center gap-8 max-w-3xl">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href={siteConfig.links.twitter}
+              className={cn(buttonVariants({ variant: "outline" }))}
+              target="_blank"
+            >
+              <Icons.twitter />
+              Follow Updates
+            </Link>
+            <Link
+              href={siteConfig.links.github}
+              className={cn(buttonVariants({ variant: "outline" }))}
+              target="_blank"
+            >
+              <Icons.gitLogo />
+              Star on GitHub
+            </Link>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+            Provides{" "}
+            <GradientText variant="warning" animate>
+              Summary
+            </GradientText>{" "}
+            of Code{" "}
+            <GradientText variant="warning" animate>
+              Files and Directories
+            </GradientText>
+          </h1>
+          <Button
+            onClick={handleGetStarted}
+            disabled={status === "loading"}
+            variant={"outline"}
+            size={"lg"}
+            className="space-x-2"
+          >
+            Get Started <ArrowRight />
+          </Button>
+        </div>
+      </FadeInUp>
     </div>
   );
 }
