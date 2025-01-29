@@ -1,10 +1,8 @@
-import { batchGenerateEmbeddings } from "@/lib/utils/gemini";
 import { fetchGitHubRepoData } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { processFilesIntoChunks } from "@/lib/utils/repository";
 import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
-import { updateChunksWithEmbeddings } from "../../repository/process/route";
 
 const receiver = new Receiver({
   currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
@@ -39,7 +37,7 @@ export async function POST(req: NextRequest) {
   const { repositoryId, githubUrl } = await JSON.parse(body);
 
   try {
-    const repoData = await fetchGitHubRepoData(githubUrl, false, repositoryId);
+    const repoData = await fetchGitHubRepoData(githubUrl, repositoryId);
 
     console.log("repoData is ", repoData.files.length);
 

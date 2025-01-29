@@ -38,24 +38,11 @@ export function parseGithubUrl(url: string) {
 }
 
 export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
-  const response = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}`,
-    {
-      headers: {
-        Authorization: `token ${process.env.GITHUB_ACCESS_TOKEN}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    }
-  );
+  const { data } = await octokit.repos.get({
+    owner,
+    repo,
+  });
 
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error("Repository not found");
-    }
-    throw new Error("Failed to fetch repository details");
-  }
-
-  const data = await response.json();
   return {
     githubId: data.id,
     name: data.name,
@@ -71,32 +58,18 @@ export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
   };
 }
 
-export async function fetchGitHubRepoData(
-  url: string,
-  isPrivate: boolean,
-  repositoryId: string
-) {
+export async function fetchGitHubRepoData(url: string, repositoryId: string) {
   const { owner, repo, isValid } = parseGithubUrl(url);
-  console.log("isPrivate --fetchGitHubRepoData is ", isPrivate);
 
   if (!isValid || !owner) {
     throw new Error("Failed to fetch GitHubRepoData");
   }
 
   // Fetch repository metadata
-  const { data: repoData } = await octokit.repos.get({
-    owner,
-    repo,
-  });
+  const repoData = fetchGitHubRepoMetaData(owner, repo);
 
   // Fetch repository content
-  const files = await fetchRepositoryContent(
-    owner,
-    repo,
-    repoData.default_branch,
-    "",
-    repositoryId
-  );
+  const files = await fetchRepositoryContent(owner, repo, "", repositoryId);
 
   console.log("files.length --fetchRepositoryContent is ", files.length);
 
@@ -109,7 +82,6 @@ export async function fetchGitHubRepoData(
 async function fetchRepositoryContent(
   owner: string,
   repo: string,
-  branch: string,
   path: string,
   repositoryId: string
 ) {
@@ -120,7 +92,6 @@ async function fetchRepositoryContent(
       owner,
       repo,
       path,
-      ref: branch,
     });
 
     for (const item of Array.isArray(contents) ? contents : [contents]) {
@@ -129,7 +100,6 @@ async function fetchRepositoryContent(
           owner,
           repo,
           path: item.path,
-          ref: branch,
         });
 
         if ("content" in fileData) {
@@ -137,7 +107,6 @@ async function fetchRepositoryContent(
             name: item.name,
             path: item.path,
             content: Buffer.from(fileData.content, "base64").toString("utf-8"),
-            type: getFileType(item.name),
           });
         }
 
@@ -152,7 +121,6 @@ async function fetchRepositoryContent(
         const subFiles = await fetchRepositoryContent(
           owner,
           repo,
-          branch,
           item.path,
           repositoryId
         );
@@ -206,9 +174,4 @@ function isProcessableFile(filename: string): boolean {
 
   const extension = filename.toLowerCase().split(".").pop();
   return extension ? processableExtensions.includes(`.${extension}`) : false;
-}
-
-function getFileType(filename: string): string {
-  const extension = filename.toLowerCase().split(".").pop() || "";
-  return extension;
 }

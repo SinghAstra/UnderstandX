@@ -1,5 +1,4 @@
 import { authOptions } from "@/lib/auth/auth-options";
-import { BatchEmbeddingResponse } from "@/lib/utils/gemini";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { qStash } from "@/lib/utils/qstash";
@@ -56,8 +55,6 @@ export async function POST(req: NextRequest) {
       data: {
         githubId: repoDetails.githubId,
         name: repoDetails.name,
-        fullName: repoDetails.fullName,
-        description: repoDetails.description,
         owner: repoDetails.owner,
         url: githubUrl,
         status: "PENDING",
@@ -98,71 +95,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-export async function updateChunksWithEmbeddings(
-  chunksForEmbedding: { id: string; content: string }[],
-  embeddingResults: BatchEmbeddingResponse[]
-) {
-  const totalChunks = chunksForEmbedding.length;
-  console.log(`Starting sequential database updates for ${totalChunks} chunks`);
-
-  for (let i = 0; i < chunksForEmbedding.length; i++) {
-    const chunk = chunksForEmbedding[i];
-    const result = embeddingResults[i];
-
-    console.log(`Processing chunk ${i + 1}/${totalChunks}`);
-    console.log("result.embeddings.length is ", result.embeddings.length);
-
-    try {
-      if (result.embeddings.length > 0) {
-        await prisma.repositoryChunk.update({
-          where: { id: chunk.id },
-          data: { embeddings: result.embeddings },
-        });
-      } else {
-        console.log(
-          `Skipping chunk ${chunk.id} due to missing embeddings or error`
-        );
-      }
-
-      // Optional: Add a small delay between updates if needed
-      // await new Promise(resolve => setTimeout(resolve, 50));
-    } catch (error) {
-      console.log(`Error updating chunk ${chunk.id}:`, error);
-      // Log error but continue with next chunk
-      continue;
-    }
-  }
-
-  console.log("All database updates completed");
-}
-
-// 6. Generate JWT token for Express API authentication
-// const token = sign(
-//   {
-//     userId: session.user.id,
-//     repositoryId: repository.id,
-//     exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiration
-//   },
-//   JWT_SECRET
-// );
-
-// 7. Trigger background processing on Express API
-// const triggerResponse = await fetch(
-//   `${NEXT_PUBLIC_EXPRESS_API_URL}/api/repository/process`,
-//   {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify({
-//       repositoryId: repository.id,
-//       githubUrl,
-//     }),
-//   }
-// );
-
-// if (!triggerResponse.ok) {
-//   throw new Error("Failed to trigger background processing");
-// }

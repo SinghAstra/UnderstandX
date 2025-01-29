@@ -65,7 +65,9 @@ model Repository {
   name        String
   owner       String
   url         String
+  githubId    Int
   userId      String
+  avatarUrl   String
   status      ProcessingStatus @default(PENDING)
   summary     String?  @db.Text
   directories Directory[]

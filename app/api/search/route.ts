@@ -1,20 +1,8 @@
-import { SimilarChunk } from "@/interfaces/search-result";
 import { authOptions } from "@/lib/auth/auth-options";
-import { cosineSimilarity } from "@/lib/utils";
-import { generateEmbedding } from "@/lib/utils/gemini";
-import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-const SIMILARITY_THRESHOLD = 0.6; // Adjust based on testing
-const PAGE_SIZE = 10;
-
-export async function POST(
-  req: Request
-): Promise<
-  | NextResponse<{ similarChunks: SimilarChunk[] }>
-  | NextResponse<{ message: string }>
-> {
+export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -42,54 +30,8 @@ export async function POST(
       );
     }
 
-    // Generate embeddings for the search query
-    const queryEmbeddings = await generateEmbedding(query);
-
-    console.log("queryEmbeddings.length is ", queryEmbeddings.length);
-
-    // Build the base query
-    const chunks = await prisma.repositoryChunk.findMany({
-      where: {
-        repositoryId: repositoryId,
-        repository: {
-          userId: session.user.id,
-        },
-      },
-      include: {
-        repository: {
-          select: {
-            name: true,
-            fullName: true,
-          },
-        },
-      },
-    });
-
-    console.log("chunks.length is ", chunks.length);
-
-    // Calculate similarity scores and rank results
-    const similarChunks = chunks
-      .map((chunk) => {
-        const similarity = cosineSimilarity(queryEmbeddings, chunk.embeddings);
-        return {
-          ...chunk,
-          similarity,
-        };
-      })
-      .filter((result) => result.similarity > SIMILARITY_THRESHOLD)
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, PAGE_SIZE);
-
     return NextResponse.json({
-      similarChunks: similarChunks.map((similarChunk) => ({
-        id: similarChunk.id,
-        filepath: similarChunk.filepath,
-        type: similarChunk.type,
-        repositoryName: similarChunk.repository.name,
-        repositoryFullName: similarChunk.repository.fullName,
-        content: similarChunk.content,
-        similarity: similarChunk.similarity,
-      })),
+      message: "Search Working Directory",
     });
   } catch (error) {
     console.log("Error while Performing Semantic Search on Repository");
