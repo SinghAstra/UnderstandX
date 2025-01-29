@@ -68,7 +68,7 @@ model Repository {
   githubId    Int
   userId      String
   avatarUrl   String
-  status      ProcessingStatus @default(PENDING)
+  status      RepositoryStatus @default(PENDING)
   summary     String?  @db.Text
   directories Directory[]
   
@@ -115,7 +115,7 @@ model Search {
   createdAt DateTime @default(now())
 }
 
-enum ProcessingStatus {
+enum RepositoryStatus {
   PENDING
   PROCESSING
   COMPLETED

@@ -1,15 +1,14 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { prisma } from "@/lib/utils/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-// Input validation schema
 const QuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
-  status: z.enum(["PENDING", "SUCCESS"]).optional(),
+  status: z.nativeEnum(RepositoryStatus).optional(),
   search: z.string().optional(),
 });
 
@@ -23,7 +22,6 @@ export async function GET(request: NextRequest) {
 
     // Get query parameters
     const url = new URL(request.url);
-    // console.log("url is ", url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
     console.log("queryParams is ", queryParams);
     console.log("session.user.id is ", session.user.id);
@@ -41,7 +39,6 @@ export async function GET(request: NextRequest) {
         OR: [
           { name: { contains: search, mode: "insensitive" } },
           { owner: { contains: search, mode: "insensitive" } },
-          { fullName: { contains: search, mode: "insensitive" } },
         ],
       }),
     };

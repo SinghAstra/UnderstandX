@@ -66,7 +66,7 @@ export async function fetchGitHubRepoData(url: string, repositoryId: string) {
   }
 
   // Fetch repository metadata
-  const repoData = fetchGitHubRepoMetaData(owner, repo);
+  const repoData = await fetchGitHubRepoMetaData(owner, repo);
 
   // Fetch repository content
   const files = await fetchRepositoryContent(owner, repo, "", repositoryId);

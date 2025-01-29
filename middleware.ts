@@ -43,11 +43,8 @@ export async function middleware(request: NextRequest) {
 
   // For all other paths that don't match our known routes
   if (!isAuthRequired && !isAuthPage && !isPublicPage && pathname !== "/404") {
-    console.log("At 50");
     return NextResponse.redirect(new URL("/404", request.url));
   }
-
-  console.log("At 53");
 
   return NextResponse.next();
 }
