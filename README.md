@@ -1,7 +1,5 @@
 # NavX
 
-## Introduction
-
 - The Goal is to help developers understand github Repositories easily.
 - Tells you about the functionality implemented in GitHub Repository.
 - Allows you to perform Search on GitHub repositories in order to find code that have implemented
