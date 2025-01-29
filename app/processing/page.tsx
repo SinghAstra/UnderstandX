@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Cpu, GitBranch, Package } from 'lucide-react';
+import { Cpu, GitBranch, Package } from "lucide-react";
+import React, { useState } from "react";
 
 function ProcessingStages() {
   const [activeStage, setActiveStage] = useState(1);
@@ -120,7 +120,7 @@ function ProcessingStages() {
                   .find((s) => s.id === activeStage)
                   ?.logs.map((log, idx) => (
                     <div key={idx}>
-                      <span className="text-primary">></span>
+                      <span className="text-primary">&gt;</span>
                       <span className="ml-3 text-foreground/80">{log}</span>
                     </div>
                   ))}
