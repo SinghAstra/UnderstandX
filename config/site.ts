@@ -2,13 +2,17 @@ import { SiteConfig } from "@/interfaces/site";
 
 export const siteConfig: SiteConfig = {
   name: "NavX",
+  description: "Perform semantic search on basis of functionality of code.",
+  tagline: "Understand GitHub repositories with ease",
   url: "https://navx.vercel.app",
-  description:
-    "A powerful semantic search engine designed to transform how developers interact with and comprehend GitHub repositories.",
-  tagline: "Navigate Code, Understand Repositories",
-  headline: "Understand Code Like Never Before",
-  subHeadline: "Semantic Search Meets Code Exploration",
-  features: ["Quick Conversion", "AI Writing", "URL Import"],
+  features: [
+    "Functionality-based repository exploration",
+    "Comprehensive file and directory summaries",
+    "Time-saving code comprehension tools",
+    "Intelligent repository navigation",
+    "Quick feature implementation discovery",
+    "Contextual code understanding",
+  ],
   links: {
     twitter: "https://x.com/XSinghAstra",
     github: "https://github.com/SinghAstra/navx",

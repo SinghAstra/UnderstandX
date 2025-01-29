@@ -62,13 +62,13 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        "gradient-x": {
-          "0%, 100%": { "background-position": "0% center" },
-          "50%": { "background-position": "100% center" },
+        "move-x": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(100%)" },
         },
       },
       animation: {
-        "gradient-x": "gradient-x 5s ease infinite",
+        "move-x": "move-x 1s ease-in-out infinite",
       },
     },
   },

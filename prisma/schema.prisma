@@ -21,7 +21,6 @@ model User {
   // Relationships
   accounts      Account[]
   sessions      Session[]
-  repositories Repository[]
 }
 
 model Account {
@@ -59,43 +58,9 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Repository {
-  id String @id @default(cuid())
-  githubId Int 
-  name String
-  fullName String
-  description String?
-  status RepositoryStatus @default(PENDING)
-  owner String
-  url String
-  avatarUrl String? 
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chunks RepositoryChunk[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-}
-
-model RepositoryChunk {
-  id String @id @default(cuid())
-  repositoryId String
-  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
-  content String
-  type String
-  filepath String
-  embeddings Float[]
-  keywords String[]
-}
-
 enum UserRole {
  GUEST
  USER 
  ADMIN  
 }
-enum RepositoryStatus {
-  PENDING
-  PROCESSING
-  SUCCESS
-  FAILED
-  CANCELED
-}
+
