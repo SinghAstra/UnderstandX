@@ -14,7 +14,7 @@ const getStatusColor = (status: RepositoryStatus) => {
   if (status === "SUCCESS") {
     return "bg-green-500";
   }
-  if (status === "CANCELED" || status.includes("FAILED")) {
+  if (status === "CANCELLED" || status.includes("FAILED")) {
     return "bg-red-500";
   }
   return "bg-yellow-500";
