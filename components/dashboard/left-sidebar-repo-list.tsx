@@ -3,8 +3,8 @@ import React from "react";
 import { useRepository } from "../context/repository";
 import EmptyRepositoriesSidebarRepoList from "../empty-states/empty-repo-sidebar-repo-list";
 import NoSearchResultsSidebarRepoList from "../empty-states/no-search-result-sidebar-repo-list";
-import { RepositoryCard } from "../repository/repository-card";
-import { SidebarRepoListSkeleton } from "../skeleton/sidebar-repo-list-skeleton";
+import { SidebarRepoListSkeleton } from "../skeleton/left-sidebar-repo-list-skeleton";
+import { RepositoryCard } from "./left-sidebar-repository-card";
 
 interface SidebarRepoListProps {
   searchQuery?: string;

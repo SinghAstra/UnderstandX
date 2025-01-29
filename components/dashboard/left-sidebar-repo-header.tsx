@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { SidebarRepoHeaderSkeleton } from "../skeleton/sidebar-repo-header-skeleton";
+import { SidebarRepoHeaderSkeleton } from "../skeleton/left-sidebar-repo-header-skeleton";
 import { buttonVariants } from "../ui/button";
 import { Input } from "../ui/input";
 
