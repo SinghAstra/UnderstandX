@@ -1,34 +1,12 @@
-import { Redis } from "ioredis";
+import { Redis } from '@upstash/redis';
 
-interface RedisConfig {
-  host?: string;
-  port?: number;
-  username?: string;
-  password?: string;
-  url?: string;
-}
+console.log("process.env.UPSTASH_REDIS_REST_URL is ",process.env.UPSTASH_REDIS_REST_URL)
+console.log("process.env.UPSTASH_REDIS_REST_TOKEN is ",process.env.UPSTASH_REDIS_REST_TOKEN)
 
-class RedisClient {
-  private static instance: Redis | null = null;
+// Initialize Redis using credentials from environment variables
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
 
-  private static getConfig(): RedisConfig {
-    return { url: process.env.UPSTASH_REDIS_REST_URL };
-  }
-
-  public static getInstance(): Redis {
-    if (!RedisClient.instance) {
-      const config = this.getConfig();
-      RedisClient.instance = new Redis(config);
-
-      // Error handling
-      RedisClient.instance.on("error", (error) => {
-        console.log("Redis connection error:", error);
-      });
-    }
-
-    return RedisClient.instance;
-  }
-}
-
-// Export a singleton instance
-export const redis = RedisClient.getInstance();
+export default redis;
