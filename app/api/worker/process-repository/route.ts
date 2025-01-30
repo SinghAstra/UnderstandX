@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const repoData = await fetchAndSaveRepository(githubUrl, repositoryId);
+    console.log("repoData is ", repoData);
 
     return NextResponse.json({ status: "SUCCESS" });
   } catch (error) {

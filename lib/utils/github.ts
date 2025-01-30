@@ -166,6 +166,82 @@ function isProcessableFile(filename: string): boolean {
   return extension ? processableExtensions.includes(`.${extension}`) : false;
 }
 
+async function saveContentToDatabase(
+  items: GitHubContent[],
+  repositoryId: string
+) {
+  // Create a map to store directory records for quick lookup
+  const directoryMap = new Map<string, any>();
+
+  // Group items by type
+  const directories = items.filter((i) => i.type === "dir");
+  const files = items.filter((i) => i.type === "file");
+
+  // First pass: Create all directory records
+  for (const dir of directories) {
+    const parentPath = dir.path.split("/").slice(0, -1).join("/");
+
+    const directory = await prisma.directory.create({
+      data: {
+        path: dir.path,
+        repositoryId,
+        // If this isn't a top-level directory, set the parent
+        parentId: parentPath ? directoryMap.get(parentPath)?.id : null,
+      },
+    });
+
+    directoryMap.set(dir.path, directory);
+  }
+
+  // Second pass: Create all file records
+  for (const file of files) {
+    // Get directory path for this file (everything before the last slash)
+    const pathParts = file.path.split("/");
+    const fileName = pathParts.pop(); // Remove and get file name
+    const dirPath = pathParts.join("/");
+
+    // If dirPath is empty, this is a root-level file
+    if (!dirPath) {
+      await prisma.file.create({
+        data: {
+          path: file.path,
+          name: file.name,
+          content: file.content,
+          repoId: repositoryId,
+          // No directoryId for root-level files
+        },
+      });
+    } else {
+      // This is a file within a directory
+      const directory = directoryMap.get(dirPath);
+
+      if (!directory) {
+        console.warn(`Directory not found for file: ${file.path}`);
+        // Save as root-level file if directory not found
+        await prisma.file.create({
+          data: {
+            path: file.path,
+            name: file.name,
+            content: file.content,
+            repoId: repositoryId,
+          },
+        });
+      } else {
+        // Save file with directory reference
+        await prisma.file.create({
+          data: {
+            path: file.path,
+            name: file.name,
+            content: file.content,
+            repoId: repositoryId,
+            directoryId: directory.id,
+          },
+        });
+      }
+    }
+  }
+}
+
 export async function fetchAndSaveRepository(
   url: string,
   repositoryId: string
@@ -197,6 +273,8 @@ export async function fetchAndSaveRepository(
   // Process all content
   const items = await fetchGithubContent(owner, repo, "", repositoryId);
 
+  console.log("items is ", items);
+
   // Save to database
-  // await saveContentToDatabase(items, repositoryId);
+  await saveContentToDatabase(items, repositoryId);
 }
