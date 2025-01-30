@@ -3,13 +3,13 @@ import pusherClient from "@/lib/pusher/client";
 import { useEffect, useState } from "react";
 
 export function useProcessingStatus(repositoryId: string) {
-  const [status, setStatus] = useState<ProcessingUpdate | null>(null);
+  const [logs, setLogs] = useState<ProcessingUpdate[]>([]);
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`repository-${repositoryId}`);
 
     channel.bind("processing-update", (update: ProcessingUpdate) => {
-      setStatus(update);
+      setLogs((prevLogs) => [...prevLogs, update]);
     });
 
     return () => {
@@ -18,5 +18,5 @@ export function useProcessingStatus(repositoryId: string) {
     };
   }, [repositoryId]);
 
-  return status;
+  return logs;
 }
