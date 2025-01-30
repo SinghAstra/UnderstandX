@@ -1,11 +1,15 @@
-import { GitHubFile } from "@/interfaces/github";
+import { GitHubContent } from "@/interfaces/github";
 import { Octokit } from "@octokit/rest";
 import { sendProcessingUpdate } from "../pusher/send-update";
+import { prisma } from "./prisma";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN,
 });
 
+// This method :
+// 1. Checks if repo Url is valid
+// 2. Returns owner and repo
 export function parseGithubUrl(url: string) {
   const regex = /github\.com\/([^\/]+)\/([^\/]+)/;
 
@@ -58,35 +62,13 @@ export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
   };
 }
 
-export async function fetchGitHubRepoData(url: string, repositoryId: string) {
-  const { owner, repo, isValid } = parseGithubUrl(url);
-
-  if (!isValid || !owner) {
-    throw new Error("Failed to fetch GitHubRepoData");
-  }
-
-  // Fetch repository metadata
-  const repoData = await fetchGitHubRepoMetaData(owner, repo);
-  console.log("repoData is", repoData);
-
-  // Fetch repository content
-  const files = await fetchRepositoryContent(owner, repo, "", repositoryId);
-
-  console.log("files.length --fetchRepositoryContent is ", files.length);
-
-  return {
-    ...repoData,
-    files,
-  };
-}
-
-async function fetchRepositoryContent(
+async function fetchGithubContent(
   owner: string,
   repo: string,
   path: string,
   repositoryId: string
 ) {
-  const files: GitHubFile[] = [];
+  const items: GitHubContent[] = [];
 
   try {
     const { data: contents } = await octokit.repos.getContent({
@@ -104,7 +86,8 @@ async function fetchRepositoryContent(
         });
 
         if ("content" in fileData) {
-          files.push({
+          items.push({
+            type: "file",
             name: item.name,
             path: item.path,
             content: Buffer.from(fileData.content, "base64").toString("utf-8"),
@@ -113,26 +96,32 @@ async function fetchRepositoryContent(
 
         await sendProcessingUpdate(repositoryId, {
           status: "PROCESSING",
-          message: `Fetching ${item.path} from Github`,
+          message: `Fetching ${item.path}`,
         });
 
         console.log("Fetched File: ", item.name);
         console.log("File Path: ", item.path);
       } else if (item.type === "dir") {
-        const subFiles = await fetchRepositoryContent(
+        items.push({
+          path: item.path,
+          type: "dir",
+          name: item.name,
+        });
+
+        const subItems = await fetchGithubContent(
           owner,
           repo,
           item.path,
           repositoryId
         );
-        files.push(...subFiles);
+        items.push(...subItems);
       }
     }
   } catch (error) {
     console.log(`Error fetching content for ${owner}/${repo}/${path}:`, error);
   }
 
-  return files;
+  return items;
 }
 
 function isProcessableFile(filename: string): boolean {
@@ -175,4 +164,39 @@ function isProcessableFile(filename: string): boolean {
 
   const extension = filename.toLowerCase().split(".").pop();
   return extension ? processableExtensions.includes(`.${extension}`) : false;
+}
+
+export async function fetchAndSaveRepository(
+  url: string,
+  repositoryId: string
+) {
+  console.log("In fetchAndSaveRepository");
+  const { owner, repo, isValid } = parseGithubUrl(url);
+
+  if (!isValid || !owner) {
+    throw new Error("Invalid GitHub URL");
+  }
+
+  console.log("owner is ", owner);
+  console.log("repo is ", repo);
+  console.log("isValid is ", isValid);
+
+  // Fetch repository metadata
+  const repoData = await fetchGitHubRepoMetaData(owner, repo);
+
+  console.log("repoData is ", repoData);
+
+  // Update repository status to PROCESSING
+  await prisma.repository.update({
+    where: { id: repositoryId },
+    data: {
+      status: "PROCESSING",
+    },
+  });
+
+  // Process all content
+  const items = await fetchGithubContent(owner, repo, "", repositoryId);
+
+  // Save to database
+  // await saveContentToDatabase(items, repositoryId);
 }

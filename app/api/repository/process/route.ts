@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         githubId: repoDetails.githubId,
         name: repoDetails.name,
         owner: repoDetails.owner,
-        url: githubUrl,
+        url: repoDetails.url,
         status: "PENDING",
         userId: session.user.id,
         avatarUrl: repoDetails.avatarUrl,

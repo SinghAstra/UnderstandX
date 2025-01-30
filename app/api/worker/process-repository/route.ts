@@ -1,4 +1,4 @@
-import { fetchGitHubRepoData } from "@/lib/utils/github";
+import { fetchAndSaveRepository } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
@@ -36,9 +36,7 @@ export async function POST(req: NextRequest) {
   const { repositoryId, githubUrl } = await JSON.parse(body);
 
   try {
-    const repoData = await fetchGitHubRepoData(githubUrl, repositoryId);
-
-    console.log("repoData is ", repoData.files.length);
+    const repoData = await fetchAndSaveRepository(githubUrl, repositoryId);
 
     return NextResponse.json({ status: "SUCCESS" });
   } catch (error) {

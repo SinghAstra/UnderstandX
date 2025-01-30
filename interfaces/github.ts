@@ -1,5 +1,6 @@
-export interface GitHubFile {
+export interface GitHubContent {
   name: string;
+  type: "file" | "dir";
   path: string;
-  content: string;
+  content?: string;
 }
