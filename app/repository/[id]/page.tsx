@@ -9,7 +9,7 @@ const RepositoryPage = () => {
   console.log("params.id is ", params.id);
   return (
     <div className="flex flex-col">
-      <h1>Repository Details {params.id}</h1>
+      <h1>Repository Details Page {params.id}</h1>
       {logs &&
         logs.map((log, index) => (
           <div key={index}>
