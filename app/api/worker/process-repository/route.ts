@@ -41,7 +41,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ status: "SUCCESS" });
   } catch (error) {
-    console.error(error);
+    console.log("Error Occurred in POST /worker/process-repository");
+    if (error instanceof Error) {
+      console.log("error.stack is ", error.stack);
+      console.log("error.message is ", error.message);
+    }
 
     // Update status to failed
     await prisma.repository.update({

@@ -1,5 +1,6 @@
 import { GitHubContent } from "@/interfaces/github";
 import { Octokit } from "@octokit/rest";
+import { Directory } from "@prisma/client";
 import { sendProcessingUpdate } from "../pusher/send-update";
 import { prisma } from "./prisma";
 
@@ -166,19 +167,25 @@ function isProcessableFile(filename: string): boolean {
   return extension ? processableExtensions.includes(`.${extension}`) : false;
 }
 
-async function saveContentToDatabase(
+async function saveGithubContentToDatabase(
   items: GitHubContent[],
   repositoryId: string
 ) {
   // Create a map to store directory records for quick lookup
-  const directoryMap = new Map<string, any>();
+  const directoryMap = new Map<string, Directory>();
 
   // Group items by type
   const directories = items.filter((i) => i.type === "dir");
   const files = items.filter((i) => i.type === "file");
 
+  const sortedDirectories = directories.sort((a, b) => {
+    const depthA = (a.path.match(/\//g) || []).length;
+    const depthB = (b.path.match(/\//g) || []).length;
+    return depthA - depthB;
+  });
+
   // First pass: Create all directory records
-  for (const dir of directories) {
+  for (const dir of sortedDirectories) {
     const parentPath = dir.path.split("/").slice(0, -1).join("/");
 
     const directory = await prisma.directory.create({
@@ -193,11 +200,13 @@ async function saveContentToDatabase(
     directoryMap.set(dir.path, directory);
   }
 
+  console.log("directoryMap is ", directoryMap);
+
   // Second pass: Create all file records
   for (const file of files) {
     // Get directory path for this file (everything before the last slash)
     const pathParts = file.path.split("/");
-    const fileName = pathParts.pop(); // Remove and get file name
+    pathParts.pop(); // Remove the fileName from the path
     const dirPath = pathParts.join("/");
 
     // If dirPath is empty, this is a root-level file
@@ -207,7 +216,7 @@ async function saveContentToDatabase(
           path: file.path,
           name: file.name,
           content: file.content,
-          repoId: repositoryId,
+          repositoryId,
           // No directoryId for root-level files
         },
       });
@@ -223,7 +232,7 @@ async function saveContentToDatabase(
             path: file.path,
             name: file.name,
             content: file.content,
-            repoId: repositoryId,
+            repositoryId,
           },
         });
       } else {
@@ -233,7 +242,7 @@ async function saveContentToDatabase(
             path: file.path,
             name: file.name,
             content: file.content,
-            repoId: repositoryId,
+            repositoryId,
             directoryId: directory.id,
           },
         });
@@ -276,5 +285,5 @@ export async function fetchAndSaveRepository(
   console.log("items is ", items);
 
   // Save to database
-  await saveContentToDatabase(items, repositoryId);
+  await saveGithubContentToDatabase(items, repositoryId);
 }

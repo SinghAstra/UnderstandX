@@ -100,8 +100,8 @@ model File {
   name         String
   content      String?  @db.Text
   summary      String?  @db.Text
-  repo        Repository       @relation(fields: [repoId], references: [id], onDelete: Cascade)
-  repoId      String
+  repository   Repository       @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  repositoryId String
   directoryId  String?
   directory    Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade)
 
