@@ -3,13 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  BookOpenIcon,
-  CodeIcon,
-  FileIcon,
-  FolderIcon,
-  SearchIcon,
-} from "lucide-react";
+import { CodeIcon, FileIcon, FolderIcon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 
 interface Feature {
