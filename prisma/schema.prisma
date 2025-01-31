@@ -69,9 +69,11 @@ model Repository {
   userId      String
   avatarUrl   String
   status      RepositoryStatus @default(PENDING)
-  summary     String?  @db.Text
+  shortSummary    String?  @db.Text  
+  longSummary     String?  @db.Text 
   directories Directory[]
   files       File[] 
+  features        Feature[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -99,7 +101,8 @@ model File {
   path         String
   name         String
   content      String?  @db.Text
-  summary      String?  @db.Text
+  shortSummary String?  @db.Text  
+  longSummary  String?
   repository   Repository       @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
   repositoryId String
   directoryId  String?
@@ -108,6 +111,20 @@ model File {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+}
+
+model Feature {
+  id           String   @id @default(cuid())
+  name         String   
+  description  String   @db.Text  
+  category     FeatureCategory
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  repositoryId String
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category])
 }
 
 model Search {
@@ -124,4 +141,18 @@ enum RepositoryStatus {
   SUCCESS
   FAILED
   CANCELLED
+}
+
+enum FeatureCategory {
+  AUTHENTICATION
+  DATABASE
+  UI_COMPONENTS
+  STATE_MANAGEMENT
+  API_INTEGRATION
+  TESTING
+  DEVOPS
+  SECURITY
+  PERFORMANCE
+  DOCUMENTATION
+  OTHER
 }
