@@ -25,6 +25,11 @@ export async function GET(req: NextRequest, props: Props) {
         id,
         userId: session.user.id,
       },
+      include:{
+        directories:true,
+        files:true,
+        features:true
+      }
     });
 
     // If repository doesn't exist or doesn't belong to user

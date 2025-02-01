@@ -69,11 +69,11 @@ model Repository {
   userId      String
   avatarUrl   String
   status      RepositoryStatus @default(PENDING)
-  shortSummary    String?  @db.Text  
-  longSummary     String?  @db.Text 
+  shortSummary String?  @db.Text  
+  longSummary  String?  @db.Text 
   directories Directory[]
   files       File[] 
-  features        Feature[]
+  features    Feature[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
