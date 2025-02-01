@@ -1,5 +1,6 @@
 "use client";
 
+import RepositoryExplorer from "@/components/explorer";
 // import RepositoryExplorer from "@/components/explorer";
 import { useToast } from "@/hooks/use-toast";
 import { Directory, Feature, File, Repository } from "@prisma/client";
@@ -26,11 +27,19 @@ interface TreeData {
 const RepositoryPage = () => {
   const params = useParams();
   // const logs = useProcessingStatus(params.id as string);
-  console.log("params.id is ", params.id);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string | null>();
   const [repository, setRepository] = useState<RepositoryWithRelations>();
+  const [isFetchingRepository, setIsFetchingRepository] = useState(true);
+  const pathSegments = (params.path as string[]) || [];
+  const repositoryId = pathSegments[0];
   const router = useRouter();
-  const [selectedPath, setSelectedPath] = useState();
+
+  const getSelectedPath = () => {
+    if (pathSegments.length <= 1) return null;
+    return decodeURIComponent(pathSegments.slice(1).join("/"));
+  };
+
+  const selectedPath = getSelectedPath();
 
   const { toast } = useToast();
 
@@ -77,13 +86,18 @@ const RepositoryPage = () => {
   }, [repository]);
 
   const handleSelect = (path: string) => {
-    router.push(`/repository/${params.id}/${encodeURIComponent(path)}`);
+    router.push(`/repository/${repositoryId}/${encodeURIComponent(path)}`);
   };
+
+  console.log("isFetchingRepository is ", isFetchingRepository);
+  console.log("repository is ", repository);
+  console.log("repositoryId is ", repositoryId);
 
   useEffect(() => {
     try {
+      setIsFetchingRepository(true);
       const fetchRepositoryDetails = async () => {
-        const response = await fetch(`/api/repository/${params.id}`);
+        const response = await fetch(`/api/repository/${repositoryId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch repository details.");
         }
@@ -99,10 +113,13 @@ const RepositoryPage = () => {
         console.log("Error stack:", error.stack);
       }
       setMessage("Failed to fetch repository details.");
+    } finally {
+      setIsFetchingRepository(false);
     }
-  }, [params.id]);
+  }, [repositoryId]);
 
   useEffect(() => {
+    if (!message) return;
     toast({ title: message });
   }, [toast, message]);
 
@@ -131,9 +148,21 @@ const RepositoryPage = () => {
     </div>
   );
 
+  if (isFetchingRepository) {
+    return <p>Loading...</p>;
+  }
+
+  if (!repository && !isFetchingRepository) {
+    return <p>Failed to fetch repository.</p>;
+  }
+
+  if (repository && !treeData) {
+    return <p>Building Tree...</p>;
+  }
+
   return (
     <div className="flex flex-col py-6 ">
-      {treeData ? (
+      {!selectedPath ? (
         <div className="flex flex-col gap-2 max-w-4xl mx-auto w-full border-border rounded-md border-2 p-2">
           {treeData.rootDirectories.map((directory) =>
             renderRootDirectory(directory)
@@ -141,8 +170,11 @@ const RepositoryPage = () => {
           {treeData.rootFiles.map((file) => renderRootFile(file))}
         </div>
       ) : (
-        // <RepositoryExplorer repository={repository} treeData={treeData} />
-        "Loading..."
+        <RepositoryExplorer
+          treeData={treeData}
+          selectedPath={selectedPath}
+          onSelect={handleSelect}
+        />
       )}
     </div>
   );

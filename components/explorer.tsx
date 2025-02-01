@@ -1,20 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Directory, Feature, File, Repository } from "@prisma/client";
+import { Directory, File } from "@prisma/client";
 import { ChevronDown, ChevronRight, FileIcon, FolderIcon } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
 interface DirectoryWithRelations extends Directory {
   directories: DirectoryWithRelations[];
   files: File[];
-}
-
-interface RepositoryWithRelations extends Repository {
-  files: File[];
-  directories: Directory[];
-  features: Feature[];
 }
 
 interface TreeData {
@@ -135,61 +128,15 @@ const FileItem = ({
 );
 
 const RepositoryExplorer = ({
-  repository,
+  treeData,
+  selectedPath,
+  onSelect,
 }: {
-  repository: RepositoryWithRelations;
+  treeData: TreeData;
+  selectedPath: string;
+  onSelect: (path: string) => void;
 }) => {
-  const router = useRouter();
-  const params = useParams();
   const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set());
-  const [selectedPath, setSelectedPath] = useState<string | null>(null);
-
-  const treeData = useMemo<TreeData>(() => {
-    if (!repository) return { rootDirectories: [], rootFiles: [] };
-
-    const directoryNodes: { [key: string]: DirectoryWithRelations } = {};
-    const rootFiles: File[] = [];
-
-    // Create directory nodes
-    repository.directories.forEach((dir) => {
-      directoryNodes[dir.id] = {
-        ...dir,
-        directories: [],
-        files: [],
-      };
-    });
-
-    // Establish parent-child relationships
-    repository.directories.forEach((dir) => {
-      if (dir.parentId && directoryNodes[dir.parentId]) {
-        directoryNodes[dir.parentId].directories.push(directoryNodes[dir.id]);
-      }
-    });
-
-    // Assign files to directories or root
-    repository.files.forEach((file) => {
-      if (file.directoryId && directoryNodes[file.directoryId]) {
-        directoryNodes[file.directoryId].files.push(file);
-      } else {
-        rootFiles.push(file);
-      }
-    });
-
-    const rootDirectories = repository.directories
-      .filter((dir) => !dir.parentId)
-      .map((dir) => directoryNodes[dir.id]);
-
-    return {
-      rootDirectories,
-      rootFiles,
-    };
-  }, [repository]);
-
-  const handleSelect = (type: "file" | "directory", path: string) => {
-    setSelectedPath(path);
-    // Update URL with the selected path
-    router.push(`/repository/${params.id}/${type}/${encodeURIComponent(path)}`);
-  };
 
   return (
     <div className="flex h-full">
@@ -202,7 +149,7 @@ const RepositoryExplorer = ({
             expandedDirs={expandedDirs}
             setExpandedDirs={setExpandedDirs}
             selectedPath={selectedPath}
-            onSelect={handleSelect}
+            onSelect={onSelect}
           />
         ))}
         {treeData.rootFiles.map((file) => (
@@ -211,7 +158,7 @@ const RepositoryExplorer = ({
             file={file}
             level={0}
             selectedPath={selectedPath}
-            onSelect={handleSelect}
+            onSelect={onSelect}
           />
         ))}
       </div>
