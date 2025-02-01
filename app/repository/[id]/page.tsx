@@ -1,10 +1,10 @@
 "use client";
 
-import RepositoryExplorer from "@/components/explorer";
+// import RepositoryExplorer from "@/components/explorer";
 import { useToast } from "@/hooks/use-toast";
 import { Directory, Feature, File, Repository } from "@prisma/client";
 import { FileIcon, FolderIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 interface DirectoryWithRelations extends Directory {
@@ -29,10 +29,8 @@ const RepositoryPage = () => {
   console.log("params.id is ", params.id);
   const [message, setMessage] = useState("");
   const [repository, setRepository] = useState<RepositoryWithRelations>();
-  const [selectedItem, setSelectedItem] = useState<{
-    type: "file" | "directory";
-    path: string;
-  } | null>(null);
+  const router = useRouter();
+  const [selectedPath, setSelectedPath] = useState();
 
   const { toast } = useToast();
 
@@ -78,6 +76,10 @@ const RepositoryPage = () => {
     };
   }, [repository]);
 
+  const handleSelect = (path: string) => {
+    router.push(`/repository/${params.id}/${encodeURIComponent(path)}`);
+  };
+
   useEffect(() => {
     try {
       const fetchRepositoryDetails = async () => {
@@ -104,46 +106,42 @@ const RepositoryPage = () => {
     toast({ title: message });
   }, [toast, message]);
 
-  const renderFile = (file: File, level: number) => (
+  const renderRootFile = (file: File) => (
     <div
       key={file.id}
       className="flex items-center gap-2 hover:bg-secondary/50 p-2 rounded-md transition-colors hover:cursor-pointer"
-      style={{ marginLeft: `${level * 20}px` }}
-      onClick={() => setSelectedItem({ type: "file", path: file.name })}
+      onClick={() => handleSelect(file.path)}
     >
       <FileIcon className="w-4 h-4 text-muted-foreground" />
       <span className="text-sm font-light text-foreground">{file.name}</span>
     </div>
   );
 
-  const renderDirectory = (
-    directory: DirectoryWithRelations,
-    level: number
-  ) => (
+  const renderRootDirectory = (directory: DirectoryWithRelations) => (
     <div key={directory.id} className="flex flex-col">
       <div
         className="flex items-center gap-2 hover:bg-secondary/50 p-2 rounded-md transition-colors hover:cursor-pointer"
-        style={{ marginLeft: `${level * 20}px` }}
-        onClick={() =>
-          setSelectedItem({ type: "directory", path: directory.path })
-        }
+        onClick={() => handleSelect(directory.path)}
       >
         <FolderIcon className="w-4 h-4 text-primary" />
         <span className="text-sm font-medium text-foreground">
           {directory.path.split("/").pop()}
         </span>
       </div>
-
-      {/* {directory.files.map((file) => renderFile(file, level + 1))} */}
-      {/* {directory.directories.map((directory) => renderDirectory(directory, level + 1))} */}
     </div>
   );
 
   return (
-    <div className="flex flex-col space-y-6 p-6">
-      {repository ? (
-        <RepositoryExplorer repository={repository} />
+    <div className="flex flex-col py-6 ">
+      {treeData ? (
+        <div className="flex flex-col gap-2 max-w-4xl mx-auto w-full border-border rounded-md border-2 p-2">
+          {treeData.rootDirectories.map((directory) =>
+            renderRootDirectory(directory)
+          )}
+          {treeData.rootFiles.map((file) => renderRootFile(file))}
+        </div>
       ) : (
+        // <RepositoryExplorer repository={repository} treeData={treeData} />
         "Loading..."
       )}
     </div>
