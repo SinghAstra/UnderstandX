@@ -1,7 +1,7 @@
 "use client";
 
+import { useRepository } from "@/components/context/repository";
 import RepositoryExplorer from "@/components/explorer";
-// import RepositoryExplorer from "@/components/explorer";
 import { useToast } from "@/hooks/use-toast";
 import { Directory, Feature, File, Repository } from "@prisma/client";
 import { FileIcon, FolderIcon } from "lucide-react";
@@ -13,7 +13,7 @@ interface DirectoryWithRelations extends Directory {
   files: File[];
 }
 
-interface RepositoryWithRelations extends Repository {
+export interface RepositoryWithRelations extends Repository {
   files: File[];
   directories: Directory[];
   features: Feature[];
@@ -28,11 +28,12 @@ const RepositoryPage = () => {
   const params = useParams();
   // const logs = useProcessingStatus(params.id as string);
   const [message, setMessage] = useState<string | null>();
-  const [repository, setRepository] = useState<RepositoryWithRelations>();
-  const [isFetchingRepository, setIsFetchingRepository] = useState(true);
+  const { state, dispatch } = useRepository();
+  const [isFetchingRepository, setIsFetchingRepository] = useState(false);
   const pathSegments = (params.path as string[]) || [];
   const repositoryId = pathSegments[0];
   const router = useRouter();
+  const repository = state.repositoryDetails[repositoryId];
 
   const getSelectedPath = () => {
     if (pathSegments.length <= 1) return null;
@@ -89,34 +90,39 @@ const RepositoryPage = () => {
     router.push(`/repository/${repositoryId}/${encodeURIComponent(path)}`);
   };
 
-  console.log("isFetchingRepository is ", isFetchingRepository);
-  console.log("repository is ", repository);
-  console.log("repositoryId is ", repositoryId);
-
+  console.log("repositoryDetails is ", state.repositoryDetails);
   useEffect(() => {
-    try {
-      setIsFetchingRepository(true);
-      const fetchRepositoryDetails = async () => {
-        const response = await fetch(`/api/repository/${repositoryId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch repository details.");
+    console.log("In useEffect.");
+
+    const fetchRepositoryDetailsIfNeeded = async () => {
+      // Don't fetch if we already have the repository data
+      try {
+        if (!state.repositoryDetails[repositoryId]) {
+          setIsFetchingRepository(true);
+          const response = await fetch(`/api/repository/${repositoryId}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch repository details.");
+          }
+          const data = await response.json();
+          console.log("response is ", response);
+          console.log("data is ", data);
+          dispatch({
+            type: "ADD_REPOSITORY_DETAILS",
+            payload: { id: repositoryId, data: data.repository },
+          });
         }
-        const data = await response.json();
-        console.log("response is ", response);
-        console.log("data is ", data);
-        setRepository(data.repository);
-      };
-      fetchRepositoryDetails();
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log("Error message:", error.message);
-        console.log("Error stack:", error.stack);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log("Error message:", error.message);
+          console.log("Error stack:", error.stack);
+        }
+        setMessage("Failed to fetch repository details.");
+      } finally {
+        setIsFetchingRepository(false);
       }
-      setMessage("Failed to fetch repository details.");
-    } finally {
-      setIsFetchingRepository(false);
-    }
-  }, [repositoryId]);
+    };
+    fetchRepositoryDetailsIfNeeded();
+  }, [repositoryId, dispatch, state.repositoryDetails]);
 
   useEffect(() => {
     if (!message) return;

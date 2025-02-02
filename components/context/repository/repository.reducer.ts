@@ -2,6 +2,7 @@ import { RepositoryAction, RepositoryState } from "./repository.types";
 
 export const initialState: RepositoryState = {
   userRepositories: [],
+  repositoryDetails: {},
 };
 
 export function repositoryReducer(
@@ -18,6 +19,14 @@ export function repositoryReducer(
       return {
         ...state,
         userRepositories: [action.payload, ...state.userRepositories],
+      };
+    case "ADD_REPOSITORY_DETAILS":
+      return {
+        ...state,
+        repositoryDetails: {
+          ...state.repositoryDetails,
+          [action.payload.id]: action.payload.data,
+        },
       };
     default:
       return state;

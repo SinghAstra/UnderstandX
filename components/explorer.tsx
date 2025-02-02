@@ -28,7 +28,7 @@ const DirectoryTree = ({
   expandedDirs: Set<string>;
   setExpandedDirs: (dirs: Set<string>) => void;
   selectedPath: string | null;
-  onSelect: (type: "file" | "directory", path: string) => void;
+  onSelect: (path: string) => void;
 }) => {
   const isExpanded = expandedDirs.has(directory.path);
 
@@ -66,7 +66,7 @@ const DirectoryTree = ({
         </div>
         <div
           className="flex items-center gap-2 flex-1"
-          onClick={() => onSelect("directory", directory.path)}
+          onClick={() => onSelect(directory.path)}
         >
           <FolderIcon className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium">
@@ -112,15 +112,15 @@ const FileItem = ({
   file: File;
   level: number;
   selectedPath: string | null;
-  onSelect: (type: "file" | "directory", path: string) => void;
+  onSelect: (path: string) => void;
 }) => (
   <div
     className={cn(
       "flex items-center gap-2 hover:bg-secondary/50 p-2 rounded-md transition-colors cursor-pointer",
-      selectedPath === file.name && "bg-secondary"
+      selectedPath === file.path && "bg-secondary"
     )}
     style={{ marginLeft: `${level * 20}px` }}
-    onClick={() => onSelect("file", file.name)}
+    onClick={() => onSelect(file.path)}
   >
     <FileIcon className="w-4 h-4 text-muted-foreground" />
     <span className="text-sm font-light">{file.name}</span>
