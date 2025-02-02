@@ -24,16 +24,25 @@ interface TreeData {
   rootFiles: File[];
 }
 
+interface FetchState {
+  status: "idle" | "loading" | "success" | "error";
+  error?: string;
+}
+
 const RepositoryPage = () => {
   const params = useParams();
   // const logs = useProcessingStatus(params.id as string);
   const [message, setMessage] = useState<string | null>();
   const { state, dispatch } = useRepository();
-  const [isFetchingRepository, setIsFetchingRepository] = useState(false);
   const pathSegments = (params.path as string[]) || [];
   const repositoryId = pathSegments[0];
   const router = useRouter();
   const repository = state.repositoryDetails[repositoryId];
+  const [fetchState, setFetchState] = useState<FetchState>({
+    status: repository ? "success" : "idle",
+  });
+
+  console.log("fetchState is ", fetchState);
 
   const getSelectedPath = () => {
     if (pathSegments.length <= 1) return null;
@@ -90,22 +99,18 @@ const RepositoryPage = () => {
     router.push(`/repository/${repositoryId}/${encodeURIComponent(path)}`);
   };
 
-  console.log("repositoryDetails is ", state.repositoryDetails);
   useEffect(() => {
-    console.log("In useEffect.");
-
     const fetchRepositoryDetailsIfNeeded = async () => {
       // Don't fetch if we already have the repository data
       try {
         if (!state.repositoryDetails[repositoryId]) {
-          setIsFetchingRepository(true);
+          setFetchState({ status: "loading" });
           const response = await fetch(`/api/repository/${repositoryId}`);
           if (!response.ok) {
             throw new Error("Failed to fetch repository details.");
           }
           const data = await response.json();
           console.log("response is ", response);
-          console.log("data is ", data);
           dispatch({
             type: "ADD_REPOSITORY_DETAILS",
             payload: { id: repositoryId, data: data.repository },
@@ -113,12 +118,16 @@ const RepositoryPage = () => {
         }
       } catch (error) {
         if (error instanceof Error) {
+          setFetchState({
+            status: "error",
+            error: error.message,
+          });
           console.log("Error message:", error.message);
           console.log("Error stack:", error.stack);
         }
         setMessage("Failed to fetch repository details.");
       } finally {
-        setIsFetchingRepository(false);
+        setFetchState({ status: "success" });
       }
     };
     fetchRepositoryDetailsIfNeeded();
@@ -128,6 +137,14 @@ const RepositoryPage = () => {
     if (!message) return;
     toast({ title: message });
   }, [toast, message]);
+
+  useEffect(() => {
+    if (fetchState.status === "error") {
+      toast({
+        title: fetchState.error,
+      });
+    }
+  }, [fetchState, toast]);
 
   const renderRootFile = (file: File) => (
     <div
@@ -154,16 +171,20 @@ const RepositoryPage = () => {
     </div>
   );
 
-  if (isFetchingRepository) {
-    return <p>Loading...</p>;
+  if (fetchState.status === "loading" || fetchState.status === "idle") {
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
-  if (!repository && !isFetchingRepository) {
-    return <p>Failed to fetch repository.</p>;
-  }
-
-  if (repository && !treeData) {
-    return <p>Building Tree...</p>;
+  if (fetchState.status === "error" || !repository) {
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <p>Failed to fetch repository.</p>
+      </div>
+    );
   }
 
   return (
