@@ -46,7 +46,12 @@ const RepositoryPage = () => {
 
   const getSelectedPath = () => {
     if (pathSegments.length <= 1) return null;
-    return decodeURIComponent(pathSegments.slice(1).join("/"));
+
+    // Take all segments after the repositoryId (index 0)
+    return pathSegments
+      .slice(1)
+      .map((segment) => decodeURIComponent(segment))
+      .join("/");
   };
 
   const selectedPath = getSelectedPath();
@@ -96,7 +101,12 @@ const RepositoryPage = () => {
   }, [repository]);
 
   const handleSelect = (path: string) => {
-    router.push(`/repository/${repositoryId}/${encodeURIComponent(path)}`);
+    console.log("path is ", path);
+    const encodedPath = path
+      .split("/")
+      .map((segment) => encodeURIComponent(segment))
+      .join("/");
+    router.push(`/repository/${repositoryId}/${encodedPath}`);
   };
 
   useEffect(() => {
