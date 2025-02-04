@@ -18,8 +18,5 @@ export type RepositoryAction =
     }
   | {
       type: "ADD_REPOSITORY_DETAILS";
-      payload: {
-        id: string;
-        data: RepositoryWithRelations;
-      };
+      payload: RepositoryWithRelations;
     };

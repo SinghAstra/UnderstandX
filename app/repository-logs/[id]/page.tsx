@@ -1,6 +1,10 @@
 "use client";
 
-import { RepositoryWithRelations } from "@/components/repo-content";
+import { RepositoryWithRelations } from "@/app/repository/[...path]/page";
+import {
+  addRepositoryDetails,
+  useRepository,
+} from "@/components/context/repository";
 import RepoLogs from "@/components/repo-logs";
 import { useToast } from "@/hooks/use-toast";
 import { useParams, useRouter } from "next/navigation";
@@ -9,13 +13,21 @@ import React, { useEffect, useState } from "react";
 const RepoProcessingLogs = () => {
   const params = useParams();
   const [isFetchingRepository, setIsFetchingRepository] = useState(true);
-  const [repository, setRepository] = useState<RepositoryWithRelations>();
   const [message, setMessage] = useState<string>();
   const repositoryId = params.id as string;
   const { toast } = useToast();
   const router = useRouter();
+  const { state, dispatch } = useRepository();
+  const [repository, setRepository] = useState<RepositoryWithRelations>(
+    state.repositoryDetails[repositoryId]
+  );
+
+  const repositoryNonState = state.repositoryDetails[repositoryId];
+  console.log("repository --repository-logs is ", repository);
+  console.log("repositoryNonState --repository-logs is ", repositoryNonState);
 
   useEffect(() => {
+    if (repository) return;
     const fetchRepositoryDetails = async () => {
       try {
         setIsFetchingRepository(true);
@@ -25,10 +37,7 @@ const RepoProcessingLogs = () => {
         }
         const data = await response.json();
         setRepository(data.repository);
-        console.log(
-          "data --fetchRepositoryDetails at parent component is ",
-          data
-        );
+        console.log("data repository-logs is ", data);
       } catch (error) {
         if (error instanceof Error) {
           console.log("Error message:", error.message);
@@ -40,12 +49,19 @@ const RepoProcessingLogs = () => {
       }
     };
     fetchRepositoryDetails();
-  }, [repositoryId]);
+  }, [repository, repositoryId]);
 
   useEffect(() => {
     if (!message) return;
     toast({ title: message });
   }, [toast, message]);
+
+  useEffect(() => {
+    if (repository?.status === "SUCCESS") {
+      dispatch(addRepositoryDetails(repository));
+      router.push(`/repository/${repositoryId}`);
+    }
+  }, [dispatch, repository, repositoryId, router]);
 
   if (isFetchingRepository) {
     return <div>Fetching Repository Info at Repository Logs Page</div>;
@@ -53,10 +69,6 @@ const RepoProcessingLogs = () => {
 
   if (!repository) {
     return <div>Repository not found at Repository Logs Page</div>;
-  }
-
-  if (repository.status === "SUCCESS") {
-    router.push(`/repository/${repositoryId}`);
   }
 
   if (repository.status === "CANCELLED") {
