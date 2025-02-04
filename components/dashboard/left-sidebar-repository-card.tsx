@@ -22,7 +22,13 @@ const getStatusColor = (status: RepositoryStatus) => {
 
 export function RepositoryCard({ repository }: RepositoryCardProps) {
   return (
-    <Link href={`/repository/${repository.id}`}>
+    <Link
+      href={
+        repository.status === "SUCCESS"
+          ? `/repository/${repository.id}`
+          : `/repository-logs/${repository.id}`
+      }
+    >
       <div className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors">
         <Avatar className="h-8 w-8">
           <AvatarImage

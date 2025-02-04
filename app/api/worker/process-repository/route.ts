@@ -1,3 +1,4 @@
+import { sendProcessingUpdate } from "@/lib/pusher/send-update";
 import { fetchAndSaveRepository } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { Receiver } from "@upstash/qstash";
@@ -46,6 +47,11 @@ export async function POST(req: NextRequest) {
       data: {
         status: "SUCCESS",
       },
+    });
+
+    await sendProcessingUpdate(repositoryId, {
+      status: "SUCCESS",
+      message: `Just testing in route.ts`,
     });
 
     console.log("After repository update success");

@@ -284,6 +284,11 @@ export async function fetchAndSaveRepository(
 
   console.log("items is ", items);
 
+  await sendProcessingUpdate(repositoryId, {
+    status: "PROCESSING",
+    message: `HEY man testing`,
+  });
+
   // Save to database
   await saveGithubContentToDatabase(items, repositoryId);
 }
