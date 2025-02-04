@@ -77,15 +77,6 @@ const DirectoryTree = ({
 
       {isExpanded && (
         <div className="flex flex-col">
-          {directory.files.map((file) => (
-            <FileItem
-              key={file.id}
-              file={file}
-              level={level + 1}
-              selectedPath={selectedPath}
-              onSelect={onSelect}
-            />
-          ))}
           {directory.directories.map((dir) => (
             <DirectoryTree
               key={dir.id}
@@ -93,6 +84,15 @@ const DirectoryTree = ({
               level={level + 1}
               expandedDirs={expandedDirs}
               setExpandedDirs={setExpandedDirs}
+              selectedPath={selectedPath}
+              onSelect={onSelect}
+            />
+          ))}
+          {directory.files.map((file) => (
+            <FileItem
+              key={file.id}
+              file={file}
+              level={level + 1}
               selectedPath={selectedPath}
               onSelect={onSelect}
             />
@@ -137,6 +137,8 @@ const RepositoryExplorer = ({
   onSelect: (path: string) => void;
 }) => {
   const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set());
+  console.log("expandedDirs is ", expandedDirs);
+  console.log("selectedPath --explorer is ", selectedPath);
 
   return (
     <div className="flex h-full">

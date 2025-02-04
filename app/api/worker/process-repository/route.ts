@@ -39,6 +39,16 @@ export async function POST(req: NextRequest) {
     const repoData = await fetchAndSaveRepository(githubUrl, repositoryId);
     console.log("repoData is ", repoData);
 
+    console.log("Before repository update success");
+
+    await prisma.repository.update({
+      where: { id: repositoryId },
+      data: {
+        status: "SUCCESS",
+      },
+    });
+
+    console.log("After repository update success");
     return NextResponse.json({ status: "SUCCESS" });
   } catch (error) {
     console.log("Error Occurred in POST /worker/process-repository");
