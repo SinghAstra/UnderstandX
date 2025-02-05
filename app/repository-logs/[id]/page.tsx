@@ -1,13 +1,10 @@
 "use client";
 
 import { RepositoryWithRelations } from "@/app/repository/[...path]/page";
-import {
-  addRepositoryDetails,
-  useRepository,
-} from "@/components/context/repository";
+import { useRepository } from "@/components/context/repository";
 import RepoLogs from "@/components/repo-logs";
 import { useToast } from "@/hooks/use-toast";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const RepoProcessingLogs = () => {
@@ -16,15 +13,10 @@ const RepoProcessingLogs = () => {
   const [message, setMessage] = useState<string>();
   const repositoryId = params.id as string;
   const { toast } = useToast();
-  const router = useRouter();
-  const { state, dispatch } = useRepository();
+  const { state } = useRepository();
   const [repository, setRepository] = useState<RepositoryWithRelations>(
     state.repositoryDetails[repositoryId]
   );
-
-  const repositoryNonState = state.repositoryDetails[repositoryId];
-  console.log("repository --repository-logs is ", repository);
-  console.log("repositoryNonState --repository-logs is ", repositoryNonState);
 
   useEffect(() => {
     if (repository) return;
@@ -55,13 +47,6 @@ const RepoProcessingLogs = () => {
     if (!message) return;
     toast({ title: message });
   }, [toast, message]);
-
-  useEffect(() => {
-    if (repository?.status === "SUCCESS") {
-      dispatch(addRepositoryDetails(repository));
-      router.push(`/repository/${repositoryId}`);
-    }
-  }, [dispatch, repository, repositoryId, router]);
 
   if (isFetchingRepository) {
     return <div>Fetching Repository Info at Repository Logs Page</div>;

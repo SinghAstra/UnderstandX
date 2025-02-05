@@ -9,8 +9,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FadeInUp } from "../animation/fade-in-up";
-import { GradientText } from "../custom-ui/gradient-text";
 import { Icons } from "../Icons";
+import { GradientText } from "../ui-components/gradient-text";
 import { Button, buttonVariants } from "../ui/button";
 
 export function Hero() {
