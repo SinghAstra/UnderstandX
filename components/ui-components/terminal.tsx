@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronDown } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-// Define color variations
 type TerminalColor = "zinc" | "blue" | "green" | "red" | "purple";
 
 interface TerminalProps {
