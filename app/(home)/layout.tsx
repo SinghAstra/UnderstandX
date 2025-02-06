@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/home/home-navbar";
+import { Navbar } from "@/components/home/navbar";
 
 interface HomeLayoutProps {
   children: React.ReactNode;

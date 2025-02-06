@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/home/home-navbar";
+import { Navbar } from "@/components/repo-logs/navbar";
 
 interface RepositoryLogsLayoutProps {
   children: React.ReactNode;
