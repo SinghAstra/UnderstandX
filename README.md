@@ -1,4 +1,4 @@
-# NavX - Work in Progress - Open Source
+# NavX - Work in Progress
 
 - The Goal is to help developers understand github Repositories easily.
 - Tells you about the functionality implemented in GitHub Repository.
