@@ -1,5 +1,6 @@
 import { GitHubContent } from "@/interfaces/github";
 import { sendProcessingUpdate } from "@/lib/pusher/send-update";
+import { FILE_BATCH_SIZE, SMALL_FILES_THRESHOLD } from "@/lib/utils/constant";
 import { fetchGithubContent } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { qStash } from "@/lib/utils/qstash";
@@ -11,9 +12,6 @@ const receiver = new Receiver({
   currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
   nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
 });
-
-export const FILE_BATCH_SIZE = 10;
-export const SMALL_FILES_THRESHOLD = 20;
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("upstash-signature");
