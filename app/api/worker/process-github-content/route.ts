@@ -1,3 +1,4 @@
+import { GitHubContent } from "@/interfaces/github";
 import { sendProcessingUpdate } from "@/lib/pusher/send-update";
 import { fetchGithubContent } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
@@ -10,6 +11,9 @@ const receiver = new Receiver({
   currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
   nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
 });
+
+export const FILE_BATCH_SIZE = 10;
+export const SMALL_FILES_THRESHOLD = 20;
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("upstash-signature");
@@ -79,31 +83,24 @@ export async function POST(req: NextRequest) {
 
     console.log("directoryMap is ", directoryMap);
 
-    // Save files in parallel
-    await Promise.all(
-      files.map(async (file) => {
-        const pathParts = file.path.split("/");
-        pathParts.pop();
-        const dirPath = pathParts.join("/");
-        const directory = directoryMap.get(dirPath);
+    // Get directoryId for current path
+    const pathParts = files[0]?.path.split("/") || [];
+    pathParts.pop();
+    const dirPath = pathParts.join("/");
+    const directoryId = directoryMap.get(dirPath)?.id || null;
 
-        await prisma.file.create({
-          data: {
-            path: file.path,
-            name: file.name,
-            content: file.content || "",
-            repositoryId,
-            directoryId: directory?.id || null,
-          },
-        });
-      })
-    );
-
-    // Notify user about saved files
-    await sendProcessingUpdate(repositoryId, {
+    sendProcessingUpdate(repositoryId, {
       status: RepositoryStatus.PROCESSING,
-      message: `Saved ${files.length} files in ${path || "root"}`,
+      message: `DirectoryId is ${directoryId}`,
     });
+
+    if (files.length <= SMALL_FILES_THRESHOLD) {
+      // Process files directly if count is small
+      await processFilesDirectly(files, repositoryId, path, directoryId);
+    } else {
+      // Split into batches and queue for processing
+      await handleLargeFileSet(files, repositoryId, path, directoryId);
+    }
 
     await Promise.all(
       directories.map(
@@ -132,7 +129,7 @@ export async function POST(req: NextRequest) {
 
     await prisma.repository.update({
       where: { id: repositoryId },
-      data: { status:  RepositoryStatus.FAILED },
+      data: { status: RepositoryStatus.FAILED },
     });
 
     // Notify user about failure
@@ -143,4 +140,72 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ error: "Processing failed" }, { status: 500 });
   }
+}
+
+async function processFilesDirectly(
+  files: GitHubContent[],
+  repositoryId: string,
+  currentPath: string,
+  directoryId: string
+) {
+  sendProcessingUpdate(repositoryId, {
+    status: RepositoryStatus.PROCESSING,
+    message: "In process files Directly",
+  });
+  await Promise.all(
+    files.map(async (file) => {
+      await prisma.file.create({
+        data: {
+          path: file.path,
+          name: file.name,
+          content: file.content || "",
+          repositoryId,
+          directoryId: directoryId,
+        },
+      });
+    })
+  );
+
+  // Notify user about saved files
+  // ${"path" || "root"}
+  await sendProcessingUpdate(repositoryId, {
+    status: RepositoryStatus.PROCESSING,
+    message: `Saved ${files.length} files in ${currentPath}`,
+  });
+}
+
+async function handleLargeFileSet(
+  files: GitHubContent[],
+  repositoryId: string,
+  currentPath: string,
+  directoryId: string | null
+) {
+  await sendProcessingUpdate(repositoryId, {
+    status: RepositoryStatus.PROCESSING,
+    message: `Processing ${files.length} files in batches for ${
+      currentPath || "root"
+    }`,
+  });
+
+  const batches = [];
+  for (let i = 0; i < files.length; i += FILE_BATCH_SIZE) {
+    batches.push(files.slice(i, i + FILE_BATCH_SIZE));
+  }
+
+  await Promise.all(
+    batches.map(async (batch, index) => {
+      await qStash.publishJSON({
+        url: `${process.env.APP_URL}/api/worker/process-file-batch`,
+        body: {
+          batch,
+          repositoryId,
+          directoryId,
+          currentPath,
+          batchNumber: index + 1,
+          totalBatches: batches.length,
+        },
+        retries: 3,
+      });
+    })
+  );
 }
