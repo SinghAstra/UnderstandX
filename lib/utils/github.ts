@@ -63,7 +63,7 @@ export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
   };
 }
 
-async function fetchGithubContent(
+export async function fetchGithubContent(
   owner: string,
   repo: string,
   path: string,
@@ -108,14 +108,6 @@ async function fetchGithubContent(
           type: "dir",
           name: item.name,
         });
-
-        const subItems = await fetchGithubContent(
-          owner,
-          repo,
-          item.path,
-          repositoryId
-        );
-        items.push(...subItems);
       }
     }
   } catch (error) {

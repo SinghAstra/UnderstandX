@@ -1,6 +1,6 @@
-import { sendProcessingUpdate } from "@/lib/pusher/send-update";
-import { fetchAndSaveRepository } from "@/lib/utils/github";
+import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
+import { qStash } from "@/lib/utils/qstash";
 import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
       { status: 401 }
     );
   }
-  console.log("In Post Process Request");
+
+  console.log("In --/api/worker/process-repository");
 
   // Get the raw body
   const body = await req.text();
@@ -37,27 +38,35 @@ export async function POST(req: NextRequest) {
   const { repositoryId, githubUrl } = await JSON.parse(body);
 
   try {
-    const repoData = await fetchAndSaveRepository(githubUrl, repositoryId);
-    console.log("repoData is ", repoData);
+    // const repoData = await fetchAndSaveRepository(githubUrl, repositoryId);
 
-    console.log("Before repository update success");
+    const { owner, repo, isValid } = parseGithubUrl(githubUrl);
+
+    if (!isValid || !owner) {
+      throw new Error("Invalid GitHub URL");
+    }
+
+    const repoData = await fetchGitHubRepoMetaData(owner, repo);
+
+    console.log("repoData --fetchGithubRepoMetaData is ", repoData);
 
     await prisma.repository.update({
       where: { id: repositoryId },
       data: {
-        status: "SUCCESS",
+        status: "PROCESSING",
       },
     });
 
-    await sendProcessingUpdate(repositoryId, {
-      status: "SUCCESS",
-      message: `Just testing in route.ts`,
+    await qStash.publishJSON({
+      url: `${process.env.APP_URL}/api/worker/process-github-content`,
+      body: { owner, repo, repositoryId, path: "" },
+      retries: 3,
     });
 
-    console.log("After repository update success");
-    return NextResponse.json({ status: "SUCCESS" });
+    console.log("At the end of /api/worker/process-repository.");
+    return repoData;
   } catch (error) {
-    console.log("Error Occurred in POST /worker/process-repository");
+    console.log("Error Occurred in  --/api/worker/process-repository");
     if (error instanceof Error) {
       console.log("error.stack is ", error.stack);
       console.log("error.message is ", error.message);
