@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { qStash } from "@/lib/utils/qstash";
+import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       repositoryId: repository.id,
-      status: "PENDING",
+      status: RepositoryStatus.PENDING,
     });
   } catch (error) {
     if (error instanceof Error) {

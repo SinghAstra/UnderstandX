@@ -1,6 +1,8 @@
+import { sendProcessingUpdate } from "@/lib/pusher/send-update";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { qStash } from "@/lib/utils/qstash";
+import { RepositoryStatus } from "@prisma/client";
 import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -53,8 +55,14 @@ export async function POST(req: NextRequest) {
     await prisma.repository.update({
       where: { id: repositoryId },
       data: {
-        status: "PROCESSING",
+        status: RepositoryStatus.PROCESSING,
       },
+    });
+
+    // Send update to frontend that processing has started
+    await sendProcessingUpdate(repositoryId, {
+      status: RepositoryStatus.PROCESSING,
+      message: `Started processing repository: ${repoData.fullName}`,
     });
 
     await qStash.publishJSON({
@@ -64,7 +72,7 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("At the end of /api/worker/process-repository.");
-    return repoData;
+    return NextResponse.json({ repoData });
   } catch (error) {
     console.log("Error Occurred in  --/api/worker/process-repository");
     if (error instanceof Error) {
@@ -72,10 +80,16 @@ export async function POST(req: NextRequest) {
       console.log("error.message is ", error.message);
     }
 
+    // Notify user about failure
+    await sendProcessingUpdate(repositoryId, {
+      status: RepositoryStatus.FAILED,
+      message: `Failed to process repository.`,
+    });
+
     // Update status to failed
     await prisma.repository.update({
       where: { id: repositoryId },
-      data: { status: "FAILED" },
+      data: { status: RepositoryStatus.FAILED },
     });
 
     return NextResponse.json({ error: "Processing failed" }, { status: 500 });
