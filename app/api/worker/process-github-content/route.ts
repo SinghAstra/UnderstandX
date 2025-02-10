@@ -1,6 +1,5 @@
 import { GitHubContent } from "@/interfaces/github";
 import { sendProcessingUpdate } from "@/lib/pusher/send-update";
-import { FILE_BATCH_SIZE, SMALL_FILES_THRESHOLD } from "@/lib/utils/constant";
 import { fetchGithubContent } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { qStash } from "@/lib/utils/qstash";
