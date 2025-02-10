@@ -91,14 +91,14 @@ export async function POST(req: NextRequest) {
       status: RepositoryStatus.PROCESSING,
       message: `DirectoryId is ${directoryId}`,
     });
+    await processFilesDirectly(files, repositoryId, path, directoryId);
 
-    if (files.length <= SMALL_FILES_THRESHOLD) {
-      // Process files directly if count is small
-      await processFilesDirectly(files, repositoryId, path, directoryId);
-    } else {
-      // Split into batches and queue for processing
-      await handleLargeFileSet(files, repositoryId, path, directoryId);
-    }
+    // if (files.length <= SMALL_FILES_THRESHOLD) {
+    //   // Process files directly if count is small
+    // } else {
+    //   // Split into batches and queue for processing
+    //   await handleLargeFileSet(files, repositoryId, path, directoryId);
+    // }
 
     await Promise.all(
       directories.map(
@@ -172,38 +172,38 @@ async function processFilesDirectly(
   });
 }
 
-async function handleLargeFileSet(
-  files: GitHubContent[],
-  repositoryId: string,
-  currentPath: string,
-  directoryId: string | null
-) {
-  await sendProcessingUpdate(repositoryId, {
-    status: RepositoryStatus.PROCESSING,
-    message: `Processing ${files.length} files in batches for ${
-      currentPath || "root"
-    }`,
-  });
+// async function handleLargeFileSet(
+//   files: GitHubContent[],
+//   repositoryId: string,
+//   currentPath: string,
+//   directoryId: string | null
+// ) {
+//   await sendProcessingUpdate(repositoryId, {
+//     status: RepositoryStatus.PROCESSING,
+//     message: `Processing ${files.length} files in batches for ${
+//       currentPath || "root"
+//     }`,
+//   });
 
-  const batches = [];
-  for (let i = 0; i < files.length; i += FILE_BATCH_SIZE) {
-    batches.push(files.slice(i, i + FILE_BATCH_SIZE));
-  }
+//   const batches = [];
+//   for (let i = 0; i < files.length; i += FILE_BATCH_SIZE) {
+//     batches.push(files.slice(i, i + FILE_BATCH_SIZE));
+//   }
 
-  await Promise.all(
-    batches.map(async (batch, index) => {
-      await qStash.publishJSON({
-        url: `${process.env.APP_URL}/api/worker/process-file-batch`,
-        body: {
-          batch,
-          repositoryId,
-          directoryId,
-          currentPath,
-          batchNumber: index + 1,
-          totalBatches: batches.length,
-        },
-        retries: 3,
-      });
-    })
-  );
-}
+//   await Promise.all(
+//     batches.map(async (batch, index) => {
+//       await qStash.publishJSON({
+//         url: `${process.env.APP_URL}/api/worker/process-file-batch`,
+//         body: {
+//           batch,
+//           repositoryId,
+//           directoryId,
+//           currentPath,
+//           batchNumber: index + 1,
+//           totalBatches: batches.length,
+//         },
+//         retries: 3,
+//       });
+//     })
+//   );
+// }
