@@ -12,14 +12,8 @@ import { NextRequest, NextResponse } from "next/server";
 // });
 
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
   const { owner, repo, repositoryId, path } = await req.json();
-
-  console.log(`Processing GitHub content for repo: ${repo}, path: ${path}`);
-
-  console.log("owner is ", owner);
-  console.log("repo is ", repo);
-  console.log("repositoryId is ", repositoryId);
-  console.log("path is ", path);
 
   try {
     // Fetch only the current directory level (do NOT recurse)
@@ -49,13 +43,9 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        console.log("Directory Created", dir);
-
         directoryMap.set(dir.path, directory);
       })
     );
-
-    console.log("directoryMap is ", directoryMap);
 
     // Get directoryId for current path
     const pathParts = files[0]?.path.split("/") || [];
@@ -99,6 +89,13 @@ export async function POST(req: NextRequest) {
       status: RepositoryStatus.PROCESSING,
       message: `Finished processing directory: ${path || "root"}`,
     });
+
+    const endTime = Date.now(); // End time
+    console.log(
+      `API response time for /api/worker/process-github-content ${path} : ${
+        endTime - startTime
+      } seconds`
+    );
 
     return NextResponse.json({ status: "SUCCESS", processed: items.length });
   } catch (error) {

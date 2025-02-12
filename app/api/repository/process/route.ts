@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    const startTime = Date.now();
     // 1. Authenticate user
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -29,8 +30,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("githubUrl is ", githubUrl);
-
     // 3. Parse and validate GitHub URL
     const urlInfo = parseGithubUrl(githubUrl);
     if (!urlInfo.isValid || !urlInfo.owner) {
@@ -40,15 +39,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("urlInfo is ", urlInfo);
-
     // 4. Fetch repository MetaData from GitHub API
     const repoDetails = await fetchGitHubRepoMetaData(
       urlInfo.owner,
       urlInfo.repo
     );
-
-    console.log("Fetched Repo Details");
 
     // 5. Create new repository record
     const repository = await prisma.repository.create({
@@ -63,24 +58,48 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("Created new repository record:", repository.id);
+    // 6. Start background processing without waiting
+    (async () => {
+      try {
+        const processingResponse = await fetch(
+          `${process.env.APP_URL}/api/worker/process-repository`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              repositoryId: repository.id,
+              githubUrl,
+              userId: session.user.id,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Enable keepalive to allow the request to continue after the response is sent
+            keepalive: true,
+          }
+        ).catch((error) => {
+          console.error("Background processing error:", error);
+        });
 
-    // 6. Fire-and-forget API call to process repository (NO WAITING)
-    fetch(`${process.env.APP_URL}/api/worker/process-repository`, {
-      method: "POST",
-      body: JSON.stringify({
-        repositoryId: repository.id,
-        githubUrl,
-        userId: session.user.id,
-      }),
-      headers: { "Content-Type": "application/json" },
-      keepalive: true, // Ensures request completes in the background
-    }).catch((err) => console.error("Failed to trigger worker:", err));
+        // Log the result but don't wait for it
+        if (processingResponse && !processingResponse.ok) {
+          console.error(
+            "Background processing error:",
+            await processingResponse.text()
+          );
+        }
+      } catch (error) {
+        console.error("Failed to complete background processing:", error);
+      }
+    })();
 
-    console.log("Triggered background processing for repository");
+    const endTime = Date.now(); // End time
+    console.log(
+      `API response time for /api/repository/process : ${
+        endTime - startTime
+      } seconds`
+    );
 
     // 6. Fetch repository details and data
-
     return NextResponse.json({
       repositoryId: repository.id,
       status: RepositoryStatus.PENDING,

@@ -10,8 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 // });
 
 export async function POST(req: NextRequest) {
-  console.log("In --/api/worker/process-repository");
-
+  const startTime = Date.now(); // End time
   // Get the raw body
   const { repositoryId, githubUrl } = await req.json();
 
@@ -45,7 +44,13 @@ export async function POST(req: NextRequest) {
       console.error("Failed to trigger content processing:", err)
     );
 
-    console.log("At the end of /api/worker/process-repository.");
+    const endTime = Date.now(); // End time
+    console.log(
+      `API response time for /api/worker/process-repository : ${
+        endTime - startTime
+      } seconds`
+    );
+
     return NextResponse.json({ message: "Started Processing Repository" });
   } catch (error) {
     console.log("Error Occurred in  --/api/worker/process-repository");
