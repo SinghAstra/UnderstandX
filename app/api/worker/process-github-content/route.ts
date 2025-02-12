@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function processFilesDirectly(
+async function processFilesDirectly(
   files: GitHubContent[],
   repositoryId: string,
   currentPath: string,
@@ -172,7 +172,7 @@ export async function processFilesDirectly(
   });
 }
 
-export async function handleLargeFileSet(
+async function handleLargeFileSet(
   files: GitHubContent[],
   repositoryId: string,
   currentPath: string,
