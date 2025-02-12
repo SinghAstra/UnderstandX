@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
-import { qStash } from "@/lib/utils/qstash";
+import { processRepository } from "@/trigger/repository";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -64,14 +64,26 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await qStash.publishJSON({
-      url: `${process.env.APP_URL}/api/worker/process-repository`,
-      body: {
-        repositoryId: repository.id,
-        githubUrl,
-        userId: session.user.id,
-      },
-      retries: 3,
+    console.log(
+      "process.env.TRIGGER_SECRET_KEY is ",
+      process.env.TRIGGER_SECRET_KEY
+    );
+
+    // await qStash.publishJSON({
+    //   url: `${process.env.APP_URL}/api/worker/process-repository`,
+    //   body: {
+    //     repositoryId: repository.id,
+    //     githubUrl,
+    //     userId: session.user.id,
+    //   },
+    //   retries: 3,
+    // });
+
+    // Trigger the processing task
+    await processRepository.trigger({
+      githubUrl,
+      userId: session.user.id,
+      repositoryId: repository.id,
     });
 
     console.log("Created new Repository Record");

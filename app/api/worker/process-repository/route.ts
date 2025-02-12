@@ -1,5 +1,5 @@
 import { sendProcessingUpdate } from "@/lib/pusher/send-update";
-import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
+import { parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { qStash } from "@/lib/utils/qstash";
 import { RepositoryStatus } from "@prisma/client";
@@ -40,17 +40,11 @@ export async function POST(req: NextRequest) {
   const { repositoryId, githubUrl } = await JSON.parse(body);
 
   try {
-    // const repoData = await fetchAndSaveRepository(githubUrl, repositoryId);
-
     const { owner, repo, isValid } = parseGithubUrl(githubUrl);
 
     if (!isValid || !owner) {
       throw new Error("Invalid GitHub URL");
     }
-
-    const repoData = await fetchGitHubRepoMetaData(owner, repo);
-
-    console.log("repoData --fetchGithubRepoMetaData is ", repoData);
 
     await prisma.repository.update({
       where: { id: repositoryId },
@@ -62,7 +56,7 @@ export async function POST(req: NextRequest) {
     // Send update to frontend that processing has started
     await sendProcessingUpdate(repositoryId, {
       status: RepositoryStatus.PROCESSING,
-      message: `Started processing repository: ${repoData.fullName}`,
+      message: `Started processing repository: ${repo}`,
     });
 
     await qStash.publishJSON({
@@ -72,7 +66,7 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("At the end of /api/worker/process-repository.");
-    return NextResponse.json({ repoData });
+    return NextResponse.json({ message: "Started Processing Repository" });
   } catch (error) {
     console.log("Error Occurred in  --/api/worker/process-repository");
     if (error instanceof Error) {
