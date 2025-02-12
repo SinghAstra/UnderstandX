@@ -1,7 +1,6 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
-import { qStash } from "@/lib/utils/qstash";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -64,17 +63,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await qStash.publishJSON({
-      url: `${process.env.APP_URL}/api/worker/process-repository`,
-      body: {
+    console.log("Created new repository record:", repository.id);
+
+    // 6. Fire-and-forget API call to process repository (NO WAITING)
+    fetch(`${process.env.APP_URL}/api/worker/process-repository`, {
+      method: "POST",
+      body: JSON.stringify({
         repositoryId: repository.id,
         githubUrl,
         userId: session.user.id,
-      },
-      retries: 3,
-    });
+      }),
+      headers: { "Content-Type": "application/json" },
+      keepalive: true, // Ensures request completes in the background
+    }).catch((err) => console.error("Failed to trigger worker:", err));
 
-    console.log("Created new Repository Record");
+    console.log("Triggered background processing for repository");
 
     // 6. Fetch repository details and data
 

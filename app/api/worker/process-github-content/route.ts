@@ -3,42 +3,18 @@ import { sendProcessingUpdate } from "@/lib/pusher/send-update";
 import { FILE_BATCH_SIZE, SMALL_FILES_THRESHOLD } from "@/lib/utils/constant";
 import { fetchGithubContent } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
-import { qStash } from "@/lib/utils/qstash";
 import { RepositoryStatus } from "@prisma/client";
-import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
 
-const receiver = new Receiver({
-  currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
-  nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
-});
+// const receiver = new Receiver({
+//   currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
+//   nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
+// });
 
 export async function POST(req: NextRequest) {
-  const signature = req.headers.get("upstash-signature");
-  if (!signature) {
-    return NextResponse.json(
-      { error: "No signature provided" },
-      { status: 401 }
-    );
-  }
+  const { owner, repo, repositoryId, path } = await req.json();
 
-  console.log("In --/api/worker/process-github-content");
-
-  // Get the raw body
-  const body = await req.text();
-
-  // Verify the signature
-  const isValid = await receiver.verify({
-    body,
-    signature,
-    url: `${process.env.APP_URL}/api/worker/process-github-content`,
-  });
-
-  if (!isValid) {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-  }
-
-  const { owner, repo, repositoryId, path } = JSON.parse(body);
+  console.log(`Processing GitHub content for repo: ${repo}, path: ${path}`);
 
   console.log("owner is ", owner);
   console.log("repo is ", repo);
@@ -101,13 +77,20 @@ export async function POST(req: NextRequest) {
     }
 
     await Promise.all(
-      directories.map(
-        async (dir) =>
-          await qStash.publishJSON({
-            url: `${process.env.APP_URL}/api/worker/process-github-content`,
-            body: { owner, repo, repositoryId, path: dir.path },
-            retries: 3,
-          })
+      directories.map(async (dir) =>
+        // await qStash.publishJSON({
+        //   url: `${process.env.APP_URL}/api/worker/process-github-content`,
+        //   body: { owner, repo, repositoryId, path: dir.path },
+        //   retries: 3,
+        // })
+        fetch(`${process.env.APP_URL}/api/worker/process-github-content`, {
+          method: "POST",
+          body: JSON.stringify({ owner, repo, repositoryId, path: dir.path }),
+          headers: { "Content-Type": "application/json" },
+          keepalive: true, // Fire-and-forget
+        }).catch((err) =>
+          console.error("Failed to trigger content processing:", err)
+        )
       )
     );
 
@@ -192,18 +175,33 @@ async function handleLargeFileSet(
 
   await Promise.all(
     batches.map(async (batch, index) => {
-      await qStash.publishJSON({
-        url: `${process.env.APP_URL}/api/worker/process-file-batch`,
-        body: {
+      fetch(`${process.env.APP_URL}/api/worker/process-file-batch`, {
+        method: "POST",
+        body: JSON.stringify({
           batch,
           repositoryId,
           directoryId,
           currentPath,
           batchNumber: index + 1,
           totalBatches: batches.length,
-        },
-        retries: 3,
-      });
+        }),
+        headers: { "Content-Type": "application/json" },
+        keepalive: true, // Fire-and-forget
+      }).catch((err) =>
+        console.error("Failed to trigger content processing:", err)
+      );
+      // await qStash.publishJSON({
+      //   url: `${process.env.APP_URL}/api/worker/process-file-batch`,
+      //   body: {
+      //     batch,
+      //     repositoryId,
+      //     directoryId,
+      //     currentPath,
+      //     batchNumber: index + 1,
+      //     totalBatches: batches.length,
+      //   },
+      //   retries: 3,
+      // });
     })
   );
 }
