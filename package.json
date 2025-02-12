@@ -39,6 +39,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.13.1",
+    "inngest": "^3.31.7",
     "ioredis": "^5.4.2",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.468.0",
