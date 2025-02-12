@@ -16,6 +16,8 @@ export async function POST(req: NextRequest) {
   const startTime = Date.now();
   const { owner, repo, repositoryId, path } = await req.json();
 
+  console.log("path --process-github-content is ", path);
+
   try {
     // Fetch only the current directory level (do NOT recurse)
     const items = await fetchGithubContent(owner, repo, path, repositoryId);
