@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
+import logger from "@/lib/utils/logger";
 import { prisma } from "@/lib/utils/prisma";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
     // 6. Start background processing without waiting
     (async () => {
       try {
-        const processingResponse = await fetch(
+        const response = await fetch(
           `${process.env.APP_URL}/api/worker/process-repository`,
           {
             method: "POST",
@@ -73,27 +74,30 @@ export async function POST(req: NextRequest) {
             headers: {
               "Content-Type": "application/json",
             },
-            // Enable keepalive to allow the request to continue after the response is sent
             keepalive: true,
           }
-        ).catch((error) => {
-          console.error("Background processing error:", error);
-        });
+        );
 
-        // Log the result but don't wait for it
-        if (processingResponse && !processingResponse.ok) {
-          console.error(
-            "Background processing error:",
-            await processingResponse.text()
+        if (!response.ok) {
+          throw new Error(
+            "Error occurred while trying to start background Process of /api/repository/process."
           );
         }
       } catch (error) {
-        console.error("Failed to complete background processing:", error);
+        if (error instanceof Error) {
+          console.log("Error message:", error.message);
+          console.log("Error stack:", error.stack);
+        } else {
+          console.log(
+            "Failed to complete background processing in /api/repository/process:",
+            error
+          );
+        }
       }
     })();
 
     const endTime = Date.now(); // End time
-    console.log(
+    logger.success(
       `API response time for /api/repository/process : ${
         endTime - startTime
       } seconds`

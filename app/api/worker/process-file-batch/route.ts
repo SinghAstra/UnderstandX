@@ -1,5 +1,6 @@
 import { GitHubContent } from "@/interfaces/github";
 import { sendProcessingUpdate } from "@/lib/pusher/send-update";
+import logger from "@/lib/utils/logger";
 import { prisma } from "@/lib/utils/prisma";
 import { RepositoryStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
     });
 
     const endTime = Date.now(); // End time
-    console.log(
+    logger.success(
       `API response time for /api/worker/process-file-batch ${currentPath} : ${
         endTime - startTime
       } seconds`

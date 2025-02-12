@@ -1,5 +1,6 @@
 import { sendProcessingUpdate } from "@/lib/pusher/send-update";
 import { parseGithubUrl } from "@/lib/utils/github";
+import logger from "@/lib/utils/logger";
 import { prisma } from "@/lib/utils/prisma";
 import { RepositoryStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -34,18 +35,37 @@ export async function POST(req: NextRequest) {
       message: `Started processing repository: ${repo}`,
     });
 
-    // Fire-and-forget the next processing step
-    fetch(`${process.env.APP_URL}/api/worker/process-github-content`, {
-      method: "POST",
-      body: JSON.stringify({ owner, repo, repositoryId, path: "" }),
-      headers: { "Content-Type": "application/json" },
-      keepalive: true, // Fire-and-forget
-    }).catch((err) =>
-      console.error("Failed to trigger content processing:", err)
-    );
+    (async () => {
+      try {
+        const response = await fetch(
+          `${process.env.APP_URL}/api/worker/process-github-content`,
+          {
+            method: "POST",
+            body: JSON.stringify({ owner, repo, repositoryId, path: "" }),
+            headers: { "Content-Type": "application/json" },
+            keepalive: true,
+          }
+        );
+        if (!response.ok) {
+          throw new Error(
+            "Error occurred while trying to start background Process in /api/worker/process-repository."
+          );
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log("Error message:", error.message);
+          console.log("Error stack:", error.stack);
+        } else {
+          console.log(
+            "Failed to complete background processing in /api/worker/process-repository :",
+            error
+          );
+        }
+      }
+    })();
 
     const endTime = Date.now(); // End time
-    console.log(
+    logger.success(
       `API response time for /api/worker/process-repository : ${
         endTime - startTime
       } seconds`
