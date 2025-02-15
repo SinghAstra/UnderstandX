@@ -1,16 +1,13 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
-import logger from "@/lib/utils/logger";
 import { prisma } from "@/lib/utils/prisma";
+import { createServiceToken } from "@/lib/utils/serviceAuth";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-// const JWT_SECRET = process.env.JWT_SECRET!;
-
 export async function POST(req: NextRequest) {
   try {
-    const startTime = Date.now();
     // 1. Authenticate user
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -46,6 +43,9 @@ export async function POST(req: NextRequest) {
       urlInfo.repo
     );
 
+    console.log("Fetched Repo Details");
+    console.log("userId is ", session.user.id);
+
     // 5. Create new repository record
     const repository = await prisma.repository.create({
       data: {
@@ -59,49 +59,33 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 6. Start background processing without waiting
-    (async () => {
-      try {
-        const response = await fetch(
-          `${process.env.APP_URL}/api/worker/process-repository`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              repositoryId: repository.id,
-              githubUrl,
-              userId: session.user.id,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-            keepalive: true,
-          }
-        );
+    const serviceToken = createServiceToken({
+      repositoryId: repository.id,
+      userId: session.user.id,
+      githubUrl,
+    });
 
-        if (!response.ok) {
-          throw new Error(
-            "Error occurred while trying to start background Process of /api/repository/process."
-          );
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          console.log("Error message:", error.message);
-          console.log("Error stack:", error.stack);
-        } else {
-          console.log(
-            "Failed to complete background processing in /api/repository/process:",
-            error
-          );
-        }
-      }
-    })();
-
-    const endTime = Date.now(); // End time
-    logger.success(
-      `API response time for /api/repository/process : ${
-        endTime - startTime
-      } seconds`
+    console.log(
+      "api url is ",
+      `${process.env.EXPRESS_API_URL}/api/queue/repository`
     );
+
+    const response = await fetch(
+      `${process.env.EXPRESS_API_URL}/api/queue/repository`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceToken}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("data --express api is ", data);
+
+    console.log("Created new Repository Record");
 
     // 6. Fetch repository details and data
     return NextResponse.json({
