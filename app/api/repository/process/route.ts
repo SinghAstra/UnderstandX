@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
-import { qStash } from "@/lib/utils/qstash";
+import { createServiceToken } from "@/lib/utils/serviceAuth";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
     );
 
     console.log("Fetched Repo Details");
+    console.log("userId is ", session.user.id);
 
     // 5. Create new repository record
     const repository = await prisma.repository.create({
@@ -64,15 +65,31 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await qStash.publishJSON({
-      url: `${process.env.APP_URL}/api/worker/process-repository`,
-      body: {
-        repositoryId: repository.id,
-        githubUrl,
-        userId: session.user.id,
-      },
-      retries: 3,
+    const serviceToken = createServiceToken({
+      repositoryId: repository.id,
+      userId: session.user.id,
+      githubUrl,
     });
+
+    console.log(
+      "api url is ",
+      `${process.env.EXPRESS_API_URL}/api/queue/repository`
+    );
+
+    const response = await fetch(
+      `${process.env.EXPRESS_API_URL}/api/queue/repository`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceToken}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("data --express api is ", data);
 
     console.log("Created new Repository Record");
 
