@@ -62,18 +62,16 @@ export default function SignIn() {
         redirect: true,
       });
     } catch (error) {
-      console.error("GitHub Sign-In Error:", error);
+      console.log("Google Sign-In Error:", error);
     } finally {
       setIsGithubLoading(false);
     }
   };
 
-  console.log("Testing Purpose.");
-
   return (
     <div className="flex min-h-screen overflow-hidden">
       {/* Left Panel - Info Section */}
-      <div className="hidden lg:flex lg:w-3/5 z-20 bg-card bg-grid-white">
+      <div className="hidden lg:flex lg:w-3/5 z-20 bg-card">
         <div className="w-full  flex flex-col justify-between">
           <div className="backdrop-blur-md p-6">
             <Link href="/">

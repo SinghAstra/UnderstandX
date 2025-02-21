@@ -1,7 +1,6 @@
 "use client";
 
 import { RepositoryWithRelations } from "@/app/repository/[...path]/page";
-import { useRepository } from "@/components/context/repository";
 import Terminal from "@/components/ui-components/terminal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
@@ -15,14 +14,13 @@ const RepoProcessingLogs = () => {
   const params = useParams();
   const router = useRouter();
   const [isFetchingRepository, setIsFetchingRepository] = useState(true);
-  const [message, setMessage] = useState<string>();
   const repositoryId = params.id as string;
   const { toast } = useToast();
-  const { state } = useRepository();
   const [repository, setRepository] = useState<
     RepositoryWithRelations | undefined
-  >(state.repositoryDetails[repositoryId]);
+  >();
   const [logLines, setLogLines] = useState<string[]>([]);
+  const [message, setMessage] = useState<string | null>();
 
   useEffect(() => {
     if (repository) return;
@@ -30,10 +28,10 @@ const RepoProcessingLogs = () => {
       try {
         setIsFetchingRepository(true);
         const response = await fetch(`/api/repository/${repositoryId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch repository details.");
-        }
         const data = await response.json();
+        if (!response.ok) {
+          setMessage(data.message || "Failed to fetch repository details.");
+        }
         setRepository(data.repository);
 
         if (data.repository.status === "SUCCESS") {
@@ -44,18 +42,19 @@ const RepoProcessingLogs = () => {
           console.log("Error message:", error.message);
           console.log("Error stack:", error.stack);
         }
-        setMessage("Failed to fetch repository details.");
+        setMessage("Network Connectivity Problem. Please try again.");
       } finally {
         setIsFetchingRepository(false);
       }
     };
     fetchRepositoryDetails();
-  }, [repository, repositoryId]);
+  }, [repository, repositoryId, setMessage, router]);
 
   useEffect(() => {
     if (!message) return;
     toast({ title: message });
-  }, [toast, message]);
+    setMessage(null);
+  }, [toast, message, setMessage]);
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`repository-${repositoryId}`);
@@ -64,10 +63,7 @@ const RepoProcessingLogs = () => {
       console.log("update.status is ", update.status);
 
       // Add log line
-      setLogLines((prevLines) => [
-        ...prevLines,
-        `${update.message} - ${update.status}`,
-      ]);
+      setLogLines((prevLines) => [...prevLines, `${update.message}`]);
 
       if (update.status === "SUCCESS") {
         router.replace(`/repository/${repositoryId}`);
@@ -120,7 +116,7 @@ const RepoProcessingLogs = () => {
         />
         <div>
           <h2 className="text-lg font-semibold">{repository.name}</h2>
-          <p className="text-sm text-gray-500">{repository.owner}</p>
+          <p className="text-sm text-muted">{repository.owner}</p>
         </div>
       </div>
     );
