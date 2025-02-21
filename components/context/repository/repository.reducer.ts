@@ -2,7 +2,6 @@ import { RepositoryAction, RepositoryState } from "./repository.types";
 
 export const initialState: RepositoryState = {
   userRepositories: [],
-  repositoryDetails: {},
 };
 
 export function repositoryReducer(
