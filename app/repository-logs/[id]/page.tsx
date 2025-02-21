@@ -1,9 +1,9 @@
 "use client";
 
-import { RepositoryWithRelations } from "@/app/repository/[id]/page";
 import Terminal from "@/components/ui-components/terminal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { RepositoryWithRelations } from "@/interfaces/github";
 import { ProcessingUpdate } from "@/interfaces/processing";
 import pusherClient from "@/lib/pusher/client";
 import Image from "next/image";
@@ -16,9 +16,9 @@ const RepoProcessingLogs = () => {
   const [isFetchingRepository, setIsFetchingRepository] = useState(true);
   const repositoryId = params.id as string;
   const { toast } = useToast();
-  const [repository, setRepository] = useState<
-    RepositoryWithRelations | undefined
-  >();
+  const [repository, setRepository] = useState<RepositoryWithRelations | null>(
+    null
+  );
   const [logLines, setLogLines] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>();
 
