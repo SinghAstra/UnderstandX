@@ -1,11 +1,7 @@
-import { RepositoryWithRelations } from "@/app/repository/[id]/page";
 import { Repository } from "@prisma/client";
 
 export interface RepositoryState {
   userRepositories: Repository[];
-  repositoryDetails: {
-    [id: string]: RepositoryWithRelations;
-  };
 }
 export type RepositoryAction =
   | {
