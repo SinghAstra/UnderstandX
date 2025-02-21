@@ -1,4 +1,4 @@
-import { Directory } from "@prisma/client";
+import { Directory, File, Repository } from "@prisma/client";
 
 export interface GitHubContent {
   name: string;
@@ -8,6 +8,11 @@ export interface GitHubContent {
 }
 
 export interface DirectoryWithRelations extends Directory {
+  children: DirectoryWithRelations[];
+  files: File[];
+}
+
+export interface RepositoryWithRelations extends Repository {
   directories: DirectoryWithRelations[];
   files: File[];
 }
