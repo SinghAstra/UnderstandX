@@ -1,4 +1,4 @@
-import { RepositoryWithRelations } from "@/app/repository/[...path]/page";
+import { RepositoryWithRelations } from "@/app/repository/[id]/page";
 import { Repository } from "@prisma/client";
 
 export interface RepositoryState {
@@ -15,8 +15,4 @@ export type RepositoryAction =
   | {
       type: "ADD_USER_REPOSITORY";
       payload: Repository;
-    }
-  | {
-      type: "ADD_REPOSITORY_DETAILS";
-      payload: RepositoryWithRelations;
     };

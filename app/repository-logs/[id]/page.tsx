@@ -1,6 +1,6 @@
 "use client";
 
-import { RepositoryWithRelations } from "@/app/repository/[...path]/page";
+import { RepositoryWithRelations } from "@/app/repository/[id]/page";
 import Terminal from "@/components/ui-components/terminal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";

@@ -1,4 +1,3 @@
-import { RepositoryWithRelations } from "@/app/repository/[...path]/page";
 import { Repository } from "@prisma/client";
 import { RepositoryAction } from "./repository.types";
 
@@ -16,9 +15,3 @@ export const addUserRepository = (
   payload: repository,
 });
 
-export const addRepositoryDetails = (
-  repository: RepositoryWithRelations
-): RepositoryAction => ({
-  type: "ADD_REPOSITORY_DETAILS",
-  payload: repository,
-});

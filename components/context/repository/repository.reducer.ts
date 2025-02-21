@@ -20,15 +20,6 @@ export function repositoryReducer(
         ...state,
         userRepositories: [action.payload, ...state.userRepositories],
       };
-    case "ADD_REPOSITORY_DETAILS":
-      console.log("action.payload is ", action.payload);
-      return {
-        ...state,
-        repositoryDetails: {
-          ...state.repositoryDetails,
-          [action.payload.id]: action.payload,
-        },
-      };
     default:
       return state;
   }

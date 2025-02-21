@@ -1,3 +1,4 @@
+import { DirectoryWithRelations } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth/auth-options";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
@@ -25,11 +26,11 @@ export async function GET(req: NextRequest, props: Props) {
         id,
         userId: session.user.id,
       },
-      include:{
-        directories:true,
-        files:true,
-        features:true
-      }
+      include: {
+        directories: true,
+        files: true,
+        features: true,
+      },
     });
 
     // If repository doesn't exist or doesn't belong to user
@@ -37,9 +38,39 @@ export async function GET(req: NextRequest, props: Props) {
       return new NextResponse("Repository not found", { status: 404 });
     }
 
-    return NextResponse.json({
-      repository,
+    // Convert to hierarchical structure
+    const directoryMap = new Map();
+    const rootDirectories: DirectoryWithRelations[] = [];
+
+    // Initialize directory map
+    repository.directories.forEach((dir) => {
+      directoryMap.set(dir.id, { ...dir, children: [], files: [] });
     });
+
+    // Build hierarchy
+    repository.directories.forEach((dir) => {
+      if (dir.parentId) {
+        directoryMap.get(dir.parentId)?.children.push(directoryMap.get(dir.id));
+      } else {
+        rootDirectories.push(directoryMap.get(dir.id));
+      }
+    });
+
+    // Attach files to their respective directories
+    repository.files.forEach((file) => {
+      if (file.directoryId) {
+        directoryMap.get(file.directoryId)?.files.push(file);
+      }
+    });
+
+    // Final structured response
+    const structuredRepository = {
+      ...repository,
+      directories: rootDirectories, // Nested directories with children
+      files: repository.files.filter((file) => !file.directoryId), // Repo-level files
+    };
+
+    return NextResponse.json({ repository: structuredRepository });
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);
