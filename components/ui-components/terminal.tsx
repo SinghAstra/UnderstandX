@@ -1,157 +1,99 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ChevronDown } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-type TerminalColor = "zinc" | "blue" | "green" | "red" | "purple";
+type LogEntry = {
+  id: string;
+  timestamp: Date;
+  message: string;
+  status?: string;
+};
 
 interface TerminalProps {
-  lines: string[];
-  welcomeMessage?: string;
-  prompt?: string;
-  height?: number | string;
-  color?: TerminalColor;
+  logs: LogEntry[];
+  height?: string;
 }
 
-const Terminal = ({
-  lines = [],
-  welcomeMessage = "Welcome to Terminal",
-  prompt = ">",
-  height = 400,
-  color = "zinc",
-}: TerminalProps) => {
-  const [showScrollButton, setShowScrollButton] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const lastLineRef = useRef<HTMLDivElement>(null);
+function Terminal({ logs, height = "400px" }: TerminalProps) {
+  const [autoScroll, setAutoScroll] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Theme and color configuration
-  const themeStyles = {
-    default: {
-      zinc: {
-        text: "text-zinc-100",
-        prompt: "text-zinc-500",
-        welcomeMessage: "text-zinc-400",
-        scrollButton: "bg-zinc-800/80 hover:bg-zinc-700/80",
-      },
-      blue: {
-        text: "text-blue-100",
-        prompt: "text-blue-500",
-        welcomeMessage: "text-blue-400",
-        scrollButton: "bg-blue-800/80 hover:bg-blue-700/80",
-      },
-      green: {
-        text: "text-green-100",
-        prompt: "text-green-500",
-        welcomeMessage: "text-green-400",
-        scrollButton: "bg-green-800/80 hover:bg-green-700/80",
-      },
-      red: {
-        text: "text-red-100",
-        prompt: "text-red-500",
-        welcomeMessage: "text-red-400",
-        scrollButton: "bg-red-800/80 hover:bg-red-700/80",
-      },
-      purple: {
-        text: "text-purple-100",
-        prompt: "text-purple-500",
-        welcomeMessage: "text-purple-400",
-        scrollButton: "bg-purple-800/80 hover:bg-purple-700/80",
-      },
-    },
+  useEffect(() => {
+    if (scrollRef.current && autoScroll) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [logs, autoScroll]);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const current = scrollRef.current;
+      const isAtBottom =
+        current.scrollHeight - current.scrollTop <= current.clientHeight + 100;
+      setAutoScroll(isAtBottom);
+    }
   };
 
   const scrollToBottom = () => {
-    if (scrollAreaRef.current && lastLineRef.current) {
-      scrollAreaRef.current.scrollTop =
-        scrollAreaRef.current.scrollHeight - scrollAreaRef.current.clientHeight;
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+      setAutoScroll(true);
     }
   };
 
-  useEffect(() => {
-    const checkScrollPosition = () => {
-      if (scrollAreaRef.current && contentRef.current) {
-        const scrollArea = scrollAreaRef.current;
-        const isAtBottom =
-          scrollArea.scrollHeight -
-            scrollArea.scrollTop -
-            scrollArea.clientHeight <
-          10;
-
-        setShowScrollButton(!isAtBottom);
-      }
-    };
-
-    const scrollArea = scrollAreaRef.current;
-    if (scrollArea) {
-      scrollArea.addEventListener("scroll", checkScrollPosition);
-      return () => {
-        scrollArea.removeEventListener("scroll", checkScrollPosition);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!showScrollButton) {
-      scrollToBottom();
-    }
-  }, [lines, showScrollButton]);
-
-  // Get current theme styles
-  const currentStyles = themeStyles["default"][color];
-
   return (
-    <Card className={`relative `}>
-      <CardContent className="p-0 relative">
-        <div
-          ref={scrollAreaRef}
-          className="h-full overflow-auto"
-          style={{ height }}
-        >
+    <div className="w-full bg-background">
+      <div className="relative">
+        <div className="bg-card rounded-lg border border-border">
           <div
-            ref={contentRef}
-            className={`p-4 font-mono text-sm ${currentStyles.text}`}
+            className="rounded-md p-4 overflow-y-auto font-mono text-sm space-y-2 relative"
+            ref={scrollRef}
+            onScroll={handleScroll}
+            style={{ height }}
           >
-            {welcomeMessage && (
-              <div className={`mb-4 ${currentStyles.welcomeMessage}`}>
-                {welcomeMessage}
-              </div>
-            )}
-
-            {lines.map((line, index) => (
+            {logs.map((log) => (
               <div
-                key={index}
-                ref={index === lines.length - 1 ? lastLineRef : null}
-                className="min-h-[20px]"
+                key={log.id}
+                className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
               >
-                <span className={`select-none ${currentStyles.prompt}`}>
-                  {prompt}{" "}
+                <span className="text-muted-foreground">
+                  {log.timestamp.toLocaleTimeString()}
                 </span>
-                <span>{line}</span>
+                <span className="text-foreground whitespace-pre-wrap">
+                  {log.message}
+                </span>
+                {log.status && (
+                  <span className={`text-${log.status.toLowerCase()}`}>
+                    [{log.status}]
+                  </span>
+                )}
               </div>
             ))}
           </div>
         </div>
-        <Button
-          size="icon"
-          variant="secondary"
-          className={`      
-            absolute bottom-4 right-4 
-            ${currentStyles.scrollButton} 
-            transition-all 
-            duration-300 
-            ease-in-out 
-            scale-0 
-            ${
-              showScrollButton ? "scale-100 opacity-100" : "scale-0 opacity-0"
-            } `}
-          onClick={scrollToBottom}
-        >
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </CardContent>
-    </Card>
+
+        <AnimatePresence>
+          {!autoScroll && (
+            <motion.button
+              onClick={scrollToBottom}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute bottom-4 right-4 bg-muted text-muted-foreground p-3 rounded-full shadow-md hover:cursor-pointer"
+            >
+              <ArrowDown size={24} />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
-};
+}
 
 export default Terminal;

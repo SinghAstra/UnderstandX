@@ -19,8 +19,8 @@ const RepoProcessingLogs = () => {
   const [repository, setRepository] = useState<RepositoryWithRelations | null>(
     null
   );
-  const [logLines, setLogLines] = useState<string[]>([]);
-  const [message, setMessage] = useState<string | null>();
+  const [logs, setLogs] = useState<ProcessingUpdate[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (repository) return;
@@ -63,7 +63,7 @@ const RepoProcessingLogs = () => {
       console.log("update.status is ", update.status);
 
       // Add log line
-      setLogLines((prevLines) => [...prevLines, `${update.message}`]);
+      setLogs((prevLogs) => [...prevLogs, update]);
 
       if (update.status === "SUCCESS") {
         router.replace(`/repository/${repositoryId}`);
@@ -93,11 +93,7 @@ const RepoProcessingLogs = () => {
     return (
       <div className="p-2 container mx-auto">
         <RepositoryHeaderSkeleton />
-        <Terminal
-          lines={["Fetching repository information..."]}
-          welcomeMessage="NavX Repository Processing"
-          color="blue"
-        />
+        {/* Todo : Build Proper Skeleton */}
       </div>
     );
   }
@@ -124,12 +120,8 @@ const RepoProcessingLogs = () => {
 
   if (!repository) {
     return (
-      <div className=" p-2 container mx-auto">
-        <Terminal
-          lines={["Repository not found"]}
-          welcomeMessage="NavX Repository Processing"
-          color="red"
-        />
+      <div className="p-2 container mx-auto">
+        <p>Repository Not Found</p>
       </div>
     );
   }
@@ -138,11 +130,7 @@ const RepoProcessingLogs = () => {
     return (
       <div className=" p-2 container mx-auto">
         {RepositoryHeader()}
-        <Terminal
-          lines={["Repository processing has been cancelled"]}
-          welcomeMessage="NavX Repository Processing"
-          color="red"
-        />
+        <p>Repository Cancelled</p>
       </div>
     );
   }
@@ -151,11 +139,7 @@ const RepoProcessingLogs = () => {
     return (
       <div className=" p-2 container mx-auto">
         {RepositoryHeader()}
-        <Terminal
-          lines={["An error occurred while processing your repository"]}
-          welcomeMessage="NavX Repository Processing"
-          color="red"
-        />
+        <p>Error Occurred</p>
       </div>
     );
   }
@@ -163,12 +147,7 @@ const RepoProcessingLogs = () => {
   return (
     <div className=" p-2 container mx-auto ">
       {RepositoryHeader()}
-      <Terminal
-        lines={logLines}
-        welcomeMessage={`Processing Repository: ${repository.name}`}
-        color="green"
-        height={500}
-      />
+      <Terminal logs={logs} />
     </div>
   );
 };
