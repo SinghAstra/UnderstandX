@@ -134,3 +134,14 @@ input:-webkit-autofill:not(:focus) {
 .match-highlight:hover {
   background-color: rgba(255, 255, 0, 0.2);
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

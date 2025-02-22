@@ -26,7 +26,7 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
       href={
         repository.status === "SUCCESS"
           ? `/repository/${repository.id}`
-          : `/repository-logs/${repository.id}`
+          : `/logs/${repository.id}`
       }
     >
       <div className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors">
