@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, SearchIcon, SparklesIcon, X } from "lucide-react";
+import { SearchIcon, SparklesIcon, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 function CommandPaletteRepoForm() {
   const [url, setUrl] = useState("");
@@ -186,7 +187,7 @@ function CommandPaletteRepoForm() {
               >
                 {isSuccess ? (
                   <div className="flex items-center">
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <FaSpinner className="mr-2 h-5 w-5 animate-spin" />
                     Processing Started...
                   </div>
                 ) : isProcessing ? (
