@@ -127,7 +127,7 @@ const RepositoryExplorer = ({
   onFileSelect: (file: File) => void;
 }) => {
   return (
-    <div className="border border-border rounded-lg overflow-hidden bg-card mx-auto w-full max-w-2xl">
+    <div className="border-r border-border fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
       <div className="p-3 ">
         {/* Root directories */}
         {repository.directories?.map((directory) => (
@@ -156,7 +156,7 @@ const FileViewer = ({ file }: { file: File | null }) => {
   if (!file) return null;
 
   return (
-    <div>
+    <div className="ml-96">
       <h1 className="text-2xl font-bold mt-4">File Content</h1>
       <div className="border border-border rounded-lg overflow-hidden bg-card p-3">
         {file.content}
@@ -255,12 +255,41 @@ const RepositoryDetailsPage = () => {
         )}
       </header>
 
-      <div className="mt-20 flex">
-        <RepositoryExplorer
-          repository={repository}
-          onFileSelect={setSelectedFile}
-        />
-        <FileViewer file={selectedFile} />
+      <div className="mt-20">
+        {!selectedFile ? (
+          <div className="border border-border rounded-lg overflow-hidden bg-card mx-auto w-full max-w-2xl p-3">
+            {/* Root directories */}
+            {repository.directories?.map((directory) => (
+              <DirectoryItem
+                level={0}
+                key={directory.id}
+                directory={directory}
+                onFileSelect={setSelectedFile}
+              />
+            ))}
+            {/* Root level files */}
+            {repository.files
+              ?.filter((file) => !file.directoryId)
+              .map((file) => {
+                console.log("file.id is", file.id);
+                return (
+                  <FileItem
+                    key={file.id}
+                    file={file}
+                    onFileSelect={setSelectedFile}
+                  />
+                );
+              })}
+          </div>
+        ) : (
+          <div className="flex">
+            <RepositoryExplorer
+              repository={repository}
+              onFileSelect={setSelectedFile}
+            />
+            <FileViewer file={selectedFile} />
+          </div>
+        )}
       </div>
     </div>
   );
