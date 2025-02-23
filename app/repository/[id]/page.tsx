@@ -1,5 +1,6 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
+import RepositorySkeleton from "@/components/skeleton/repository";
 import {
   Tooltip,
   TooltipContent,
@@ -20,7 +21,7 @@ import {
   Folder,
   FolderOpen,
 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 // Component to display a file
@@ -208,13 +209,13 @@ const RepositoryDetailsPage = () => {
     return (
       <div>
         <Navbar repository={repository} />
-        <p>Wait Loading..</p>
+        <RepositorySkeleton />
       </div>
     );
   }
 
   if (!repository) {
-    return <p>Repository Not Found.</p>;
+    return notFound();
   }
 
   return (
