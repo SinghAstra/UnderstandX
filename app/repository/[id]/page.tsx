@@ -1,15 +1,11 @@
 "use client";
-import { AvatarMenu } from "@/components/custom-ui/avatar-menu";
-import SignInButton from "@/components/custom-ui/sign-in-button";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
+import Navbar from "@/components/repo-details/navbar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { siteConfig } from "@/config/site";
 import { useToast } from "@/hooks/use-toast";
 import {
   DirectoryWithRelations,
@@ -24,8 +20,6 @@ import {
   Folder,
   FolderOpen,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -175,7 +169,6 @@ const RepositoryDetailsPage = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
-  const { data: session, status } = useSession();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -212,7 +205,12 @@ const RepositoryDetailsPage = () => {
   }, [toast, message]);
 
   if (isLoading) {
-    return <p>Wait Loading..</p>;
+    return (
+      <div>
+        <Navbar repository={repository} />
+        <p>Wait Loading..</p>
+      </div>
+    );
   }
 
   if (!repository) {
@@ -221,39 +219,7 @@ const RepositoryDetailsPage = () => {
 
   return (
     <div className=" min-h-screen flex flex-col">
-      <header className=" px-4 py-2 flex items-center justify-between fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex gap-2 items-center">
-          <Link href="/" className=" hover:opacity-80 transition-opacity">
-            <span className="tracking-wide text-2xl font-medium">
-              {siteConfig.name}
-            </span>
-          </Link>
-          <a
-            className="flex gap-2 items-center border p-2  rounded-lg w-fit cursor-pointer hover:bg-secondary transition-colors duration-150 group"
-            href={repository.url}
-            target="_blank"
-          >
-            <Avatar className="w-8 h-8">
-              <AvatarImage src={repository.avatarUrl} />
-            </Avatar>
-            <div className="flex gap-1">
-              <span className="text-foreground">{repository.owner}</span>
-              <span className="text-muted group-hover:text-muted-foreground ">
-                {"/"}
-              </span>
-              <span className="text-foreground">{repository.name}</span>
-            </div>
-          </a>
-        </div>
-
-        {status === "loading" ? (
-          <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
-        ) : session?.user ? (
-          <AvatarMenu />
-        ) : (
-          <SignInButton />
-        )}
-      </header>
+      <Navbar repository={repository} />
 
       <div className="mt-20">
         {!selectedFile ? (
