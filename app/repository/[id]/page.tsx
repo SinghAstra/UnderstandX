@@ -1,4 +1,15 @@
 "use client";
+import { AvatarMenu } from "@/components/custom-ui/avatar-menu";
+import SignInButton from "@/components/custom-ui/sign-in-button";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { siteConfig } from "@/config/site";
 import { useToast } from "@/hooks/use-toast";
 import {
   DirectoryWithRelations,
@@ -8,19 +19,46 @@ import { File } from "@prisma/client";
 import {
   ChevronDown,
   ChevronRight,
+  CircleHelp,
   FileText,
   Folder,
   FolderOpen,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 // Component to display a file
-const FileItem = ({ file }: { file: File }) => {
+const FileItem = ({
+  file,
+  onFileSelect,
+}: {
+  file: File;
+  onFileSelect: (file: File) => void;
+}) => {
   return (
-    <div className="flex items-center py-1 px-2 hover:bg-secondary rounded cursor-pointer text-sm transition-colors duration-150">
-      <FileText size={16} className="text-muted-foreground mr-2" />
-      <span className="font-medium">{file.name}</span>
+    <div className="flex items-center justify-between py-1 px-2 hover:bg-secondary rounded cursor-pointer text-md transition-colors duration-150">
+      <div
+        className="flex items-center gap-2"
+        onClick={() => {
+          console.log("File Clicked path is ", file.path);
+          onFileSelect(file);
+        }}
+      >
+        <FileText size={16} className="text-muted-foreground mr-2" />
+        <span className="font-normal">{file.name}</span>
+      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <CircleHelp size={16} className="text-muted-foreground " />
+          </TooltipTrigger>
+          <TooltipContent className="bg-muted text-muted-foreground m-2 rounded-md">
+            <p>Add to library</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 };
@@ -29,9 +67,11 @@ const FileItem = ({ file }: { file: File }) => {
 const DirectoryItem = ({
   directory,
   level = 0,
+  onFileSelect,
 }: {
   directory: DirectoryWithRelations;
   level: number;
+  onFileSelect: (file: File) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = () => setIsOpen(!isOpen);
@@ -39,7 +79,7 @@ const DirectoryItem = ({
   return (
     <div>
       <div
-        className="flex items-center py-1 px-2 hover:bg-secondary rounded cursor-pointer text-sm transition-colors duration-150"
+        className="flex items-center py-1 px-2 hover:bg-secondary rounded cursor-pointer text-md transition-colors duration-150"
         onClick={toggleOpen}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
       >
@@ -58,13 +98,18 @@ const DirectoryItem = ({
         <div className="mt-1">
           {/* Display subdirectories */}
           {directory.children?.map((child) => (
-            <DirectoryItem key={child.id} directory={child} level={level + 1} />
+            <DirectoryItem
+              key={child.id}
+              directory={child}
+              level={level + 1}
+              onFileSelect={onFileSelect}
+            />
           ))}
 
           {/* Display files in this directory */}
           {directory.files?.map((file) => (
             <div key={file.id} style={{ paddingLeft: `${level * 16 + 24}px` }}>
-              <FileItem file={file} />
+              <FileItem file={file} onFileSelect={onFileSelect} />
             </div>
           ))}
         </div>
@@ -76,32 +121,45 @@ const DirectoryItem = ({
 // Main repository explorer component
 const RepositoryExplorer = ({
   repository,
+  onFileSelect,
 }: {
   repository: RepositoryWithRelations;
+  onFileSelect: (file: File) => void;
 }) => {
-  if (!repository) {
-    return (
-      <div className="p-4 text-muted-foreground">Loading repository...</div>
-    );
-  }
-
   return (
-    <div className="border border-border rounded-lg overflow-hidden bg-card">
-      <div className="bg-secondary px-4 py-3 flex items-center border-b border-border">
-        <h2 className="text-md font-semibold">{repository.name}</h2>
-      </div>
-      <div className="p-3 max-h-96 overflow-y-auto">
+    <div className="border border-border rounded-lg overflow-hidden bg-card mx-auto w-full max-w-2xl">
+      <div className="p-3 ">
+        {/* Root directories */}
+        {repository.directories?.map((directory) => (
+          <DirectoryItem
+            level={0}
+            key={directory.id}
+            directory={directory}
+            onFileSelect={onFileSelect}
+          />
+        ))}
         {/* Root level files */}
         {repository.files
           ?.filter((file) => !file.directoryId)
-          .map((file) => (
-            <FileItem key={file.id} file={file} />
-          ))}
+          .map((file) => {
+            console.log("file.id is", file.id);
+            return (
+              <FileItem key={file.id} file={file} onFileSelect={onFileSelect} />
+            );
+          })}
+      </div>
+    </div>
+  );
+};
 
-        {/* Root directories */}
-        {repository.directories?.map((directory) => (
-          <DirectoryItem level={0} key={directory.id} directory={directory} />
-        ))}
+const FileViewer = ({ file }: { file: File | null }) => {
+  if (!file) return null;
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mt-4">File Content</h1>
+      <div className="border border-border rounded-lg overflow-hidden bg-card p-3">
+        {file.content}
       </div>
     </div>
   );
@@ -115,21 +173,20 @@ const RepositoryDetailsPage = () => {
   const params = useParams();
   const { id } = params;
   const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
+  const { data: session, status } = useSession();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     const fetchRepository = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         const response = await fetch(`/api/repository/${id}`);
         const data = await response.json();
 
         if (!response.ok) {
-          toast({
-            title: "Error",
-            description: data.message || "Failed to fetch repository details.",
-            variant: "destructive",
-          });
+          setMessage(data.message || "Failed to fetch repository details.");
           return;
         }
 
@@ -139,36 +196,72 @@ const RepositoryDetailsPage = () => {
           console.log("error.stack is ", error.stack);
           console.log("error.message is ", error.message);
         }
-        toast({
-          title: "Error",
-          description: "Something went wrong when fetching repository data.",
-          variant: "destructive",
-        });
+        setMessage("Check Your Network Connectivity.");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchRepository();
-  }, [id, toast]);
+  }, [id]);
+
+  useEffect(() => {
+    if (!message) return;
+    toast({ title: message });
+    setMessage(null);
+  }, [toast, message]);
+
+  if (isLoading) {
+    return <p>Wait Loading..</p>;
+  }
+
+  if (!repository) {
+    return <p>Repository Not Found.</p>;
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {loading ? (
-        <div className="animate-pulse">
-          <div className="h-8 bg-secondary rounded w-1/4 mb-4"></div>
-          <div className="h-64 bg-secondary rounded w-full opacity-30"></div>
+    <div className=" min-h-screen flex flex-col">
+      <header className=" px-4 py-2 flex items-center justify-between fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex gap-2 items-center">
+          <Link href="/" className=" hover:opacity-80 transition-opacity">
+            <span className="tracking-wide text-2xl font-medium">
+              {siteConfig.name}
+            </span>
+          </Link>
+          <a
+            className="flex gap-2 items-center border p-2  rounded-lg w-fit cursor-pointer hover:bg-secondary transition-colors duration-150 group"
+            href={repository.url}
+            target="_blank"
+          >
+            <Avatar className="w-8 h-8">
+              <AvatarImage src={repository.avatarUrl} />
+            </Avatar>
+            <div className="flex gap-1">
+              <span className="text-foreground">{repository.owner}</span>
+              <span className="text-muted group-hover:text-muted-foreground ">
+                {"/"}
+              </span>
+              <span className="text-foreground">{repository.name}</span>
+            </div>
+          </a>
         </div>
-      ) : (
-        <>
-          <h1 className="text-2xl font-bold mb-6">
-            {repository?.name || "Repository"}
-          </h1>
-          <div className="bg-grid-white">
-            {repository && <RepositoryExplorer repository={repository} />}
-          </div>
-        </>
-      )}
+
+        {status === "loading" ? (
+          <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
+        ) : session?.user ? (
+          <AvatarMenu />
+        ) : (
+          <SignInButton />
+        )}
+      </header>
+
+      <div className="mt-20 flex">
+        <RepositoryExplorer
+          repository={repository}
+          onFileSelect={setSelectedFile}
+        />
+        <FileViewer file={selectedFile} />
+      </div>
     </div>
   );
 };

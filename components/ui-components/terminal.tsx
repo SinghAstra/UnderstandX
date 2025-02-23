@@ -62,7 +62,7 @@ function Terminal({ logs, height = "400px" }: TerminalProps) {
                 className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
               >
                 <span className="text-muted-foreground">
-                  {log.timestamp.toLocaleTimeString()}
+                  {log.timestamp?.toLocaleTimeString()}
                 </span>
                 <span className="text-foreground whitespace-pre-wrap">
                   {log.message}

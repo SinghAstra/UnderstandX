@@ -88,12 +88,45 @@ const RepoProcessingLogs = () => {
     );
   };
 
+  const TerminalSkeleton = () => {
+    // Create an array of 5 fake log entries for the skeleton
+    const skeletonLogs = Array(5).fill(null);
+
+    return (
+      <div className="w-full bg-background">
+        <div className="relative">
+          <div className="bg-card rounded-lg border border-border">
+            <div
+              className="rounded-md p-4 font-mono text-sm space-y-4"
+              style={{ height: "400px" }}
+            >
+              {skeletonLogs.map((_, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  {/* Time skeleton */}
+                  <Skeleton className="h-4 w-16" />
+
+                  {/* Message skeleton - varying widths for more natural look */}
+                  <Skeleton
+                    className={`h-4 ${index % 2 === 0 ? "w-3/4" : "w-1/2"}`}
+                  />
+
+                  {/* Status skeleton - show on some entries */}
+                  {index % 3 === 0 && <Skeleton className="h-4 w-16" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Handling various repository states
   if (isFetchingRepository) {
     return (
-      <div className="p-2 container mx-auto">
+      <div className="p-2 container mx-auto max-w-2xl w-full">
         <RepositoryHeaderSkeleton />
-        {/* Todo : Build Proper Skeleton */}
+        <TerminalSkeleton />
       </div>
     );
   }
@@ -145,7 +178,7 @@ const RepoProcessingLogs = () => {
   }
 
   return (
-    <div className=" p-2 container mx-auto ">
+    <div className=" p-2 container mx-auto max-w-2xl w-full ">
       {RepositoryHeader()}
       <Terminal logs={logs} />
     </div>
