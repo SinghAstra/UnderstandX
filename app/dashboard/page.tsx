@@ -5,9 +5,10 @@ import {
   useRepository,
 } from "@/components/context/repository";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { parseGithubUrl } from "@/lib/utils/github";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { SearchIcon, SparklesIcon, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,7 +16,7 @@ import { FaSpinner } from "react-icons/fa";
 
 function CommandPaletteRepoForm() {
   const [url, setUrl] = useState("");
-  const [error, setError] = useState<string | undefined>();
+  const [message, setMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
@@ -26,6 +27,7 @@ function CommandPaletteRepoForm() {
   const actionQuery = searchParams.get("action");
   const router = useRouter();
   const { dispatch } = useRepository();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -39,11 +41,10 @@ function CommandPaletteRepoForm() {
     const validation = parseGithubUrl(url);
 
     if (!validation.isValid) {
-      setError(validation.error);
+      setMessage(validation.error ? validation.error : null);
       return;
     }
 
-    setError(undefined);
     setIsProcessing(true);
 
     try {
@@ -55,30 +56,34 @@ function CommandPaletteRepoForm() {
         body: JSON.stringify({ githubUrl: url }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error("Failed to process repository");
+        setMessage(data.message || "Failed to process repository");
       }
 
-      const data = await response.json();
       console.log("data --repositoryProcess is ", data);
 
       const responseRepoDetails = await fetch(
         `/api/repository/${data.repositoryId}`
       );
+      const repoDetailsData = await responseRepoDetails.json();
       if (!responseRepoDetails.ok) {
-        throw new Error("Failed to fetch repository details");
+        setMessage(
+          repoDetailsData.message || "Failed to fetch repository details"
+        );
       }
-      const repoDetails = await responseRepoDetails.json();
-      dispatch(addUserRepository(repoDetails.repository));
+      dispatch(addUserRepository(repoDetailsData.repository));
 
       setIsSuccess(true);
       setUrl("");
 
       setTimeout(() => setIsSuccess(false), 3000);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to process repository"
-      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("error.stack is ", error.stack);
+        console.log("error.message is ", error.message);
+      }
+      setMessage("Check Your Network Connection");
     } finally {
       setIsProcessing(false);
     }
@@ -120,6 +125,12 @@ function CommandPaletteRepoForm() {
     };
   }, [showGuide, dismissGuide]);
 
+  useEffect(() => {
+    if (!message) return;
+    toast({ title: message });
+    setMessage(null);
+  }, [toast, message]);
+
   return (
     <div className="m-2 relative ">
       {showGuide && (
@@ -158,7 +169,6 @@ function CommandPaletteRepoForm() {
               value={url}
               onChange={(e) => {
                 setUrl(e.target.value);
-                setError(undefined);
               }}
               disabled={isProcessing}
               className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-base placeholder:text-muted-foreground"
@@ -178,7 +188,6 @@ function CommandPaletteRepoForm() {
               <Button
                 size="sm"
                 disabled={!url || isProcessing || isSuccess}
-                // onClick={handleSubmit}
                 type="submit"
                 className={cn(
                   "relative overflow-hidden",
@@ -192,7 +201,7 @@ function CommandPaletteRepoForm() {
                   </div>
                 ) : isProcessing ? (
                   <div className="flex items-center">
-                    <SearchIcon className="mr-2 h-4 w-4 animate-spin" />
+                    <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
                     Processing...
                   </div>
                 ) : (
@@ -203,7 +212,7 @@ function CommandPaletteRepoForm() {
           </div>
         </form>
       </div>
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {error && (
           <motion.p
             initial={{ opacity: 0, y: -10 }}
@@ -214,7 +223,7 @@ function CommandPaletteRepoForm() {
             <span className="mx-2">⚠️</span> {error}
           </motion.p>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </div>
   );
 }

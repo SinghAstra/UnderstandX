@@ -60,8 +60,6 @@ const RepoProcessingLogs = () => {
     const channel = pusherClient.subscribe(`repository-${repositoryId}`);
 
     channel.bind("processing-update", (update: ProcessingUpdate) => {
-      console.log("update.status is ", update.status);
-
       // Add log line
       setLogs((prevLogs) => [...prevLogs, update]);
 

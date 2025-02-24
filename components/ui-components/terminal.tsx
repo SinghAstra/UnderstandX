@@ -45,6 +45,7 @@ function Terminal({ logs, height = "400px" }: TerminalProps) {
       setAutoScroll(true);
     }
   };
+  console.log("logs[0] is", logs[0]);
 
   return (
     <div className="w-full bg-background">
@@ -62,16 +63,11 @@ function Terminal({ logs, height = "400px" }: TerminalProps) {
                 className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
               >
                 <span className="text-muted-foreground">
-                  {log.timestamp?.toLocaleTimeString()}
+                  {new Date(log.timestamp).toLocaleTimeString()}
                 </span>
                 <span className="text-foreground whitespace-pre-wrap">
                   {log.message}
                 </span>
-                {log.status && (
-                  <span className={`text-${log.status.toLowerCase()}`}>
-                    [{log.status}]
-                  </span>
-                )}
               </div>
             ))}
           </div>
