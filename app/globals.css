@@ -110,33 +110,6 @@ input:-webkit-autofill:not(:focus) {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='64' height='64' fill='none' stroke='rgb(255 255 255 / 0.02)'%3e%3cpath d='M0 .5H63.5V64'/%3e%3c/svg%3e");
 }
 
-.code-preview pre {
-  font-family: "JetBrains Mono", monospace;
-}
-
-/* Match highlight animation */
-@keyframes highlight-pulse {
-  0% {
-    background-color: hsla(214, 95%, 40%, 0.15);
-  }
-  50% {
-    background-color: hsla(214, 95%, 40%, 0.25);
-  }
-  100% {
-    background-color: hsla(214, 95%, 40%, 0.15);
-  }
-}
-
-.match-highlight {
-  transition: background-color 0.2s ease;
-}
-
-.match-highlight:hover {
-  background-color: rgba(255, 255, 0, 0.2);
-}
-
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -144,4 +117,9 @@ input:-webkit-autofill:not(:focus) {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+  background: transparent !important;
 }

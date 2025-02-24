@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import FileViewer from "./file-viewer";
 
 // Component to display a file
 const FileItem = ({
@@ -33,16 +34,18 @@ const FileItem = ({
   onFileSelect: (file: File) => void;
 }) => {
   return (
-    <div className="flex items-center justify-between py-1 px-2 hover:bg-secondary rounded cursor-pointer text-md transition-colors duration-150">
+    <div className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted">
       <div
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 overflow-hidden"
         onClick={() => {
           console.log("File Clicked path is ", file.path);
           onFileSelect(file);
         }}
       >
-        <FileText size={16} className="text-muted-foreground mr-2" />
-        <span className="font-normal">{file.name}</span>
+        <FileText size={16} className="text-muted-foreground mr-[2px] " />
+        <span className="font-light  truncate max-w-[calc(100%-24px)]">
+          {file.name}
+        </span>
       </div>
       <TooltipProvider>
         <Tooltip>
@@ -74,7 +77,7 @@ const DirectoryItem = ({
   return (
     <div>
       <div
-        className="flex items-center py-1 px-2 hover:bg-secondary rounded cursor-pointer text-md transition-colors duration-150"
+        className=" relative flex items-center py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 "
         onClick={toggleOpen}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
       >
@@ -122,7 +125,7 @@ const RepositoryExplorer = ({
   onFileSelect: (file: File) => void;
 }) => {
   return (
-    <div className="border-r border-border fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
+    <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
       <div className="p-3 ">
         {/* Root directories */}
         {repository.directories?.map((directory) => (
@@ -142,19 +145,6 @@ const RepositoryExplorer = ({
               <FileItem key={file.id} file={file} onFileSelect={onFileSelect} />
             );
           })}
-      </div>
-    </div>
-  );
-};
-
-const FileViewer = ({ file }: { file: File | null }) => {
-  if (!file) return null;
-
-  return (
-    <div className="ml-96">
-      <h1 className="text-2xl font-bold mt-4">File Content</h1>
-      <div className="border border-border rounded-lg overflow-hidden bg-card p-3">
-        {file.content}
       </div>
     </div>
   );
