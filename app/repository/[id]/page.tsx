@@ -21,100 +21,116 @@ import {
   Folder,
   FolderOpen,
 } from "lucide-react";
-import { notFound, useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import {
+  notFound,
+  useParams,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import FileViewer from "./file-viewer";
 
 // Component to display a file
-const FileItem = ({
-  file,
-  onFileSelect,
-}: {
-  file: File;
-  onFileSelect: (file: File) => void;
-}) => {
-  return (
-    <div className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted">
-      <div
-        className="flex items-center gap-2 overflow-hidden"
-        onClick={() => {
-          console.log("File Clicked path is ", file.path);
-          onFileSelect(file);
-        }}
-      >
-        <FileText size={16} className="text-muted-foreground mr-[2px] " />
-        <span className="font-light  truncate max-w-[calc(100%-24px)]">
-          {file.name}
-        </span>
+const FileItem = React.memo(
+  ({
+    file,
+    onFileSelect,
+  }: {
+    file: File;
+    onFileSelect: (file: File) => void;
+  }) => {
+    return (
+      <div className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted">
+        <div
+          className="flex items-center gap-2 overflow-hidden"
+          onClick={() => {
+            console.log("File Clicked path is ", file.path);
+            onFileSelect(file);
+          }}
+        >
+          <FileText size={16} className="text-muted-foreground mr-[2px] " />
+          <span className="font-light  truncate max-w-[calc(100%-24px)]">
+            {file.name}
+          </span>
+        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <CircleHelp size={16} className="text-muted-foreground " />
+            </TooltipTrigger>
+            <TooltipContent className="bg-muted text-muted-foreground m-2 rounded-md">
+              <p>Add to library</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <CircleHelp size={16} className="text-muted-foreground " />
-          </TooltipTrigger>
-          <TooltipContent className="bg-muted text-muted-foreground m-2 rounded-md">
-            <p>Add to library</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
-  );
-};
+    );
+  }
+);
+
+FileItem.displayName = "FileItem";
 
 // Component to display a directory and its contents
-const DirectoryItem = ({
-  directory,
-  level = 0,
-  onFileSelect,
-}: {
-  directory: DirectoryWithRelations;
-  level: number;
-  onFileSelect: (file: File) => void;
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleOpen = () => setIsOpen(!isOpen);
+const DirectoryItem = React.memo(
+  ({
+    directory,
+    level = 0,
+    onFileSelect,
+  }: {
+    directory: DirectoryWithRelations;
+    level: number;
+    onFileSelect: (file: File) => void;
+  }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleOpen = () => setIsOpen(!isOpen);
 
-  return (
-    <div>
-      <div
-        className=" relative flex items-center py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 "
-        onClick={toggleOpen}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
-      >
-        <span className="mr-1 text-muted-foreground">
-          {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        </span>
-        {isOpen ? (
-          <FolderOpen size={16} className="text-stats-blue mr-2" />
-        ) : (
-          <Folder size={16} className="text-muted-foreground mr-2" />
-        )}
-        <span className="font-medium">{directory.path.split("/").pop()}</span>
-      </div>
-
-      {isOpen && (
-        <div className="mt-1">
-          {/* Display subdirectories */}
-          {directory.children?.map((child) => (
-            <DirectoryItem
-              key={child.id}
-              directory={child}
-              level={level + 1}
-              onFileSelect={onFileSelect}
-            />
-          ))}
-
-          {/* Display files in this directory */}
-          {directory.files?.map((file) => (
-            <div key={file.id} style={{ paddingLeft: `${level * 16 + 24}px` }}>
-              <FileItem file={file} onFileSelect={onFileSelect} />
-            </div>
-          ))}
+    return (
+      <div>
+        <div
+          className=" relative flex items-center py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 "
+          onClick={toggleOpen}
+          style={{ paddingLeft: `${level * 16 + 8}px` }}
+        >
+          <span className="mr-1 text-muted-foreground">
+            {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          </span>
+          {isOpen ? (
+            <FolderOpen size={16} className="text-stats-blue mr-2" />
+          ) : (
+            <Folder size={16} className="text-muted-foreground mr-2" />
+          )}
+          <span className="font-medium">{directory.path.split("/").pop()}</span>
         </div>
-      )}
-    </div>
-  );
-};
+
+        {isOpen && (
+          <div className="mt-1">
+            {/* Display subdirectories */}
+            {directory.children?.map((child) => (
+              <DirectoryItem
+                key={child.id}
+                directory={child}
+                level={level + 1}
+                onFileSelect={onFileSelect}
+              />
+            ))}
+
+            {/* Display files in this directory */}
+            {directory.files?.map((file) => (
+              <div
+                key={file.id}
+                style={{ paddingLeft: `${level * 16 + 24}px` }}
+              >
+                <FileItem file={file} onFileSelect={onFileSelect} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+DirectoryItem.displayName = "DirectoryItem";
 
 // Main repository explorer component
 const RepositoryExplorer = ({
@@ -156,11 +172,28 @@ const RepositoryDetailsPage = () => {
     null
   );
   const params = useParams();
+  const searchParams = useSearchParams();
+  const rootDirectories = useMemo<DirectoryWithRelations[]>(
+    () => repository?.directories || [],
+    [repository]
+  );
+  const rootFiles = useMemo<File[]>(
+    () => repository?.files?.filter((file) => !file.directoryId) || [],
+    [repository]
+  );
   const { id } = params;
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const router = useRouter();
+  const onFileSelect = useCallback(
+    (file: File) => {
+      setSelectedFile(file);
+      router.push(`/repository/${id}?file=${file.path}`);
+    },
+    [id, router]
+  );
 
   useEffect(() => {
     const fetchRepository = async () => {
@@ -190,6 +223,14 @@ const RepositoryDetailsPage = () => {
   }, [id]);
 
   useEffect(() => {
+    const filePath = searchParams.get("file");
+    if (filePath && repository) {
+      const file = repository.files.find((f) => f.path === filePath);
+      if (file) setSelectedFile(file);
+    }
+  }, [repository, searchParams]);
+
+  useEffect(() => {
     if (!message) return;
     toast({ title: message });
     setMessage(null);
@@ -216,27 +257,25 @@ const RepositoryDetailsPage = () => {
         {!selectedFile ? (
           <div className="border border-border rounded-lg overflow-hidden bg-card mx-auto w-full max-w-2xl p-3">
             {/* Root directories */}
-            {repository.directories?.map((directory) => (
+            {rootDirectories.map((directory) => (
               <DirectoryItem
                 level={0}
                 key={directory.id}
                 directory={directory}
-                onFileSelect={setSelectedFile}
+                onFileSelect={onFileSelect}
               />
             ))}
             {/* Root level files */}
-            {repository.files
-              ?.filter((file) => !file.directoryId)
-              .map((file) => {
-                console.log("file.id is", file.id);
-                return (
-                  <FileItem
-                    key={file.id}
-                    file={file}
-                    onFileSelect={setSelectedFile}
-                  />
-                );
-              })}
+            {rootFiles.map((file) => {
+              console.log("file.id is", file.id);
+              return (
+                <FileItem
+                  key={file.id}
+                  file={file}
+                  onFileSelect={onFileSelect}
+                />
+              );
+            })}
           </div>
         ) : (
           <div className="flex">

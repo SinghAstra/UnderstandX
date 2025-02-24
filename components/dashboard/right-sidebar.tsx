@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MessageSquare } from "lucide-react";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 export function RightSidebar() {
   return (
-    <div className="w-80 bg-background py-4 pr-2 ">
-      <Card>
+    <div className="w-80 bg-background py-2 pr-2 ">
+      {/* <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5 text-primary" />
@@ -30,14 +30,23 @@ export function RightSidebar() {
           </p>
           <Button className="w-full">Try ChatRepoX</Button>
         </CardContent>
-      </Card>
+      </Card> */}
 
-      <Card className="mt-4">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-muted-foreground">Coming Soon</CardTitle>
+          <CardTitle className="text-muted-foreground">
+            Follow For Updates
+          </CardTitle>
           <CardDescription>
             More tools are being developed to enhance your development workflow.
           </CardDescription>
+          <a
+            className={cn(buttonVariants({ variant: "outline" }))}
+            href={siteConfig.links.twitter}
+            target="_blank"
+          >
+            Twitter
+          </a>
         </CardHeader>
       </Card>
     </div>
