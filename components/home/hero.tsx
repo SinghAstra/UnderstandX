@@ -46,12 +46,12 @@ export function Hero() {
         <div className="min-h-screen flex flex-col items-center  text-center gap-8 max-w-3xl">
           <h1 className="text-4xl font-bold  sm:text-5xl md:text-6xl lg:text-7xl mt-16">
             <GradientText variant="secondary" animate>
-              Simplifying
+              Work
             </GradientText>{" "}
-            Understanding
+            In
             <br />
             <GradientText variant="secondary" animate>
-              Github Repo
+              Progress
             </GradientText>
           </h1>
 
@@ -140,7 +140,7 @@ export function Hero() {
           </div>
         </div>
       </FadeInUp>
-      <FadeInUp delay={0.4}>
+      {/* <FadeInUp delay={0.4}>
         <div className="min-h-screen flex flex-col items-center text-center gap-8 max-w-3xl">
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
@@ -180,7 +180,7 @@ export function Hero() {
             Get Started <ArrowRight className="animate-move-x" />
           </Button>
         </div>
-      </FadeInUp>
+      </FadeInUp> */}
     </div>
   );
 }
