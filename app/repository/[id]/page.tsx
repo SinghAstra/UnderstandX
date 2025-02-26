@@ -35,16 +35,20 @@ const FileItem = React.memo(
   ({
     file,
     onFileSelect,
+    selectedFile,
   }: {
     file: File;
     onFileSelect: (file: File) => void;
+    selectedFile: File | null;
   }) => {
     console.log("File Item is rendered", file.path);
     return (
       <div
         className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
         onClick={() => {
-          onFileSelect(file);
+          if (file.path !== selectedFile?.path) {
+            onFileSelect(file);
+          }
         }}
       >
         <div className="flex items-center gap-2 overflow-hidden">
@@ -75,9 +79,11 @@ const DirectoryItem = React.memo(
   ({
     directory,
     level = 0,
+    selectedFile,
     onFileSelect,
   }: {
     directory: DirectoryWithRelations;
+    selectedFile: File | null;
     level: number;
     onFileSelect: (file: File) => void;
   }) => {
@@ -115,6 +121,7 @@ const DirectoryItem = React.memo(
                 directory={child}
                 level={level + 1}
                 onFileSelect={onFileSelect}
+                selectedFile={selectedFile}
               />
             ))}
 
@@ -124,7 +131,11 @@ const DirectoryItem = React.memo(
                 key={file.id}
                 style={{ paddingLeft: `${level * 16 + 24}px` }}
               >
-                <FileItem file={file} onFileSelect={onFileSelect} />
+                <FileItem
+                  file={file}
+                  onFileSelect={onFileSelect}
+                  selectedFile={selectedFile}
+                />
               </div>
             ))}
           </div>
@@ -138,9 +149,11 @@ DirectoryItem.displayName = "Directory Item";
 
 // Main repository explorer component
 const RepositoryExplorer = ({
+  selectedFile,
   repository,
   onFileSelect,
 }: {
+  selectedFile: File | null;
   repository: RepositoryWithRelations;
   onFileSelect: (file: File) => void;
 }) => {
@@ -153,6 +166,7 @@ const RepositoryExplorer = ({
             level={0}
             key={directory.id}
             directory={directory}
+            selectedFile={selectedFile}
             onFileSelect={onFileSelect}
           />
         ))}
@@ -161,7 +175,12 @@ const RepositoryExplorer = ({
           ?.filter((file) => !file.directoryId)
           .map((file) => {
             return (
-              <FileItem key={file.id} file={file} onFileSelect={onFileSelect} />
+              <FileItem
+                selectedFile={selectedFile}
+                key={file.id}
+                file={file}
+                onFileSelect={onFileSelect}
+              />
             );
           })}
       </div>
@@ -181,12 +200,12 @@ const RepositoryDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
   const router = useRouter();
+
   const onFileSelect = useCallback(
     (file: File) => {
-      console.log("File selected:", file); // Ensure the correct file is passed
-      setSelectedFile(file);
-      console.log("Selected file after state update:");
+      setIsFileLoading(true);
       console.log("Navigating to:", `/repository/${id}?file=${file.path}`);
       router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
     },
@@ -219,12 +238,14 @@ const RepositoryDetailsPage = () => {
 
     fetchRepository();
   }, [id]);
+  console.log("isFileLoading is ", isFileLoading);
 
   useEffect(() => {
     const filePath = searchParams.get("file");
     if (filePath && repository) {
       const file = repository.files.find((f) => f.path === filePath);
       if (file) setSelectedFile(file);
+      setIsFileLoading(false);
     }
   }, [repository, searchParams]);
 
@@ -261,6 +282,7 @@ const RepositoryDetailsPage = () => {
                 key={directory.id}
                 directory={directory}
                 onFileSelect={onFileSelect}
+                selectedFile={selectedFile}
               />
             ))}
             {/* Root level files */}
@@ -272,6 +294,7 @@ const RepositoryDetailsPage = () => {
                     key={file.id}
                     file={file}
                     onFileSelect={onFileSelect}
+                    selectedFile={selectedFile}
                   />
                 );
               })}
@@ -281,8 +304,9 @@ const RepositoryDetailsPage = () => {
             <RepositoryExplorer
               repository={repository}
               onFileSelect={onFileSelect}
+              selectedFile={selectedFile}
             />
-            <FileViewer file={selectedFile} isFileLoading={false} />
+            <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
           </div>
         )}
       </div>
