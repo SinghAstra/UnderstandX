@@ -8,10 +8,25 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { FileMetaData, RepositoryWithRelations } from "@/interfaces/github";
+import {
+  DirectoryWithRelations,
+  RepositoryWithRelations,
+} from "@/interfaces/github";
 import { File } from "@prisma/client";
-import { CircleHelp, FileText } from "lucide-react";
-import { notFound, useParams } from "next/navigation";
+import {
+  ChevronDown,
+  ChevronRight,
+  CircleHelp,
+  FileText,
+  Folder,
+  FolderOpen,
+} from "lucide-react";
+import {
+  notFound,
+  useParams,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import FileViewer from "./file-viewer";
 
@@ -27,7 +42,7 @@ const FileItem = React.memo(
     console.log("File Item is rendered", file.path);
     return (
       <div
-        className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted"
+        className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
         onClick={() => {
           onFileSelect(file);
         }}
@@ -55,6 +70,72 @@ const FileItem = React.memo(
 
 FileItem.displayName = "File Item";
 
+// Component to display a directory and its contents
+const DirectoryItem = React.memo(
+  ({
+    directory,
+    level = 0,
+    onFileSelect,
+  }: {
+    directory: DirectoryWithRelations;
+    level: number;
+    onFileSelect: (file: File) => void;
+  }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleOpen = () => setIsOpen(!isOpen);
+
+    console.log("Directory Item is rendered ", directory.path);
+
+    return (
+      <div>
+        <div
+          className=" relative flex items-center py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 "
+          onClick={toggleOpen}
+          style={{ paddingLeft: `${level * 16 + 8}px` }}
+        >
+          <span className="mr-1 text-muted-foreground">
+            {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          </span>
+          {isOpen ? (
+            <FolderOpen size={16} className="text-stats-blue mr-2" />
+          ) : (
+            <Folder size={16} className="text-muted-foreground mr-2" />
+          )}
+          <span className="font-normal tracking-wider">
+            {directory.path.split("/").pop()}
+          </span>
+        </div>
+
+        {isOpen && (
+          <div className="mt-1">
+            {/* Display subdirectories */}
+            {directory.children?.map((child) => (
+              <DirectoryItem
+                key={child.id}
+                directory={child}
+                level={level + 1}
+                onFileSelect={onFileSelect}
+              />
+            ))}
+
+            {/* Display files in this directory */}
+            {directory.files?.map((file) => (
+              <div
+                key={file.id}
+                style={{ paddingLeft: `${level * 16 + 24}px` }}
+              >
+                <FileItem file={file} onFileSelect={onFileSelect} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+DirectoryItem.displayName = "Directory Item";
+
 // Main repository explorer component
 const RepositoryExplorer = ({
   repository,
@@ -66,11 +147,23 @@ const RepositoryExplorer = ({
   return (
     <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
       <div className="p-3 ">
-        {repository.files.map((file) => {
-          return (
-            <FileItem key={file.id} file={file} onFileSelect={onFileSelect} />
-          );
-        })}
+        {/* Root directories */}
+        {repository.directories?.map((directory) => (
+          <DirectoryItem
+            level={0}
+            key={directory.id}
+            directory={directory}
+            onFileSelect={onFileSelect}
+          />
+        ))}
+        {/* Root level files */}
+        {repository.files
+          ?.filter((file) => !file.directoryId)
+          .map((file) => {
+            return (
+              <FileItem key={file.id} file={file} onFileSelect={onFileSelect} />
+            );
+          })}
       </div>
     </div>
   );
@@ -82,52 +175,22 @@ const RepositoryDetailsPage = () => {
     null
   );
   const params = useParams();
+  const searchParams = useSearchParams();
   const { id } = params;
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isFileLoading, setIsFileLoading] = useState(false);
-
+  const router = useRouter();
   const onFileSelect = useCallback(
-    async (file: FileMetaData) => {
-      const controller = new AbortController();
-      const signal = controller.signal;
-
-      // Cancel any ongoing request
-      if (window.currentFileRequest) {
-        window.currentFileRequest.abort();
-      }
-      window.currentFileRequest = controller;
-
-      try {
-        setIsFileLoading(true);
-        console.log("File selected:", file);
-        const response = await fetch(`/api/repository/${id}/file/${file.id}`, {
-          signal,
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          setMessage(data.message || "Failed to fetch file content.");
-          return;
-        }
-
-        const data = await response.json();
-        console.log("data --onFileSelect is ", data);
-        setSelectedFile(data.file);
-      } catch (error) {
-        if (error.name === "AbortError") {
-          console.log("Request aborted for file:", file.name);
-          return; // Silently exit if the request was aborted
-        }
-        console.log("Error fetching file:", error);
-        setMessage("Check Your Network Connectivity.");
-      } finally {
-        setIsFileLoading(false);
-      }
+    (file: File) => {
+      console.log("File selected:", file); // Ensure the correct file is passed
+      setSelectedFile(file);
+      console.log("Selected file after state update:");
+      console.log("Navigating to:", `/repository/${id}?file=${file.path}`);
+      router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
     },
-    [id]
+    [router, id]
   );
 
   useEffect(() => {
@@ -158,6 +221,14 @@ const RepositoryDetailsPage = () => {
   }, [id]);
 
   useEffect(() => {
+    const filePath = searchParams.get("file");
+    if (filePath && repository) {
+      const file = repository.files.find((f) => f.path === filePath);
+      if (file) setSelectedFile(file);
+    }
+  }, [repository, searchParams]);
+
+  useEffect(() => {
     if (!message) return;
     toast({ title: message });
     setMessage(null);
@@ -183,16 +254,27 @@ const RepositoryDetailsPage = () => {
       <div className="mt-20">
         {!selectedFile ? (
           <div className="border border-border rounded-lg overflow-hidden bg-card mx-auto w-full max-w-2xl p-3">
+            {/* Root directories */}
+            {repository?.directories.map((directory) => (
+              <DirectoryItem
+                level={0}
+                key={directory.id}
+                directory={directory}
+                onFileSelect={onFileSelect}
+              />
+            ))}
             {/* Root level files */}
-            {repository.files.map((file) => {
-              return (
-                <FileItem
-                  key={file.id}
-                  file={file}
-                  onFileSelect={onFileSelect}
-                />
-              );
-            })}
+            {repository?.files
+              ?.filter((file) => !file.directoryId)
+              .map((file) => {
+                return (
+                  <FileItem
+                    key={file.id}
+                    file={file}
+                    onFileSelect={onFileSelect}
+                  />
+                );
+              })}
           </div>
         ) : (
           <div className="flex">
@@ -200,7 +282,7 @@ const RepositoryDetailsPage = () => {
               repository={repository}
               onFileSelect={onFileSelect}
             />
-            <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
+            <FileViewer file={selectedFile} isFileLoading={false} />
           </div>
         )}
       </div>

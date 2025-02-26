@@ -1,7 +1,6 @@
-import { FileMetaData } from "@/interfaces/github";
+import { DirectoryWithRelations } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth/auth-options";
 import { prisma } from "@/lib/utils/prisma";
-import { Directory } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,23 +39,38 @@ export async function GET(req: NextRequest, props: Props) {
     }
 
     // Convert to hierarchical structure
-    const rootDirectories: Directory[] = repository.directories.filter(
-      (directory) => !directory.parentId
-    );
-    console.log("rootDirectories is ", rootDirectories);
+    const directoryMap = new Map();
+    const rootDirectories: DirectoryWithRelations[] = [];
 
-    const rootFiles: FileMetaData[] = repository.files
-      .filter((file) => !file.directoryId)
-      .map(({ id, name, path }) => ({ id, name, path }));
-    console.log("rootFiles is ", rootFiles);
-
-    return NextResponse.json({
-      repository: {
-        ...repository,
-        directories: rootDirectories,
-        files: rootFiles,
-      },
+    // Initialize directory map
+    repository.directories.forEach((dir) => {
+      directoryMap.set(dir.id, { ...dir, children: [], files: [] });
     });
+
+    // Build hierarchy
+    repository.directories.forEach((dir) => {
+      if (dir.parentId) {
+        directoryMap.get(dir.parentId)?.children.push(directoryMap.get(dir.id));
+      } else {
+        rootDirectories.push(directoryMap.get(dir.id));
+      }
+    });
+
+    // Attach files to their respective directories
+    repository.files.forEach((file) => {
+      if (file.directoryId) {
+        directoryMap.get(file.directoryId)?.files.push(file);
+      }
+    });
+
+    // Final structured response
+    const structuredRepository = {
+      ...repository,
+      directories: rootDirectories, // Nested directories with children
+      files: repository.files.filter((file) => !file.directoryId), // Repo-level files
+    };
+
+    return NextResponse.json({ repository: structuredRepository });
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);
