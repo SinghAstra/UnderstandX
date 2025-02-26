@@ -46,9 +46,15 @@ const FileItem = React.memo(
       <div
         className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
         onClick={() => {
+          console.log("------------------------------------------------");
+          console.log("Inside onClick of FileItem");
+          console.log("file.path is ", file.path);
+          console.log("selectedFile?.path is ", selectedFile?.path);
           if (file.path !== selectedFile?.path) {
+            console.log("Inside the if");
             onFileSelect(file);
           }
+          console.log("------------------------------------------------");
         }}
       >
         <div className="flex items-center gap-2 overflow-hidden">
@@ -242,10 +248,16 @@ const RepositoryDetailsPage = () => {
 
   useEffect(() => {
     const filePath = searchParams.get("file");
+    console.log("--------------------------------");
+    console.log("filePath is ", filePath);
     if (filePath && repository) {
       const file = repository.files.find((f) => f.path === filePath);
+      console.log("repository.files.length is ", repository.files.length);
+      console.log("file is ", file);
+      console.log("file.path is ", file?.path);
       if (file) setSelectedFile(file);
       setIsFileLoading(false);
+      console.log("--------------------------------");
     }
   }, [repository, searchParams]);
 

@@ -67,7 +67,7 @@ export async function GET(req: NextRequest, props: Props) {
     const structuredRepository = {
       ...repository,
       directories: rootDirectories, // Nested directories with children
-      files: repository.files.filter((file) => !file.directoryId), // Repo-level files
+      files: repository.files, // Repo-level files
     };
 
     return NextResponse.json({ repository: structuredRepository });
