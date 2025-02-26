@@ -91,21 +91,37 @@ const RepositoryDetailsPage = () => {
 
   const onFileSelect = useCallback(
     async (file: FileMetaData) => {
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      // Cancel any ongoing request
+      if (window.currentFileRequest) {
+        window.currentFileRequest.abort();
+      }
+      window.currentFileRequest = controller;
+
       try {
         setIsFileLoading(true);
         console.log("File selected:", file);
-        const response = await fetch(`/api/repository/${id}/file/${file.id}`);
-        const data = await response.json();
+        const response = await fetch(`/api/repository/${id}/file/${file.id}`, {
+          signal,
+        });
+
         if (!response.ok) {
+          const data = await response.json();
           setMessage(data.message || "Failed to fetch file content.");
+          return;
         }
+
+        const data = await response.json();
         console.log("data --onFileSelect is ", data);
         setSelectedFile(data.file);
       } catch (error) {
-        if (error instanceof Error) {
-          console.log("error.stack is ", error.stack);
-          console.log("error.message is ", error.message);
+        if (error.name === "AbortError") {
+          console.log("Request aborted for file:", file.name);
+          return; // Silently exit if the request was aborted
         }
+        console.log("Error fetching file:", error);
         setMessage("Check Your Network Connectivity.");
       } finally {
         setIsFileLoading(false);
@@ -184,11 +200,7 @@ const RepositoryDetailsPage = () => {
               repository={repository}
               onFileSelect={onFileSelect}
             />
-            {isFileLoading ? (
-              <div className="p-5">Loading file content...</div>
-            ) : (
-              <FileViewer file={selectedFile} />
-            )}
+            <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
           </div>
         )}
       </div>

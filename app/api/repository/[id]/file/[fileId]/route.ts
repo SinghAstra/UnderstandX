@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/utils/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  props: { params: { id: string; fileId: string } }
-) {
-  const { id, fileId } = props.params;
+type Props = {
+  params: Promise<{ id: string; fileId: string }>;
+};
+
+export async function GET(req: NextRequest, props: Props) {
+  const { id, fileId } = await props.params;
 
   const file = await prisma.file.findFirst({
     where: { id: fileId, repositoryId: id },
