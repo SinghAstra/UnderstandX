@@ -16,3 +16,9 @@ export interface RepositoryWithRelations extends Repository {
   directories: DirectoryWithRelations[];
   files: File[];
 }
+
+export interface FileMetaData {
+  id: string;
+  name: string;
+  path: string;
+}

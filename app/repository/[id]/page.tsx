@@ -10,6 +10,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import {
   DirectoryWithRelations,
+  FileMetaData,
   RepositoryWithRelations,
 } from "@/interfaces/github";
 import { File } from "@prisma/client";
@@ -21,12 +22,7 @@ import {
   Folder,
   FolderOpen,
 } from "lucide-react";
-import {
-  notFound,
-  useParams,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { notFound, useParams, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import FileViewer from "./file-viewer";
 
@@ -181,16 +177,31 @@ const RepositoryDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const router = useRouter();
+  // const router = useRouter();
+  // const onFileSelect = useCallback(
+  //   (file: File) => {
+  //     console.log("File selected:", file); // Ensure the correct file is passed
+  //     setSelectedFile(file);
+  //     console.log("Selected file after state update:");
+  //     console.log("Navigating to:", `/repository/${id}?file=${file.path}`);
+  //     router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
+  //   },
+  //   [router, id]
+  // );
+
   const onFileSelect = useCallback(
-    (file: File) => {
-      console.log("File selected:", file); // Ensure the correct file is passed
-      setSelectedFile(file);
-      console.log("Selected file after state update:");
-      console.log("Navigating to:", `/repository/${id}?file=${file.path}`);
-      router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
+    async (file: FileMetaData) => {
+      try {
+        console.log("File selected:", file);
+        const response = await fetch(`/api/repository/${id}/file/${file.id}`);
+        const data = await response.json();
+        console.log("data --onFileSelect is ", data);
+        setSelectedFile(data.file);
+      } catch (error) {
+        console.error("Failed to fetch file content:", error);
+      }
     },
-    [router, id]
+    [id]
   );
 
   useEffect(() => {
@@ -233,6 +244,25 @@ const RepositoryDetailsPage = () => {
     toast({ title: message });
     setMessage(null);
   }, [toast, message]);
+
+  useEffect(() => {
+    const fetchDirectory = async (dirId: string) => {
+      try {
+        const response = await fetch(
+          `/api/repository/${id}/directory/${dirId}`
+        );
+        const data = await response.json();
+        console.log("Fetched directory:", data.directory);
+        // Update repository state or handle directory data as needed
+      } catch (error) {
+        console.error("Failed to fetch directory:", error);
+      }
+    };
+
+    if (repository?.directories) {
+      repository.directories.forEach((dir) => fetchDirectory(dir.id));
+    }
+  }, [repository, id]);
 
   if (isLoading) {
     return (
