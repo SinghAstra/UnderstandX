@@ -34,20 +34,13 @@ const FileItem = React.memo(
     onFileSelect: (file: File) => void;
     selectedFile: File | null;
   }) => {
-    console.log("File Item is rendered", file.path);
     return (
       <div
         className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
         onClick={() => {
-          console.log("------------------------------------------------");
-          console.log("In the function which runs once file is selected.");
-          console.log("file.path is ", file.path);
-          console.log("selectedFile?.path is ", selectedFile?.path);
           if (file.path !== selectedFile?.path) {
-            console.log("Inside the if");
             onFileSelect(file);
           }
-          console.log("------------------------------------------------");
         }}
       >
         <div className="flex items-center gap-2 overflow-hidden">
@@ -79,15 +72,8 @@ const DirectoryItem = React.memo(
     const isSelectedFileInThisDirectory = selectedFile?.path.includes(
       directory.path
     );
-    const directoryInfo = {
-      path: directory.path,
-      isSelectedFileInThisDirectory,
-    };
-    console.log("directoryInfo is ", directoryInfo);
     const [isOpen, setIsOpen] = useState(isSelectedFileInThisDirectory);
     const toggleOpen = () => setIsOpen(!isOpen);
-
-    console.log("Directory Item is rendered ", directory.path);
 
     return (
       <div>
@@ -203,7 +189,6 @@ const RepositoryDetailsPage = () => {
   const onFileSelect = useCallback(
     (file: File) => {
       setIsFileLoading(true);
-      console.log("Navigating to:", `/repository/${id}?file=${file.path}`);
       router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
     },
     [router, id]
@@ -235,24 +220,16 @@ const RepositoryDetailsPage = () => {
 
     fetchRepository();
   }, [id]);
-  console.log("isFileLoading is ", isFileLoading);
 
   useEffect(() => {
     const filePath = searchParams.get("file");
-    console.log("--------------------------------");
-    console.log("In the hook which runs once the query changes.");
-    console.log("filePath is ", filePath);
     if (filePath && repository) {
       const file = repository.files.find((f) => f.path === filePath);
-      console.log("repository.files.length is ", repository.files.length);
-      console.log("file is ", file);
-      console.log("file.path is ", file?.path);
       if (file) setSelectedFile(file);
       setIsFileLoading(false);
-      console.log("--------------------------------");
     } else {
       // Handle the case when file parameter is removed
-      setSelectedFile(null); // Or some default value
+      setSelectedFile(null);
       setIsFileLoading(false);
     }
   }, [repository, searchParams]);

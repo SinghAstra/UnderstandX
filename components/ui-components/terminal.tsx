@@ -45,7 +45,6 @@ function Terminal({ logs, height = "400px" }: TerminalProps) {
       setAutoScroll(true);
     }
   };
-  console.log("logs[0] is", logs[0]);
 
   return (
     <div className="w-full bg-background">
