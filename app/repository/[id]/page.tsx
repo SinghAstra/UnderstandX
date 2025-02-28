@@ -76,7 +76,15 @@ const DirectoryItem = React.memo(
     level: number;
     onFileSelect: (file: File) => void;
   }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const isSelectedFileInThisDirectory = selectedFile?.path.includes(
+      directory.path
+    );
+    const directoryInfo = {
+      path: directory.path,
+      isSelectedFileInThisDirectory,
+    };
+    console.log("directoryInfo is ", directoryInfo);
+    const [isOpen, setIsOpen] = useState(isSelectedFileInThisDirectory);
     const toggleOpen = () => setIsOpen(!isOpen);
 
     console.log("Directory Item is rendered ", directory.path);
