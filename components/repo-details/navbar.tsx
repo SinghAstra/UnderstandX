@@ -37,10 +37,9 @@ const Navbar = ({ repository }: RepoDetailsNavbarProps) => {
         {isLoadingRepository ? (
           <RepositorySkeleton />
         ) : (
-          <a
+          <Link
             className="flex gap-2 items-center border p-2  rounded-lg w-fit cursor-pointer hover:bg-secondary transition-colors duration-150 group"
-            href={repository.url}
-            target="_blank"
+            href={`/repository/${repository.id}`}
           >
             <Avatar className="w-8 h-8">
               <AvatarImage src={repository.avatarUrl} />
@@ -52,7 +51,7 @@ const Navbar = ({ repository }: RepoDetailsNavbarProps) => {
               </span>
               <span className="text-foreground">{repository.name}</span>
             </div>
-          </a>
+          </Link>
         )}
       </div>
 

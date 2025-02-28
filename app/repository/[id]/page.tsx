@@ -1,12 +1,6 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
 import RepositorySkeleton from "@/components/skeleton/repository";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import {
   DirectoryWithRelations,
@@ -16,7 +10,6 @@ import { File } from "@prisma/client";
 import {
   ChevronDown,
   ChevronRight,
-  CircleHelp,
   FileText,
   Folder,
   FolderOpen,
@@ -63,16 +56,6 @@ const FileItem = React.memo(
             {file.name}
           </span>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <CircleHelp size={16} className="text-muted-foreground " />
-            </TooltipTrigger>
-            <TooltipContent className="bg-muted text-muted-foreground m-2 rounded-md">
-              <p>{file.shortSummary}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     );
   }
@@ -259,6 +242,10 @@ const RepositoryDetailsPage = () => {
       if (file) setSelectedFile(file);
       setIsFileLoading(false);
       console.log("--------------------------------");
+    } else {
+      // Handle the case when file parameter is removed
+      setSelectedFile(null); // Or some default value
+      setIsFileLoading(false);
     }
   }, [repository, searchParams]);
 
