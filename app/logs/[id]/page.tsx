@@ -35,7 +35,7 @@ const RepoProcessingLogs = () => {
         setRepository(data.repository);
 
         if (data.repository.status === "SUCCESS") {
-          router.replace(`/repository/${repositoryId}`);
+          router.replace(`/dashboard`);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -64,7 +64,7 @@ const RepoProcessingLogs = () => {
       setLogs((prevLogs) => [...prevLogs, update]);
 
       if (update.status === "SUCCESS") {
-        router.replace(`/repository/${repositoryId}`);
+        router.replace(`/dashboard`);
       }
     });
 

@@ -58,6 +58,12 @@ export async function GET(req: NextRequest, props: Props) {
 
     // Attach files to their respective directories
     repository.files.forEach((file) => {
+      const fileObj = {
+        path: file.path,
+        shortSummary: file.shortSummary,
+      };
+      console.log("fileObj is ", fileObj);
+
       if (file.directoryId) {
         directoryMap.get(file.directoryId)?.files.push(file);
       }
