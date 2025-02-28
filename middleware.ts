@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
     req: request,
     secret: process.env.NEXT_AUTH_SECRET,
   });
-  console.log("token is ", token);
+  console.log("Updated Token is ", token);
   const { pathname } = request.nextUrl;
 
   // Check if the path is one that requires authentication

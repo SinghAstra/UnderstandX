@@ -47,7 +47,7 @@ const FileItem = React.memo(
         className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
         onClick={() => {
           console.log("------------------------------------------------");
-          console.log("Inside onClick of FileItem");
+          console.log("In the function which runs once file is selected.");
           console.log("file.path is ", file.path);
           console.log("selectedFile?.path is ", selectedFile?.path);
           if (file.path !== selectedFile?.path) {
@@ -69,7 +69,7 @@ const FileItem = React.memo(
               <CircleHelp size={16} className="text-muted-foreground " />
             </TooltipTrigger>
             <TooltipContent className="bg-muted text-muted-foreground m-2 rounded-md">
-              <p>Add to library</p>
+              <p>{file.shortSummary}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -249,6 +249,7 @@ const RepositoryDetailsPage = () => {
   useEffect(() => {
     const filePath = searchParams.get("file");
     console.log("--------------------------------");
+    console.log("In the hook which runs once the query changes.");
     console.log("filePath is ", filePath);
     if (filePath && repository) {
       const file = repository.files.find((f) => f.path === filePath);
