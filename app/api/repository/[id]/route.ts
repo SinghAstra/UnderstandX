@@ -29,7 +29,6 @@ export async function GET(req: NextRequest, props: Props) {
       include: {
         directories: true,
         files: true,
-        features: true,
       },
     });
 

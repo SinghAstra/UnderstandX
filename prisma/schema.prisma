@@ -3,44 +3,38 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl= env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  emailVerified DateTime?
+  id            String       @id @default(cuid())
   name          String?
+  email         String       @unique
+  emailVerified DateTime?
   image         String?
-
-  // Relationships
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   accounts      Account[]
-  sessions      Session[]
   repositories  Repository[]
-  searches      Search[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sessions      Session[]
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -62,78 +56,49 @@ model VerificationToken {
 }
 
 model Repository {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
   owner       String
   url         String
-  githubId    Int
   userId      String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   avatarUrl   String
+  githubId    Int
   status      RepositoryStatus @default(PENDING)
-  shortSummary String?  @db.Text  
-  longSummary  String?  @db.Text 
+  overview    String?
   directories Directory[]
-  files       File[] 
-  features    Feature[]
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  files       File[]
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Directory {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   path         String
-  summary      String?  @db.Text
+  summary      String?
   repositoryId String
   parentId     String?
-  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
-  parent       Directory? @relation("DirectoryTree", fields: [parentId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  parent       Directory?  @relation("DirectoryTree", fields: [parentId], references: [id])
   children     Directory[] @relation("DirectoryTree")
+  repository   Repository  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
   files        File[]
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
 }
 
 model File {
-  id           String   @id @default(cuid())
+  id           String     @id @default(cuid())
   path         String
   name         String
-  content      String?  @db.Text
-  shortSummary String?  @db.Text  
-  longSummary  String?
-  repository   Repository       @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
-  repositoryId String
+  content      String?
   directoryId  String?
-  directory    Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade)
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-}
-
-model Feature {
-  id           String   @id @default(cuid())
-  name         String   
-  description  String   @db.Text  
-  category     FeatureCategory
-  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   repositoryId String
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([category])
-}
-
-model Search {
-  id        String   @id @default(cuid())
-  query     String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  longSummary  String?
+  shortSummary String?
+  directory    Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade)
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 }
 
 enum RepositoryStatus {
@@ -141,19 +106,11 @@ enum RepositoryStatus {
   PROCESSING
   SUCCESS
   FAILED
-  CANCELLED
 }
 
-enum FeatureCategory {
-  AUTHENTICATION
-  DATABASE
-  UI_COMPONENTS
-  STATE_MANAGEMENT
-  API_INTEGRATION
-  TESTING
-  DEVOPS
-  SECURITY
-  PERFORMANCE
-  DOCUMENTATION
-  OTHER
+enum DirectoryStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
 }

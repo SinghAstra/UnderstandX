@@ -35,7 +35,7 @@ const RepoProcessingLogs = () => {
         setRepository(data.repository);
 
         if (data.repository.status === "SUCCESS") {
-          router.replace(`/dashboard`);
+          router.replace(`/repository/${repositoryId}`);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -64,7 +64,7 @@ const RepoProcessingLogs = () => {
       setLogs((prevLogs) => [...prevLogs, update]);
 
       if (update.status === "SUCCESS") {
-        router.replace(`/dashboard`);
+        router.replace(`/repository/${repositoryId}`);
       }
     });
 
@@ -153,15 +153,6 @@ const RepoProcessingLogs = () => {
     return (
       <div className="p-2 container mx-auto">
         <p>Repository Not Found</p>
-      </div>
-    );
-  }
-
-  if (repository.status === "CANCELLED") {
-    return (
-      <div className=" p-2 container mx-auto">
-        {RepositoryHeader()}
-        <p>Repository Cancelled</p>
       </div>
     );
   }
