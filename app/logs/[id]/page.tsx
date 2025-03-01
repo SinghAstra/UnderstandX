@@ -66,9 +66,10 @@ const RepoProcessingLogs = () => {
 
       if (update.status === "SUCCESS") {
         console.log("-----------------------------------");
+        console.log("Inside update.status === SUCCESS");
         console.log("update is ", update);
         console.log("-----------------------------------");
-        router.replace(`/repository/${repositoryId}/update-status`);
+        router.replace(`/repository/${repositoryId}`);
       }
     });
 

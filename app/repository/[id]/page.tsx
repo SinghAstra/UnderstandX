@@ -2,18 +2,9 @@
 import Navbar from "@/components/repo-details/navbar";
 import RepositorySkeleton from "@/components/skeleton/repository";
 import { useToast } from "@/hooks/use-toast";
-import {
-  DirectoryWithRelations,
-  RepositoryWithRelations,
-} from "@/interfaces/github";
+import { RepositoryWithRelations } from "@/interfaces/github";
 import { File } from "@prisma/client";
-import {
-  ChevronDown,
-  ChevronRight,
-  FileText,
-  Folder,
-  FolderOpen,
-} from "lucide-react";
+
 import {
   notFound,
   useParams,
@@ -22,113 +13,6 @@ import {
 } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import FileViewer from "./file-viewer";
-
-// Component to display a file
-const FileItem = React.memo(
-  ({
-    file,
-    onFileSelect,
-    selectedFile,
-  }: {
-    file: File;
-    onFileSelect: (file: File) => void;
-    selectedFile: File | null;
-  }) => {
-    return (
-      <div
-        className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
-        onClick={() => {
-          if (file.path !== selectedFile?.path) {
-            onFileSelect(file);
-          }
-        }}
-      >
-        <div className="flex items-center gap-2 overflow-hidden">
-          <FileText size={16} className="text-muted-foreground mr-[2px] " />
-          <span className="font-light tracking-wider  truncate max-w-[calc(100%-24px)]">
-            {file.name}
-          </span>
-        </div>
-      </div>
-    );
-  }
-);
-
-FileItem.displayName = "File Item";
-
-// Component to display a directory and its contents
-const DirectoryItem = React.memo(
-  ({
-    directory,
-    level = 0,
-    selectedFile,
-    onFileSelect,
-  }: {
-    directory: DirectoryWithRelations;
-    selectedFile: File | null;
-    level: number;
-    onFileSelect: (file: File) => void;
-  }) => {
-    const isSelectedFileInThisDirectory = selectedFile?.path.includes(
-      directory.path
-    );
-    const [isOpen, setIsOpen] = useState(isSelectedFileInThisDirectory);
-    const toggleOpen = () => setIsOpen(!isOpen);
-
-    return (
-      <div>
-        <div
-          className=" relative flex items-center py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 "
-          onClick={toggleOpen}
-          style={{ paddingLeft: `${level * 16 + 8}px` }}
-        >
-          <span className="mr-1 text-muted-foreground">
-            {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          </span>
-          {isOpen ? (
-            <FolderOpen size={16} className="text-stats-blue mr-2" />
-          ) : (
-            <Folder size={16} className="text-muted-foreground mr-2" />
-          )}
-          <span className="font-normal tracking-wider">
-            {directory.path.split("/").pop()}
-          </span>
-        </div>
-
-        {isOpen && (
-          <div className="mt-1">
-            {/* Display subdirectories */}
-            {directory.children?.map((child) => (
-              <DirectoryItem
-                key={child.id}
-                directory={child}
-                level={level + 1}
-                onFileSelect={onFileSelect}
-                selectedFile={selectedFile}
-              />
-            ))}
-
-            {/* Display files in this directory */}
-            {directory.files?.map((file) => (
-              <div
-                key={file.id}
-                style={{ paddingLeft: `${level * 16 + 24}px` }}
-              >
-                <FileItem
-                  file={file}
-                  onFileSelect={onFileSelect}
-                  selectedFile={selectedFile}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  }
-);
-
-DirectoryItem.displayName = "Directory Item";
 
 // Main repository explorer component
 const RepositoryExplorer = ({
@@ -259,30 +143,15 @@ const RepositoryDetailsPage = () => {
 
       <div className="mt-20">
         {!selectedFile ? (
-          <div className="border border-border rounded-lg overflow-hidden bg-card mx-auto w-full max-w-2xl p-3">
-            {/* Root directories */}
-            {repository?.directories.map((directory) => (
-              <DirectoryItem
-                level={0}
-                key={directory.id}
-                directory={directory}
-                onFileSelect={onFileSelect}
-                selectedFile={selectedFile}
-              />
-            ))}
-            {/* Root level files */}
-            {repository?.files
-              ?.filter((file) => !file.directoryId)
-              .map((file) => {
-                return (
-                  <FileItem
-                    key={file.id}
-                    file={file}
-                    onFileSelect={onFileSelect}
-                    selectedFile={selectedFile}
-                  />
-                );
-              })}
+          <div className="flex gap-2 px-2">
+            <RepositoryExplorer
+              repository={repository}
+              onFileSelect={onFileSelect}
+              selectedFile={selectedFile}
+            />
+            <div className="border border=border rounded-lg w-full flex-1 p-3 ml-96">
+              {repository.overview}
+            </div>
           </div>
         ) : (
           <div className="flex">
