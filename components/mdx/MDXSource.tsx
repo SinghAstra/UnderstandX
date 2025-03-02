@@ -22,7 +22,10 @@ const components = {
   AlertTitle,
   AlertDescription,
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className={cn("font-normal mt-2 text-4xl", className)} {...props} />
+    <h1
+      className={cn("font-normal mt-2 text-4xl border-b", className)}
+      {...props}
+    />
   ),
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
@@ -35,25 +38,28 @@ const components = {
   ),
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
-      className={cn("mt-8 scroll-m-20 text-xl font-normal", className)}
+      className={cn("mt-8 scroll-m-20 text-xl font-normal border-b", className)}
       {...props}
     />
   ),
   h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h4
-      className={cn("mt-8 scroll-m-20 text-lg font-normal", className)}
+      className={cn("mt-8 scroll-m-20 text-lg font-normal border-b", className)}
       {...props}
     />
   ),
   h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h5
-      className={cn("mt-8 scroll-m-20 text-lg font-normal ", className)}
+      className={cn("mt-8 scroll-m-20 text-lg font-normal border-b", className)}
       {...props}
     />
   ),
   h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h6
-      className={cn("mt-8 scroll-m-20 text-base font-normal", className)}
+      className={cn(
+        "mt-8 scroll-m-20 text-base font-normal border-b",
+        className
+      )}
       {...props}
     />
   ),
@@ -135,6 +141,12 @@ const components = {
   Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
     <Link
       className={cn("font-medium underline underline-offset-4", className)}
+      {...props}
+    />
+  ),
+  strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
+    <strong
+      className={cn("font-extrabold text-red-600", className)}
       {...props}
     />
   ),
