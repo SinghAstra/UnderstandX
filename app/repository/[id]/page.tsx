@@ -1,9 +1,12 @@
 "use client";
+import MDXSource from "@/components/mdx/MDXSource";
 import Navbar from "@/components/repo-details/navbar";
 import RepositorySkeleton from "@/components/skeleton/repository";
 import { useToast } from "@/hooks/use-toast";
 import { RepositoryWithRelations } from "@/interfaces/github";
 import { File } from "@prisma/client";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
 import {
   notFound,
   useParams,
@@ -14,7 +17,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import FileViewer from "./file-viewer";
 import RepositoryExplorer from "./repository-explorer";
 
-// Updated Repository Details Page
 const RepositoryDetailsPage = () => {
   const [repository, setRepository] = useState<RepositoryWithRelations | null>(
     null
@@ -27,6 +29,8 @@ const RepositoryDetailsPage = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
+  const [repositoryOverview, setRepositoryOverview] =
+    useState<MDXRemoteSerializeResult | null>(null);
   const router = useRouter();
 
   const onFileSelect = useCallback(
@@ -78,6 +82,16 @@ const RepositoryDetailsPage = () => {
   }, [repository, searchParams]);
 
   useEffect(() => {
+    async function generateBundledOverview() {
+      if (!repository?.overview) return;
+      const mdxSource = await serialize(repository.overview);
+      setRepositoryOverview(mdxSource);
+    }
+
+    generateBundledOverview();
+  }, [repository]);
+
+  useEffect(() => {
     if (!message) return;
     toast({ title: message });
     setMessage(null);
@@ -109,7 +123,9 @@ const RepositoryDetailsPage = () => {
         {!selectedFile ? (
           <div className="w-full flex-1 p-3 ml-96">
             <div className="border border-border rounded-lg p-3">
-              {repository.overview}
+              {repositoryOverview && (
+                <MDXSource mdxSource={repositoryOverview} />
+              )}
             </div>
           </div>
         ) : (

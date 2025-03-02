@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-import { useMDXComponent } from "next-contentlayer2/hooks";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import Link from "next/link";
 import { Callout } from "./callout";
 import { Code } from "./code";
@@ -22,18 +22,12 @@ const components = {
   AlertTitle,
   AlertDescription,
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1
-      className={cn(
-        "font-heading mt-2 scroll-m-20 text-4xl font-bold",
-        className
-      )}
-      {...props}
-    />
+    <h1 className={cn("font-normal mt-2 text-4xl", className)} {...props} />
   ),
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        "font-heading mt-12 mb-4 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0",
+        "mt-12 mb-4 scroll-m-20 border-b pb-2 text-2xl tracking-tight first:mt-0 font-normal",
         className
       )}
       {...props}
@@ -41,37 +35,25 @@ const components = {
   ),
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
-      className={cn(
-        "font-heading mt-8 scroll-m-20 text-xl font-semibold tracking-tight",
-        className
-      )}
+      className={cn("mt-8 scroll-m-20 text-xl font-normal", className)}
       {...props}
     />
   ),
   h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h4
-      className={cn(
-        "font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
-        className
-      )}
+      className={cn("mt-8 scroll-m-20 text-lg font-normal", className)}
       {...props}
     />
   ),
   h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h5
-      className={cn(
-        "mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
-        className
-      )}
+      className={cn("mt-8 scroll-m-20 text-lg font-normal ", className)}
       {...props}
     />
   ),
   h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h6
-      className={cn(
-        "mt-8 scroll-m-20 text-base font-semibold tracking-tight",
-        className
-      )}
+      className={cn("mt-8 scroll-m-20 text-base font-normal", className)}
       {...props}
     />
   ),
@@ -158,16 +140,10 @@ const components = {
   ),
 };
 
-const MarkdownRenderer = ({ mdxSource }: { mdxSource: string }) => {
-  console.log("mdxSource is ", mdxSource);
-  const mdxSourceNow = `
-  const MyComponent = () => <div>Hello, world!</div>;
-  <MyComponent />
-`;
+const MDXSource = ({ mdxSource }: { mdxSource: MDXRemoteSerializeResult }) => {
+  console.log("mdxSource", mdxSource);
 
-  const Component = useMDXComponent(mdxSourceNow);
-
-  return <Component components={components} />;
+  return <MDXRemote {...mdxSource} components={components} />;
 };
 
-export default MarkdownRenderer;
+export default MDXSource;
