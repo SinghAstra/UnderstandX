@@ -1,0 +1,46 @@
+import { RepositoryWithRelations } from "@/interfaces/github";
+import { File } from "@prisma/client";
+import DirectoryItem from "./directory-item";
+import FileItem from "./file-item";
+
+const RepositoryExplorer = ({
+  selectedFile,
+  repository,
+  onFileSelect,
+}: {
+  selectedFile: File | null;
+  repository: RepositoryWithRelations;
+  onFileSelect: (file: File) => void;
+}) => {
+  return (
+    <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
+      <div className="p-3 ">
+        {/* Root directories */}
+        {repository.directories?.map((directory) => (
+          <DirectoryItem
+            level={0}
+            key={directory.id}
+            directory={directory}
+            selectedFile={selectedFile}
+            onFileSelect={onFileSelect}
+          />
+        ))}
+        {/* Root level files */}
+        {repository.files
+          ?.filter((file) => !file.directoryId)
+          .map((file) => {
+            return (
+              <FileItem
+                selectedFile={selectedFile}
+                key={file.id}
+                file={file}
+                onFileSelect={onFileSelect}
+              />
+            );
+          })}
+      </div>
+    </div>
+  );
+};
+
+export default RepositoryExplorer;

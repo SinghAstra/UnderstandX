@@ -4,7 +4,6 @@ import RepositorySkeleton from "@/components/skeleton/repository";
 import { useToast } from "@/hooks/use-toast";
 import { RepositoryWithRelations } from "@/interfaces/github";
 import { File } from "@prisma/client";
-
 import {
   notFound,
   useParams,
@@ -13,49 +12,9 @@ import {
 } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import FileViewer from "./file-viewer";
+import RepositoryExplorer from "./repository-explorer";
+import MarkdownRenderer from "./repository-overview";
 
-// Main repository explorer component
-const RepositoryExplorer = ({
-  selectedFile,
-  repository,
-  onFileSelect,
-}: {
-  selectedFile: File | null;
-  repository: RepositoryWithRelations;
-  onFileSelect: (file: File) => void;
-}) => {
-  return (
-    <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
-      <div className="p-3 ">
-        {/* Root directories */}
-        {repository.directories?.map((directory) => (
-          <DirectoryItem
-            level={0}
-            key={directory.id}
-            directory={directory}
-            selectedFile={selectedFile}
-            onFileSelect={onFileSelect}
-          />
-        ))}
-        {/* Root level files */}
-        {repository.files
-          ?.filter((file) => !file.directoryId)
-          .map((file) => {
-            return (
-              <FileItem
-                selectedFile={selectedFile}
-                key={file.id}
-                file={file}
-                onFileSelect={onFileSelect}
-              />
-            );
-          })}
-      </div>
-    </div>
-  );
-};
-
-// Updated Repository Details Page
 const RepositoryDetailsPage = () => {
   const [repository, setRepository] = useState<RepositoryWithRelations | null>(
     null
@@ -141,27 +100,22 @@ const RepositoryDetailsPage = () => {
     <div className=" min-h-screen flex flex-col">
       <Navbar repository={repository} />
 
-      <div className="mt-20">
+      <div className="flex mt-20">
+        <RepositoryExplorer
+          repository={repository}
+          onFileSelect={onFileSelect}
+          selectedFile={selectedFile}
+        />
         {!selectedFile ? (
-          <div className="flex gap-2 px-2">
-            <RepositoryExplorer
-              repository={repository}
-              onFileSelect={onFileSelect}
-              selectedFile={selectedFile}
-            />
-            <div className="border border=border rounded-lg w-full flex-1 p-3 ml-96">
-              {repository.overview}
+          <div className="w-full flex-1 p-3 ml-96">
+            <div className="border border-border rounded-lg p-3">
+              {repository.overview && (
+                <MarkdownRenderer mdxSource={repository.overview} />
+              )}
             </div>
           </div>
         ) : (
-          <div className="flex">
-            <RepositoryExplorer
-              repository={repository}
-              onFileSelect={onFileSelect}
-              selectedFile={selectedFile}
-            />
-            <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
-          </div>
+          <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
         )}
       </div>
     </div>

@@ -76,3 +76,5 @@ const DirectoryItem = React.memo(
 );
 
 DirectoryItem.displayName = "Directory Item";
+
+export default DirectoryItem;
