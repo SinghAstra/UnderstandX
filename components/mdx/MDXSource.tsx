@@ -146,7 +146,10 @@ const components = {
   ),
   strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <strong
-      className={cn("font-extrabold text-red-600", className)}
+      className={cn(
+        "font-normal text-xl underline underline-offset-2 tracking-wide",
+        className
+      )}
       {...props}
     />
   ),
