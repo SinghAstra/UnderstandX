@@ -13,8 +13,8 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import FileViewer from "./file-viewer";
 import RepositoryExplorer from "./repository-explorer";
-import MarkdownRenderer from "./repository-overview";
 
+// Updated Repository Details Page
 const RepositoryDetailsPage = () => {
   const [repository, setRepository] = useState<RepositoryWithRelations | null>(
     null
@@ -109,9 +109,7 @@ const RepositoryDetailsPage = () => {
         {!selectedFile ? (
           <div className="w-full flex-1 p-3 ml-96">
             <div className="border border-border rounded-lg p-3">
-              {repository.overview && (
-                <MarkdownRenderer mdxSource={repository.overview} />
-              )}
+              {repository.overview}
             </div>
           </div>
         ) : (
