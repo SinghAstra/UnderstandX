@@ -122,7 +122,7 @@ const RepositoryDetailsPage = () => {
         />
         {!selectedFile ? (
           <div className="w-full flex-1 p-3 ml-96">
-            <div className="border border-border rounded-lg p-3">
+            <div className="border border-border rounded-lg max-w-none prose-invert px-4 py-3 ">
               {repositoryOverview && (
                 <MDXSource mdxSource={repositoryOverview} />
               )}

@@ -1,8 +1,12 @@
+import MDXSource from "@/components/mdx/MDXSource";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { File } from "@prisma/client";
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
+import { Check, Code, Copy, FileText } from "lucide-react";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
+import { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -11,19 +15,40 @@ interface FileViewerProps {
   isFileLoading: boolean;
 }
 
+type TabOptions = "code" | "analysis";
+
 const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
   const [isCopied, setIsCopied] = useState(false);
+  const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(
+    null
+  );
+  const [activeTab, setActiveTab] = useState<TabOptions>("code");
+
+  useEffect(() => {
+    const prepareAnalysis = async () => {
+      if (file?.analysis && activeTab === "analysis") {
+        const serialized = await serialize(file.analysis);
+        setMdxSource(serialized);
+      }
+    };
+    prepareAnalysis();
+  }, [file, activeTab]);
 
   const handleCopy = () => {
-    if (file?.content) {
+    if (file?.content && activeTab === "code") {
       navigator.clipboard.writeText(file.content);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+    if (file?.analysis && activeTab === "analysis") {
+      navigator.clipboard.writeText(file.analysis);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
 
   const getLanguage = () => {
-    const ext = file.name.split(".").pop();
+    const ext = file?.name.split(".").pop();
     switch (ext) {
       case "js":
       case "jsx":
@@ -63,36 +88,75 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
       <div className="border rounded-lg">
         <div className="border-b flex justify-between items-center overflow-hidden py-1 px-2">
           <h1 className="text-sm font-light">{file.path}</h1>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleCopy}
-            className="z-10 h-8 w-8"
-          >
-            {isCopied ? (
-              <Check className="h-4 w-4" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Tabs
+              defaultValue="code"
+              value={activeTab}
+              onValueChange={(value: string) =>
+                setActiveTab(value as TabOptions)
+              }
+              className="mr-2"
+            >
+              <TabsList>
+                <TabsTrigger value="code" className="flex items-center">
+                  <Code className="h-4 w-4 mr-1" />
+                  Code
+                </TabsTrigger>
+                <TabsTrigger
+                  value="analysis"
+                  className="flex items-center"
+                  disabled={!file.analysis}
+                >
+                  <FileText className="h-4 w-4 mr-1" />
+                  Analysis
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleCopy}
+              className="z-10 h-8 w-8"
+            >
+              {isCopied ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
-        <div className="p-3">
-          <SyntaxHighlighter
-            language={getLanguage()}
-            style={oneDark}
-            customStyle={{
-              background: "transparent",
-              lineHeight: "1.3rem",
-              borderRadius: "0.75rem",
-              paddingRight: "2.5rem",
-              letterSpacing: "0.02rem",
-              fontFamily: "Fira Code, monospace",
-              margin: "0px",
-            }}
-            wrapLongLines
-          >
-            {file.content ?? ""}
-          </SyntaxHighlighter>
+
+        <div className="py-1 px-4 ">
+          {activeTab === "code" ? (
+            <SyntaxHighlighter
+              language={getLanguage()}
+              style={oneDark}
+              customStyle={{
+                background: "transparent",
+                lineHeight: "1.3rem",
+                borderRadius: "0.75rem",
+                paddingRight: "2.5rem",
+                letterSpacing: "0.02rem",
+                fontFamily: "Fira Code, monospace",
+                margin: "0px",
+              }}
+              wrapLongLines
+            >
+              {file.content ?? ""}
+            </SyntaxHighlighter>
+          ) : (
+            <div className="max-w-none prose-invert px-4 py-2">
+              {mdxSource ? (
+                <MDXSource mdxSource={mdxSource} />
+              ) : (
+                <div className="flex items-center justify-center h-64">
+                  <Skeleton className="h-64 w-full rounded-lg" />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
