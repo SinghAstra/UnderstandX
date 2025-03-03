@@ -2,6 +2,7 @@ import MDXSource from "@/components/mdx/MDXSource";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 import { File } from "@prisma/client";
 import { Check, Code, Copy, FileText } from "lucide-react";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -23,6 +24,8 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
     null
   );
   const [activeTab, setActiveTab] = useState<TabOptions>("code");
+  const [message, setMessage] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const prepareAnalysis = async () => {
@@ -34,16 +37,26 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
     prepareAnalysis();
   }, [file, activeTab]);
 
+  useEffect(() => {
+    if (!message) return;
+    toast({
+      description: message,
+    });
+    setMessage(null);
+  }, [toast, message]);
+
   const handleCopy = () => {
     if (file?.content && activeTab === "code") {
       navigator.clipboard.writeText(file.content);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
+      setMessage(`Copied : ${file.name} (Code)`);
     }
     if (file?.analysis && activeTab === "analysis") {
       navigator.clipboard.writeText(file.analysis);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
+      setMessage(`Copied : ${file.name} (Analysis)`);
     }
   };
 
