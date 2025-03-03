@@ -87,7 +87,7 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
     <div className="ml-96 w-full p-3 overflow-hidden">
       <div className="border rounded-lg">
         <div className="border-b flex justify-between items-center overflow-hidden py-1 px-2">
-          <h1 className="text-sm font-light">{file.path}</h1>
+          <h1 className="text-sm font-normal tracking-wider">{file.path}</h1>
           <div className="flex items-center space-x-2">
             <Tabs
               defaultValue="code"
@@ -95,16 +95,19 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
               onValueChange={(value: string) =>
                 setActiveTab(value as TabOptions)
               }
-              className="mr-2"
+              className="mr-2 "
             >
-              <TabsList>
-                <TabsTrigger value="code" className="flex items-center">
+              <TabsList className="p-0 h-fit  border-2">
+                <TabsTrigger
+                  value="code"
+                  className="flex items-center text-sm px-2 py-1 tracking-wide font-normal transition-all"
+                >
                   <Code className="h-4 w-4 mr-1" />
                   Code
                 </TabsTrigger>
                 <TabsTrigger
                   value="analysis"
-                  className="flex items-center"
+                  className="flex items-center text-sm px-2 py-1 tracking-wide font-normal transition-all"
                   disabled={!file.analysis}
                 >
                   <FileText className="h-4 w-4 mr-1" />
