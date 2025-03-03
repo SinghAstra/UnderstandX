@@ -12,11 +12,14 @@ const FileItem = React.memo(
     onFileSelect: (file: File) => void;
     selectedFile: File | null;
   }) => {
+    const isThisFileTheSelectedFile = file.path === selectedFile?.path;
     return (
       <div
-        className="flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted "
+        className={`flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted ${
+          isThisFileTheSelectedFile && "bg-secondary"
+        }`}
         onClick={() => {
-          if (file.path !== selectedFile?.path) {
+          if (!isThisFileTheSelectedFile) {
             onFileSelect(file);
           }
         }}
