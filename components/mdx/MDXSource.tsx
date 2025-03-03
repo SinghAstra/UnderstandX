@@ -13,6 +13,8 @@ import Link from "next/link";
 import { Callout } from "./callout";
 import { Code } from "./code";
 
+// Adjust the tracking
+
 const components = {
   Accordion,
   AccordionContent,
@@ -23,14 +25,17 @@ const components = {
   AlertDescription,
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
-      className={cn("font-normal text-3xl border-b mb-1", className)}
+      className={cn(
+        "font-normal text-4xl border-b mb-6 mt-8 scroll-m-20 text-foreground",
+        className
+      )}
       {...props}
     />
   ),
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        "m-2 scroll-m-20 border-b text-2xl tracking-tight font-normal",
+        "font-normal text-3xl border-b mb-4 mt-6 scroll-m-20 text-foreground",
         className
       )}
       {...props}
@@ -38,26 +43,35 @@ const components = {
   ),
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
-      className={cn(" scroll-m-20 text-xl font-normal border-b", className)}
+      className={cn(
+        "font-normal text-2xl border-b mb-3 mt-5 scroll-m-20 text-foreground",
+        className
+      )}
       {...props}
     />
   ),
   h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h4
-      className={cn("mt-8 scroll-m-20 text-lg font-normal border-b", className)}
+      className={cn(
+        "font-normal text-xl border-b mb-2 mt-4 scroll-m-20 text-foreground",
+        className
+      )}
       {...props}
     />
   ),
   h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h5
-      className={cn("mt-8 scroll-m-20 text-lg font-normal border-b", className)}
+      className={cn(
+        "font-normal text-lg border-b mb-2 mt-3 scroll-m-20 text-foreground ",
+        className
+      )}
       {...props}
     />
   ),
   h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h6
       className={cn(
-        "mt-8 scroll-m-20 text-base font-normal border-b",
+        "font-normal text-base border-b mb-2 mt-2 scroll-m-20 text-foreground",
         className
       )}
       {...props}
@@ -65,24 +79,33 @@ const components = {
   ),
   a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => (
     <a
-      className={cn("font-medium underline underline-offset-4", className)}
+      className={cn(
+        "font-normal underline underline-offset-4 transition-colors text-primary hover:text-primary/80",
+        className
+      )}
       {...props}
     />
   ),
   p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p
-      className={cn("leading-7 [&:not(:first-child)]:mt-2", className)}
+      className={cn(
+        "leading-relaxed mb-4 text-base text-foreground/90",
+        className
+      )}
       {...props}
     />
   ),
   ul: ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className={cn("my-2 ml-6 list-disc", className)} {...props} />
+    <ul className={cn("mb-4 ml-6 list-disc", className)} {...props} />
   ),
   ol: ({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className={cn("my-2 ml-6 list-decimal", className)} {...props} />
+    <ol className={cn("mb-4 ml-6 list-decimal", className)} {...props} />
   ),
   li: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <li className={cn("mt-2", className)} {...props} />
+    <li
+      className={cn("mb-1 text-foreground/90 leading-relaxed", className)}
+      {...props}
+    />
   ),
   blockquote: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <blockquote
@@ -147,7 +170,7 @@ const components = {
   strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <strong
       className={cn(
-        "font-normal decoration-sky-500 underline underline-offset-2 tracking-wide",
+        "font-normal decoration-sky-500 underline underline-offset-2 text-foreground",
         className
       )}
       {...props}
