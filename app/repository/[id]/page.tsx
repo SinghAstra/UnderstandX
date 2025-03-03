@@ -33,6 +33,16 @@ const RepositoryDetailsPage = () => {
     useState<MDXRemoteSerializeResult | null>(null);
   const router = useRouter();
 
+  const clearSelectedFile = () => {
+    // Clear the selected file in state
+    setSelectedFile(null);
+
+    // Update the URL without triggering a navigation
+    const url = new URL(window.location.href);
+    url.searchParams.delete("file");
+    window.history.pushState({}, "", url);
+  };
+
   const onFileSelect = useCallback(
     (file: File) => {
       setIsFileLoading(true);
@@ -112,7 +122,11 @@ const RepositoryDetailsPage = () => {
 
   return (
     <div className=" min-h-screen flex flex-col">
-      <Navbar repository={repository} />
+      <Navbar
+        repository={repository}
+        selectedFile={selectedFile}
+        clearSelectedFile={clearSelectedFile}
+      />
 
       <div className="flex mt-20">
         <RepositoryExplorer

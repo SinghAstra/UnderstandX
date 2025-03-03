@@ -1,15 +1,19 @@
 import { siteConfig } from "@/config/site";
-import { Repository } from "@prisma/client";
+import { File, Repository } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import { FaGithub } from "react-icons/fa";
 import { AvatarMenu } from "../custom-ui/avatar-menu";
 import SignInButton from "../custom-ui/sign-in-button";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { Button, buttonVariants } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 
 interface RepoDetailsNavbarProps {
   repository: Repository | null;
+  selectedFile?: File | null;
+  clearSelectedFile?: () => void;
 }
 
 const RepositorySkeleton = () => (
@@ -22,7 +26,11 @@ const RepositorySkeleton = () => (
   </div>
 );
 
-const Navbar = ({ repository }: RepoDetailsNavbarProps) => {
+const Navbar = ({
+  repository,
+  selectedFile,
+  clearSelectedFile,
+}: RepoDetailsNavbarProps) => {
   const { data: session, status } = useSession();
   const isLoadingRepository = repository === null;
 
@@ -54,14 +62,27 @@ const Navbar = ({ repository }: RepoDetailsNavbarProps) => {
           </Link>
         )}
       </div>
-
-      {status === "loading" ? (
-        <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
-      ) : session?.user ? (
-        <AvatarMenu />
-      ) : (
-        <SignInButton />
-      )}
+      <div className="flex gap-2 items-center">
+        {selectedFile && (
+          <Button onClick={clearSelectedFile} variant={"outline"}>
+            Overview
+          </Button>
+        )}
+        <a
+          href={repository?.url}
+          target="_blank"
+          className={buttonVariants({ variant: "outline" })}
+        >
+          <FaGithub />
+        </a>
+        {status === "loading" ? (
+          <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
+        ) : session?.user ? (
+          <AvatarMenu />
+        ) : (
+          <SignInButton />
+        )}
+      </div>
     </header>
   );
 };
