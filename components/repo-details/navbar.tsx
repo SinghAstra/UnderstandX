@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 import { FaGithub } from "react-icons/fa";
 import { AvatarMenu } from "../custom-ui/avatar-menu";
-import SignInButton from "../custom-ui/sign-in-button";
+import SignInButton from "../custom-ui/sign-in";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button, buttonVariants } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";

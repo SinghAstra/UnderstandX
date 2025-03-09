@@ -1,3 +1,5 @@
+"use client";
+
 import AnimationContainer from "@/components/global/animation-container";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
 import PricingCards from "@/components/pricing-cards";
@@ -15,42 +17,71 @@ import {
 import { LampContainer } from "@/components/ui/lamp";
 import MagicBadge from "@/components/ui/magic-badge";
 import { MagicCard } from "@/components/ui/magic-card";
+import { useToast } from "@/hooks/use-toast";
 import { COMPANIES, PROCESS, REVIEWS } from "@/lib/constants/misc";
 import { ArrowRightIcon, CreditCardIcon, StarIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const HomePage = async () => {
-  const user = false;
+const HomePage = () => {
+  const { data: user, status } = useSession();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleGetStarted = () => {
+    if (status === "loading") {
+      toast({
+        description: "Checking your authentication status...",
+      });
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      router.push("/auth/sign-in");
+      return;
+    }
+
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  };
   return (
-    <div className="overflow-x-hidden scrollbar-hide size-full">
+    <div className="overflow-x-hidden scrollbar-hide ">
       {/* Hero Section */}
       <MaxWidthWrapper>
-        <div className="flex flex-col items-center justify-center w-full text-center bg-gradient-to-t from-background">
-          <AnimationContainer className="flex flex-col items-center justify-center w-full text-center">
-            <button className="group relative grid overflow-hidden rounded-full px-4 py-1 shadow-[0_1000px_0_0_hsl(0_0%_20%)_inset] transition-colors duration-200">
+        <div className="flex flex-col items-center justify-center w-full ">
+          <AnimationContainer
+            className="flex flex-col items-center justify-center w-full text-center"
+            delay={0.3}
+          >
+            <button
+              className="group relative grid overflow-hidden rounded-full px-4 py-1 shadow-[0_1000px_0_0_hsl(0_0%_20%)_inset] transition-colors duration-200"
+              onClick={handleGetStarted}
+            >
               <span>
                 <span className="spark mask-gradient absolute inset-0 h-[100%] w-[100%] animate-flip overflow-hidden rounded-full [mask:linear-gradient(white,_transparent_50%)] before:absolute before:aspect-square before:w-[200%] before:rotate-[-90deg] before:animate-rotate before:bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] before:content-[''] before:[inset:0_auto_auto_50%] before:[translate:-50%_-15%]" />
               </span>
               <span className="backdrop absolute inset-[1px] rounded-full bg-neutral-950 transition-colors duration-200 group-hover:bg-neutral-900" />
               <span className="h-full w-full blur-md absolute bottom-0 inset-x-0 bg-gradient-to-tr from-primary/20"></span>
               <span className="z-10 py-0.5 text-sm text-neutral-100 flex items-center justify-center gap-1">
-                ✨ Manage links smarter
+                ✨ Start Analyzing Repository
                 <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
               </span>
             </button>
-            <h1 className="text-foreground text-center py-6 text-5xl font-medium tracking-normal text-balance sm:text-6xl md:text-7xl lg:text-8xl !leading-[1.15] w-full font-heading">
-              Smart Links with{" "}
+            <h1 className="text-foreground text-center py-6 text-5xl font-medium text-balance sm:text-6xl md:text-7xl lg:text-8xl  w-full">
+              Understand <br />
+              <span></span>Public
               <span className="text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text inline-bloc">
-                Precision
+                Github Repo
               </span>
+              Quickly
             </h1>
-            <p className="mb-12 text-lg tracking-tight text-muted-foreground md:text-xl text-balance">
-              Effortlessly streamline your link management with Linkify.
-              <br className="hidden md:block" />
-              <span className="hidden md:block">
-                Shorten, track, and organize all your links in one place.
-              </span>
+
+            <p className="mb-4 text-lg tracking-tight text-muted-foreground md:text-xl text-balance">
+              Give me public github repository url &
+              <br />I will explain all the code.
             </p>
             <div className="flex items-center justify-center whitespace-nowrap gap-4 z-50">
               <Button asChild>
@@ -58,7 +89,7 @@ const HomePage = async () => {
                   href={user ? "/dashboard" : "/auth/sign-in"}
                   className="flex items-center"
                 >
-                  Start creating for free
+                  Get started for free
                   <ArrowRightIcon className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
