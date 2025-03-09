@@ -1,4 +1,4 @@
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Command } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
@@ -7,55 +7,62 @@ import {
   CalendarIcon,
   Link2Icon,
   SearchIcon,
+  SparklesIcon,
   WaypointsIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./card";
+import { Card } from "./card";
 import { Input } from "./input";
 import { Integrations } from "./integrations";
-import { Label } from "./label";
 
-export const CARDS = [
+export const Steps = (href: string) => [
   {
     Icon: Link2Icon,
-    name: "Shorten links",
-    description: "Create short links that are easy to remember and share.",
-    href: "#",
-    cta: "Learn more",
-    className: "col-span-3 lg:col-span-1",
+    name: "Provide URL",
+    description: "Provide URL to Public Github Repo you want to understand",
+    href,
+    cta: "Get started",
+    className: "col-span-3 lg:col-span-2",
     background: (
-      <Card className="absolute top-10 left-10 origin-top rounded-none rounded-tl-md transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_0%,#000_100%)] group-hover:scale-105 border border-border border-r-0">
-        <CardHeader>
-          <CardTitle>Create short links</CardTitle>
-          <CardDescription>
-            Create short links that are easy to remember and share.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="-mt-4">
-          <Label>Paste your link</Label>
-          <Input
-            type="text"
-            placeholder="Paste your link here..."
-            className="w-full focus-visible:ring-0 focus-visible:ring-transparent"
-          />
-        </CardContent>
-      </Card>
+      <div className="absolute top-10  inset-x-10 origin-top rounded-none rounded-tl-md transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_0%,#000_100%)] group-hover:scale-105  ">
+        <div
+          className={`bg-background/40 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-xl border shadow-lg transition-all duration-600 `}
+        >
+          <div className="flex items-center border-b px-4 py-3">
+            <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
+            <input
+              type="url"
+              placeholder="Paste Your Github repository URL..."
+              className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-base placeholder:text-muted-foreground"
+            />
+            <kbd className="hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </div>
+
+          <div className="border-t px-4 py-3 flex justify-between items-center">
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <SparklesIcon className="w-4 h-4" />
+              <span>Uses GitHub API</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button size="sm" type="submit">
+                Analyze
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     ),
   },
   {
     Icon: SearchIcon,
-    name: "Search your links",
-    description: "Quickly find the links you need with AI-powered search.",
+    name: "Repo Processing",
+    description: "This might take a few minutes but you will be saving hours",
     href: "#",
     cta: "Learn more",
-    className: "col-span-3 lg:col-span-2",
+    className: "col-span-3 lg:col-span-1",
     background: (
       <Command className="absolute right-10 top-10 w-[70%] origin-to translate-x-0 border border-border transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] group-hover:-translate-x-10 p-2">
         <Input placeholder="Type to search..." />
@@ -157,7 +164,7 @@ const BentoCard = ({
     <div>{background}</div>
     <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-10">
       <Icon className="h-12 w-12 origin-left text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
-      <h3 className="text-xl font-semibold text-neutral-300">{name}</h3>
+      <h3 className="text-xl font-normal text-neutral-300">{name}</h3>
       <p className="max-w-lg text-neutral-400">{description}</p>
     </div>
 
@@ -169,9 +176,8 @@ const BentoCard = ({
       <Link
         href={href}
         className={buttonVariants({
-          size: "sm",
-          variant: "ghost",
-          className: "cursor-pointer",
+          variant: "outline",
+          className: "tracking-wider",
         })}
       >
         {cta}

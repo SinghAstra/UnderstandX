@@ -38,7 +38,7 @@ const Navbar = () => {
         scroll && "border-background/80 bg-background/40 "
       )}
     >
-      <AnimationContainer reverse delay={0.3} className="size-full">
+      <AnimationContainer reverse delay={0.2} className="size-full">
         <MaxWidthWrapper className="flex items-center justify-between">
           <div className="flex items-center space-x-12">
             <Link href="/">
