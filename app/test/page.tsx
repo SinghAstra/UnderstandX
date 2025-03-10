@@ -13,7 +13,7 @@ const TestPage = () => {
   return <LampContainer>TestPage</LampContainer>;
 };
 
-export const LampContainer = ({ children, className }: LampContainerProps) => {
+const LampContainer = ({ children, className }: LampContainerProps) => {
   return (
     <div
       className={cn(
