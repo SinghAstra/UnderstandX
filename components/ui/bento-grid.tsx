@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -13,7 +15,60 @@ import {
 import Link from "next/link";
 import { ReactNode } from "react";
 import RepoProcessingBackground from "../background/repo-processing";
-import { Integrations } from "./integrations";
+import Terminal, { LogEntry } from "../background/terminal";
+
+const sampleLogs: LogEntry[] = [
+  {
+    id: "1",
+    timestamp: new Date(),
+    message: "$ Initializing repository analyzer...",
+  },
+  {
+    id: "2",
+    timestamp: new Date(Date.now() - 1000),
+    message: "$ Fetching repository structure...",
+  },
+  {
+    id: "3",
+    timestamp: new Date(Date.now() - 2000),
+    message: "$ Processing file structure...",
+  },
+  {
+    id: "4",
+    timestamp: new Date(Date.now() - 3000),
+    message: "$ Analyzing code dependencies...",
+  },
+  {
+    id: "5",
+    timestamp: new Date(Date.now() - 4000),
+    message: "$ Scanning for common patterns...",
+  },
+  {
+    id: "6",
+    timestamp: new Date(Date.now() - 5000),
+    message: "$ Generating documentation...",
+  },
+  {
+    id: "7",
+    timestamp: new Date(Date.now() - 6000),
+    message: "$ Building relationship graphs...",
+  },
+  {
+    id: "8",
+    timestamp: new Date(Date.now() - 7000),
+    message: "$ Optimizing results...",
+  },
+  {
+    id: "9",
+    timestamp: new Date(Date.now() - 8000),
+    message: "$ Parsing commit history...",
+  },
+  {
+    id: "10",
+    timestamp: new Date(Date.now() - 9000),
+    message: "$ Building contributor insights...",
+  },
+];
 
 export const Steps = (href: string) => [
   {
@@ -21,7 +76,7 @@ export const Steps = (href: string) => [
     name: "Provide URL",
     description: "Provide URL to Public Github Repo you want to understand",
     href,
-    cta: "Get started",
+    cta: "Get Started",
     className: "col-span-3 lg:col-span-2",
     background: (
       <div className="absolute top-10  inset-x-10 origin-top rounded-none rounded-tl-md transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_0%,#000_100%)] group-hover:scale-105  ">
@@ -61,19 +116,22 @@ export const Steps = (href: string) => [
     description:
       "This might take a few minutes but you will end up saving hours",
     href,
-    cta: "Get started",
+    cta: "Get Started",
     className: "col-span-3 lg:col-span-1 ",
     background: <RepoProcessingBackground />,
   },
   {
     Icon: WaypointsIcon,
-    name: "Connect your apps",
-    description: "Integrate with your favorite apps and services.",
-    href: "#",
-    cta: "Learn more",
+    name: "Real Time Logs",
+    description:
+      "While Repo Processing Takes Place, logs will keep you updated.",
+    href,
+    cta: "Get Started",
     className: "col-span-3 lg:col-span-2 max-w-full overflow-hidden",
     background: (
-      <Integrations className="absolute right-2 pl-28 md:pl-0 top-4 h-[300px] w-[600px] border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
+      <div className="absolute right-4 left-4 top-4 w-[calc(100%-2rem)] origin-top transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)] group-hover:scale-105">
+        <Terminal logs={sampleLogs} />
+      </div>
     ),
   },
   {
