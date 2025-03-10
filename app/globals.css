@@ -35,17 +35,6 @@ body {
     --chart-5: 340 75% 55%;
     /* Radius */
     --radius: 0.875rem;
-
-    --match-highlight: 214 95% 40%;
-    --match-highlight-border: 214 95% 50%;
-    --stats-blue: 210 40% 50%; /* Vibrant blue */
-    --stats-purple: 270 50% 50%; /* Deep purple */
-    --stats-pink: 330 60% 50%; /* Bright pink */
-    --stats-teal: 180 50% 40%; /* Teal green */
-    --stats-orange: 25 90% 50%; /* Warm orange */
-
-    --stats-green: 120 50% 40%; /* Verdant green */
-    --stats-red: 0 70% 50%;
   }
 }
 
