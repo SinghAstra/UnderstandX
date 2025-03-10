@@ -1,74 +1,22 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import {
   ArrowRightIcon,
-  CalendarIcon,
+  BookOpenText,
   Cpu,
   Link2Icon,
   SearchIcon,
   SparklesIcon,
-  WaypointsIcon,
+  Terminal,
 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
+import RepoProcessedBackground from "../background/repo-processed";
 import RepoProcessingBackground from "../background/repo-processing";
-import Terminal, { LogEntry } from "../background/terminal";
-
-const sampleLogs: LogEntry[] = [
-  {
-    id: "1",
-    timestamp: new Date(),
-    message: "$ Initializing repository analyzer...",
-  },
-  {
-    id: "2",
-    timestamp: new Date(Date.now() - 1000),
-    message: "$ Fetching repository structure...",
-  },
-  {
-    id: "3",
-    timestamp: new Date(Date.now() - 2000),
-    message: "$ Processing file structure...",
-  },
-  {
-    id: "4",
-    timestamp: new Date(Date.now() - 3000),
-    message: "$ Analyzing code dependencies...",
-  },
-  {
-    id: "5",
-    timestamp: new Date(Date.now() - 4000),
-    message: "$ Scanning for common patterns...",
-  },
-  {
-    id: "6",
-    timestamp: new Date(Date.now() - 5000),
-    message: "$ Generating documentation...",
-  },
-  {
-    id: "7",
-    timestamp: new Date(Date.now() - 6000),
-    message: "$ Building relationship graphs...",
-  },
-  {
-    id: "8",
-    timestamp: new Date(Date.now() - 7000),
-    message: "$ Optimizing results...",
-  },
-  {
-    id: "9",
-    timestamp: new Date(Date.now() - 8000),
-    message: "$ Parsing commit history...",
-  },
-  {
-    id: "10",
-    timestamp: new Date(Date.now() - 9000),
-    message: "$ Building contributor insights...",
-  },
-];
+import BackgroundTerminal from "../background/terminal";
+import AnimationContainer from "../global/animation-container";
 
 export const Steps = (href: string) => [
   {
@@ -121,33 +69,23 @@ export const Steps = (href: string) => [
     background: <RepoProcessingBackground />,
   },
   {
-    Icon: WaypointsIcon,
+    Icon: Terminal,
     name: "Real Time Logs",
     description:
       "While Repo Processing Takes Place, logs will keep you updated.",
     href,
     cta: "Get Started",
     className: "col-span-3 lg:col-span-2 max-w-full overflow-hidden",
-    background: (
-      <div className="absolute right-4 left-4 top-4 w-[calc(100%-2rem)] origin-top transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)] group-hover:scale-105">
-        <Terminal logs={sampleLogs} />
-      </div>
-    ),
+    background: <BackgroundTerminal />,
   },
   {
-    Icon: CalendarIcon,
-    name: "Calendar",
-    description: "Keep track of your links with our calendar view.",
+    Icon: BookOpenText,
+    name: "Start Reading",
+    description: "Repository has been analyzed, Happy reading.",
     className: "col-span-3 lg:col-span-1",
-    href: "#",
-    cta: "Learn more",
-    background: (
-      <Calendar
-        mode="single"
-        selected={new Date(2022, 4, 11, 0, 0, 0)}
-        className="absolute right-0 top-10 origin-top rounded-md border border-border transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] group-hover:scale-105"
-      />
-    ),
+    href,
+    cta: "Get Started",
+    background: <RepoProcessedBackground />,
   },
 ];
 
@@ -196,7 +134,7 @@ const BentoCard = ({
     )}
   >
     <div>{background}</div>
-    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-10">
+    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 bg-black group-hover:-translate-y-10">
       <Icon className="h-12 w-12 origin-left text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
       <h3 className="text-xl font-normal text-neutral-300">{name}</h3>
       <p className="max-w-lg text-neutral-400">{description}</p>

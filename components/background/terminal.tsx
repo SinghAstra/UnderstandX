@@ -1,8 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import AnimationContainer from "../global/animation-container";
 
 export type LogEntry = {
   id: string;
@@ -11,89 +10,72 @@ export type LogEntry = {
   status?: string;
 };
 
-interface TerminalProps {
-  logs: LogEntry[];
-  height?: string;
-  className?: string;
-}
-
-const Terminal = ({
-  logs,
-  height = "300px",
-  className = "",
-}: TerminalProps) => {
-  const [autoScroll, setAutoScroll] = useState(true);
-  const scrollRef = useRef<HTMLDivElement>(null);
+const BackgroundTerminal = () => {
+  const [logs, setLogs] = useState<LogEntry[]>([]);
 
   useEffect(() => {
-    if (scrollRef.current && autoScroll) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [logs, autoScroll]);
-
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const current = scrollRef.current;
-      const isAtBottom =
-        current.scrollHeight - current.scrollTop <= current.clientHeight + 100;
-      setAutoScroll(isAtBottom);
-    }
-  };
-
-  const scrollToBottom = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-      setAutoScroll(true);
-    }
-  };
+    const initialLogs: LogEntry[] = [
+      {
+        id: "1",
+        timestamp: new Date(),
+        message: "$ Initializing repository analyzer...",
+      },
+      {
+        id: "2",
+        timestamp: new Date(),
+        message: "$ Fetching repository structure...",
+      },
+      {
+        id: "3",
+        timestamp: new Date(),
+        message: "$ Processing file structure...",
+      },
+      {
+        id: "4",
+        timestamp: new Date(),
+        message: "$ Analyzing code dependencies...",
+      },
+      {
+        id: "5",
+        timestamp: new Date(),
+        message: "$ Scanning for common patterns...",
+      },
+    ];
+    initialLogs.forEach((log, index) => {
+      setTimeout(() => {
+        setLogs((prevLogs) => [
+          ...prevLogs,
+          {
+            ...log,
+            timestamp: new Date(),
+          },
+        ]);
+      }, index * 700);
+    });
+  }, []);
 
   return (
-    <div
-      className={`w-full bg-background/40 backdrop-blur rounded-lg border ${className}`}
-    >
-      <div className="relative">
-        <div
-          className="rounded-md p-4 overflow-y-auto font-mono text-xs space-y-2 relative text-muted-foreground"
-          ref={scrollRef}
-          onScroll={handleScroll}
-          style={{ height }}
-        >
-          {logs.map((log) => (
-            <div
-              key={log.id}
-              className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
-            >
-              <span className="text-muted-foreground opacity-70">
-                {new Date(log.timestamp).toLocaleTimeString()}
-              </span>
-              <span className="whitespace-pre-wrap">{log.message}</span>
-            </div>
-          ))}
+    <div className="absolute inset-x-8 top-4 transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)] group-hover:scale-105">
+      <div
+        className={`w-full bg-background/40 backdrop-blur rounded-lg border`}
+      >
+        <div className="relative">
+          <div className="rounded-md p-4  font-mono text-xs space-y-2 relative text-muted-foreground">
+            {logs.map((log) => (
+              <AnimationContainer key={log.id}>
+                <div className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1">
+                  <span className="text-muted-foreground opacity-70">
+                    {new Date(log.timestamp).toLocaleTimeString()}
+                  </span>
+                  <span className="whitespace-pre-wrap">{log.message}</span>
+                </div>
+              </AnimationContainer>
+            ))}
+          </div>
         </div>
-
-        <AnimatePresence>
-          {!autoScroll && (
-            <motion.button
-              onClick={scrollToBottom}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute bottom-4 right-4 bg-muted text-muted-foreground p-2 rounded-full shadow-md hover:cursor-pointer"
-            >
-              <ArrowDown size={16} />
-            </motion.button>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );
 };
 
-export default Terminal;
+export default BackgroundTerminal;
