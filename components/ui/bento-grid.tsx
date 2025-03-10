@@ -7,6 +7,7 @@ import {
   BookOpenText,
   Cpu,
   Link2Icon,
+  LucideIcon,
   SearchIcon,
   SparklesIcon,
   Terminal,
@@ -16,7 +17,6 @@ import { ReactNode } from "react";
 import RepoProcessedBackground from "../background/repo-processed";
 import RepoProcessingBackground from "../background/repo-processing";
 import BackgroundTerminal from "../background/terminal";
-import AnimationContainer from "../global/animation-container";
 
 export const Steps = (href: string) => [
   {
@@ -120,7 +120,7 @@ const BentoCard = ({
   name: string;
   className: string;
   background: ReactNode;
-  Icon: any;
+  Icon: LucideIcon;
   description: string;
   href: string;
   cta: string;
@@ -134,7 +134,7 @@ const BentoCard = ({
   >
     <div>{background}</div>
 
-    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 translate-y-10  group-hover:translate-y-0 bg-gradient-to-b from-black/30 to-black/80">
+    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 translate-y-10  group-hover:translate-y-0 bg-gradient-to-b from-black/0 via-black/40 via-black/60 to-black/80">
       <Icon className="h-12 w-12 origin-left text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
       <h3 className="text-xl font-normal text-neutral-300">{name}</h3>
       <p className="max-w-lg text-neutral-400">{description}</p>
@@ -147,7 +147,7 @@ const BentoCard = ({
           href={href}
           className={buttonVariants({
             variant: "outline",
-            className: "tracking-wider",
+            className: "tracking-wider cursor-pointer",
           })}
         >
           {cta}
@@ -159,3 +159,4 @@ const BentoCard = ({
 );
 
 export { BentoCard, BentoGrid };
+
