@@ -1,5 +1,4 @@
 import {
-  BookOpen,
   ChevronDown,
   ChevronRight,
   FileText,
