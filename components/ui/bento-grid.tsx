@@ -128,35 +128,33 @@ const BentoCard = ({
   <div
     key={name}
     className={cn(
-      "group relative col-span-3 flex flex-col justify-between border border-border/60 overflow-hidden rounded-xl",
-      "bg-black [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]",
+      "group relative col-span-3 flex flex-col justify-between border border-border/60 overflow-hidden rounded-xl ",
       className
     )}
   >
     <div>{background}</div>
-    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 bg-black group-hover:-translate-y-10">
+
+    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 translate-y-10  group-hover:translate-y-0 bg-gradient-to-b from-black/30 to-black/80">
       <Icon className="h-12 w-12 origin-left text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
       <h3 className="text-xl font-normal text-neutral-300">{name}</h3>
       <p className="max-w-lg text-neutral-400">{description}</p>
-    </div>
-
-    <div
-      className={cn(
-        "absolute bottom-0 flex w-full translate-y-10 flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
-      )}
-    >
-      <Link
-        href={href}
-        className={buttonVariants({
-          variant: "outline",
-          className: "tracking-wider",
-        })}
+      <div
+        className={cn(
+          " flex w-full translate-y-10 flex-row items-center py-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 "
+        )}
       >
-        {cta}
-        <ArrowRightIcon className="ml-2 h-4 w-4" />
-      </Link>
+        <Link
+          href={href}
+          className={buttonVariants({
+            variant: "outline",
+            className: "tracking-wider",
+          })}
+        >
+          {cta}
+          <ArrowRightIcon className="ml-2 h-4 w-4" />
+        </Link>
+      </div>
     </div>
-    <div className="pointer-events-none absolute inset-0 transition-all duration-300 group-hover:bg-black/[.03] group-hover:dark:bg-neutral-800/10" />
   </div>
 );
 
