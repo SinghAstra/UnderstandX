@@ -116,7 +116,7 @@ const HomePage = () => {
           </div>
         </AnimationContainer>
         <AnimationContainer delay={0.2}>
-          <BentoGrid className="py-8">
+          <BentoGrid className="py-8 ">
             {Steps(href).map((step, idx) => (
               <BentoCard key={idx} {...step} />
             ))}
