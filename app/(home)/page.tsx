@@ -133,7 +133,7 @@ const HomePage = () => {
             transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
             className="flex flex-col items-center justify-center gap-8  "
           >
-            <h1 className="mt-8 bg-gradient-to-br from-black to-slate-900 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl">
+            <h1 className="mt-8 bg-muted-foreground py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl">
               Understand <br />
               Repository
             </h1>
