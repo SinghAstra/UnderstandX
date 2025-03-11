@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import AnimationContainer from "../global/animation-container";
 import { Icons } from "../global/icons";
@@ -14,15 +15,15 @@ const Footer = () => {
               <Icons.logo className="w-7 h-7" />
             </div>
             <p className="text-muted-foreground mt-4 text-sm text-start">
-              Manage your links with ease.
+              Understand Repo with ease.
             </p>
             <span className="mt-4 text-neutral-200 text-sm flex items-center">
               Made by{" "}
               <Link
-                href="https://shreyas-sihasane.vercel.app/"
+                href={siteConfig.links.github}
                 className="font-semibold ml-1"
               >
-                Shreyas
+                SinghAstra
               </Link>
             </span>
           </div>
