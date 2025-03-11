@@ -16,13 +16,13 @@ export const LampContainer = ({ children, className }: LampContainerProps) => {
         className
       )}
     >
-      <div className="relative flex w-full flex-1 scale-y-125 isolate items-center justify-center z-0 ">
+      <div className="relative flex w-full flex-1 isolate items-center justify-center  ">
         {/* Left Side */}
         <motion.div
           initial={{ opacity: 0.5, width: "15rem" }}
           whileInView={{ opacity: 1, width: "30rem" }}
           transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
-          className="absolute right-1/2 h-64 w-[30rem] bg-gradient-to-l from-[hsl(var(--muted))] to-transparent"
+          className="absolute right-1/2 h-64 w-[30rem] bg-gradient-to-l from-[hsl(var(--muted))] to-transparent "
         />
         {/* Right Side */}
         <motion.div
@@ -33,25 +33,25 @@ export const LampContainer = ({ children, className }: LampContainerProps) => {
         />
         {/* Blur for the bottom */}
         <div className="absolute top-1/2 h-48 w-full translate-y-12 scale-x-150 bg-[hsl(var(--card))] blur-2xl " />
-        {/* Light blur for the top */}
+        {/* Light coming out from source */}
         <motion.div
           initial={{ width: "15rem" }}
           whileInView={{ width: "28rem" }}
           transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
-          className="absolute z-50 h-36 -translate-y-12 rounded-full bg-[hsl(var(--primary))] opacity-50 blur-3xl "
+          className="absolute z-50 h-36 rounded-full bg-[hsl(var(--primary))] opacity-50 blur-3xl top-1/2 -translate-y-40 "
         />
         {/* Light source */}
         <motion.div
           initial={{ width: "15rem" }}
           whileInView={{ width: "30rem" }}
           transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
-          className="absolute z-50 h-1.5 w-[30rem] -translate-y-[7rem] bg-[hsl(var(--primary))]"
+          className="absolute z-50 h-1.5 w-[30rem] top-[2rem] bg-[hsl(var(--primary))]"
         />
         {/* Shade for the top */}
-        <div className="absolute z-40 h-44 w-full -translate-y-[12.5rem] bg-[hsl(var(--background))]" />
+        <div className="absolute z-40 h-[2rem] w-full top-0 bg-[hsl(var(--background))]" />
       </div>
 
-      <div className="relative z-50 flex -translate-y-80 flex-col items-center px-5 ">
+      <div className="relative z-50 flex  flex-col items-center px-5 h-full  -translate-y-80">
         {children}
       </div>
     </div>
