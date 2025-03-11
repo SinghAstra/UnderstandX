@@ -2,6 +2,7 @@
 
 import AnimationContainer from "@/components/global/animation-container";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
+import { BackgroundShine } from "@/components/ui/background-shine";
 import { BentoCard, BentoGrid, Steps } from "@/components/ui/bento-grid";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Button } from "@/components/ui/button";
@@ -64,9 +65,8 @@ const HomePage = () => {
             <h1 className="text-foreground text-center py-6 text-5xl font-medium text-balance sm:text-6xl md:text-7xl lg:text-8xl  w-full">
               Understand <br />
               <span className="text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text inline-bloc">
-                Repo
+                Repository
               </span>
-              Quickly
             </h1>
 
             <p className="mb-4 text-lg tracking-tight text-muted-foreground md:text-xl text-balance">
@@ -133,8 +133,18 @@ const HomePage = () => {
             transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
             className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
           >
-            Build lamps <br /> the right way
+            Understand Repository <br /> the right way
           </motion.h1>
+          <Button asChild>
+            <Link
+              href={user ? "/dashboard" : "/auth/sign-in"}
+              className="flex items-center"
+            >
+              Get started for free
+              <ArrowRightIcon className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
+          <BackgroundShine />
         </LampContainer>
       </MaxWidthWrapper>
     </div>
