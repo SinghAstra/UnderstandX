@@ -135,8 +135,7 @@ const HomePage = () => {
           >
             <h1 className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl">
               Understand <br />
-              Repository <br /> the
-              <br /> right way
+              Repository
             </h1>
             <BackgroundShine>
               <Link
