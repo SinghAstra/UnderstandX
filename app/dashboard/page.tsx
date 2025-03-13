@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { motion } from "framer-motion";
-import { SearchIcon, SparklesIcon, X } from "lucide-react";
+import { SearchIcon, SparklesIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
@@ -22,7 +22,6 @@ function CommandPaletteRepoForm() {
   const [showGuide, setShowGuide] = useState(false);
   const searchParams = useSearchParams();
   const pathName = usePathname();
-  const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const actionQuery = searchParams.get("action");
   const router = useRouter();
@@ -32,7 +31,6 @@ function CommandPaletteRepoForm() {
   useEffect(() => {
     if (actionQuery === "connect") {
       setShowGuide(true);
-      inputRef.current?.focus();
     }
   }, [actionQuery]);
 
@@ -94,7 +92,7 @@ function CommandPaletteRepoForm() {
       // Check for Ctrl+K or Cmd+K
       if ((e.ctrlKey || e.metaKey) && e.key === "k") {
         e.preventDefault();
-        inputRef.current?.focus();
+        setShowGuide(true);
       }
     };
 
@@ -132,38 +130,86 @@ function CommandPaletteRepoForm() {
   }, [toast, message]);
 
   return (
-    <div className="m-2 relative ">
+    <div className="m-2 ">
       {showGuide && (
-        <div className="absolute inset-0 -m-4">
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute -inset-4 bg-primary/20 rounded-xl"
-          >
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={dismissGuide}
-              className="absolute top-1 right-1 h-8 w-8 p-0 hover:bg-primary/30"
+        <div className="absolute inset-0 ">
+          <div className="relative w-full h-full  flex items-center justify-center backdrop-blur-sm">
+            <motion.div
+              className={`bg-muted/30 rounded-xl border w-full max-w-lg`}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.4,
+                ease: "easeInOut",
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+              ref={formRef}
             >
-              <X className="h-4 w-4" />
-            </Button>
-          </motion.div>
+              <form onSubmit={handleSubmit}>
+                <div className="flex items-center border-b px-4 py-3">
+                  <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
+                  <input
+                    type="url"
+                    placeholder="Paste Your Github repository URL..."
+                    value={url}
+                    onChange={(e) => {
+                      setUrl(e.target.value);
+                    }}
+                    disabled={isProcessing}
+                    className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-base placeholder:text-muted-foreground"
+                  />
+                  <kbd className="hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
+                </div>
+
+                <div className="border-t px-4 py-3 flex justify-between items-center">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                    <SparklesIcon className="w-4 h-4" />
+                    <span>Uses GitHub API</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      disabled={!url || isProcessing || isSuccess}
+                      type="submit"
+                      className={cn(
+                        "relative overflow-hidden",
+                        isSuccess && "bg-yellow-400 "
+                      )}
+                    >
+                      {isSuccess ? (
+                        <div className="flex items-center">
+                          <FaSpinner className="mr-2 h-5 w-5 animate-spin" />
+                          Processing Started...
+                        </div>
+                      ) : isProcessing ? (
+                        <div className="flex items-center">
+                          <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </div>
+                      ) : (
+                        "Analyze"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </motion.div>
+          </div>
         </div>
       )}
       <div
-        className={`bg-background/40 backdrop-blur supports-[backdrop-filter]:bg-background/60 rounded-xl border shadow-lg transition-all duration-600 ${
-          showGuide && "my-12 z-50"
+        className={`rounded-xl border transition-all duration-600  ${
+          showGuide ? "opacity-0" : "opacity-100"
         }`}
-        ref={formRef}
       >
-        {/* Search Header */}
         <form onSubmit={handleSubmit}>
           <div className="flex items-center border-b px-4 py-3">
             <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
             <input
-              ref={inputRef}
               type="url"
               placeholder="Paste Your Github repository URL..."
               value={url}
@@ -178,7 +224,6 @@ function CommandPaletteRepoForm() {
             </kbd>
           </div>
 
-          {/* Action Footer */}
           <div className="border-t px-4 py-3 flex justify-between items-center">
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <SparklesIcon className="w-4 h-4" />
@@ -212,18 +257,6 @@ function CommandPaletteRepoForm() {
           </div>
         </form>
       </div>
-      {/* <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="text-red-500 text-sm mt-2 flex items-center"
-          >
-            <span className="mx-2">⚠️</span> {error}
-          </motion.p>
-        )}
-      </AnimatePresence> */}
     </div>
   );
 }
