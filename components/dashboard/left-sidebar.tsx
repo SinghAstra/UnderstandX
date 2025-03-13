@@ -65,7 +65,7 @@ export function LeftSidebar() {
   }, [fetchRepositories]);
 
   return (
-    <div className="fixed inset-y-0 left-0 w-96 bg-background border-r pt-16">
+    <div className="fixed inset-y-0 left-0 w-96 bg-background border-r border-dotted pt-16">
       <div className="flex flex-col h-full">
         <SidebarRepoHeader
           loading={isInitialLoad}

@@ -14,12 +14,10 @@ export function Navbar() {
   const { data: session, status } = useSession();
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="fixed top-0 z-50 w-full border-b border-dotted bg-background">
       <div className="flex h-16 items-center px-4">
         <div className="flex items-center gap-2">
-          <span className="text-xl leading-loose font-semibold">
-            {siteConfig.name}
-          </span>
+          <span className="text-xl tracking-wider">{siteConfig.name}</span>
         </div>
 
         <div className="ml-auto flex items-center gap-4">
