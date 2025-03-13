@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 
 export function RightSidebar() {
   return (
-    <div className="w-80 bg-background py-2 pr-2 ">
-      <div className="border py-2 px-4 rounded-md flex flex-col gap-1">
+    <div className="w-80 bg-background p-2 ">
+      <div className="border px-3 py-2 rounded-md flex flex-col gap-1">
         <h3>Follow For Updates</h3>
         <p className="text-muted-foreground text-sm">
           More tools are being developed to enhance your development workflow.

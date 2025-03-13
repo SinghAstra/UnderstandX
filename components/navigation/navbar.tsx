@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { AvatarMenu } from "../custom-ui/avatar-menu";
-import SignInButton from "../custom-ui/sign-in";
 import AnimationContainer from "../global/animation-container";
 import MaxWidthWrapper from "../global/max-width-wrapper";
+import { AvatarMenu } from "../ui/avatar-menu";
+import SignInButton from "../ui/sign-in";
 import { Skeleton } from "../ui/skeleton";
 
 const Navbar = () => {
