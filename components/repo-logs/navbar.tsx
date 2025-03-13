@@ -3,8 +3,8 @@
 import { siteConfig } from "@/config/site";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import SignInButton from "../custom-ui/sign-in";
 import { AvatarMenu } from "../ui/avatar-menu";
+import SignInButton from "../ui/sign-in";
 import { Skeleton } from "../ui/skeleton";
 
 export function Navbar() {
