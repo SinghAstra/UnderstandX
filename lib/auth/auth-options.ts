@@ -4,17 +4,29 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "../utils/prisma";
 
+const githubClientId = process.env.GITHUB_CLIENT_ID;
+const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+if (!githubClientId || !githubClientSecret) {
+  throw new Error("GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET must be provided");
+}
+
+if (!googleClientId || !googleClientSecret) {
+  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be provided");
+}
+
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_AUTH_SECRET,
-
-  // Use Prisma as the adapter for storing user accounts
   adapter: PrismaAdapter(prisma),
 
   // Configure GitHub as the authentication provider
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: githubClientId,
+      clientSecret: githubClientSecret,
 
       // Custom profile data mapping
       profile(profile) {
@@ -27,8 +39,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     }),
   ],
 
