@@ -2,80 +2,57 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
 import { setUserRepositories, useRepository } from "../context/repository";
 import SidebarRepoHeader from "./left-sidebar-repo-header";
 import SidebarRepoList from "./left-sidebar-repo-list";
 
 export function LeftSidebar() {
   const { state, dispatch } = useRepository();
-  const [loading, setLoading] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isFetchingRepository, setIsFetchingRepository] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
   const { toast } = useToast();
   const repositories = state.userRepositories;
 
-  const fetchRepositories = useCallback(
-    async (search?: string) => {
-      try {
-        setLoading(true);
-        const queryParams = new URLSearchParams({
-          page: "1",
-          limit: "10",
-          ...(search && { search }),
-        });
+  const fetchRepositories = useCallback(async () => {
+    try {
+      setIsFetchingRepository(true);
 
-        const response = await fetch(`/api/repository?${queryParams}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch repositories.");
-        }
-
-        const data = await response.json();
-        dispatch(setUserRepositories(data.repositories));
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch repositories. Please try again later.",
-        });
-        console.log("Error fetching repositories:", error);
-      } finally {
-        setLoading(false);
-        setIsInitialLoad(false);
+      const response = await fetch("/api/repository");
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch repositories.");
       }
-    },
-    [toast, dispatch]
-  );
 
-  const debouncedSearch = useDebouncedCallback((value: string) => {
-    fetchRepositories(value);
-  }, 300);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    if (!value.trim()) {
-      fetchRepositories();
-      return;
+      dispatch(setUserRepositories(data.repositories));
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("error.stack is ", error.stack);
+        console.log("error.message is ", error.message);
+      }
+      setMessage("Check Your Network Connectivity.");
+    } finally {
+      setIsFetchingRepository(false);
     }
-    debouncedSearch(value);
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchRepositories();
   }, [fetchRepositories]);
 
+  useEffect(() => {
+    if (!message) return;
+    toast({
+      description: message,
+    });
+  }, [toast, message]);
+
   return (
     <div className="fixed inset-y-0 left-0 w-96 bg-background border-r border-dotted pt-16">
       <div className="flex flex-col h-full">
-        <SidebarRepoHeader
-          loading={isInitialLoad}
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-        <div className="flex-1 overflow-hidden">
+        <SidebarRepoHeader />
+        <div className="flex-1 overflow-hidden ">
           <SidebarRepoList
-            searchQuery={searchQuery}
-            loading={isInitialLoad || loading}
+            loading={isFetchingRepository}
             repositories={repositories}
           />
         </div>

@@ -34,7 +34,7 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 h-14 z-[99999] border-b border-transparent backdrop-blur-lg",
+        "fixed top-0 inset-x-0 h-14 z-[99] border-b border-transparent backdrop-blur-lg",
         scroll && "border-background/80 bg-background/40 "
       )}
     >

@@ -27,7 +27,10 @@ export function AvatarMenu() {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent
+        align="end"
+        className="w-56 z-[101] border border-yellow-400"
+      >
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium">{session.user.name}</p>
