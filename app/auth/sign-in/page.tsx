@@ -1,7 +1,9 @@
 "use client";
 
+import AnimationContainer from "@/components/global/animation-container";
 import { Icons } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
+import MagicBadge from "@/components/ui/magic-badge";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
 import { Code2, FileSearch, Lightbulb } from "lucide-react";
@@ -70,7 +72,6 @@ export default function SignIn() {
 
   return (
     <div className="flex min-h-screen overflow-hidden">
-      {/* Left Panel - Info Section */}
       <div className="hidden lg:flex lg:w-3/5 z-20 bg-card">
         <div className="w-full  flex flex-col justify-between">
           <div className="backdrop-blur-md p-6">
@@ -84,20 +85,21 @@ export default function SignIn() {
 
           <div className="space-y-4 max-w-2xl p-6">
             {features.map((feature, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-4 p-4 rounded-lg border backdrop-blur-md"
-              >
-                <div className="p-2 rounded-md border">
-                  <feature.icon />
+              <AnimationContainer key={i} delay={i * 0.2}>
+                <div className="flex items-start gap-4 p-4 rounded-lg border backdrop-blur-md">
+                  <div className="p-2 rounded-md border">
+                    <feature.icon />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-foreground">
+                      {feature.title}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-foreground">
-                    {feature.title}
-                  </h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              </div>
+              </AnimationContainer>
             ))}
           </div>
 
@@ -107,7 +109,6 @@ export default function SignIn() {
         </div>
       </div>
 
-      {/* Right Panel - Auth Section */}
       <div className="w-full lg:w-2/5 flex items-center justify-center">
         <div className=" flex items-center justify-center p-8 relative">
           {/* Decorative elements */}
@@ -116,13 +117,7 @@ export default function SignIn() {
 
           <div className="w-full max-w-md p-8 bg-card/50 backdrop-blur-sm rounded-md border space-y-6">
             <div className="space-y-2 text-center">
-              <h2 className="text-2xl font-semibold">
-                Welcome to{" "}
-                <span className="text-primary">{siteConfig.name}</span>
-              </h2>
-              <p className="text-muted-foreground">
-                Sign in to start analyzing your repositories
-              </p>
+              <MagicBadge title={`Welcome to ${siteConfig.name}`} />
             </div>
 
             <div className="space-y-4">
