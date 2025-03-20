@@ -3,7 +3,7 @@
 import AnimationContainer from "@/components/global/animation-container";
 import { Icons } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
-import MagicBadge from "@/components/ui/magic-badge";
+import RotatingBorderBadge from "@/components/ui/rotating-border-badge";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
 import { Code2, FileSearch, Lightbulb } from "lucide-react";
@@ -50,7 +50,10 @@ export default function SignIn() {
         redirect: true,
       });
     } catch (error) {
-      console.error("GitHub Sign-In Error:", error);
+      if (error instanceof Error) {
+        console.log("error.stack is ", error.stack);
+        console.log("error.message is ", error.message);
+      }
     } finally {
       setIsGithubLoading(false);
     }
@@ -64,7 +67,10 @@ export default function SignIn() {
         redirect: true,
       });
     } catch (error) {
-      console.log("Google Sign-In Error:", error);
+      if (error instanceof Error) {
+        console.log("error.stack is ", error.stack);
+        console.log("error.message is ", error.message);
+      }
     } finally {
       setIsGithubLoading(false);
     }
@@ -117,7 +123,7 @@ export default function SignIn() {
 
           <div className="w-full max-w-md p-8 bg-card/50 backdrop-blur-sm rounded-md border space-y-6">
             <div className="space-y-2 text-center">
-              <MagicBadge title={`Welcome to ${siteConfig.name}`} />
+              <RotatingBorderBadge title={`Welcome to ${siteConfig.name}`} />
             </div>
 
             <div className="space-y-4">
@@ -136,9 +142,6 @@ export default function SignIn() {
                   <>
                     <Icons.gitLogo className="mr-2 h-5 w-5" />
                     <span className="text-center">Continue with GitHub</span>
-                    <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full ml-2 animate-pulse">
-                      Recommended
-                    </span>
                   </>
                 )}
               </Button>

@@ -4,7 +4,7 @@ interface Props {
   title: string;
 }
 
-const MagicBadge = ({ title }: Props) => {
+const RotatingBorderBadge = ({ title }: Props) => {
   return (
     <div className="relative inline-flex h-8 overflow-hidden rounded-full p-[1.5px] focus:outline-none select-none">
       <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--accent))_50%,hsl(var(--primary))_100%)]" />
@@ -15,4 +15,4 @@ const MagicBadge = ({ title }: Props) => {
   );
 };
 
-export default MagicBadge;
+export default RotatingBorderBadge;

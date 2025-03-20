@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import AnimationContainer from "../global/animation-container";
 import MaxWidthWrapper from "../global/max-width-wrapper";
 import { AvatarMenu } from "../ui/avatar-menu";
-import SignInButton from "../ui/sign-in";
+import SignIn from "../ui/sign-in";
 import { Skeleton } from "../ui/skeleton";
 
 const Navbar = () => {
@@ -54,7 +54,7 @@ const Navbar = () => {
             ) : session?.user ? (
               <AvatarMenu />
             ) : (
-              <SignInButton />
+              <SignIn />
             )}
           </div>
         </MaxWidthWrapper>

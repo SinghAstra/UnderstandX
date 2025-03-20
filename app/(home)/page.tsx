@@ -7,7 +7,7 @@ import { BentoCard, BentoGrid, Steps } from "@/components/ui/bento-grid";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Button } from "@/components/ui/button";
 import { LampContainer } from "@/components/ui/lamp";
-import MagicBadge from "@/components/ui/magic-badge";
+import MagicBadge from "@/components/ui/rotating-border-badge";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "motion/react";
