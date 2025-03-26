@@ -4,10 +4,9 @@ export type SiteConfig = {
   tagline: string;
   url: string;
   features: string[];
-  ogImage?: string;
   links: {
     twitter: string;
+    githubRepo: string;
     github: string;
-    linkedIn: string;
   };
 };
