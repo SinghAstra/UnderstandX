@@ -1,4 +1,4 @@
-import { authOptions } from "@/lib/auth/auth-options";
+import { authOptions } from "@/lib/auth-options";
 import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { createServiceToken } from "@/lib/utils/serviceAuth";
