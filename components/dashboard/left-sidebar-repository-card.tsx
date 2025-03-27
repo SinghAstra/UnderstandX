@@ -9,7 +9,6 @@ interface RepositoryCardProps {
   repository: Repository;
 }
 
-// Helper function to determine status color
 const getStatusColor = (status: RepositoryStatus) => {
   if (status === "SUCCESS") {
     return "bg-green-500";
