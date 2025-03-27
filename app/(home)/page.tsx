@@ -3,9 +3,9 @@
 import AnimationContainer from "@/components/global/animation-container";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
 import { BackgroundShine } from "@/components/ui/background-shine";
-import { BentoCard, BentoGrid, Steps } from "@/components/ui/bento-grid";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { LampContainer } from "@/components/ui/lamp";
+import { ProcessCard, ProcessGrid, Steps } from "@/components/ui/process-grid";
 import MagicBadge from "@/components/ui/rotating-border-badge";
 import { siteConfig } from "@/config/site";
 import { useToast } from "@/hooks/use-toast";
@@ -65,8 +65,11 @@ const HomePage = () => {
               <br />I will explain the codebase.
             </p>
             <div className="flex items-center justify-center gap-4 z-50">
-              <BackgroundShine>
-                <Link href="/docs" className="flex items-center group">
+              <BackgroundShine className="rounded-md">
+                <Link
+                  href={user ? "/dashboard" : "/auth/sign-in"}
+                  className="flex items-center group"
+                >
                   Get started for free
                   <ArrowRightIcon
                     className="ml-1 size-4 transition-transform duration-300 
@@ -116,11 +119,11 @@ const HomePage = () => {
           </div>
         </AnimationContainer>
         <AnimationContainer delay={0.2}>
-          <BentoGrid className="py-8 ">
+          <ProcessGrid className="py-8 ">
             {Steps(href).map((step, idx) => (
-              <BentoCard key={idx} {...step} />
+              <ProcessCard key={idx} {...step} />
             ))}
-          </BentoGrid>
+          </ProcessGrid>
         </AnimationContainer>
       </MaxWidthWrapper>
 
@@ -133,7 +136,7 @@ const HomePage = () => {
             transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
             className="flex flex-col items-center justify-center gap-8  "
           >
-            <h1 className="mt-8 bg-muted-foreground py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl">
+            <h1 className="mt-8  text-foreground py-4  text-center text-4xl font-medium tracking-tight md:text-7xl">
               Understand <br />
               Repository
             </h1>

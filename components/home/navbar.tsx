@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AnimationContainer from "../global/animation-container";
 import MaxWidthWrapper from "../global/max-width-wrapper";
 import { AvatarMenu } from "../ui/avatar-menu";
@@ -14,28 +14,10 @@ import { Skeleton } from "../ui/skeleton";
 const Navbar = () => {
   const { data: session, status } = useSession();
 
-  const [scroll, setScroll] = useState(false);
-
-  const handleScroll = () => {
-    if (window.scrollY > 8) {
-      setScroll(true);
-    } else {
-      setScroll(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 h-14 z-[99] border-b border-transparent backdrop-blur-lg",
-        scroll && "border-background/80 bg-background/40 "
+        "fixed top-0 inset-x-0 h-14 z-[99] border-b border-dashed backdrop-blur-lg"
       )}
     >
       <AnimationContainer reverse delay={0.2} className="size-full">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   ArrowRightIcon,
@@ -89,7 +89,7 @@ export const Steps = (href: string) => [
   },
 ];
 
-const BentoGrid = ({
+const ProcessGrid = ({
   children,
   className,
 }: {
@@ -108,7 +108,7 @@ const BentoGrid = ({
   );
 };
 
-const BentoCard = ({
+const ProcessCard = ({
   name,
   className,
   background,
@@ -134,7 +134,7 @@ const BentoCard = ({
   >
     <div>{background}</div>
 
-    <div className="pointer-events-none z-10 flex flex-col gap-1 p-6 transition-all duration-300 translate-y-10  group-hover:translate-y-0 bg-gradient-to-b from-black/0 via-black/40 via-black/60 to-black/80">
+    <div className=" z-10 flex flex-col gap-1 p-6 transition-all duration-300 translate-y-10  group-hover:translate-y-0 bg-gradient-to-b from-black/0 via-black/40 via-black/60 to-black/80">
       <Icon className="h-12 w-12 origin-left text-neutral-700 transition-all duration-300 ease-in-out group-hover:scale-75" />
       <h3 className="text-xl font-normal text-neutral-300">{name}</h3>
       <p className="max-w-lg text-neutral-400">{description}</p>
@@ -145,10 +145,9 @@ const BentoCard = ({
       >
         <Link
           href={href}
-          className={buttonVariants({
-            variant: "outline",
-            className: "tracking-wider cursor-pointer",
-          })}
+          className={
+            "py-1 px-2 border rounded-md tracking-wide flex items-center gap-1 hover:bg-muted/40"
+          }
         >
           {cta}
           <ArrowRightIcon className="ml-2 h-4 w-4" />
@@ -158,5 +157,4 @@ const BentoCard = ({
   </div>
 );
 
-export { BentoCard, BentoGrid };
-
+export { ProcessCard, ProcessGrid };
