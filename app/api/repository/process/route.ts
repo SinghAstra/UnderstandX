@@ -6,13 +6,15 @@ import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
+const EXPRESS_API_URL = process.env.EXPRESS_API_URL;
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Authenticate user
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { message: "Authentication required" },
         { status: 401 }
       );
     }
@@ -23,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     if (!githubUrl) {
       return NextResponse.json(
-        { error: "GitHub URL is required" },
+        { message: "GitHub URL is required" },
         { status: 400 }
       );
     }
@@ -32,16 +34,24 @@ export async function POST(req: NextRequest) {
     const urlInfo = parseGithubUrl(githubUrl);
     if (!urlInfo.isValid || !urlInfo.owner) {
       return NextResponse.json(
-        { error: "Invalid GitHub repository URL" },
+        { message: "Invalid GitHub repository URL" },
         { status: 400 }
       );
     }
 
+    const { owner, repo } = urlInfo;
+
+    console.log("Before fetchGithubRepoMetadata.");
+
     // 4. Fetch repository MetaData from GitHub API
-    const repoDetails = await fetchGitHubRepoMetaData(
-      urlInfo.owner,
-      urlInfo.repo
-    );
+    const repoDetails = await fetchGitHubRepoMetaData(owner, repo);
+
+    if (!repoDetails) {
+      return NextResponse.json(
+        { message: "Repository does not exist or is private" },
+        { status: 400 }
+      );
+    }
 
     console.log("Fetched Repo Details");
     console.log("userId is ", session.user.id);
@@ -70,16 +80,13 @@ export async function POST(req: NextRequest) {
       `${process.env.EXPRESS_API_URL}/api/queue/repository`
     );
 
-    const response = await fetch(
-      `${process.env.EXPRESS_API_URL}/api/queue/repository`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${serviceToken}`,
-        },
-      }
-    );
+    const response = await fetch(`${EXPRESS_API_URL}/api/queue/repository`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${serviceToken}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -89,19 +96,17 @@ export async function POST(req: NextRequest) {
 
     // 6. Fetch repository details and data
     return NextResponse.json({
-      repositoryId: repository.id,
+      repository: repository,
       status: RepositoryStatus.PENDING,
     });
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);
       console.log("Error stack:", error.stack);
-    } else {
-      console.log("Unknown error:", error);
     }
-    console.log("error -- get /repository/process");
+
     return NextResponse.json(
-      { error: "Failed to process repository" },
+      { message: "Failed to process repository" },
       { status: 500 }
     );
   }

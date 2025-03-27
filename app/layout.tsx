@@ -1,8 +1,8 @@
 import Providers from "@/components/providers/provider";
-import { Toaster } from "@/components/ui/toaster";
 import { siteConfig } from "@/config/site";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -73,7 +73,19 @@ export default function RootLayout({
         <Providers>
           <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
           {children}
-          <Toaster />
+          <Toaster
+            theme="dark"
+            toastOptions={{
+              style: {
+                fontFamily: "Space Grotesk, monospace",
+                background: "hsl(var(--muted) / 0.2)", // Background color
+                color: "hsl(var(--foreground))", // Text color
+                border: "1px solid hsl(var(--border))", // Border color
+                letterSpacing: "0.01em",
+                fontSize: ".95rem",
+              },
+            }}
+          />
         </Providers>
       </body>
     </html>

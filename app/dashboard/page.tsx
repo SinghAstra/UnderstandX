@@ -5,7 +5,6 @@ import {
   useRepository,
 } from "@/components/context/repository";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { motion } from "framer-motion";
@@ -13,8 +12,9 @@ import { SearchIcon, SparklesIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
+import { toast } from "sonner";
 
-function CommandPaletteRepoForm() {
+function DashboardPage() {
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,7 +26,6 @@ function CommandPaletteRepoForm() {
   const actionQuery = searchParams.get("action");
   const router = useRouter();
   const { dispatch } = useRepository();
-  const { toast } = useToast();
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -39,7 +38,9 @@ function CommandPaletteRepoForm() {
     const validation = parseGithubUrl(url);
 
     if (!validation.isValid) {
-      setMessage(validation.error ? validation.error : null);
+      setMessage(
+        validation.message ? validation.message : "Invalid GitHub URL"
+      );
       return;
     }
 
@@ -55,22 +56,16 @@ function CommandPaletteRepoForm() {
       });
 
       const data = await response.json();
+
+      console.log("data is ", data);
       if (!response.ok) {
-        setMessage(data.message || "Failed to process repository");
+        console.log("Inside !response.ok");
+        setMessage(data.message);
+        return;
       }
 
       console.log("data --repositoryProcess is ", data);
-
-      const responseRepoDetails = await fetch(
-        `/api/repository/${data.repositoryId}`
-      );
-      const repoDetailsData = await responseRepoDetails.json();
-      if (!responseRepoDetails.ok) {
-        setMessage(
-          repoDetailsData.message || "Failed to fetch repository details"
-        );
-      }
-      dispatch(addUserRepository(repoDetailsData.repository));
+      dispatch(addUserRepository(data.repository));
 
       setIsSuccess(true);
       setUrl("");
@@ -125,9 +120,9 @@ function CommandPaletteRepoForm() {
 
   useEffect(() => {
     if (!message) return;
-    toast({ title: message });
+    toast(message);
     setMessage(null);
-  }, [toast, message]);
+  }, [message]);
 
   return (
     <div className="w-full m-2">
@@ -201,11 +196,7 @@ function CommandPaletteRepoForm() {
           </div>
         </div>
       )}
-      <div
-        className={`rounded-xl border transition-all duration-600  ${
-          showGuide ? "opacity-0" : "opacity-100"
-        }`}
-      >
+      <div className={`rounded-xl border`}>
         <form onSubmit={handleSubmit}>
           <div className="flex items-center border-b px-4 py-3">
             <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
@@ -261,6 +252,4 @@ function CommandPaletteRepoForm() {
   );
 }
 
-export default function DashboardPage() {
-  return <CommandPaletteRepoForm />;
-}
+export default DashboardPage;
