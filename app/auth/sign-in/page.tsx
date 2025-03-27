@@ -116,12 +116,12 @@ export default function SignIn() {
       </div>
 
       <div className="w-full lg:w-2/5 flex items-center justify-center">
-        <div className=" flex items-center justify-center p-8 relative">
+        <div className=" flex items-center justify-center relative">
           {/* Decorative elements */}
           <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
 
-          <div className="w-full max-w-md p-8 bg-card/50 backdrop-blur-sm rounded-md border space-y-6">
+          <div className="w-[400px] p-8 bg-card/40 backdrop-blur-sm rounded-md border space-y-6">
             <div className="space-y-2 text-center">
               <RotatingBorderBadge title={`Welcome to ${siteConfig.name}`} />
             </div>
@@ -130,8 +130,8 @@ export default function SignIn() {
               <Button
                 onClick={handleGitHubSignIn}
                 disabled={isGithubLoading}
-                variant="default"
-                className="w-full bg-[#24292F] text-white hover:bg-[#24292F]/90 group"
+                variant="outline"
+                className="w-full text-foreground"
               >
                 {isGithubLoading ? (
                   <>
@@ -141,7 +141,9 @@ export default function SignIn() {
                 ) : (
                   <>
                     <Icons.gitLogo className="mr-2 h-5 w-5" />
-                    <span className="text-center">Continue with GitHub</span>
+                    <span className="text-center tracking-wide">
+                      Continue with GitHub
+                    </span>
                   </>
                 )}
               </Button>
@@ -151,15 +153,13 @@ export default function SignIn() {
                   <Separator />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase ">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
+                  <span className="bg-background px-2 text-foreground">Or</span>
                 </div>
               </div>
 
               <Button
                 variant="outline"
-                className="w-full text-primary"
+                className="w-full text-foreground"
                 onClick={handleGoogleSignIn}
                 disabled={isGoogleLoading}
               >
@@ -177,7 +177,9 @@ export default function SignIn() {
                       height={18}
                       className="mr-2"
                     />
-                    Continue with Google
+                    <span className="text-center tracking-wide">
+                      Continue with Google
+                    </span>
                   </>
                 )}
               </Button>

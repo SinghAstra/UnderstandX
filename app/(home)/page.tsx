@@ -4,6 +4,7 @@ import AnimationContainer from "@/components/global/animation-container";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
 import { BackgroundShine } from "@/components/ui/background-shine";
 import { BorderBeam } from "@/components/ui/border-beam";
+import GradientButton from "@/components/ui/gradient-button";
 import { LampContainer } from "@/components/ui/lamp";
 import { ProcessCard, ProcessGrid, Steps } from "@/components/ui/process-grid";
 import MagicBadge from "@/components/ui/rotating-border-badge";
@@ -15,7 +16,6 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import GradientButton from "./gradient-button";
 
 const HomePage = () => {
   const { data: user, status } = useSession();

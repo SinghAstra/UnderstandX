@@ -130,7 +130,7 @@ function CommandPaletteRepoForm() {
   }, [toast, message]);
 
   return (
-    <div className="m-2 ">
+    <div className="w-full m-2">
       {showGuide && (
         <div className="absolute inset-0 ">
           <div className="relative w-full h-full  flex items-center justify-center backdrop-blur-sm">

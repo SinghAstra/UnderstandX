@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export function RightSidebar() {
   return (
-    <div className="w-80 bg-background p-2 ">
+    <div className="w-80 hidden xl:flex p-2 ">
       <div className="border px-3 py-2 rounded-md flex flex-col gap-1">
         <h3>Follow For Updates</h3>
         <p className="text-muted-foreground text-sm">

@@ -6,7 +6,7 @@ import { buttonVariants } from "../ui/button";
 
 const SidebarRepoHeader = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 hidden md:flex">
       <Link
         className={cn(buttonVariants({ variant: "outline" }), "w-full")}
         href="/dashboard?action=connect"

@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <Navbar />
       <div className="flex pt-16">
         <LeftSidebar />
-        <main className="flex-1 ml-96 ">{children}</main>
+        <main className="hidden md:flex flex-1 ml-96 ">{children}</main>
         <RightSidebar />
       </div>
     </div>

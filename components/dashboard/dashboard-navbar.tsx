@@ -16,9 +16,9 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-dotted bg-background">
       <div className="flex h-16 items-center px-4">
-        <div className="flex items-center gap-2">
+        <Link href="/dashboard">
           <span className="text-xl tracking-wider">{siteConfig.name}</span>
-        </div>
+        </Link>
 
         <div className="ml-auto flex items-center gap-4">
           <Link

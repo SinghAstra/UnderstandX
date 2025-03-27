@@ -47,7 +47,7 @@ export function LeftSidebar() {
   }, [toast, message]);
 
   return (
-    <div className="fixed inset-y-0 left-0 w-96 bg-background border-r border-dotted pt-16">
+    <div className="w-full md:fixed md:inset-y-0 md:left-0 md:w-96 bg-background border-r border-dotted md:pt-16">
       <div className="flex flex-col h-full">
         <SidebarRepoHeader />
         <div className="flex-1 overflow-hidden ">
