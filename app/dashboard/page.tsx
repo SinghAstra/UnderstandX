@@ -57,14 +57,11 @@ function DashboardPage() {
 
       const data = await response.json();
 
-      console.log("data is ", data);
       if (!response.ok) {
-        console.log("Inside !response.ok");
         setMessage(data.message);
         return;
       }
 
-      console.log("data --repositoryProcess is ", data);
       dispatch(addUserRepository(data.repository));
 
       setIsSuccess(true);

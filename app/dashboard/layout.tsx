@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import { fetchRepositories } from "./action";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -32,11 +33,13 @@ export default async function DashboardLayout({
     redirect("/auth/sign-in");
   }
 
+  const { repositories } = await fetchRepositories();
+
   return (
     <div className="min-h-screen">
       <Navbar user={session.user} />
       <div className="flex pt-16">
-        <LeftSidebar />
+        <LeftSidebar repositories={repositories} />
         <main className="hidden md:flex flex-1 ml-96 ">{children}</main>
         <RightSidebar />
       </div>
