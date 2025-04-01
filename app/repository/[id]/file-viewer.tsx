@@ -1,15 +1,13 @@
-import MDXSource from "@/components/mdx/MDXSource";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { File } from "@prisma/client";
 import { Check, Code, Copy, FileText } from "lucide-react";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { toast } from "sonner";
+import FileAnalysis from "./file-analysis";
 
 interface FileViewerProps {
   file: File;
@@ -20,30 +18,14 @@ type TabOptions = "code" | "analysis";
 
 const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
   const [isCopied, setIsCopied] = useState(false);
-  const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(
-    null
-  );
   const [activeTab, setActiveTab] = useState<TabOptions>("code");
   const [message, setMessage] = useState<string | null>(null);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const prepareAnalysis = async () => {
-      if (file?.analysis && activeTab === "analysis") {
-        const serialized = await serialize(file.analysis);
-        setMdxSource(serialized);
-      }
-    };
-    prepareAnalysis();
-  }, [file, activeTab]);
 
   useEffect(() => {
     if (!message) return;
-    toast({
-      description: message,
-    });
+    toast(message);
     setMessage(null);
-  }, [toast, message]);
+  }, [message]);
 
   const handleCopy = () => {
     if (file?.content && activeTab === "code") {
@@ -164,13 +146,9 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
             </SyntaxHighlighter>
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
-              {mdxSource ? (
-                <MDXSource mdxSource={mdxSource} />
-              ) : (
-                <div className="flex items-center justify-center h-64">
-                  <Skeleton className="h-64 w-full rounded-lg" />
-                </div>
-              )}
+              <FileAnalysis
+                analysis={file.analysis ?? "Analysis Not Available."}
+              />
             </div>
           )}
         </div>

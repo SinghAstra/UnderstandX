@@ -3,7 +3,7 @@ import { File } from "@prisma/client";
 import DirectoryItem from "./directory-item";
 import FileItem from "./file-item";
 
-const RepositoryExplorer = ({
+const RepoContent = ({
   selectedFile,
   repository,
   onFileSelect,
@@ -43,4 +43,4 @@ const RepositoryExplorer = ({
   );
 };
 
-export default RepositoryExplorer;
+export default RepoContent;

@@ -9,7 +9,8 @@ import React, {
   useCallback,
   useState,
 } from "react";
-import RepositoryExplorer from "./repository-explorer";
+import FileViewer from "./file-viewer";
+import RepoContent from "./repo-content";
 
 interface RepoExplorerProps {
   repository: RepositoryWithRelations;
@@ -19,27 +20,17 @@ interface RepoExplorerProps {
 }
 
 const RepoExplorer = ({ repository, user, overview }: RepoExplorerProps) => {
-  // const params = useParams();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
-  // const router = useRouter();
-  // const id = params.id;
 
   const clearSelectedFile = () => {
-    // Clear the selected file in state
     setSelectedFile(null);
-
-    // Update the URL without triggering a navigation
-    // const url = new URL(window.location.href);
-    // url.searchParams.delete("file");
-    // window.history.pushState({}, "", url);
   };
 
   const onFileSelect = useCallback((file: File) => {
     setIsFileLoading(true);
-    // TODO : Is router.push slowing down the web app what if i just set the selected File manually ?
-    // router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
     setSelectedFile(file);
+    setIsFileLoading(false);
   }, []);
 
   return (
@@ -51,19 +42,17 @@ const RepoExplorer = ({ repository, user, overview }: RepoExplorerProps) => {
         user={user}
       />
       <div className="flex mt-20">
-        <RepositoryExplorer
+        <RepoContent
           repository={repository}
           onFileSelect={onFileSelect}
           selectedFile={selectedFile}
         />
         {!selectedFile ? (
           <div className="w-full flex-1 p-3 ml-96">
-            <div className="border border-border rounded-lg max-w-none prose-invert px-4 py-3 ">
-              {overview}
-            </div>
+            <div className="border rounded-md px-4 py-3 ">{overview}</div>
           </div>
         ) : (
-          "Nothing Here"
+          <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
         )}
       </div>
     </div>

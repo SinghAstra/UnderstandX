@@ -14,7 +14,10 @@ export const components = {
   Button,
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
-      className={cn("font-heading mt-8 scroll-m-20 text-4xl  ", className)}
+      className={cn(
+        "font-heading mt-8 scroll-m-20 text-4xl leading-[3.25rem]",
+        className
+      )}
       {...props}
     />
   ),
@@ -74,7 +77,7 @@ export const components = {
     <ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
   ),
   li: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <li className={cn("mt-2", className)} {...props} />
+    <li className={cn("mt-2 leading-8", className)} {...props} />
   ),
   blockquote: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <blockquote
