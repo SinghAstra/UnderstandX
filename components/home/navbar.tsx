@@ -1,18 +1,16 @@
-"use client";
-
 import { siteConfig } from "@/config/site";
+import { authOptions } from "@/lib/auth-options";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import React from "react";
 import AnimationContainer from "../global/animation-container";
 import MaxWidthWrapper from "../global/max-width-wrapper";
 import { AvatarMenu } from "../ui/avatar-menu";
 import SignIn from "../ui/sign-in";
-import { Skeleton } from "../ui/skeleton";
 
-const Navbar = () => {
-  const { data: session, status } = useSession();
+const Navbar = async () => {
+  const session = await getServerSession(authOptions);
 
   return (
     <header
@@ -31,13 +29,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center">
-            {status === "loading" ? (
-              <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
-            ) : session?.user ? (
-              <AvatarMenu />
-            ) : (
-              <SignIn />
-            )}
+            {session?.user ? <AvatarMenu /> : <SignIn />}
           </div>
         </MaxWidthWrapper>
       </AnimationContainer>

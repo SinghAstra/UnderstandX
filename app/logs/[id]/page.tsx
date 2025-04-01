@@ -17,9 +17,9 @@ export default async function RepoProcessingLogsPage({
     notFound();
   }
 
-  // if (repository.status === "SUCCESS") {
-  //   redirect(`/repository/${repositoryId}`);
-  // }
+  if (repository.status === "SUCCESS") {
+    redirect(`/repository/${repositoryId}`);
+  }
 
   return <RepoLogs repository={repository} />;
 }

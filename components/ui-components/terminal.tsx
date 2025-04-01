@@ -14,11 +14,10 @@ type LogEntry = {
 
 interface TerminalProps {
   logs: LogEntry[];
-  height?: string;
   repository: Repository;
 }
 
-function Terminal({ repository, logs, height = "400px" }: TerminalProps) {
+function Terminal({ repository, logs }: TerminalProps) {
   const [autoScroll, setAutoScroll] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -52,8 +51,8 @@ function Terminal({ repository, logs, height = "400px" }: TerminalProps) {
 
   return (
     <MaxWidthWrapper>
-      <div className="relative rounded border border-border overflow-hidden">
-        <div className="flex items-center space-x-4 mb-4 p-2 bg-background backdrop-blur-sm">
+      <div className="relative rounded border border-border overflow-hidden flex-1">
+        <div className="absolute z-[60] top-0 inset-x-0 flex items-center space-x-4 mb-4 p-2 bg-background/40  backdrop-blur-md">
           <Image
             src={repository.avatarUrl}
             alt={`${repository.owner}'s avatar`}
@@ -67,10 +66,10 @@ function Terminal({ repository, logs, height = "400px" }: TerminalProps) {
           </div>
         </div>
         <div
-          className="rounded-md p-4 overflow-y-auto font-mono text-sm space-y-2 relative"
+          className="rounded-md p-4 overflow-y-auto font-mono text-sm space-y-2 relative pt-20"
           ref={scrollRef}
           onScroll={handleScroll}
-          style={{ height }}
+          style={{ height: "500px" }}
         >
           {logs.map((log) => (
             <div
