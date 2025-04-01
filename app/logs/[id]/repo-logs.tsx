@@ -49,12 +49,7 @@ const RepoLogs = ({ repository }: RepoLogsProps) => {
     );
   }
 
-  return (
-    <div className="p-2 max-w-2xl w-full ">
-      <RepositoryHeader repository={repository} />
-      <Terminal logs={logs} />
-    </div>
-  );
+  return <Terminal logs={logs} repository={repository} />;
 };
 
 const RepositoryHeader = ({ repository }: { repository: Repository }) => (

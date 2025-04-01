@@ -37,7 +37,7 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
           <AvatarFallback>{repository.owner[0].toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="font-medium">{repository.name}</span>
+          <span className="font-medium line-clamp-1">{repository.name}</span>
           <span className="text-sm text-muted-foreground">
             {repository.owner}
           </span>
