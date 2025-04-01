@@ -27,7 +27,7 @@ export function Navbar({ user }: NavbarProps) {
             <Plus className="h-5 w-5" />
             Connect New Repository
           </Link>
-          {user ? <AvatarMenu /> : <SignInButton />}
+          {user ? <AvatarMenu user={user} /> : <SignInButton />}
         </div>
       </div>
     </nav>

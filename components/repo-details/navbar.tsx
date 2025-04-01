@@ -1,19 +1,19 @@
 import { siteConfig } from "@/config/site";
 import { File, Repository } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { User } from "next-auth";
 import Link from "next/link";
 import React from "react";
 import { FaGithub } from "react-icons/fa";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { AvatarMenu } from "../ui/avatar-menu";
 import { Button, buttonVariants } from "../ui/button";
-import SignInButton from "../ui/sign-in";
 import { Skeleton } from "../ui/skeleton";
 
 interface RepoDetailsNavbarProps {
-  repository: Repository | null;
-  selectedFile?: File | null;
-  clearSelectedFile?: () => void;
+  repository: Repository;
+  selectedFile: File | null;
+  clearSelectedFile: () => void;
+  user: User;
 }
 
 const RepositorySkeleton = () => (
@@ -30,8 +30,8 @@ const Navbar = ({
   repository,
   selectedFile,
   clearSelectedFile,
+  user,
 }: RepoDetailsNavbarProps) => {
-  const { data: session, status } = useSession();
   const isLoadingRepository = repository === null;
 
   return (
@@ -75,13 +75,7 @@ const Navbar = ({
         >
           <FaGithub />
         </a>
-        {status === "loading" ? (
-          <Skeleton className="h-10 w-10 rounded-full  border-primary border-2" />
-        ) : session?.user ? (
-          <AvatarMenu />
-        ) : (
-          <SignInButton />
-        )}
+        <AvatarMenu user={user} />
       </div>
     </header>
   );

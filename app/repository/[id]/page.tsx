@@ -1,153 +1,37 @@
-"use client";
-import MDXSource from "@/components/mdx/MDXSource";
-import Navbar from "@/components/repo-details/navbar";
-import RepositorySkeleton from "@/components/skeleton/repository";
-import { useToast } from "@/hooks/use-toast";
-import { RepositoryWithRelations } from "@/interfaces/github";
-import { File } from "@prisma/client";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
-import {
-  notFound,
-  useParams,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
-import FileViewer from "./file-viewer";
-import RepositoryExplorer from "./repository-explorer";
+import { authOptions } from "@/lib/auth-options";
+import { parseMdx } from "@/lib/markdown";
+import { getServerSession } from "next-auth";
+import { notFound, redirect } from "next/navigation";
+import { getRepositoryData } from "./action";
+import RepoExplorer from "./repo-explorer";
 
-const RepositoryDetailsPage = () => {
-  const [repository, setRepository] = useState<RepositoryWithRelations | null>(
-    null
-  );
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const { id } = params;
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(true);
-  const [message, setMessage] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
-  const [repositoryOverview, setRepositoryOverview] =
-    useState<MDXRemoteSerializeResult | null>(null);
-  const router = useRouter();
-
-  const clearSelectedFile = () => {
-    // Clear the selected file in state
-    setSelectedFile(null);
-
-    // Update the URL without triggering a navigation
-    const url = new URL(window.location.href);
-    url.searchParams.delete("file");
-    window.history.pushState({}, "", url);
-  };
-
-  const onFileSelect = useCallback(
-    (file: File) => {
-      setIsFileLoading(true);
-      router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
-    },
-    [router, id]
-  );
-
-  useEffect(() => {
-    const fetchRepository = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`/api/repository/${id}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          setMessage(data.message || "Failed to fetch repository details.");
-          return;
-        }
-
-        setRepository(data.repository);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.log("error.stack is ", error.stack);
-          console.log("error.message is ", error.message);
-        }
-        setMessage("Check Your Network Connectivity.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchRepository();
-  }, [id]);
-
-  useEffect(() => {
-    const filePath = searchParams.get("file");
-    if (filePath && repository) {
-      const file = repository.files.find((f) => f.path === filePath);
-      if (file) setSelectedFile(file);
-      setIsFileLoading(false);
-    } else {
-      // Handle the case when file parameter is removed
-      setSelectedFile(null);
-      setIsFileLoading(false);
-    }
-  }, [repository, searchParams]);
-
-  useEffect(() => {
-    async function generateBundledOverview() {
-      if (!repository?.overview) return;
-      const mdxSource = await serialize(repository.overview);
-      setRepositoryOverview(mdxSource);
-    }
-
-    generateBundledOverview();
-  }, [repository]);
-
-  useEffect(() => {
-    if (!message) return;
-    toast({ title: message });
-    setMessage(null);
-  }, [toast, message]);
-
-  if (isLoading) {
-    return (
-      <div>
-        <Navbar repository={repository} />
-        <RepositorySkeleton />
-      </div>
-    );
-  }
-
-  if (!repository) {
-    return notFound();
-  }
-
-  return (
-    <div className=" min-h-screen flex flex-col">
-      <Navbar
-        repository={repository}
-        selectedFile={selectedFile}
-        clearSelectedFile={clearSelectedFile}
-      />
-
-      <div className="flex mt-20">
-        <RepositoryExplorer
-          repository={repository}
-          onFileSelect={onFileSelect}
-          selectedFile={selectedFile}
-        />
-        {!selectedFile ? (
-          <div className="w-full flex-1 p-3 ml-96">
-            <div className="border border-border rounded-lg max-w-none prose-invert px-4 py-3 ">
-              {repositoryOverview && (
-                <MDXSource mdxSource={repositoryOverview} />
-              )}
-            </div>
-          </div>
-        ) : (
-          <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
-        )}
-      </div>
-    </div>
-  );
+type RepositoryLayoutProps = {
+  params: { id: string };
 };
 
-export default RepositoryDetailsPage;
+export default async function RepositoryPage({
+  params,
+}: RepositoryLayoutProps) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/auth/sign-in");
+  }
+
+  const repository = await getRepositoryData(params.id);
+  if (!repository) {
+    notFound();
+  }
+
+  const parsedRepositoryOverview = await parseMdx(
+    repository.overview ? repository.overview : "No Overview Found."
+  );
+
+  return (
+    <RepoExplorer
+      repository={repository}
+      user={session.user}
+      overview={parsedRepositoryOverview.content}
+    />
+  );
+}

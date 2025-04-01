@@ -1,0 +1,89 @@
+"use client";
+import MDXSource from "@/components/mdx/MDXSource";
+import { RepositoryWithRelations } from "@/interfaces/github";
+import { File } from "@prisma/client";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
+import FileViewer from "./file-viewer";
+import RepositoryExplorer from "./repository-explorer";
+
+interface RepositoryDetailsPageProps {
+  repository: RepositoryWithRelations;
+}
+
+const RepositoryDetailsPage = ({ repository }: RepositoryDetailsPageProps) => {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const { id } = params;
+  const [message, setMessage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
+  const [repositoryOverview, setRepositoryOverview] =
+    useState<MDXRemoteSerializeResult | null>(null);
+  const router = useRouter();
+
+  const onFileSelect = useCallback(
+    (file: File) => {
+      setIsFileLoading(true);
+      router.push(`/repository/${id}?file=${file.path}`, { scroll: false });
+    },
+    [router, id]
+  );
+
+  useEffect(() => {
+    const filePath = searchParams.get("file");
+    if (filePath && repository) {
+      const file = repository.files.find((f) => f.path === filePath);
+      if (file) setSelectedFile(file);
+      setIsFileLoading(false);
+    } else {
+      // Handle the case when file parameter is removed
+      setSelectedFile(null);
+      setIsFileLoading(false);
+    }
+  }, [repository, searchParams]);
+
+  useEffect(() => {
+    async function generateBundledOverview() {
+      if (!repository?.overview) return;
+      const mdxSource = await serialize(repository.overview);
+      setRepositoryOverview(mdxSource);
+    }
+
+    generateBundledOverview();
+  }, [repository]);
+
+  useEffect(() => {
+    if (!message) return;
+    toast(message);
+    setMessage(null);
+  }, [message]);
+
+  return (
+    <div className=" min-h-screen flex flex-col">
+      <div className="flex mt-20">
+        <RepositoryExplorer
+          repository={repository}
+          onFileSelect={onFileSelect}
+          selectedFile={selectedFile}
+        />
+        {!selectedFile ? (
+          <div className="w-full flex-1 p-3 ml-96">
+            <div className="border border-border rounded-lg max-w-none prose-invert px-4 py-3 ">
+              {repositoryOverview && (
+                <MDXSource mdxSource={repositoryOverview} />
+              )}
+            </div>
+          </div>
+        ) : (
+          <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default RepositoryDetailsPage;

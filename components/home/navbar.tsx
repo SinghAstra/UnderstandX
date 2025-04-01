@@ -1,7 +1,6 @@
 import { siteConfig } from "@/config/site";
-import { authOptions } from "@/lib/auth-options";
 import { cn } from "@/lib/utils";
-import { getServerSession } from "next-auth";
+import { User } from "next-auth";
 import Link from "next/link";
 import React from "react";
 import AnimationContainer from "../global/animation-container";
@@ -9,9 +8,11 @@ import MaxWidthWrapper from "../global/max-width-wrapper";
 import { AvatarMenu } from "../ui/avatar-menu";
 import SignIn from "../ui/sign-in";
 
-const Navbar = async () => {
-  const session = await getServerSession(authOptions);
+interface NavbarProps {
+  user: User | undefined;
+}
 
+const Navbar = ({ user }: NavbarProps) => {
   return (
     <header
       className={cn(
@@ -29,7 +30,7 @@ const Navbar = async () => {
           </div>
 
           <div className="hidden lg:flex items-center">
-            {session?.user ? <AvatarMenu /> : <SignIn />}
+            {user ? <AvatarMenu user={user} /> : <SignIn />}
           </div>
         </MaxWidthWrapper>
       </AnimationContainer>

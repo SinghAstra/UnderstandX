@@ -14,18 +14,19 @@ export function LeftSidebar({ repositories }: LeftSidebarProps) {
   const { state, dispatch } = useRepository();
   const stateRepositories = state.userRepositories;
 
+
   useEffect(() => {
-    if (repositories.length !== stateRepositories.length) {
+    if (repositories) {
       dispatch(setUserRepositories(repositories));
     }
-  }, [dispatch, repositories, stateRepositories]);
+  }, [dispatch, repositories]);
 
   return (
     <div className="w-full md:fixed md:inset-y-0 md:left-0 md:w-96 bg-background md:border-r md:border-dashed md:pt-16">
       <div className="flex flex-col h-full">
         <SidebarRepoHeader />
         <div className="flex-1 overflow-hidden ">
-          <SidebarRepoList repositories={repositories} />
+          <SidebarRepoList />
         </div>
       </div>
     </div>

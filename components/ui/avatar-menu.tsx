@@ -10,32 +10,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { User } from "next-auth";
+import { signOut } from "next-auth/react";
 
-export function AvatarMenu() {
-  const { data: session } = useSession();
+interface AvatarMenuProps {
+  user: User;
+}
 
-  if (!session?.user) return null;
-
+export function AvatarMenu({ user }:AvatarMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
         <Avatar className="h-8 w-8 border border-border">
-          <AvatarImage src={session.user.image || ""} />
+          <AvatarImage src={user.image || ""} />
           <AvatarFallback>
-            {session.user.name?.charAt(0).toUpperCase() || "U"}
+            {user.name?.charAt(0).toUpperCase() || "U"}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="w-56 z-[101] "
-      >
+      <DropdownMenuContent align="end" className="w-56 z-[101] ">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{session.user.name}</p>
+            <p className="text-sm font-medium">{user.name}</p>
             <p className="text-xs text-muted-foreground truncate">
-              {session.user.email}
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>
