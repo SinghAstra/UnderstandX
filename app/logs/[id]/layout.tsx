@@ -1,18 +1,55 @@
-import { Navbar } from "@/components/repo-logs/navbar";
+import { Navbar } from "@/components/dashboard/dashboard-navbar";
+import { authOptions } from "@/lib/auth-options";
+import { prisma } from "@/lib/utils/prisma";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { ReactNode } from "react";
 
 interface RepositoryLogsLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  params: { id: string };
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/auth/sign-in");
+  }
+
+  const repositoryId = params.id;
+
+  const repository = await prisma.repository.findUnique({
+    where: { id: repositoryId },
+  });
+
+  if (!repository) {
+    return {
+      title: "Repository Not Found",
+      description: "The requested repository could not be found",
+    };
+  }
+
+  return {
+    title: `Logs - ${repository.name}`,
+    description: `Processing logs for ${repository.owner}/${repository.name} repository`,
+  };
 }
 
 export default async function RepositoryLogsLayout({
   children,
 }: RepositoryLogsLayoutProps) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/auth/sign-in");
+  }
   return (
-    <>
-      <div className="flex flex-col ">
-        <Navbar />
+    <div className="flex flex-col ">
+      <Navbar user={session.user} />
+      <div className="min-h-screen flex flex-col items-center justify-center">
         {children}
       </div>
-    </>
+    </div>
   );
 }

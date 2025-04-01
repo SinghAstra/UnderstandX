@@ -41,8 +41,6 @@ export async function POST(req: NextRequest) {
 
     const { owner, repo } = urlInfo;
 
-    console.log("Before fetchGithubRepoMetadata.");
-
     // 4. Fetch repository MetaData from GitHub API
     const repoDetails = await fetchGitHubRepoMetaData(owner, repo);
 
@@ -52,9 +50,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
-    console.log("Fetched Repo Details");
-    console.log("userId is ", session.user.id);
 
     // 5. Create new repository record
     const repository = await prisma.repository.create({
@@ -75,11 +70,6 @@ export async function POST(req: NextRequest) {
       githubUrl,
     });
 
-    console.log(
-      "api url is ",
-      `${process.env.EXPRESS_API_URL}/api/queue/repository`
-    );
-
     const response = await fetch(`${EXPRESS_API_URL}/api/queue/repository`, {
       method: "POST",
       headers: {
@@ -89,10 +79,6 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
-
-    console.log("data --express api is ", data);
-
-    console.log("Created new Repository Record");
 
     // 6. Fetch repository details and data
     return NextResponse.json({
