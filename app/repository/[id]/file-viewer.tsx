@@ -4,10 +4,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { File } from "@prisma/client";
 import { Check, Code, Copy, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from "sonner";
-import FileAnalysis from "./file-analysis";
+import CodeHighlighter from "./file-content";
 
 interface FileViewerProps {
   file: File;
@@ -128,27 +126,16 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
 
         <div className="py-1 px-4 ">
           {activeTab === "code" ? (
-            <SyntaxHighlighter
+            <CodeHighlighter
+              code={file.content ?? "Content Not Available"}
               language={getLanguage()}
-              style={oneDark}
-              customStyle={{
-                background: "transparent",
-                lineHeight: "1.3rem",
-                borderRadius: "0.75rem",
-                paddingRight: "2.5rem",
-                letterSpacing: "0.02rem",
-                fontFamily: "Fira Code, monospace",
-                margin: "0px",
-              }}
-              wrapLongLines
-            >
-              {file.content ?? ""}
-            </SyntaxHighlighter>
+            />
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
-              <FileAnalysis
+              {/* <FileAnalysis
                 analysis={file.analysis ?? "Analysis Not Available."}
-              />
+              /> */}
+              <p>No File Analysis</p>
             </div>
           )}
         </div>
