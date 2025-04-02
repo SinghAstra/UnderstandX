@@ -1,6 +1,8 @@
 "use client";
 
+import { siteConfig } from "@/config/site";
 import { SessionProvider } from "next-auth/react";
+import Image from "next/image";
 import React, { Suspense } from "react";
 import { RepositoryProvider } from "../context/repository";
 import { TooltipProvider } from "../ui/tooltip";
@@ -11,8 +13,17 @@ interface Props {
 
 const LoadingFallback = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    <div className="min-h-screen flex flex-col gap-4 items-center justify-center">
+      <div className="flex gap-4">
+        <Image
+          src={"/favicon.ico"}
+          width={48}
+          height={48}
+          alt={siteConfig.name}
+        />
+        <p className="text-5xl tracking-wide">{siteConfig.name}</p>
+      </div>
+      <p className="text-xl tracking-wide">{siteConfig.description}</p>
     </div>
   );
 };
