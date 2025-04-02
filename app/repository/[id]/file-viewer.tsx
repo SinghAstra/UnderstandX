@@ -5,6 +5,7 @@ import { File } from "@prisma/client";
 import { Check, Code, Copy, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import FileAnalysis from "./file-analysis";
 import CodeHighlighter from "./file-content";
 
 interface FileViewerProps {
@@ -132,10 +133,9 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
             />
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
-              {/* <FileAnalysis
+              <FileAnalysis
                 analysis={file.analysis ?? "Analysis Not Available."}
-              /> */}
-              <p>No File Analysis</p>
+              />
             </div>
           )}
         </div>

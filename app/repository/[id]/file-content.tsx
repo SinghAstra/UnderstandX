@@ -1,5 +1,3 @@
-"use server";
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { parseMdx } from "@/lib/markdown";
 import React, { Suspense } from "react";
