@@ -47,7 +47,7 @@ function DashboardPage() {
     setIsProcessing(true);
 
     try {
-      const response = await fetch("/api/repository/process", {
+      const response = await fetch("/api/repository/start-process", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

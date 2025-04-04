@@ -24,9 +24,7 @@ export async function generateMetadata() {
   };
 }
 
-export default async function DashboardLayout({
-  children,
-}: DashboardLayoutProps) {
+const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -45,4 +43,6 @@ export default async function DashboardLayout({
       </div>
     </div>
   );
-}
+};
+
+export default DashboardLayout;
