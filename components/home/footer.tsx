@@ -1,7 +1,7 @@
 import { siteConfig } from "@/config/site";
-import Link from "next/link";
 import AnimationContainer from "../global/animation-container";
 import MaxWidthWrapper from "../global/max-width-wrapper";
+import BorderHoverLink from "../ui/border-hover-link";
 
 const Footer = () => {
   return (
@@ -10,19 +10,23 @@ const Footer = () => {
         <div className="absolute top-0 left-1/2 right-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-1.5 bg-foreground rounded-full"></div>
 
         <AnimationContainer delay={0.1}>
-          <span className=" text-neutral-200 text-sm flex items-center tracking-wider">
+          <span className=" text-muted-foreground flex gap-2 items-center tracking-wider">
             Made by{" "}
-            <Link href={siteConfig.links.github} className="ml-1 underline ">
+            <BorderHoverLink
+              href={siteConfig.links.github}
+              className="text-foreground tracking-wider"
+            >
               SinghAstra
-            </Link>
+            </BorderHoverLink>
           </span>
         </AnimationContainer>
         <AnimationContainer delay={0.4}>
-          <span className="text-neutral-200 text-sm flex items-center tracking-wider">
-            <Link href={siteConfig.links.twitter} className="underline">
-              Connect on X
-            </Link>
-          </span>
+          <BorderHoverLink
+            href={siteConfig.links.twitter}
+            className="text-foreground tracking-wider"
+          >
+            Connect on X
+          </BorderHoverLink>
         </AnimationContainer>
       </footer>
     </MaxWidthWrapper>
