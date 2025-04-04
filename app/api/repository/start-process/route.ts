@@ -70,15 +70,13 @@ export async function POST(req: NextRequest) {
       githubUrl,
     });
 
-    const response = await fetch(`${EXPRESS_API_URL}/api/queue/repository`, {
+    await fetch(`${EXPRESS_API_URL}/api/queue/repository`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${serviceToken}`,
       },
     });
-
-    const data = await response.json();
 
     // 6. Fetch repository details and data
     return NextResponse.json({
