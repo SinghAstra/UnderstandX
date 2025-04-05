@@ -11,10 +11,10 @@ interface LeftSidebarProps {
 }
 
 export function LeftSidebar({ repositories }: LeftSidebarProps) {
-  const { dispatch } = useRepository();
+  const { state, dispatch } = useRepository();
 
   useEffect(() => {
-    if (repositories) {
+    if (repositories && state.userRepositories.length === 0) {
       dispatch(setUserRepositories(repositories));
     }
   }, [dispatch, repositories]);
