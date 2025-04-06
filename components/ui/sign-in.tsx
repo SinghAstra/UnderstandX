@@ -1,6 +1,6 @@
 import { ZapIcon } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
+import { buttonVariants } from "./button";
 
 export default function SignIn() {
   return (
