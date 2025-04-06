@@ -17,7 +17,7 @@ export function LeftSidebar({ repositories }: LeftSidebarProps) {
     if (repositories && state.userRepositories.length === 0) {
       dispatch(setUserRepositories(repositories));
     }
-  }, [dispatch, repositories]);
+  }, [dispatch, repositories, state.userRepositories.length]);
 
   return (
     <div className="w-full md:fixed md:inset-y-0 md:left-0 md:w-96 bg-background md:border-r md:border-dashed md:pt-16">

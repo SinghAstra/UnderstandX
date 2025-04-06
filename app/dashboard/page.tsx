@@ -66,6 +66,10 @@ function DashboardPage() {
 
       setIsSuccess(true);
       setUrl("");
+      if(showGuide){
+        dismissGuide();
+      }
+
 
       setTimeout(() => setIsSuccess(false), 3000);
     } catch (error) {
