@@ -1,6 +1,6 @@
 import React from "react";
 import { useRepository } from "../context/repository";
-import EmptyRepositoriesSidebarRepoList from "../empty-states/empty-repo-sidebar-repo-list";
+import EmptyRepositoriesSidebarRepoList from "./empty/sidebar-repo-list";
 import { RepositoryCard } from "./left-sidebar-repository-card";
 
 const SidebarRepoList = () => {

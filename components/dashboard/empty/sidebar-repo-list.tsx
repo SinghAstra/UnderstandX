@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
+import { buttonVariants } from "../../ui/button";
 
 const EmptyRepositoriesSidebarRepoList = () => {
   return (

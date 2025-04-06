@@ -1,6 +1,6 @@
 "use client";
 
-import Terminal from "@/components/ui-components/terminal";
+import Terminal from "@/components/ui/terminal";
 import { ProcessingUpdate } from "@/interfaces/processing";
 import pusherClient from "@/lib/pusher/client";
 import { Repository } from "@prisma/client";
