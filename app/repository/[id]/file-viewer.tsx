@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { File } from "@prisma/client";
+import { FileWithParsedAnalysis } from "@/interfaces/github";
 import { Check, Code, Copy, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ import FileAnalysis from "./file-analysis";
 import CodeHighlighter from "./file-content";
 
 interface FileViewerProps {
-  file: File;
+  file: FileWithParsedAnalysis;
   isFileLoading: boolean;
 }
 
@@ -19,6 +19,8 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<TabOptions>("code");
   const [message, setMessage] = useState<string | null>(null);
+
+  console.log("Inside the File Viewer.");
 
   useEffect(() => {
     if (!message) return;
@@ -133,9 +135,7 @@ const FileViewer = ({ file, isFileLoading }: FileViewerProps) => {
             />
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
-              <FileAnalysis
-                analysis={file.analysis ?? "Analysis Not Available."}
-              />
+              <FileAnalysis file={file} />
             </div>
           )}
         </div>

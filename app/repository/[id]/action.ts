@@ -1,9 +1,12 @@
 "use server";
-import { DirectoryWithRelations } from "@/interfaces/github";
+import {
+  DirectoryWithRelations,
+  FileWithParsedAnalysis,
+} from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
+import { parseMdx } from "@/lib/markdown";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
-import { serialize } from "next-mdx-remote/serialize";
 
 export async function getRepositoryData(id: string) {
   const session = await getServerSession(authOptions);
@@ -30,6 +33,7 @@ export async function getRepositoryData(id: string) {
 
     const directoryMap = new Map();
     const rootDirectories: DirectoryWithRelations[] = [];
+    const rootFiles: FileWithParsedAnalysis[] = [];
 
     // Initialize directory map
     repository.directories.forEach((dir) => {
@@ -46,29 +50,34 @@ export async function getRepositoryData(id: string) {
     });
 
     // Attach files to directories
-    repository.files.forEach((file) => {
+    repository.files.forEach(async (file) => {
+      const { content } = await parseMdx(
+        file.analysis ?? "Analysis Not Generated. Please Try again"
+      );
+      const parsedFile = {
+        ...file,
+        parsedAnalysis: content,
+      };
       if (file.directoryId) {
-        directoryMap.get(file.directoryId)?.files.push(file);
+        directoryMap.get(file.directoryId)?.files.push(parsedFile);
+      } else {
+        rootFiles.push(parsedFile);
       }
     });
+
+    const { content } = await parseMdx(
+      repository.overview ?? "Overview Not Generated. Please Try again"
+    );
 
     // Create structured repository
     const structuredRepository = {
       ...repository,
       directories: rootDirectories,
-      files: repository.files,
+      files: rootFiles,
+      parsedOverview: content,
     };
 
-    // Pre-serialize MDX content if needed
-    let mdxSource = null;
-    if (repository.overview) {
-      mdxSource = await serialize(repository.overview);
-    }
-
-    return {
-      ...structuredRepository,
-      serializedOverview: mdxSource,
-    };
+    return structuredRepository;
   } catch (error) {
     if (error instanceof Error) {
       console.log("error.stack is ", error.stack);

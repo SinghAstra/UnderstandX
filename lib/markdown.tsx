@@ -150,28 +150,37 @@ const components = {
 };
 
 export async function parseMdx(rawMdx: string) {
-  const { content: mdxContent } = await compileMDX({
-    source: rawMdx,
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        rehypePlugins: [
-          preProcess,
-          rehypeCodeTitles,
-          rehypeCodeTitlesWithLogo,
-          rehypePrism,
-          rehypeSlug,
-          rehypeAutolinkHeadings,
-          postProcess,
-        ],
-        remarkPlugins: [remarkGfm],
+  let mdxContent;
+  try {
+    const { content } = await compileMDX({
+      source: rawMdx,
+      options: {
+        parseFrontmatter: true,
+        mdxOptions: {
+          rehypePlugins: [
+            preProcess,
+            rehypeCodeTitles,
+            rehypeCodeTitlesWithLogo,
+            rehypePrism,
+            rehypeSlug,
+            rehypeAutolinkHeadings,
+            postProcess,
+          ],
+          remarkPlugins: [remarkGfm],
+        },
       },
-    },
-    components,
-  });
+      components,
+    });
+    mdxContent = content;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("error.stack is ", error.stack);
+      console.log("error.message is ", error.message);
+    }
+  }
 
   return {
-    content: mdxContent,
+    content: mdxContent ? mdxContent : null,
   };
 }
 

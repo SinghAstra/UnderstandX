@@ -1,9 +1,11 @@
+"use server";
+
 import { Skeleton } from "@/components/ui/skeleton";
-import { parseMdx } from "@/lib/markdown";
+import { FileWithParsedAnalysis } from "@/interfaces/github";
 import React, { Suspense } from "react";
 
 interface FileAnalysisProps {
-  analysis: string;
+  file: FileWithParsedAnalysis;
 }
 
 const FileAnalysisSkeleton = () => {
@@ -38,17 +40,12 @@ const FileAnalysisSkeleton = () => {
   );
 };
 
-const FileAnalysis = ({ analysis }: FileAnalysisProps) => {
+const FileAnalysis = ({ file }: FileAnalysisProps) => {
   return (
     <Suspense fallback={<FileAnalysisSkeleton />}>
-      <FileAnalysisContent analysis={analysis} />
+      {file.parsedAnalysis}
     </Suspense>
   );
-};
-
-const FileAnalysisContent = async ({ analysis }: FileAnalysisProps) => {
-  const response = await parseMdx(analysis);
-  return <div>{response.content}</div>;
 };
 
 export default FileAnalysis;

@@ -1,33 +1,29 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
-import { RepositoryWithRelations } from "@/interfaces/github";
-import { File } from "@prisma/client";
+import {
+  FileWithParsedAnalysis,
+  RepositoryWithRelationsAndOverview,
+} from "@/interfaces/github";
 import { User } from "next-auth";
-import React, {
-  JSXElementConstructor,
-  ReactElement,
-  useCallback,
-  useState,
-} from "react";
+import React, { useCallback, useState } from "react";
 import FileViewer from "./file-viewer";
 import RepoContent from "./repo-content";
 
 interface RepoExplorerProps {
-  repository: RepositoryWithRelations;
+  repository: RepositoryWithRelationsAndOverview;
   user: User;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  overview: ReactElement<any, string | JSXElementConstructor<any>>;
 }
 
-const RepoExplorer = ({ repository, user, overview }: RepoExplorerProps) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
+  const [selectedFile, setSelectedFile] =
+    useState<FileWithParsedAnalysis | null>(null);
   const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
 
   const clearSelectedFile = () => {
     setSelectedFile(null);
   };
 
-  const onFileSelect = useCallback((file: File) => {
+  const onFileSelect = useCallback((file: FileWithParsedAnalysis) => {
     setIsFileLoading(true);
     setSelectedFile(file);
     setIsFileLoading(false);
@@ -49,7 +45,9 @@ const RepoExplorer = ({ repository, user, overview }: RepoExplorerProps) => {
         />
         {!selectedFile ? (
           <div className="w-full flex-1 p-3 ml-96">
-            <div className="border rounded-md px-4 py-3 ">{overview}</div>
+            <div className="border rounded-md px-4 py-3 ">
+              {repository.parsedOverview}
+            </div>
           </div>
         ) : (
           <FileViewer file={selectedFile} isFileLoading={isFileLoading} />

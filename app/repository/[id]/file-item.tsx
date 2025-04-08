@@ -1,4 +1,4 @@
-import { File } from "@prisma/client";
+import { FileWithParsedAnalysis } from "@/interfaces/github";
 import { FileText } from "lucide-react";
 import React from "react";
 
@@ -8,9 +8,9 @@ const FileItem = React.memo(
     onFileSelect,
     selectedFile,
   }: {
-    file: File;
-    onFileSelect: (file: File) => void;
-    selectedFile: File | null;
+    file: FileWithParsedAnalysis;
+    onFileSelect: (file: FileWithParsedAnalysis) => void;
+    selectedFile: FileWithParsedAnalysis | null;
   }) => {
     const isThisFileTheSelectedFile = file.path === selectedFile?.path;
     return (

@@ -1,5 +1,4 @@
 import { authOptions } from "@/lib/auth-options";
-import { parseMdx } from "@/lib/markdown";
 import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import { getRepositoryData } from "./action";
@@ -23,15 +22,5 @@ export default async function RepositoryPage({
     notFound();
   }
 
-  const parsedRepositoryOverview = await parseMdx(
-    repository.overview ? repository.overview : "No Overview Found."
-  );
-
-  return (
-    <RepoExplorer
-      repository={repository}
-      user={session.user}
-      overview={parsedRepositoryOverview.content}
-    />
-  );
+  return <RepoExplorer repository={repository} user={session.user} />;
 }

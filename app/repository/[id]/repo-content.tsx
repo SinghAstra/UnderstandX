@@ -1,5 +1,7 @@
-import { RepositoryWithRelations } from "@/interfaces/github";
-import { File } from "@prisma/client";
+import {
+  FileWithParsedAnalysis,
+  RepositoryWithRelationsAndOverview,
+} from "@/interfaces/github";
 import DirectoryItem from "./directory-item";
 import FileItem from "./file-item";
 
@@ -8,9 +10,9 @@ const RepoContent = ({
   repository,
   onFileSelect,
 }: {
-  selectedFile: File | null;
-  repository: RepositoryWithRelations;
-  onFileSelect: (file: File) => void;
+  selectedFile: FileWithParsedAnalysis | null;
+  repository: RepositoryWithRelationsAndOverview;
+  onFileSelect: (file: FileWithParsedAnalysis) => void;
 }) => {
   return (
     <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
