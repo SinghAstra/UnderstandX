@@ -40,7 +40,7 @@ const Navbar = ({ repository, user }: RepoDetailsNavbarProps) => {
       </div>
       <div className="flex gap-2 items-center">
         <Link
-          href={`/${repository.id}`}
+          href={`/repository/${repository.id}`}
           className={buttonVariants({ variant: "outline" })}
         >
           Overview

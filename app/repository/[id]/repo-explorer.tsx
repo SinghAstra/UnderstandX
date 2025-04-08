@@ -1,37 +1,42 @@
+"use client";
 import Navbar from "@/components/repo-details/navbar";
-import { RepositoryWithRelations } from "@/interfaces/github";
+import {
+  FileWithParsedAnalysis,
+  RepositoryWithRelationsAndOverview,
+} from "@/interfaces/github";
 import { User } from "next-auth";
-import { Suspense } from "react";
-import FileViewer from "./file-viewer";
-import { FileViewerSkeleton } from "./file-viewer-skeleton";
+import { useState } from "react";
+import { FileViewer } from "./file-viewer";
 import RepoContent from "./repo-content";
 import RepoOverview from "./repo-overview";
 
 interface RepoExplorerProps {
-  repository: RepositoryWithRelations;
+  repository: RepositoryWithRelationsAndOverview;
   user: User;
   searchParams: { fileId?: string };
 }
 
-const RepoExplorer = ({
-  repository,
-  user,
-  searchParams,
-}: RepoExplorerProps) => {
-  const fileId = searchParams.fileId;
+const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
+  const [selectedFile, setSelectedFile] =
+    useState<FileWithParsedAnalysis | null>(null);
+
+  const handleFileSelect = (file: FileWithParsedAnalysis) => {
+    setSelectedFile(file);
+  };
 
   return (
     <div className=" min-h-screen flex flex-col">
       <Navbar repository={repository} user={user} />
       <div className="flex mt-20">
-        <RepoContent repository={repository} selectedFileId={fileId} />
-        {/* {!selectedFile ? ( */}
-        {!fileId ? (
-          <RepoOverview overview={repository.overview} />
+        <RepoContent
+          repository={repository}
+          selectedFile={selectedFile}
+          handleFileSelect={handleFileSelect}
+        />
+        {!selectedFile ? (
+          <RepoOverview parsedOverview={repository.parsedOverview} />
         ) : (
-          <Suspense fallback={<FileViewerSkeleton />}>
-            <FileViewer fileId={fileId} />
-          </Suspense>
+          <FileViewer file={selectedFile} />
         )}
       </div>
     </div>

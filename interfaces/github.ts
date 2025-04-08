@@ -1,4 +1,5 @@
 import { Directory, File, Repository } from "@prisma/client";
+import { JSXElementConstructor, ReactElement } from "react";
 
 export interface GitHubContent {
   name: string;
@@ -7,14 +8,21 @@ export interface GitHubContent {
   content?: string;
 }
 
-export interface DirectoryWithRelations extends Directory {
-  children: DirectoryWithRelations[];
-  files: File[];
+export interface FileWithParsedAnalysis extends File {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parsedAnalysis: ReactElement<any, string | JSXElementConstructor<any>> | null;
 }
 
-export interface RepositoryWithRelations extends Repository {
+export interface DirectoryWithRelations extends Directory {
+  children: DirectoryWithRelations[];
+  files: FileWithParsedAnalysis[];
+}
+
+export interface RepositoryWithRelationsAndOverview extends Repository {
   directories: DirectoryWithRelations[];
-  files: File[];
+  files: FileWithParsedAnalysis[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parsedOverview: ReactElement<any, string | JSXElementConstructor<any>> | null;
 }
 
 export interface FileMetaData {

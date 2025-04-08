@@ -1,8 +1,11 @@
 "use server";
-import { DirectoryWithRelations } from "@/interfaces/github";
+import {
+  DirectoryWithRelations,
+  FileWithParsedAnalysis,
+} from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
+import { parseMdx } from "@/lib/markdown";
 import { prisma } from "@/lib/utils/prisma";
-import { File } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export async function getRepositoryData(id: string) {
@@ -30,7 +33,7 @@ export async function getRepositoryData(id: string) {
 
     const directoryMap = new Map();
     const rootDirectories: DirectoryWithRelations[] = [];
-    const rootFiles: File[] = [];
+    const rootFiles: FileWithParsedAnalysis[] = [];
 
     // Initialize directory map
     repository.directories.forEach((dir) => {
@@ -48,12 +51,25 @@ export async function getRepositoryData(id: string) {
 
     await Promise.all(
       repository.files.map(async (file) => {
+        const { content } = await parseMdx(
+          file.analysis ?? "Analysis not available. Please try again."
+        );
+        const fileWithParsedAnalysis = {
+          ...file,
+          parsedAnalysis: content,
+        };
         if (file.directoryId) {
-          directoryMap.get(file.directoryId)?.files.push(file);
+          directoryMap
+            .get(file.directoryId)
+            ?.files.push(fileWithParsedAnalysis);
         } else {
-          rootFiles.push(file);
+          rootFiles.push(fileWithParsedAnalysis);
         }
       })
+    );
+
+    const { content } = await parseMdx(
+      repository.overview ?? "Overview not available. Please try again."
     );
 
     // Create structured repository
@@ -61,6 +77,7 @@ export async function getRepositoryData(id: string) {
       ...repository,
       directories: rootDirectories,
       files: rootFiles,
+      parsedOverview: content,
     };
 
     return structuredRepository;
