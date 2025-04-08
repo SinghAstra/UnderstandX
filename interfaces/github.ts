@@ -7,33 +7,14 @@ export interface GitHubContent {
   content?: string;
 }
 
-export interface FileWithParsedAnalysis extends File {
-  parsedAnalysis: React.ReactElement<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    string | React.JSXElementConstructor<any>
-  > | null;
-}
-
 export interface DirectoryWithRelations extends Directory {
   children: DirectoryWithRelations[];
-  files: FileWithParsedAnalysis[];
-}
-
-export interface RepositoryWithRelationsAndOverview
-  extends RepositoryWithRelations {
-  parsedOverview: React.ReactElement<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    string | React.JSXElementConstructor<any>
-  > | null;
+  files: File[];
 }
 
 export interface RepositoryWithRelations extends Repository {
   directories: DirectoryWithRelations[];
-  files: FileWithParsedAnalysis[];
+  files: File[];
 }
 
 export interface FileMetaData {

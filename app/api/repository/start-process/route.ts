@@ -51,6 +51,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log("session.user.id is ", session.user.id);
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: session.user.id,
+      },
+    });
+
+    console.log("user is ", user);
+
     // 5. Create new repository record
     const repository = await prisma.repository.create({
       data: {

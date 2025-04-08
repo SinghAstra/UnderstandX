@@ -1,56 +1,37 @@
-"use client";
 import Navbar from "@/components/repo-details/navbar";
-import {
-  FileWithParsedAnalysis,
-  RepositoryWithRelationsAndOverview,
-} from "@/interfaces/github";
+import { RepositoryWithRelations } from "@/interfaces/github";
 import { User } from "next-auth";
-import React, { useCallback, useState } from "react";
+import { Suspense } from "react";
 import FileViewer from "./file-viewer";
+import { FileViewerSkeleton } from "./file-viewer-skeleton";
 import RepoContent from "./repo-content";
+import RepoOverview from "./repo-overview";
 
 interface RepoExplorerProps {
-  repository: RepositoryWithRelationsAndOverview;
+  repository: RepositoryWithRelations;
   user: User;
+  searchParams: { fileId?: string };
 }
 
-const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
-  const [selectedFile, setSelectedFile] =
-    useState<FileWithParsedAnalysis | null>(null);
-  const [isFileLoading, setIsFileLoading] = useState<boolean>(false);
-
-  const clearSelectedFile = () => {
-    setSelectedFile(null);
-  };
-
-  const onFileSelect = useCallback((file: FileWithParsedAnalysis) => {
-    setIsFileLoading(true);
-    setSelectedFile(file);
-    setIsFileLoading(false);
-  }, []);
+const RepoExplorer = ({
+  repository,
+  user,
+  searchParams,
+}: RepoExplorerProps) => {
+  const fileId = searchParams.fileId;
 
   return (
     <div className=" min-h-screen flex flex-col">
-      <Navbar
-        repository={repository}
-        selectedFile={selectedFile}
-        clearSelectedFile={clearSelectedFile}
-        user={user}
-      />
+      <Navbar repository={repository} user={user} />
       <div className="flex mt-20">
-        <RepoContent
-          repository={repository}
-          onFileSelect={onFileSelect}
-          selectedFile={selectedFile}
-        />
-        {!selectedFile ? (
-          <div className="w-full flex-1 p-3 ml-96">
-            <div className="border rounded-md px-4 py-3 ">
-              {repository.parsedOverview}
-            </div>
-          </div>
+        <RepoContent repository={repository} selectedFileId={fileId} />
+        {/* {!selectedFile ? ( */}
+        {!fileId ? (
+          <RepoOverview overview={repository.overview} />
         ) : (
-          <FileViewer file={selectedFile} isFileLoading={isFileLoading} />
+          <Suspense fallback={<FileViewerSkeleton />}>
+            <FileViewer fileId={fileId} />
+          </Suspense>
         )}
       </div>
     </div>

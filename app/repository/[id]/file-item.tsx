@@ -1,4 +1,4 @@
-import { FileWithParsedAnalysis } from "@/interfaces/github";
+import { File } from "@prisma/client";
 import { FileText } from "lucide-react";
 import React from "react";
 
@@ -6,13 +6,13 @@ const FileItem = React.memo(
   ({
     file,
     onFileSelect,
-    selectedFile,
+    selectedFileId,
   }: {
-    file: FileWithParsedAnalysis;
-    onFileSelect: (file: FileWithParsedAnalysis) => void;
-    selectedFile: FileWithParsedAnalysis | null;
+    file: File;
+    onFileSelect: (file: string) => void;
+    selectedFileId?: string;
   }) => {
-    const isThisFileTheSelectedFile = file.path === selectedFile?.path;
+    const isThisFileTheSelectedFile = file.id === selectedFileId;
     return (
       <div
         className={`flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted ${
@@ -20,7 +20,7 @@ const FileItem = React.memo(
         }`}
         onClick={() => {
           if (!isThisFileTheSelectedFile) {
-            onFileSelect(file);
+            onFileSelect(file.id);
           }
         }}
       >

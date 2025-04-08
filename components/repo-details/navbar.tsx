@@ -1,39 +1,19 @@
 import { siteConfig } from "@/config/site";
-import { File, Repository } from "@prisma/client";
+import { Repository } from "@prisma/client";
 import { User } from "next-auth";
 import Link from "next/link";
 import React from "react";
 import { FaGithub } from "react-icons/fa";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { AvatarMenu } from "../ui/avatar-menu";
-import { Button, buttonVariants } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
+import { buttonVariants } from "../ui/button";
 
 interface RepoDetailsNavbarProps {
   repository: Repository;
-  selectedFile: File | null;
-  clearSelectedFile: () => void;
   user: User;
 }
 
-const RepositorySkeleton = () => (
-  <div className="flex gap-2 items-center border p-2 rounded-lg w-fit">
-    <Skeleton className="w-8 h-8 rounded-full" />
-    <div className="flex gap-2">
-      <Skeleton className="h-8 w-24" />
-      <Skeleton className="h-8 w-24" />
-    </div>
-  </div>
-);
-
-const Navbar = ({
-  repository,
-  selectedFile,
-  clearSelectedFile,
-  user,
-}: RepoDetailsNavbarProps) => {
-  const isLoadingRepository = repository === null;
-
+const Navbar = ({ repository, user }: RepoDetailsNavbarProps) => {
   return (
     <header className=" px-4 py-2 flex items-center justify-between fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex gap-2 items-center">
@@ -42,32 +22,29 @@ const Navbar = ({
             {siteConfig.name}
           </span>
         </Link>
-        {isLoadingRepository ? (
-          <RepositorySkeleton />
-        ) : (
-          <Link
-            className="flex gap-2 items-center border p-2  rounded-lg w-fit cursor-pointer hover:bg-secondary transition-colors duration-150 group"
-            href={`/repository/${repository.id}`}
-          >
-            <Avatar className="w-8 h-8">
-              <AvatarImage src={repository.avatarUrl} />
-            </Avatar>
-            <div className="flex gap-1">
-              <span className="text-foreground">{repository.owner}</span>
-              <span className="text-muted group-hover:text-muted-foreground ">
-                {"/"}
-              </span>
-              <span className="text-foreground">{repository.name}</span>
-            </div>
-          </Link>
-        )}
+        <Link
+          className="flex gap-2 items-center border p-2  rounded-lg w-fit cursor-pointer hover:bg-secondary transition-colors duration-150 group"
+          href={`/repository/${repository.id}`}
+        >
+          <Avatar className="w-8 h-8">
+            <AvatarImage src={repository.avatarUrl} />
+          </Avatar>
+          <div className="flex gap-1">
+            <span className="text-foreground">{repository.owner}</span>
+            <span className="text-muted group-hover:text-muted-foreground ">
+              {"/"}
+            </span>
+            <span className="text-foreground">{repository.name}</span>
+          </div>
+        </Link>
       </div>
       <div className="flex gap-2 items-center">
-        {selectedFile && (
-          <Button onClick={clearSelectedFile} variant={"outline"}>
-            Overview
-          </Button>
-        )}
+        <Link
+          href={`/${repository.id}`}
+          className={buttonVariants({ variant: "outline" })}
+        >
+          Overview
+        </Link>
         <a
           href={repository?.url}
           target="_blank"

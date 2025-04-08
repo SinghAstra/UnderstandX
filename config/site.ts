@@ -2,7 +2,7 @@ import { SiteConfig } from "@/interfaces/site";
 
 export const siteConfig: SiteConfig = {
   name: "UnderstandX",
-  description: "Understand any public repository.",
+  description: "Understand any public github repository.",
   tagline: "Understand GitHub repositories with ease",
   url: "https://understandx.vercel.app",
   features: [

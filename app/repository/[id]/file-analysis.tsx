@@ -1,11 +1,12 @@
 "use server";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { FileWithParsedAnalysis } from "@/interfaces/github";
+import { parseMdx } from "@/lib/markdown";
+import { File } from "@prisma/client";
 import React, { Suspense } from "react";
 
 interface FileAnalysisProps {
-  file: FileWithParsedAnalysis;
+  file: File;
 }
 
 const FileAnalysisSkeleton = () => {
@@ -40,12 +41,11 @@ const FileAnalysisSkeleton = () => {
   );
 };
 
-const FileAnalysis = ({ file }: FileAnalysisProps) => {
-  return (
-    <Suspense fallback={<FileAnalysisSkeleton />}>
-      {file.parsedAnalysis}
-    </Suspense>
+const FileAnalysis = async ({ file }: FileAnalysisProps) => {
+  const { content } = await parseMdx(
+    file.analysis ?? "Analysis not generated. Please try again."
   );
+  return <Suspense fallback={<FileAnalysisSkeleton />}>{content}</Suspense>;
 };
 
 export default FileAnalysis;

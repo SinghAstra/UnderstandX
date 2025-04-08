@@ -1,7 +1,4 @@
-import {
-  DirectoryWithRelations,
-  FileWithParsedAnalysis,
-} from "@/interfaces/github";
+import { DirectoryWithRelations } from "@/interfaces/github";
 import { ChevronDown, ChevronRight, Folder, FolderOpen } from "lucide-react";
 import React, { useState } from "react";
 import FileItem from "./file-item";
@@ -10,18 +7,18 @@ const DirectoryItem = React.memo(
   ({
     directory,
     level = 0,
-    selectedFile,
+    selectedFileId,
     onFileSelect,
   }: {
     directory: DirectoryWithRelations;
-    selectedFile: FileWithParsedAnalysis | null;
+    selectedFileId?: string;
     level: number;
-    onFileSelect: (file: FileWithParsedAnalysis) => void;
+    onFileSelect: (fileId: string) => void;
   }) => {
-    const isSelectedFileInThisDirectory = selectedFile?.path.includes(
-      directory.path
-    );
-    const [isOpen, setIsOpen] = useState(isSelectedFileInThisDirectory);
+    // const isSelectedFileInThisDirectory = selectedFile?.path.includes(
+    //   directory.path
+    // );
+    const [isOpen, setIsOpen] = useState(false);
     const toggleOpen = () => setIsOpen(!isOpen);
 
     return (
@@ -53,7 +50,7 @@ const DirectoryItem = React.memo(
                 directory={child}
                 level={level + 1}
                 onFileSelect={onFileSelect}
-                selectedFile={selectedFile}
+                selectedFileId={selectedFileId}
               />
             ))}
 
@@ -66,7 +63,7 @@ const DirectoryItem = React.memo(
                 <FileItem
                   file={file}
                   onFileSelect={onFileSelect}
-                  selectedFile={selectedFile}
+                  selectedFileId={selectedFileId}
                 />
               </div>
             ))}

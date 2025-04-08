@@ -1,19 +1,26 @@
-import {
-  FileWithParsedAnalysis,
-  RepositoryWithRelationsAndOverview,
-} from "@/interfaces/github";
+"use client";
+import { RepositoryWithRelations } from "@/interfaces/github";
+import { useRouter } from "next/navigation";
 import DirectoryItem from "./directory-item";
 import FileItem from "./file-item";
 
 const RepoContent = ({
-  selectedFile,
   repository,
-  onFileSelect,
+  selectedFileId,
 }: {
-  selectedFile: FileWithParsedAnalysis | null;
-  repository: RepositoryWithRelationsAndOverview;
-  onFileSelect: (file: FileWithParsedAnalysis) => void;
+  repository: RepositoryWithRelations;
+  selectedFileId?: string;
 }) => {
+  const router = useRouter();
+
+  const handleFileSelect = (fileId: string) => {
+    router.push(`?fileId=${fileId}`);
+  };
+
+  // const clearSelectedFile = () => {
+  //   router.push(".");
+  // };
+
   return (
     <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
       <div className="p-3 ">
@@ -23,8 +30,8 @@ const RepoContent = ({
             level={0}
             key={directory.id}
             directory={directory}
-            selectedFile={selectedFile}
-            onFileSelect={onFileSelect}
+            selectedFileId={selectedFileId}
+            onFileSelect={handleFileSelect}
           />
         ))}
         {/* Root level files */}
@@ -33,10 +40,10 @@ const RepoContent = ({
           .map((file) => {
             return (
               <FileItem
-                selectedFile={selectedFile}
+                selectedFileId={selectedFileId}
                 key={file.id}
                 file={file}
-                onFileSelect={onFileSelect}
+                onFileSelect={handleFileSelect}
               />
             );
           })}
