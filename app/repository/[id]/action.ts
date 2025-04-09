@@ -12,11 +12,14 @@ import { getServerSession } from "next-auth";
 export async function getRepositoryData(id: string) {
   const session = await getServerSession(authOptions);
 
+  console.log("session is ", session);
+
   if (!session) {
     return null;
   }
 
   try {
+    console.log("In getRepositoryData");
     const repository = await prisma.repository.findUnique({
       where: {
         id,
@@ -50,30 +53,44 @@ export async function getRepositoryData(id: string) {
       }
     });
 
-    await Promise.all(
-      repository.files.map(async (file) => {
-        const { content: parsedAnalysis } = await parseMdx(
-          file.analysis ?? "Analysis not available. Please try again."
-        );
-        const language = getLanguage(file);
-        const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
-        const { content: parsedCode } = await parseMdx(markdown);
-        const fileWithParsedAnalysisAndCode = {
-          ...file,
-          parsedCode,
-          parsedAnalysis,
-        };
-        if (file.directoryId) {
-          directoryMap
-            .get(file.directoryId)
-            ?.files.push(fileWithParsedAnalysisAndCode);
-        } else {
-          rootFiles.push(fileWithParsedAnalysisAndCode);
-        }
-      })
-    );
+    console.log("rootDirectories.length is ", rootDirectories.length);
+    console.log("repository.files.length is ", repository.files.length);
 
-    const { content } = await parseMdx(
+    repository.files.map(async (file, index) => {
+      console.log("----------------------------------------");
+      console.log("file.path is ", file.path);
+      const { content: parsedAnalysis } = await parseMdx(
+        file.analysis ?? "Analysis not available. Please try again."
+      );
+
+      console.log("Generated Analysis for ", file.path);
+      const language = getLanguage(file);
+      const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
+      const { content: parsedCode } = await parseMdx(markdown);
+      console.log("Generated Parsed Code for ", file.path);
+      const fileWithParsedAnalysisAndCode = {
+        ...file,
+        parsedCode,
+        parsedAnalysis,
+      };
+      console.log("Generated Code and analysis for ", file.path);
+      console.log("index is  ", index);
+      console.log("repository.files.length is ", repository.files.length);
+
+      console.log("----------------------------------------");
+
+      if (file.directoryId) {
+        directoryMap
+          .get(file.directoryId)
+          .files.push(fileWithParsedAnalysisAndCode);
+      } else {
+        rootFiles.push(fileWithParsedAnalysisAndCode);
+      }
+    });
+
+    console.log("rootFiles.length is ", rootFiles.length);
+
+    const { content: parsedOverview } = await parseMdx(
       repository.overview ?? "Overview not available. Please try again."
     );
 
@@ -82,7 +99,7 @@ export async function getRepositoryData(id: string) {
       ...repository,
       directories: rootDirectories,
       files: rootFiles,
-      parsedOverview: content,
+      parsedOverview,
     };
 
     return structuredRepository;

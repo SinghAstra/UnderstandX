@@ -31,6 +31,7 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
 
     if (repository.status === RepositoryStatus.SUCCESS) {
       console.log("Navigating to repository page...");
+      console.log("repository.id is ", repository.id);
       router.push(`/repository/${repository.id}`);
     }
 
