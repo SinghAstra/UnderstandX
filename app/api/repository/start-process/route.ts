@@ -7,6 +7,9 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 const EXPRESS_API_URL = process.env.EXPRESS_API_URL;
+if (!EXPRESS_API_URL) {
+  throw new Error("EXPRESS_API_URL is required.");
+}
 
 export async function POST(req: NextRequest) {
   try {
