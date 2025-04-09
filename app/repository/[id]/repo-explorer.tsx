@@ -1,11 +1,13 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
 import {
-  FileWithParsedAnalysisAndCode,
+  ParsedFile,
   RepositoryWithRelationsAndOverview,
 } from "@/interfaces/github";
+import { File } from "@prisma/client";
 import { User } from "next-auth";
 import { useState } from "react";
+import { parseFile } from "./action";
 import { FileViewer } from "./file-viewer";
 import RepoContent from "./repo-content";
 import RepoOverview from "./repo-overview";
@@ -16,11 +18,12 @@ interface RepoExplorerProps {
 }
 
 const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
-  const [selectedFile, setSelectedFile] =
-    useState<FileWithParsedAnalysisAndCode | null>(null);
+  const [selectedFile, setSelectedFile] = useState<ParsedFile | null>(null);
 
-  const handleFileSelect = (file: FileWithParsedAnalysisAndCode) => {
-    setSelectedFile(file);
+  const handleFileSelect = async (file: File) => {
+    const parsedFile = await parseFile(file);
+
+    setSelectedFile(parsedFile);
   };
 
   return (

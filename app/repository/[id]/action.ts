@@ -1,25 +1,20 @@
 "use server";
-import {
-  DirectoryWithRelations,
-  FileWithParsedAnalysisAndCode,
-} from "@/interfaces/github";
+import { DirectoryWithRelations } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
 import { parseMdx } from "@/lib/markdown";
 import { getLanguage } from "@/lib/utils";
 import { prisma } from "@/lib/utils/prisma";
+import { File } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export async function getRepositoryData(id: string) {
   const session = await getServerSession(authOptions);
-
-  console.log("session is ", session);
 
   if (!session) {
     return null;
   }
 
   try {
-    console.log("In getRepositoryData");
     const repository = await prisma.repository.findUnique({
       where: {
         id,
@@ -37,7 +32,7 @@ export async function getRepositoryData(id: string) {
 
     const directoryMap = new Map();
     const rootDirectories: DirectoryWithRelations[] = [];
-    const rootFiles: FileWithParsedAnalysisAndCode[] = [];
+    const rootFiles: File[] = [];
 
     // Initialize directory map
     repository.directories.forEach((dir) => {
@@ -53,42 +48,13 @@ export async function getRepositoryData(id: string) {
       }
     });
 
-    console.log("rootDirectories.length is ", rootDirectories.length);
-    console.log("repository.files.length is ", repository.files.length);
-
-    repository.files.map(async (file, index) => {
-      console.log("----------------------------------------");
-      console.log("file.path is ", file.path);
-      const { content: parsedAnalysis } = await parseMdx(
-        file.analysis ?? "Analysis not available. Please try again."
-      );
-
-      console.log("Generated Analysis for ", file.path);
-      const language = getLanguage(file);
-      const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
-      const { content: parsedCode } = await parseMdx(markdown);
-      console.log("Generated Parsed Code for ", file.path);
-      const fileWithParsedAnalysisAndCode = {
-        ...file,
-        parsedCode,
-        parsedAnalysis,
-      };
-      console.log("Generated Code and analysis for ", file.path);
-      console.log("index is  ", index);
-      console.log("repository.files.length is ", repository.files.length);
-
-      console.log("----------------------------------------");
-
+    repository.files.map(async (file) => {
       if (file.directoryId) {
-        directoryMap
-          .get(file.directoryId)
-          .files.push(fileWithParsedAnalysisAndCode);
+        directoryMap.get(file.directoryId).files.push(file);
       } else {
-        rootFiles.push(fileWithParsedAnalysisAndCode);
+        rootFiles.push(file);
       }
     });
-
-    console.log("rootFiles.length is ", rootFiles.length);
 
     const { content: parsedOverview } = await parseMdx(
       repository.overview ?? "Overview not available. Please try again."
@@ -110,4 +76,14 @@ export async function getRepositoryData(id: string) {
     }
     return null;
   }
+}
+
+export async function parseFile(file: File) {
+  const { content: parsedAnalysis } = await parseMdx(
+    file.analysis ?? "Analysis not available. Please try again."
+  );
+  const language = getLanguage(file);
+  const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
+  const { content: parsedCode } = await parseMdx(markdown);
+  return { ...file, parsedAnalysis, parsedCode };
 }

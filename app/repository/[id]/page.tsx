@@ -16,14 +16,11 @@ export default async function RepositoryPage({
   if (!session) {
     redirect("/auth/sign-in");
   }
-  console.log("Before getRepositoryData");
 
   const repository = await getRepositoryData(params.id);
   if (!repository) {
     notFound();
   }
-
-  console.log("repository.files in page.tsx is ", repository.files);
 
   return <RepoExplorer repository={repository} user={session.user} />;
 }

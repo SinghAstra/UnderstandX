@@ -1,7 +1,5 @@
-import {
-  DirectoryWithRelations,
-  FileWithParsedAnalysisAndCode,
-} from "@/interfaces/github";
+import { DirectoryWithRelations, ParsedFile } from "@/interfaces/github";
+import { File } from "@prisma/client";
 import { ChevronDown, ChevronRight, Folder, FolderOpen } from "lucide-react";
 import React, { useState } from "react";
 import FileItem from "./file-item";
@@ -14,9 +12,9 @@ const DirectoryItem = React.memo(
     onFileSelect,
   }: {
     directory: DirectoryWithRelations;
-    selectedFile: FileWithParsedAnalysisAndCode | null;
+    selectedFile: ParsedFile | null;
     level: number;
-    onFileSelect: (file: FileWithParsedAnalysisAndCode) => void;
+    onFileSelect: (file: File) => void;
   }) => {
     const isSelectedFileInThisDirectory = selectedFile?.path.includes(
       directory.path
