@@ -1,6 +1,7 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
 import { RepositoryWithRelationsAndOverview } from "@/interfaces/github";
+import { File } from "@prisma/client";
 import { User } from "next-auth";
 import { useState } from "react";
 import { FileViewer } from "./file-viewer";
@@ -13,10 +14,18 @@ interface RepoExplorerProps {
 }
 
 const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
 
   const handleFileSelect = async (filePath: string) => {
+    console.log("In handleFileSelect");
     setSelectedFilePath(filePath);
+    const matchedFile = repository.files.find((file) => file.path === filePath);
+    if (!matchedFile) {
+      setSelectedFile(null);
+      return;
+    }
+    setSelectedFile(matchedFile);
   };
 
   return (
@@ -28,13 +37,10 @@ const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
           selectedFilePath={selectedFilePath}
           handleFileSelect={handleFileSelect}
         />
-        {!selectedFilePath ? (
+        {!selectedFile ? (
           <RepoOverview parsedOverview={repository.parsedOverview} />
         ) : (
-          <FileViewer
-            files={repository.files}
-            selectedFilePath={selectedFilePath}
-          />
+          <FileViewer selectedFile={selectedFile} />
         )}
       </div>
     </div>

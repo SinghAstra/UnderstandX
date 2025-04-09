@@ -20,34 +20,27 @@ import FileAnalysis from "./file-analysis";
 import CodeHighlighter from "./file-content";
 
 interface FileViewerProps {
-  files: File[];
-  selectedFilePath: string;
+  selectedFile: File;
 }
 
 type TabOptions = "code" | "analysis";
 
-export const FileViewer = ({ files, selectedFilePath }: FileViewerProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+export const FileViewer = ({ selectedFile }: FileViewerProps) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<TabOptions>("code");
   const [message, setMessage] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<ParsedFile | null>(null);
+  const [parsedFile, setParsedFile] = useState<ParsedFile>();
 
   useEffect(() => {
     const parseFileViewer = async () => {
       setIsLoading(true);
-      const matchedFile = files.find((file) => file.path === selectedFilePath);
-      if (!matchedFile) {
-        setMessage("File not Found");
-        return;
-      }
-      const parsedFile = await parseFile(matchedFile);
-      setSelectedFile(parsedFile);
+      const parsedFile = await parseFile(selectedFile);
+      setParsedFile(parsedFile);
       setIsLoading(false);
     };
-
     parseFileViewer();
-  }, [selectedFilePath, files]);
+  }, [selectedFile]);
 
   useEffect(() => {
     if (!message) return;
@@ -100,7 +93,7 @@ export const FileViewer = ({ files, selectedFilePath }: FileViewerProps) => {
     );
   }
 
-  if (!selectedFile) {
+  if (!parsedFile) {
     return (
       <div className="ml-96 w-full p-3 overflow-hidden">
         <Card className="border rounded-lg">
@@ -154,7 +147,7 @@ export const FileViewer = ({ files, selectedFilePath }: FileViewerProps) => {
                 <TabsTrigger
                   value="analysis"
                   className="flex items-center text-sm px-2 py-1 tracking-wide font-normal transition-all"
-                  disabled={!selectedFile.analysis}
+                  disabled={!parsedFile.analysis}
                 >
                   <FileText className="h-4 w-4 mr-1" />
                   Analysis
@@ -179,10 +172,10 @@ export const FileViewer = ({ files, selectedFilePath }: FileViewerProps) => {
 
         <div className="py-1 px-4 ">
           {activeTab === "code" ? (
-            <CodeHighlighter parsedCode={selectedFile.parsedCode} />
+            <CodeHighlighter parsedCode={parsedFile.parsedCode} />
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
-              <FileAnalysis parsedAnalysis={selectedFile.parsedAnalysis} />
+              <FileAnalysis parsedAnalysis={parsedFile.parsedAnalysis} />
             </div>
           )}
         </div>
