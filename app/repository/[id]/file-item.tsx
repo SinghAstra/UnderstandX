@@ -1,4 +1,3 @@
-import { ParsedFile } from "@/interfaces/github";
 import { File } from "@prisma/client";
 import { FileText } from "lucide-react";
 import React from "react";
@@ -6,14 +5,14 @@ import React from "react";
 const FileItem = React.memo(
   ({
     file,
-    onFileSelect,
-    selectedFile,
+    handleFileSelect,
+    selectedFilePath,
   }: {
     file: File;
-    onFileSelect: (file: File) => void;
-    selectedFile: ParsedFile | null;
+    handleFileSelect: (file: string) => void;
+    selectedFilePath: string | null;
   }) => {
-    const isThisFileTheSelectedFile = file.id === selectedFile?.id;
+    const isThisFileTheSelectedFile = file.path === selectedFilePath;
     return (
       <div
         className={`flex items-center justify-between py-1 px-2 hover:bg-secondary cursor-pointer text-md transition-colors duration-150 border-b border-dotted ${
@@ -21,7 +20,7 @@ const FileItem = React.memo(
         }`}
         onClick={() => {
           if (!isThisFileTheSelectedFile) {
-            onFileSelect(file);
+            handleFileSelect(file.path);
           }
         }}
       >

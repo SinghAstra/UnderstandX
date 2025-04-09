@@ -22,6 +22,7 @@ export interface DirectoryWithRelations extends Directory {
 
 export interface RepositoryWithRelationsAndOverview extends Repository {
   directories: DirectoryWithRelations[];
+  rootFiles: File[];
   files: File[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parsedOverview: ReactElement<any, string | JSXElementConstructor<any>> | null;

@@ -1,20 +1,16 @@
 "use client";
-import {
-  ParsedFile,
-  RepositoryWithRelationsAndOverview,
-} from "@/interfaces/github";
-import { File } from "@prisma/client";
+import { RepositoryWithRelationsAndOverview } from "@/interfaces/github";
 import DirectoryItem from "./directory-item";
 import FileItem from "./file-item";
 
 const RepoContent = ({
   repository,
-  selectedFile,
+  selectedFilePath,
   handleFileSelect,
 }: {
   repository: RepositoryWithRelationsAndOverview;
-  selectedFile: ParsedFile | null;
-  handleFileSelect: (file: File) => void;
+  selectedFilePath: string | null;
+  handleFileSelect: (filePath: string) => void;
 }) => {
   return (
     <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
@@ -25,20 +21,20 @@ const RepoContent = ({
             level={0}
             key={directory.id}
             directory={directory}
-            selectedFile={selectedFile}
-            onFileSelect={handleFileSelect}
+            selectedFilePath={selectedFilePath}
+            handleFileSelect={handleFileSelect}
           />
         ))}
         {/* Root level files */}
-        {repository.files
+        {repository.rootFiles
           ?.filter((file) => !file.directoryId)
           .map((file) => {
             return (
               <FileItem
-                selectedFile={selectedFile}
+                selectedFilePath={selectedFilePath}
                 key={file.id}
                 file={file}
-                onFileSelect={handleFileSelect}
+                handleFileSelect={handleFileSelect}
               />
             );
           })}

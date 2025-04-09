@@ -1,13 +1,8 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
-import {
-  ParsedFile,
-  RepositoryWithRelationsAndOverview,
-} from "@/interfaces/github";
-import { File } from "@prisma/client";
+import { RepositoryWithRelationsAndOverview } from "@/interfaces/github";
 import { User } from "next-auth";
 import { useState } from "react";
-import { parseFile } from "./action";
 import { FileViewer } from "./file-viewer";
 import RepoContent from "./repo-content";
 import RepoOverview from "./repo-overview";
@@ -18,12 +13,10 @@ interface RepoExplorerProps {
 }
 
 const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
-  const [selectedFile, setSelectedFile] = useState<ParsedFile | null>(null);
+  const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
 
-  const handleFileSelect = async (file: File) => {
-    const parsedFile = await parseFile(file);
-
-    setSelectedFile(parsedFile);
+  const handleFileSelect = async (filePath: string) => {
+    setSelectedFilePath(filePath);
   };
 
   return (
@@ -32,13 +25,16 @@ const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
       <div className="flex mt-20">
         <RepoContent
           repository={repository}
-          selectedFile={selectedFile}
+          selectedFilePath={selectedFilePath}
           handleFileSelect={handleFileSelect}
         />
-        {!selectedFile ? (
+        {!selectedFilePath ? (
           <RepoOverview parsedOverview={repository.parsedOverview} />
         ) : (
-          <FileViewer file={selectedFile} />
+          <FileViewer
+            files={repository.files}
+            selectedFilePath={selectedFilePath}
+          />
         )}
       </div>
     </div>

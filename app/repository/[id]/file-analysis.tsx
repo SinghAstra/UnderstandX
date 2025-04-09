@@ -1,12 +1,12 @@
-import { FileWithParsedAnalysisAndCode } from "@/interfaces/github";
-import React from "react";
+import React, { JSXElementConstructor, ReactElement } from "react";
 
 interface FileAnalysisProps {
-  file: FileWithParsedAnalysisAndCode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parsedAnalysis: ReactElement<any, string | JSXElementConstructor<any>> | null;
 }
 
-const FileAnalysis = ({ file }: FileAnalysisProps) => {
-  return <div>{file.parsedAnalysis}</div>;
+const FileAnalysis = ({ parsedAnalysis }: FileAnalysisProps) => {
+  return <div>{parsedAnalysis}</div>;
 };
 
 export default FileAnalysis;

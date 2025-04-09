@@ -64,7 +64,8 @@ export async function getRepositoryData(id: string) {
     const structuredRepository = {
       ...repository,
       directories: rootDirectories,
-      files: rootFiles,
+      rootFiles,
+      files: repository.files,
       parsedOverview,
     };
 
@@ -82,8 +83,10 @@ export async function parseFile(file: File) {
   const { content: parsedAnalysis } = await parseMdx(
     file.analysis ?? "Analysis not available. Please try again."
   );
+  console.log("parsedAnalysis generated");
   const language = getLanguage(file);
   const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
   const { content: parsedCode } = await parseMdx(markdown);
+  console.log("parsedCode generated");
   return { ...file, parsedAnalysis, parsedCode };
 }

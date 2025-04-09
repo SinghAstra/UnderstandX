@@ -1,5 +1,4 @@
-import { DirectoryWithRelations, ParsedFile } from "@/interfaces/github";
-import { File } from "@prisma/client";
+import { DirectoryWithRelations } from "@/interfaces/github";
 import { ChevronDown, ChevronRight, Folder, FolderOpen } from "lucide-react";
 import React, { useState } from "react";
 import FileItem from "./file-item";
@@ -8,15 +7,15 @@ const DirectoryItem = React.memo(
   ({
     directory,
     level = 0,
-    selectedFile,
-    onFileSelect,
+    selectedFilePath,
+    handleFileSelect,
   }: {
     directory: DirectoryWithRelations;
-    selectedFile: ParsedFile | null;
+    selectedFilePath: string | null;
     level: number;
-    onFileSelect: (file: File) => void;
+    handleFileSelect: (filePath: string) => void;
   }) => {
-    const isSelectedFileInThisDirectory = selectedFile?.path.includes(
+    const isSelectedFileInThisDirectory = selectedFilePath?.includes(
       directory.path
     );
     const [isOpen, setIsOpen] = useState(isSelectedFileInThisDirectory);
@@ -50,8 +49,8 @@ const DirectoryItem = React.memo(
                 key={child.id}
                 directory={child}
                 level={level + 1}
-                onFileSelect={onFileSelect}
-                selectedFile={selectedFile}
+                handleFileSelect={handleFileSelect}
+                selectedFilePath={selectedFilePath}
               />
             ))}
 
@@ -63,8 +62,8 @@ const DirectoryItem = React.memo(
               >
                 <FileItem
                   file={file}
-                  onFileSelect={() => onFileSelect(file)}
-                  selectedFile={selectedFile}
+                  handleFileSelect={handleFileSelect}
+                  selectedFilePath={selectedFilePath}
                 />
               </div>
             ))}
