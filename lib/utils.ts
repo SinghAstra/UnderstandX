@@ -1,3 +1,4 @@
+import { File } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -48,3 +49,21 @@ export function getIconName(name: string) {
   const ext = splittedNames[splittedNames.length - 1];
   return fileExtensionIconMap[ext as keyof typeof fileExtensionIconMap];
 }
+
+export const getLanguage = (file: File) => {
+  const ext = file?.name.split(".").pop();
+  switch (ext) {
+    case "js":
+    case "jsx":
+      return "javascript";
+    case "ts":
+    case "tsx":
+      return "typescript";
+    case "json":
+      return "json";
+    case "py":
+      return "python";
+    default:
+      return "javascript";
+  }
+};

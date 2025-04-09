@@ -174,6 +174,7 @@ export async function parseMdx(rawMdx: string) {
     mdxContent = content;
   } catch (error) {
     if (error instanceof Error) {
+      console.log("rawMdx is ", rawMdx);
       console.log("error.stack is ", error.stack);
       console.log("error.message is ", error.message);
     }

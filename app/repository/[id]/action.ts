@@ -5,7 +5,7 @@ import {
 } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
 import { parseMdx } from "@/lib/markdown";
-import { getLanguage } from "@/lib/utils/github";
+import { getLanguage } from "@/lib/utils";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 

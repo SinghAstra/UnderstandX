@@ -26,17 +26,24 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
   const router = useRouter();
 
   const handleRepositoryCardClick = (repository: Repository) => {
-    console.log("In handleRepositoryCardClick.")
+    console.log("In handleRepositoryCardClick.");
+    console.log("Repository Status:", repository.status);
+
     if (repository.status === RepositoryStatus.SUCCESS) {
+      console.log("Navigating to repository page...");
       router.push(`/repository/${repository.id}`);
     }
+
     if (repository.status === RepositoryStatus.FAILED) {
+      console.log("Repository processing failed");
       setMessage("Failed to process repository. Please try again.");
     }
+
     if (
       repository.status === RepositoryStatus.PROCESSING ||
       repository.status === RepositoryStatus.PENDING
     ) {
+      console.log("Navigating to logs page...");
       router.push(`/logs/${repository.id}`);
     }
   };
