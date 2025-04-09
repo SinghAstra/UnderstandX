@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileWithParsedAnalysis } from "@/interfaces/github";
+import { FileWithParsedAnalysisAndCode } from "@/interfaces/github";
 import { Check, Code, Copy, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ import FileAnalysis from "./file-analysis";
 import CodeHighlighter from "./file-content";
 
 interface FileViewerProps {
-  file: FileWithParsedAnalysis;
+  file: FileWithParsedAnalysisAndCode;
 }
 
 type TabOptions = "code" | "analysis";
@@ -17,8 +17,6 @@ export const FileViewer = ({ file }: FileViewerProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<TabOptions>("code");
   const [message, setMessage] = useState<string | null>(null);
-
-  console.log("Inside the File Viewer.");
 
   useEffect(() => {
     if (!message) return;
@@ -38,24 +36,6 @@ export const FileViewer = ({ file }: FileViewerProps) => {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
       setMessage(`Copied : ${file.name} (Analysis)`);
-    }
-  };
-
-  const getLanguage = () => {
-    const ext = file?.name.split(".").pop();
-    switch (ext) {
-      case "js":
-      case "jsx":
-        return "javascript";
-      case "ts":
-      case "tsx":
-        return "typescript";
-      case "json":
-        return "json";
-      case "py":
-        return "python";
-      default:
-        return "javascript";
     }
   };
 
@@ -109,10 +89,7 @@ export const FileViewer = ({ file }: FileViewerProps) => {
 
         <div className="py-1 px-4 ">
           {activeTab === "code" ? (
-            <CodeHighlighter
-              code={file.content ?? "Code Not Available"}
-              language={getLanguage()}
-            />
+            <CodeHighlighter parsedCode={file.parsedCode} />
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
               <FileAnalysis file={file} />

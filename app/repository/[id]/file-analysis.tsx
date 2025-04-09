@@ -1,8 +1,8 @@
-import { FileWithParsedAnalysis } from "@/interfaces/github";
+import { FileWithParsedAnalysisAndCode } from "@/interfaces/github";
 import React from "react";
 
 interface FileAnalysisProps {
-  file: FileWithParsedAnalysis;
+  file: FileWithParsedAnalysisAndCode;
 }
 
 const FileAnalysis = ({ file }: FileAnalysisProps) => {

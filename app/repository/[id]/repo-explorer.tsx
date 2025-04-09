@@ -1,7 +1,7 @@
 "use client";
 import Navbar from "@/components/repo-details/navbar";
 import {
-  FileWithParsedAnalysis,
+  FileWithParsedAnalysisAndCode,
   RepositoryWithRelationsAndOverview,
 } from "@/interfaces/github";
 import { User } from "next-auth";
@@ -13,14 +13,13 @@ import RepoOverview from "./repo-overview";
 interface RepoExplorerProps {
   repository: RepositoryWithRelationsAndOverview;
   user: User;
-  searchParams: { fileId?: string };
 }
 
 const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
   const [selectedFile, setSelectedFile] =
-    useState<FileWithParsedAnalysis | null>(null);
+    useState<FileWithParsedAnalysisAndCode | null>(null);
 
-  const handleFileSelect = (file: FileWithParsedAnalysis) => {
+  const handleFileSelect = (file: FileWithParsedAnalysisAndCode) => {
     setSelectedFile(file);
   };
 

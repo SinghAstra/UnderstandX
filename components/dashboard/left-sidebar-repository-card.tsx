@@ -26,6 +26,7 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
   const router = useRouter();
 
   const handleRepositoryCardClick = (repository: Repository) => {
+    console.log("In handleRepositoryCardClick.")
     if (repository.status === RepositoryStatus.SUCCESS) {
       router.push(`/repository/${repository.id}`);
     }

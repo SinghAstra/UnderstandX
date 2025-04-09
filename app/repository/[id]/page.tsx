@@ -6,12 +6,10 @@ import RepoExplorer from "./repo-explorer";
 
 type RepositoryLayoutProps = {
   params: { id: string };
-  searchParams?: { fileId?: string };
 };
 
 export default async function RepositoryPage({
   params,
-  searchParams = {},
 }: RepositoryLayoutProps) {
   const session = await getServerSession(authOptions);
 
@@ -24,11 +22,5 @@ export default async function RepositoryPage({
     notFound();
   }
 
-  return (
-    <RepoExplorer
-      repository={repository}
-      user={session.user}
-      searchParams={searchParams}
-    />
-  );
+  return <RepoExplorer repository={repository} user={session.user} />;
 }

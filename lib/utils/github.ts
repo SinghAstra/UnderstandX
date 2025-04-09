@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import { File } from "@prisma/client";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN,
@@ -65,3 +66,21 @@ export async function fetchGitHubRepoMetaData(owner: string, repo: string) {
     throw error; // Rethrow for handling in the main function
   }
 }
+
+export const getLanguage = (file: File) => {
+  const ext = file?.name.split(".").pop();
+  switch (ext) {
+    case "js":
+    case "jsx":
+      return "javascript";
+    case "ts":
+    case "tsx":
+      return "typescript";
+    case "json":
+      return "json";
+    case "py":
+      return "python";
+    default:
+      return "javascript";
+  }
+};

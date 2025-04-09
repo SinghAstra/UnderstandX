@@ -1,6 +1,6 @@
 import {
   DirectoryWithRelations,
-  FileWithParsedAnalysis,
+  FileWithParsedAnalysisAndCode,
 } from "@/interfaces/github";
 import { ChevronDown, ChevronRight, Folder, FolderOpen } from "lucide-react";
 import React, { useState } from "react";
@@ -14,9 +14,9 @@ const DirectoryItem = React.memo(
     onFileSelect,
   }: {
     directory: DirectoryWithRelations;
-    selectedFile: FileWithParsedAnalysis | null;
+    selectedFile: FileWithParsedAnalysisAndCode | null;
     level: number;
-    onFileSelect: (file: FileWithParsedAnalysis) => void;
+    onFileSelect: (file: FileWithParsedAnalysisAndCode) => void;
   }) => {
     const isSelectedFileInThisDirectory = selectedFile?.path.includes(
       directory.path

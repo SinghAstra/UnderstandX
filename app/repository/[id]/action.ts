@@ -1,10 +1,11 @@
 "use server";
 import {
   DirectoryWithRelations,
-  FileWithParsedAnalysis,
+  FileWithParsedAnalysisAndCode,
 } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
 import { parseMdx } from "@/lib/markdown";
+import { getLanguage } from "@/lib/utils/github";
 import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 
@@ -33,7 +34,7 @@ export async function getRepositoryData(id: string) {
 
     const directoryMap = new Map();
     const rootDirectories: DirectoryWithRelations[] = [];
-    const rootFiles: FileWithParsedAnalysis[] = [];
+    const rootFiles: FileWithParsedAnalysisAndCode[] = [];
 
     // Initialize directory map
     repository.directories.forEach((dir) => {
@@ -51,19 +52,23 @@ export async function getRepositoryData(id: string) {
 
     await Promise.all(
       repository.files.map(async (file) => {
-        const { content } = await parseMdx(
+        const { content: parsedAnalysis } = await parseMdx(
           file.analysis ?? "Analysis not available. Please try again."
         );
-        const fileWithParsedAnalysis = {
+        const language = getLanguage(file);
+        const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
+        const { content: parsedCode } = await parseMdx(markdown);
+        const fileWithParsedAnalysisAndCode = {
           ...file,
-          parsedAnalysis: content,
+          parsedCode,
+          parsedAnalysis,
         };
         if (file.directoryId) {
           directoryMap
             .get(file.directoryId)
-            ?.files.push(fileWithParsedAnalysis);
+            ?.files.push(fileWithParsedAnalysisAndCode);
         } else {
-          rootFiles.push(fileWithParsedAnalysis);
+          rootFiles.push(fileWithParsedAnalysisAndCode);
         }
       })
     );

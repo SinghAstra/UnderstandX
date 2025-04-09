@@ -1,4 +1,4 @@
-import { FileWithParsedAnalysis } from "@/interfaces/github";
+import { FileWithParsedAnalysisAndCode } from "@/interfaces/github";
 import { FileText } from "lucide-react";
 import React from "react";
 
@@ -8,9 +8,9 @@ const FileItem = React.memo(
     onFileSelect,
     selectedFile,
   }: {
-    file: FileWithParsedAnalysis;
-    onFileSelect: (file: FileWithParsedAnalysis) => void;
-    selectedFile: FileWithParsedAnalysis | null;
+    file: FileWithParsedAnalysisAndCode;
+    onFileSelect: (file: FileWithParsedAnalysisAndCode) => void;
+    selectedFile: FileWithParsedAnalysisAndCode | null;
   }) => {
     const isThisFileTheSelectedFile = file.id === selectedFile?.id;
     return (

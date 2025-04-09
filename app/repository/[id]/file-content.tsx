@@ -1,19 +1,12 @@
-import React from "react";
+import { JSXElementConstructor, ReactElement } from "react";
 
 interface CodeHighlighterProps {
-  code: string;
-  language: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parsedCode: ReactElement<any, string | JSXElementConstructor<any>> | null;
 }
 
-const CodeHighlighter = async ({ code, language }: CodeHighlighterProps) => {
-  // Format content as a markdown code block with language
-  const markdown = `\`\`\`${language}\n${code}\n\`\`\``;
-
-  return (
-    <pre className="language-text">
-      <code>{markdown}</code>
-    </pre>
-  );
+const CodeHighlighter = ({ parsedCode }: CodeHighlighterProps) => {
+  return parsedCode;
 };
 
 export default CodeHighlighter;

@@ -1,6 +1,6 @@
 "use client";
 import {
-  FileWithParsedAnalysis,
+  FileWithParsedAnalysisAndCode,
   RepositoryWithRelationsAndOverview,
 } from "@/interfaces/github";
 import DirectoryItem from "./directory-item";
@@ -12,8 +12,8 @@ const RepoContent = ({
   handleFileSelect,
 }: {
   repository: RepositoryWithRelationsAndOverview;
-  selectedFile: FileWithParsedAnalysis | null;
-  handleFileSelect: (file: FileWithParsedAnalysis) => void;
+  selectedFile: FileWithParsedAnalysisAndCode | null;
+  handleFileSelect: (file: FileWithParsedAnalysisAndCode) => void;
 }) => {
   return (
     <div className="border-r border-border border-dotted fixed inset-y-0 left-0 w-96 mt-20 overflow-auto">
