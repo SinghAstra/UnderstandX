@@ -34,13 +34,17 @@ export const FileViewer = ({ selectedFile }: FileViewerProps) => {
 
   useEffect(() => {
     const parseFileViewer = async () => {
+      console.log("Starting to parse the file");
       setIsLoading(true);
       const parsedFile = await parseFile(selectedFile);
+      console.log("parsedFile is generated.");
       setParsedFile(parsedFile);
       setIsLoading(false);
     };
     parseFileViewer();
   }, [selectedFile]);
+
+  console.log("parsedFile is ", parsedFile);
 
   useEffect(() => {
     if (!message) return;

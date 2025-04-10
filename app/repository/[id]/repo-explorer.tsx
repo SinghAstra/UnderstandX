@@ -15,18 +15,22 @@ interface RepoExplorerProps {
 
 const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
 
   const handleFileSelect = async (filePath: string) => {
+    console.log("-----------------------------------------------");
     console.log("In handleFileSelect");
-    setSelectedFilePath(filePath);
+    console.log("filePath is ", filePath);
+
     const matchedFile = repository.files.find((file) => file.path === filePath);
+    console.log("matchedFile is ", matchedFile);
     if (!matchedFile) {
       setSelectedFile(null);
       return;
     }
     setSelectedFile(matchedFile);
+    console.log("-----------------------------------------------");
   };
+  console.log("selectedFile is ", selectedFile);
 
   return (
     <div className=" min-h-screen flex flex-col">
@@ -34,7 +38,7 @@ const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
       <div className="flex mt-20">
         <RepoContent
           repository={repository}
-          selectedFilePath={selectedFilePath}
+          selectedFilePath={selectedFile?.path || null}
           handleFileSelect={handleFileSelect}
         />
         {!selectedFile ? (
