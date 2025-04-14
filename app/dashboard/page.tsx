@@ -4,15 +4,26 @@ import {
   addUserRepository,
   useRepository,
 } from "@/components/context/repository";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { parseGithubUrl } from "@/lib/utils/github";
 import { motion } from "framer-motion";
-import { SearchIcon, SparklesIcon } from "lucide-react";
+import { AlertCircle, SearchIcon, SparklesIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
+import { fetchProcessingRepository, stopRepositoryProcessing } from "./action";
 
 function DashboardPage() {
   const [url, setUrl] = useState("");
@@ -25,6 +36,7 @@ function DashboardPage() {
   const formRef = useRef<HTMLDivElement>(null);
   const actionQuery = searchParams.get("action");
   const router = useRouter();
+  const [showAlert, setShowAlert] = useState(false);
   const { dispatch } = useRepository();
 
   useEffect(() => {
@@ -44,6 +56,17 @@ function DashboardPage() {
       return;
     }
 
+    const pendingRepositories = await fetchProcessingRepository();
+
+    if (pendingRepositories.length > 0) {
+      setShowAlert(true);
+      return;
+    }
+
+    processRepository();
+  };
+
+  const processRepository = async () => {
     setIsProcessing(true);
 
     try {
@@ -66,10 +89,9 @@ function DashboardPage() {
 
       setIsSuccess(true);
       setUrl("");
-      if(showGuide){
+      if (showGuide) {
         dismissGuide();
       }
-
 
       setTimeout(() => setIsSuccess(false), 3000);
     } catch (error) {
@@ -81,6 +103,16 @@ function DashboardPage() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleContinueWithNewRepo = async () => {
+    setShowAlert(false);
+    await stopRepositoryProcessing();
+    processRepository();
+  };
+
+  const handleCancelNewRepo = () => {
+    setShowAlert(false);
   };
 
   useEffect(() => {
@@ -127,6 +159,33 @@ function DashboardPage() {
 
   return (
     <div className="w-full m-2">
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center">
+              <AlertCircle className="h-5 w-5 text-yellow-500 mr-2" />
+              Pending Repository Analysis
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              You have repository analysis already in progress. Due to API
+              restrictions, starting a new analysis will stop the processing of
+              all other repositories. Do you want to continue with the new
+              repository analysis?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelNewRepo} className="w-full">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleContinueWithNewRepo}
+              className="w-full"
+            >
+              Continue with new analysis
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {showGuide && (
         <div className="absolute inset-0 ">
           <div className="relative w-full h-full  flex items-center justify-center backdrop-blur-sm">

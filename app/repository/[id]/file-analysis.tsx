@@ -6,7 +6,7 @@ interface FileAnalysisProps {
 }
 
 const FileAnalysis = ({ parsedAnalysis }: FileAnalysisProps) => {
-  return <div>{parsedAnalysis}</div>;
+  return <div className="pt-8 pb-4">{parsedAnalysis}</div>;
 };
 
 export default FileAnalysis;

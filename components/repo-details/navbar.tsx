@@ -17,7 +17,10 @@ const Navbar = ({ repository, user }: RepoDetailsNavbarProps) => {
   return (
     <header className=" px-4 py-2 flex items-center justify-between fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex gap-2 items-center">
-        <Link href="/" className=" hover:opacity-80 transition-opacity">
+        <Link
+          href="/dashboard"
+          className=" hover:opacity-80 transition-opacity"
+        >
           <span className="tracking-wide text-2xl font-medium">
             {siteConfig.name}
           </span>

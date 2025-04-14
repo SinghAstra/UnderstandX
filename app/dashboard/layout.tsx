@@ -6,7 +6,7 @@ import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
-import { fetchRepositories } from "./action";
+import { activateBackendServer, fetchRepositories } from "./action";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -42,6 +42,8 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   console.log("user is ", user);
 
   const { repositories } = await fetchRepositories();
+
+  await activateBackendServer();
 
   return (
     <div className="min-h-screen">
