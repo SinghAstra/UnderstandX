@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Repository, RepositoryStatus } from "@prisma/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -56,9 +57,10 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
   }, [message]);
 
   return (
-    <div
+    <Link
       className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors"
-      onClick={() => handleRepositoryCardClick(repository)}
+      // onClick={() => handleRepositoryCardClick(repository)}
+      href={`/repository/${repository.id}`}
     >
       <Avatar className="h-8 w-8">
         <AvatarImage src={repository.avatarUrl || ""} alt={repository.owner} />
@@ -78,6 +80,6 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
           )}
         />
       </div>
-    </div>
+    </Link>
   );
 }

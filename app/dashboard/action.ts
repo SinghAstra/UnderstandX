@@ -2,6 +2,7 @@
 
 import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/utils/prisma";
+import { createCleanJobsToken } from "@/lib/utils/serviceAuth";
 import { getServerSession } from "next-auth";
 
 const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
@@ -88,7 +89,16 @@ export async function stopRepositoryProcessing() {
       },
     });
 
-    const response = await fetch(`${EXPRESS_API_URL}/api/clean/jobs`);
+    const serviceToken = createCleanJobsToken({
+      userId: session.user.id,
+    });
+
+    const response = await fetch(`${EXPRESS_API_URL}/api/clean/jobs`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${serviceToken}`,
+      },
+    });
 
     const data = await response.json();
 
