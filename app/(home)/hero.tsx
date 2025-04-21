@@ -39,7 +39,7 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
         <div className="flex flex-col items-center justify-center w-full ">
           <AnimationContainer
             className="flex flex-col items-center justify-center w-full text-center"
-            delay={0.2}
+            delay={0.1}
           >
             <GradientButton onClick={handleGetStarted}>
               ✨ Start Analyzing Repository

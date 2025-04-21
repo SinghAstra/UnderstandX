@@ -1,63 +1,36 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import AnimationContainer from "@/components/global/animation-container";
+import Footer from "@/components/home/footer";
+import Navbar from "@/components/home/navbar";
+import { buttonVariants } from "@/components/ui/button";
+import { authOptions } from "@/lib/auth-options";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
-import React from "react";
 
-const NotFound = () => {
+export default async function NotFound() {
+  const session = await getServerSession(authOptions);
+
+  const href = session ? "/dashboard" : "/";
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-lg w-full space-y-8 text-center">
-        {/* Top Section with Large Number */}
-        <div className="relative">
-          <h1 className="text-[180px] font-bold text-gray-200 select-none">
-            404
-          </h1>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="space-y-2">
-              <p className="text-2xl font-semibold text-gray-900">
-                This is not the web page you are looking for.
-              </p>
-              <p className="text-gray-600">
-                Looks like this page went on a space mission 🚀
-              </p>
-            </div>
+    <div className="relative z-0 min-h-screen  flex flex-col">
+      <div className="absolute top-0 inset-x-0 bg-[linear-gradient(to_right,#161616_1px,transparent_1px),linear-gradient(to_bottom,#161616_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)] h-[100vh] z-[-1]" />
+      <Navbar user={session?.user} />
+      <div className=" flex-1 flex flex-col gap-4 items-center justify-center">
+        <AnimationContainer delay={0.1}>
+          <div className="text-center flex flex-col items-center justify-center w-fit gap-2">
+            <h2 className="text-7xl font-bold pr-1">404</h2>
+            <p className="text-muted-foreground text-md font-medium">
+              Page not found {":("}
+            </p>
+            <p>Oops! The page you&apos;re looking for doesn&apos;t exist.</p>
           </div>
-        </div>
-
-        {/* Search Section */}
-        <div className="pt-12 space-y-4">
-          <div className="flex gap-2 max-w-md mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search..."
-                className="pl-10 w-full"
-              />
-            </div>
-            <Button>Search</Button>
-          </div>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="pt-8 space-y-2">
-          <p className="text-gray-600">Or you can navigate to:</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/">
-              <Button variant="outline">Home</Button>
-            </Link>
-            <Link href="/">
-              <Button variant="outline">Go Back</Button>
-            </Link>
-            <Link href="/">
-              <Button variant="outline">Contact Support</Button>
-            </Link>
-          </div>
-        </div>
+        </AnimationContainer>
+        <AnimationContainer delay={0.3}>
+          <Link href={href} className={buttonVariants({})}>
+            Back to homepage
+          </Link>
+        </AnimationContainer>
       </div>
+      <Footer />
     </div>
   );
-};
-
-export default NotFound;
+}
