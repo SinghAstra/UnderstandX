@@ -4,11 +4,11 @@ import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";
 import React, { ReactNode } from "react";
 
-interface Props {
+interface HomeLayoutProps {
   children: ReactNode;
 }
 
-const HomeLayout = async ({ children }: Props) => {
+const HomeLayout = async ({ children }: HomeLayoutProps) => {
   const session = await getServerSession(authOptions);
   return (
     <div className="relative z-0">

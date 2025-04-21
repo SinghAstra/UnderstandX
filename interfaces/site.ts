@@ -3,7 +3,6 @@ export type SiteConfig = {
   description: string;
   tagline: string;
   url: string;
-  features: string[];
   links: {
     twitter: string;
     githubRepo: string;
