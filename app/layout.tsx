@@ -83,6 +83,8 @@ export default function RootLayout({
                 border: "1px solid hsl(var(--border))",
                 letterSpacing: "0.01em",
                 fontSize: ".95rem",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
               },
             }}
           />

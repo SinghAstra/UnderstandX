@@ -2,7 +2,6 @@ import { Navbar } from "@/components/dashboard/dashboard-navbar";
 import { LeftSidebar } from "@/components/dashboard/left-sidebar";
 import { RightSidebar } from "@/components/dashboard/right-sidebar";
 import { authOptions } from "@/lib/auth-options";
-import { prisma } from "@/lib/utils/prisma";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
@@ -31,15 +30,6 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   if (!session) {
     redirect("/auth/sign-in");
   }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user.id,
-    },
-  });
-
-  console.log("session.user.id is ", session.user.id);
-  console.log("user is ", user);
 
   const { repositories } = await fetchRepositories();
 
