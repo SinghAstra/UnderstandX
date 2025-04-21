@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Repository, RepositoryStatus } from "@prisma/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -24,31 +23,21 @@ const getStatusColor = (status: RepositoryStatus) => {
 
 export function RepositoryCard({ repository }: RepositoryCardProps) {
   const [message, setMessage] = useState<string | null>(null);
-  const router = useRouter();
 
-  const handleRepositoryCardClick = (repository: Repository) => {
-    console.log("In handleRepositoryCardClick.");
-    console.log("Repository Status:", repository.status);
-
+  const getHrefFromStatus = (repository: Repository) => {
     if (repository.status === RepositoryStatus.SUCCESS) {
-      console.log("Navigating to repository page...");
-      console.log("repository.id is ", repository.id);
-      router.push(`/repository/${repository.id}`);
+      return `/repository/${repository.id}`;
     }
-
-    if (repository.status === RepositoryStatus.FAILED) {
-      console.log("Repository processing failed");
-      setMessage("Failed to process repository. Please try again.");
-    }
-
     if (
       repository.status === RepositoryStatus.PROCESSING ||
       repository.status === RepositoryStatus.PENDING
     ) {
-      console.log("Navigating to logs page...");
-      router.push(`/logs/${repository.id}`);
+      return `/logs/${repository.id}`;
     }
+    return null;
   };
+
+  const href = getHrefFromStatus(repository);
 
   useEffect(() => {
     if (!message) return;
@@ -56,12 +45,24 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
     setMessage(null);
   }, [message]);
 
-  return (
-    <Link
-      className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors"
-      // onClick={() => handleRepositoryCardClick(repository)}
-      href={`/repository/${repository.id}`}
+  return href ? (
+    <Link href={href}>
+      <SidebarRepositoryCard repository={repository} />
+    </Link>
+  ) : (
+    <div
+      onClick={() =>
+        setMessage("Failed to process Repository. Please try again")
+      }
     >
+      <SidebarRepositoryCard repository={repository} />
+    </div>
+  );
+}
+
+const SidebarRepositoryCard = ({ repository }: { repository: Repository }) => {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors">
       <Avatar className="h-8 w-8">
         <AvatarImage src={repository.avatarUrl || ""} alt={repository.owner} />
         <AvatarFallback>{repository.owner[0].toUpperCase()}</AvatarFallback>
@@ -80,6 +81,6 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
           )}
         />
       </div>
-    </Link>
+    </div>
   );
-}
+};
