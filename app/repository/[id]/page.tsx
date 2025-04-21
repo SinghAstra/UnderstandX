@@ -22,5 +22,13 @@ export default async function RepositoryPage({
     notFound();
   }
 
+  if (repository.status === "PENDING" || repository.status === "PROCESSING") {
+    redirect(`/logs/${repository.id}`);
+  }
+
+  if (repository.status === "FAILED") {
+    redirect("/dashboard");
+  }
+
   return <RepoExplorer repository={repository} user={session.user} />;
 }
