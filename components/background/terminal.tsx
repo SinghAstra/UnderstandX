@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AnimationContainer from "../global/animation-container";
+import FadeSlideIn from "../global/fade-slide-in";
 
 export type LogEntry = {
   timestamp: Date;
@@ -56,14 +56,14 @@ const BackgroundTerminal = () => {
         <div className="relative">
           <div className="rounded-md p-4  font-mono text-xs space-y-2 relative text-muted-foreground">
             {logs.map((log, index) => (
-              <AnimationContainer key={index}>
+              <FadeSlideIn key={index}>
                 <div className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1">
                   <span className="text-muted-foreground opacity-70">
                     {new Date(log.timestamp).toLocaleTimeString()}
                   </span>
                   <span className="whitespace-pre-wrap">{log.message}</span>
                 </div>
-              </AnimationContainer>
+              </FadeSlideIn>
             ))}
           </div>
         </div>
