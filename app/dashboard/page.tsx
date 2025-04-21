@@ -47,9 +47,11 @@ function DashboardPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsProcessing(true);
     const validation = parseGithubUrl(url);
 
     if (!validation.isValid) {
+      setIsProcessing(false);
       setMessage(
         validation.message ? validation.message : "Invalid GitHub URL"
       );
@@ -59,6 +61,7 @@ function DashboardPage() {
     const pendingRepositories = await fetchProcessingRepository();
 
     if (pendingRepositories.length > 0) {
+      setIsProcessing(false);
       setShowAlert(true);
       return;
     }
@@ -106,6 +109,7 @@ function DashboardPage() {
   };
 
   const handleContinueWithNewRepo = async () => {
+    setIsProcessing(true);
     setShowAlert(false);
     await stopRepositoryProcessing();
     processRepository();
