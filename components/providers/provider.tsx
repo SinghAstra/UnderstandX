@@ -26,7 +26,7 @@ const LoadingFallback = () => {
           <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-primary animate-width-grow"></span>
         </p>
       </div>
-      <p className="text-xl tracking-wide flex items-center">
+      <p className="text-xl tracking-wide flex items-center lg:max-w-3xl">
         {siteConfig.description}
         <span className="inline-flex ml-1">
           <span className="animate-loading-dot">.</span>
