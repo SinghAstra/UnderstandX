@@ -2,17 +2,17 @@
 
 import FadeIn from "@/components/global/fade-in";
 import FadeSlideIn from "@/components/global/fade-slide-in";
-import { Icons } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import RotatingBorderBadge from "@/components/ui/rotating-border-badge";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/config/site";
-import { Code2, FileSearch, Lightbulb } from "lucide-react";
+import { Code2, FileSearch, Lightbulb, Loader } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { FaGithub } from "react-icons/fa";
 
 const features = [
   {
@@ -136,12 +136,12 @@ export default function SignIn() {
                 >
                   {isGithubLoading ? (
                     <>
-                      <Icons.loader className="w-5 h-5 animate-spin" />
+                      <Loader className="w-5 h-5 animate-spin" />
                       Wait ...
                     </>
                   ) : (
                     <>
-                      <Icons.gitLogo className="mr-2 h-5 w-5" />
+                      <FaGithub className="mr-2 h-5 w-5" />
                       <span className="text-center tracking-wide">
                         Continue with GitHub
                       </span>
@@ -168,7 +168,7 @@ export default function SignIn() {
                 >
                   {isGoogleLoading ? (
                     <>
-                      <Icons.loader className="w-5 h-5 animate-spin" />
+                      <Loader className="w-5 h-5 animate-spin" />
                       Wait ...
                     </>
                   ) : (
