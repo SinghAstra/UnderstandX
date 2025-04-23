@@ -73,7 +73,7 @@ export default function SignIn() {
         console.log("error.message is ", error.message);
       }
     } finally {
-      setIsGithubLoading(false);
+      setIsGoogleLoading(false);
     }
   };
 
