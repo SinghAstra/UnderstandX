@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
-import React from "react";
+import React,{ReactNode} from "react";
 
-interface Props {
+interface MaxWidthWrapperProps {
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const MaxWidthWrapper = ({ className, children }: Props) => {
+const MaxWidthWrapper = ({ className, children }: MaxWidthWrapperProps) => {
   return (
     <section
       className={cn(
