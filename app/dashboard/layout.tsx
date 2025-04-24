@@ -1,5 +1,5 @@
-import { Navbar } from "@/components/dashboard/dashboard-navbar";
 import { LeftSidebar } from "@/components/dashboard/left-sidebar";
+import { Navbar } from "@/components/dashboard/navbar";
 import { RightSidebar } from "@/components/dashboard/right-sidebar";
 import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";

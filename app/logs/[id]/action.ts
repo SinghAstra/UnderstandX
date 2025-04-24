@@ -1,6 +1,6 @@
 "use server";
 import { authOptions } from "@/lib/auth-options";
-import { prisma } from "@/lib/utils/prisma";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 
 export async function getRepository(repositoryId: string) {

@@ -1,8 +1,8 @@
 "use server";
 
 import { authOptions } from "@/lib/auth-options";
-import { prisma } from "@/lib/utils/prisma";
-import { createCleanJobsToken } from "@/lib/utils/serviceAuth";
+import { prisma } from "@/lib/prisma";
+import { createCleanJobsToken } from "@/lib/service-auth";
 import { getServerSession } from "next-auth";
 
 const EXPRESS_API_URL = process.env.EXPRESS_API_URl;

@@ -2,8 +2,8 @@
 import { DirectoryWithRelations } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
 import { parseMdx } from "@/lib/markdown";
+import { prisma } from "@/lib/prisma";
 import { getLanguage } from "@/lib/utils";
-import { prisma } from "@/lib/utils/prisma";
 import { File } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { extname } from "path";

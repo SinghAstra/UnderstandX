@@ -15,8 +15,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { parseGithubUrl } from "@/lib/github";
 import { cn } from "@/lib/utils";
-import { parseGithubUrl } from "@/lib/utils/github";
 import { motion } from "framer-motion";
 import { AlertCircle, SearchIcon, SparklesIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

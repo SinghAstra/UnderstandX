@@ -1,6 +1,6 @@
-import { Navbar } from "@/components/dashboard/dashboard-navbar";
+import { Navbar } from "@/components/dashboard/navbar";
 import { authOptions } from "@/lib/auth-options";
-import { prisma } from "@/lib/utils/prisma";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";

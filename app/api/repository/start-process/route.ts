@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/auth-options";
-import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/utils/github";
-import { prisma } from "@/lib/utils/prisma";
-import { createServiceToken } from "@/lib/utils/serviceAuth";
+import { fetchGitHubRepoMetaData, parseGithubUrl } from "@/lib/github";
+import { prisma } from "@/lib/prisma";
+import { createServiceToken } from "@/lib/service-auth";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";

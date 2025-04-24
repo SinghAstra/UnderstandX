@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/utils/prisma";
+import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import RepoLogs from "./repo-logs";
 

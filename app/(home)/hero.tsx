@@ -131,7 +131,13 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
           >
             <h1 className="mt-8  text-foreground py-4  text-center text-4xl font-medium tracking-tight md:text-7xl">
               Understand <br />
-              Repository
+              <span className="text-transparent bg-gradient-to-r from-yellow-500 to-pink-500 bg-clip-text">
+                Github Repo
+              </span>
+              <br /> with{" "}
+              <span className="text-transparent bg-gradient-to-r from-yellow-500 to-pink-500 bg-clip-text">
+                UnderstandX
+              </span>
             </h1>
             <BackgroundShine>
               <Link
