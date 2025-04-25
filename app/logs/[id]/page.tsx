@@ -11,6 +11,7 @@ export default async function RepoProcessingLogsPage({
 
   const repository = await prisma.repository.findUnique({
     where: { id: repositoryId },
+    include: { logs: true },
   });
 
   if (!repository) {
@@ -23,6 +24,8 @@ export default async function RepoProcessingLogsPage({
   if (repository.status === "FAILED") {
     notFound();
   }
+
+  console.log("repository.logs is ",repository.logs)
 
   return <RepoLogs repository={repository} />;
 }

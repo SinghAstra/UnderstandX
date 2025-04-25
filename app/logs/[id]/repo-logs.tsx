@@ -1,26 +1,29 @@
 "use client";
 
 import Terminal from "@/components/ui/terminal";
-import { ProcessingUpdate } from "@/interfaces/processing";
 import pusherClient from "@/lib/pusher/client";
-import { Repository } from "@prisma/client";
+import { Log, Repository } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+interface RepositoryWithLogs extends Repository {
+  logs: Log[];
+}
+
 interface RepoLogsProps {
-  repository: Repository;
+  repository: RepositoryWithLogs;
 }
 
 const RepoLogs = ({ repository }: RepoLogsProps) => {
   const router = useRouter();
-  const [logs, setLogs] = useState<ProcessingUpdate[]>([]);
+  const [logs, setLogs] = useState<Log[]>(repository.logs);
 
   const repositoryId = repository.id;
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`repository-${repositoryId}`);
 
-    channel.bind("processing-update", (update: ProcessingUpdate) => {
+    channel.bind("processing-update", (update: Log) => {
       setLogs((prevLogs) => [...prevLogs, update]);
 
       if (update.status === "SUCCESS") {

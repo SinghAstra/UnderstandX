@@ -1,19 +1,12 @@
-import { Repository } from "@prisma/client";
+import { Log, Repository } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import MaxWidthWrapper from "../global/max-width-wrapper";
 
-type LogEntry = {
-  id: string;
-  timestamp: Date;
-  message: string;
-  status?: string;
-};
-
 interface TerminalProps {
-  logs: LogEntry[];
+  logs: Log[];
   repository: Repository;
 }
 
@@ -77,7 +70,7 @@ function Terminal({ repository, logs }: TerminalProps) {
               className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
             >
               <span className="text-muted-foreground">
-                {new Date(log.timestamp).toLocaleTimeString()}
+                {new Date(log.createdAt).toLocaleTimeString()}
               </span>
               <span className="text-foreground whitespace-pre-wrap">
                 {log.message}
