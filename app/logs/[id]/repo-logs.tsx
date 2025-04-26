@@ -17,6 +17,7 @@ interface RepoLogsProps {
 const RepoLogs = ({ repository }: RepoLogsProps) => {
   const router = useRouter();
   const [logs, setLogs] = useState<Log[]>(repository.logs);
+  
 
   const repositoryId = repository.id;
 

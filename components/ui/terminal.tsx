@@ -70,7 +70,7 @@ function Terminal({ repository, logs }: TerminalProps) {
               className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
             >
               <span className="text-muted-foreground">
-                {new Date(log.createdAt).toLocaleTimeString()}
+                {new Date(log.createdAt).toString()}
               </span>
               <span className="text-foreground whitespace-pre-wrap">
                 {log.message}
