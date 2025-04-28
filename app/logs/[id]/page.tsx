@@ -25,7 +25,5 @@ export default async function RepoProcessingLogsPage({
     notFound();
   }
 
-  console.log("repository.logs is ",repository.logs)
-
   return <RepoLogs repository={repository} />;
 }
