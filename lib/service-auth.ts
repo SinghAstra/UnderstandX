@@ -21,5 +21,11 @@ export function createCleanJobsToken(payload: { userId: string }) {
     throw new Error("ENV SERVICE_JWT_SECRET is required.");
   }
 
-  return jwt.sign(payload, secret, { expiresIn: "15m" });
+  console.log("payload is ", payload);
+
+  const tokenGenerated = jwt.sign(payload, secret, { expiresIn: "15m" });
+
+  console.log("tokenGenerated is ", tokenGenerated);
+
+  return tokenGenerated;
 }
