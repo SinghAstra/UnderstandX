@@ -1,6 +1,6 @@
 "use client";
 
-import type { Log, Repository } from "@prisma/client";
+import { RepositoryStatus, type Log, type Repository } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
@@ -98,12 +98,20 @@ function Terminal({ repository, logs }: TerminalProps) {
           {logs.map((log) => (
             <div
               key={log.id}
-              className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
+              className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1 tracking-wider"
             >
               <span className="text-muted-foreground flex-shrink-0">
                 {formatDate(repository.createdAt)}
               </span>
-              <span className="text-foreground whitespace-pre-wrap">
+              <span
+                className={`whitespace-pre-wrap  ${
+                  log.status === RepositoryStatus.FAILED
+                    ? "text-red-500"
+                    : log.status === RepositoryStatus.SUCCESS
+                    ? "text-green-500"
+                    : "text-foreground"
+                }`}
+              >
                 {log.message}
               </span>
             </div>
