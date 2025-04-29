@@ -21,45 +21,6 @@ const getStatusColor = (status: RepositoryStatus) => {
   return "bg-yellow-500";
 };
 
-export function RepositoryCard({ repository }: RepositoryCardProps) {
-  const [message, setMessage] = useState<string | null>(null);
-
-  const getHrefFromStatus = (repository: Repository) => {
-    if (repository.status === RepositoryStatus.SUCCESS) {
-      return `/repository/${repository.id}`;
-    }
-    if (
-      repository.status === RepositoryStatus.PROCESSING ||
-      repository.status === RepositoryStatus.PENDING
-    ) {
-      return `/logs/${repository.id}`;
-    }
-    return null;
-  };
-
-  const href = getHrefFromStatus(repository);
-
-  useEffect(() => {
-    if (!message) return;
-    toast(message);
-    setMessage(null);
-  }, [message]);
-
-  return href ? (
-    <Link href={href}>
-      <SidebarRepositoryCard repository={repository} />
-    </Link>
-  ) : (
-    <div
-      onClick={() =>
-        setMessage("Failed to process Repository. Please try again")
-      }
-    >
-      <SidebarRepositoryCard repository={repository} />
-    </div>
-  );
-}
-
 const SidebarRepositoryCard = ({ repository }: { repository: Repository }) => {
   return (
     <div className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors">
@@ -84,3 +45,28 @@ const SidebarRepositoryCard = ({ repository }: { repository: Repository }) => {
     </div>
   );
 };
+
+export function RepositoryCard({ repository }: RepositoryCardProps) {
+  const [message, setMessage] = useState<string | null>(null);
+
+  const getHrefFromStatus = (repository: Repository) => {
+    if (repository.status === RepositoryStatus.SUCCESS) {
+      return `/repository/${repository.id}`;
+    }
+    return `/logs/${repository.id}`;
+  };
+
+  const href = getHrefFromStatus(repository);
+
+  useEffect(() => {
+    if (!message) return;
+    toast(message);
+    setMessage(null);
+  }, [message]);
+
+  return (
+    <Link href={href}>
+      <SidebarRepositoryCard repository={repository} />
+    </Link>
+  );
+}

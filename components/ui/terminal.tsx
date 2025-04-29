@@ -42,6 +42,34 @@ function Terminal({ repository, logs }: TerminalProps) {
     }
   };
 
+  const formatDate = (createdAt: Date) => {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const date = new Date(createdAt);
+
+    const month = months[date.getMonth()]; // 0-indexed months
+    const day = date.getDate();
+
+    const formattedTime = `${String(date.getHours()).padStart(2, "0")}:${String(
+      date.getMinutes()
+    ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+    console.log("formattedTime is ", formattedTime);
+    return `${month} ${day} ${formattedTime}`;
+  };
+
   return (
     <MaxWidthWrapper>
       <div className="relative rounded border border-border overflow-hidden flex-1">
@@ -69,8 +97,8 @@ function Terminal({ repository, logs }: TerminalProps) {
               key={log.id}
               className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1"
             >
-              <span className="text-muted-foreground">
-                {new Date(log.createdAt).toString()}
+              <span className="text-muted-foreground flex-shrink-0">
+                {formatDate(repository.createdAt)}
               </span>
               <span className="text-foreground whitespace-pre-wrap">
                 {log.message}

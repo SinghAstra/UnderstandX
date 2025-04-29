@@ -17,7 +17,6 @@ interface RepoLogsProps {
 const RepoLogs = ({ repository }: RepoLogsProps) => {
   const router = useRouter();
   const [logs, setLogs] = useState<Log[]>(repository.logs);
-  
 
   const repositoryId = repository.id;
 
@@ -29,9 +28,6 @@ const RepoLogs = ({ repository }: RepoLogsProps) => {
 
       if (update.status === "SUCCESS") {
         router.replace(`/repository/${repositoryId}`);
-      }
-      if (update.status === "FAILED") {
-        router.replace(`/dashboard`);
       }
     });
 
