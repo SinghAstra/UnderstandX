@@ -1,6 +1,8 @@
-import { Log, Repository } from "@prisma/client";
+"use client";
+
+import type { Log, Repository } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import MaxWidthWrapper from "../global/max-width-wrapper";
@@ -11,36 +13,10 @@ interface TerminalProps {
 }
 
 function Terminal({ repository, logs }: TerminalProps) {
+  const logsEndRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current && autoScroll) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [logs, autoScroll]);
-
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const current = scrollRef.current;
-      const isAtBottom =
-        current.scrollHeight - current.scrollTop <= current.clientHeight + 100;
-      setAutoScroll(isAtBottom);
-    }
-  };
-
-  const scrollToBottom = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-      setAutoScroll(true);
-    }
-  };
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const formatDate = (createdAt: Date) => {
     const months = [
@@ -66,16 +42,45 @@ function Terminal({ repository, logs }: TerminalProps) {
     const formattedTime = `${String(date.getHours()).padStart(2, "0")}:${String(
       date.getMinutes()
     ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
-    console.log("formattedTime is ", formattedTime);
     return `${month} ${day} ${formattedTime}`;
   };
 
+  const scrollToBottom = () => {
+    setAutoScroll(true);
+  };
+
+  const handleScroll = () => {
+    if (!terminalRef.current) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = terminalRef.current;
+    const isScrolledToBottom = scrollHeight - scrollTop - clientHeight < 60;
+
+    setAutoScroll(isScrolledToBottom);
+    setShowScrollButton(!isScrolledToBottom);
+  };
+
+  useEffect(() => {
+    const terminalElement = terminalRef.current;
+    if (terminalElement) {
+      terminalElement.addEventListener("scroll", handleScroll);
+      return () => {
+        terminalElement.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (autoScroll) {
+      logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [logs, autoScroll]);
+
   return (
     <MaxWidthWrapper>
-      <div className="relative rounded border border-border overflow-hidden flex-1">
-        <div className="absolute z-[60] top-0 inset-x-0 flex items-center space-x-4 mb-4 p-2 bg-background/40  backdrop-blur-md">
+      <div className="relative rounded border border-border overflow-hidden h-[calc(100vh-8rem)] flex flex-col">
+        <div className="absolute z-[60] top-0 inset-x-0 flex items-center space-x-4 mb-4 p-2 bg-background/40 backdrop-blur-md">
           <Image
-            src={repository.avatarUrl}
+            src={repository.avatarUrl || "/placeholder.svg"}
             alt={`${repository.owner}'s avatar`}
             width={40}
             height={40}
@@ -83,14 +88,12 @@ function Terminal({ repository, logs }: TerminalProps) {
           />
           <div>
             <h2 className="text-lg font-semibold">{repository.name}</h2>
-            <p className="text-sm text-muted-foreground ">{repository.owner}</p>
+            <p className="text-sm text-muted-foreground">{repository.owner}</p>
           </div>
         </div>
         <div
-          className="rounded-md p-4 overflow-y-auto font-mono text-sm space-y-2 relative pt-20"
-          ref={scrollRef}
-          onScroll={handleScroll}
-          style={{ height: "500px" }}
+          ref={terminalRef}
+          className="rounded-md p-4 overflow-y-auto text-sm space-y-2 relative pt-20 flex-1"
         >
           {logs.map((log) => (
             <div
@@ -105,18 +108,26 @@ function Terminal({ repository, logs }: TerminalProps) {
               </span>
             </div>
           ))}
+          <div ref={logsEndRef} />
         </div>
+
         <AnimatePresence>
-          {!autoScroll && (
+          {showScrollButton && (
             <motion.button
-              onClick={scrollToBottom}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, scale: 0.3 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.3 }}
               transition={{ duration: 0.3 }}
-              className="absolute bottom-4 right-4 bg-muted text-muted-foreground p-3 rounded-full cursor-pointer"
+              onClick={scrollToBottom}
+              className="absolute bottom-4 right-4 bg-muted text-muted-foreground rounded-full p-2 shadow-lg z-50"
+              aria-label="Scroll to bottom"
             >
-              <ArrowDown size={24} />
+              <motion.div
+                animate={{ y: [0, 3, 0] }}
+                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5 }}
+              >
+                <ChevronDown size={20} />
+              </motion.div>
             </motion.button>
           )}
         </AnimatePresence>
