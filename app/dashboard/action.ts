@@ -52,7 +52,7 @@ export async function fetchProcessingRepository() {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
-      return { message: "Authentication required", repositories: [] };
+      return [];
     }
 
     const response = await prisma.repository.findMany({
