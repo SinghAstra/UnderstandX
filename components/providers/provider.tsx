@@ -3,12 +3,11 @@
 import { siteConfig } from "@/config/site";
 import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
-import React, { Suspense } from "react";
+import React, { ReactNode, Suspense } from "react";
 import { RepositoryProvider } from "../context/repository";
-import { TooltipProvider } from "../ui/tooltip";
 
-interface Props {
-  children: React.ReactNode;
+interface ProviderProps {
+  children: ReactNode;
 }
 
 const LoadingFallback = () => {
@@ -38,12 +37,12 @@ const LoadingFallback = () => {
   );
 };
 
-const Providers = ({ children }: Props) => {
+const Providers = ({ children }: ProviderProps) => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <SessionProvider>
         <RepositoryProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          {children}
         </RepositoryProvider>
       </SessionProvider>
     </Suspense>
