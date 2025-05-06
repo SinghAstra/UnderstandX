@@ -30,5 +30,7 @@ export default async function RepositoryPage({
     redirect("/dashboard");
   }
 
+  console.log("repository.overview is ", repository.overview);
+
   return <RepoExplorer repository={repository} user={session.user} />;
 }
