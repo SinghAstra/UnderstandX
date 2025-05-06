@@ -6,13 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function cosineSimilarity(a: number[], b: number[]): number {
-  const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-  const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-  const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-  return dotProduct / (magnitudeA * magnitudeB);
-}
-
 export const fileExtensionIconMap = {
   js: "javascript",
   ts: "typescript",
@@ -66,4 +59,14 @@ export const getLanguage = (file: File) => {
     default:
       return "javascript";
   }
+};
+
+export const fetcher = async (url: string) => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Failed to Fetch Data Using Fetcher");
+  }
+
+  return response.json();
 };

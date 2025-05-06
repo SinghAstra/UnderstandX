@@ -20,7 +20,8 @@ export async function GET() {
         createdAt: "desc",
       },
     });
-    return { repositories };
+
+    return Response.json(repositories);
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);

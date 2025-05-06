@@ -1,9 +1,11 @@
 "use client";
 
 import { siteConfig } from "@/config/site";
+import { fetcher } from "@/lib/utils";
 import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import React, { ReactNode, Suspense } from "react";
+import { SWRConfig } from "swr";
 
 interface ProviderProps {
   children: ReactNode;
@@ -39,9 +41,9 @@ const LoadingFallback = () => {
 const Providers = ({ children }: ProviderProps) => {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <SessionProvider>
-          {children}
-      </SessionProvider>
+      <SWRConfig value={{ fetcher }}>
+        <SessionProvider>{children}</SessionProvider>
+      </SWRConfig>
     </Suspense>
   );
 };

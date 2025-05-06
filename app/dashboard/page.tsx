@@ -1,10 +1,6 @@
 "use client";
 
 import {
-  addUserRepository,
-  useRepository,
-} from "@/components/context/repository";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -15,6 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { fetchAllUserRepository } from "@/lib/api";
 import { parseGithubUrl } from "@/lib/github";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -23,6 +20,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
+import { mutate } from "swr";
 import { fetchProcessingRepository, stopRepositoryProcessing } from "./action";
 
 function DashboardPage() {
@@ -37,7 +35,6 @@ function DashboardPage() {
   const actionQuery = searchParams.get("action");
   const router = useRouter();
   const [showAlert, setShowAlert] = useState(false);
-  const { dispatch } = useRepository();
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -88,7 +85,7 @@ function DashboardPage() {
         return;
       }
 
-      dispatch(addUserRepository(data.repository));
+      mutate(fetchAllUserRepository);
 
       setIsSuccess(true);
       setUrl("");
@@ -112,6 +109,7 @@ function DashboardPage() {
     setIsProcessing(true);
     setShowAlert(false);
     await stopRepositoryProcessing();
+    mutate(fetchAllUserRepository);
     processRepository();
   };
 
