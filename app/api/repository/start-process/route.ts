@@ -4,19 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { createServiceToken } from "@/lib/service-auth";
 import { RepositoryStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 
 const EXPRESS_API_URL = process.env.EXPRESS_API_URL;
 if (!EXPRESS_API_URL) {
   throw new Error("EXPRESS_API_URL is required.");
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     // 1. Authenticate user
     const session = await getServerSession(authOptions);
     if (!session) {
-      return NextResponse.json(
+      return Response.json(
         { message: "Authentication required" },
         { status: 401 }
       );
@@ -27,7 +26,7 @@ export async function POST(req: NextRequest) {
     const { githubUrl } = body;
 
     if (!githubUrl) {
-      return NextResponse.json(
+      return Response.json(
         { message: "GitHub URL is required" },
         { status: 400 }
       );
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
     // 3. Parse and validate GitHub URL
     const urlInfo = parseGithubUrl(githubUrl);
     if (!urlInfo.isValid || !urlInfo.owner) {
-      return NextResponse.json(
+      return Response.json(
         { message: "Invalid GitHub repository URL" },
         { status: 400 }
       );
@@ -48,7 +47,7 @@ export async function POST(req: NextRequest) {
     const repoDetails = await fetchGitHubRepoMetaData(owner, repo);
 
     if (!repoDetails) {
-      return NextResponse.json(
+      return Response.json(
         { message: "Repository does not exist or is private" },
         { status: 400 }
       );
@@ -92,7 +91,7 @@ export async function POST(req: NextRequest) {
     });
 
     // 6. Fetch repository details and data
-    return NextResponse.json({
+    return Response.json({
       repository: repository,
       status: RepositoryStatus.PENDING,
     });
@@ -102,7 +101,7 @@ export async function POST(req: NextRequest) {
       console.log("Error stack:", error.stack);
     }
 
-    return NextResponse.json(
+    return Response.json(
       { message: "Failed to process repository" },
       { status: 500 }
     );

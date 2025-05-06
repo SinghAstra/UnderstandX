@@ -7,30 +7,30 @@ import { getServerSession } from "next-auth";
 
 const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
 
-export async function fetchRepositories() {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return { message: "Authentication required", repositories: [] };
-    }
+// export async function fetchRepositories() {
+//   try {
+//     const session = await getServerSession(authOptions);
+//     if (!session) {
+//       return { message: "Authentication required", repositories: [] };
+//     }
 
-    const repositories = await prisma.repository.findMany({
-      where: {
-        userId: session.user.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return { repositories };
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log("error.stack is ", error.stack);
-      console.log("error.message is ", error.message);
-    }
-    return { message: "Failed to Fetch Repositories", repositories: [] };
-  }
-}
+//     const repositories = await prisma.repository.findMany({
+//       where: {
+//         userId: session.user.id,
+//       },
+//       orderBy: {
+//         createdAt: "desc",
+//       },
+//     });
+//     return { repositories };
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       console.log("error.stack is ", error.stack);
+//       console.log("error.message is ", error.message);
+//     }
+//     return { message: "Failed to Fetch Repositories", repositories: [] };
+//   }
+// }
 
 export async function activateBackendServer() {
   try {

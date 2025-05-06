@@ -2,10 +2,7 @@ import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -15,20 +12,15 @@ export async function GET(
       );
     }
 
-    const repository = await prisma.repository.findUnique({
+    const repositories = await prisma.repository.findMany({
       where: {
-        id: params.id,
         userId: session.user.id,
       },
-      include: {
-        directories: true,
-        files: true,
+      orderBy: {
+        createdAt: "desc",
       },
     });
-
-    return Response.json({
-      repository: repository,
-    });
+    return { repositories };
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error message:", error.message);
