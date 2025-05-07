@@ -33,6 +33,8 @@ export async function fetchRepositories() {
 export async function activateBackendServer() {
   try {
     const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
+    console.log("EXPRESS_API_URL is ", EXPRESS_API_URL);
+
     if (!EXPRESS_API_URL) {
       throw new Error("EXPRESS_API_URL is required.");
     }
@@ -83,6 +85,7 @@ export async function stopRepositoryProcessing() {
     }
 
     const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
+    console.log("EXPRESS_API_URL is ", EXPRESS_API_URL);
     if (!EXPRESS_API_URL) {
       throw new Error("EXPRESS_API_URL is required.");
     }
