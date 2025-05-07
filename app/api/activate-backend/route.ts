@@ -11,7 +11,7 @@ export async function GET() {
       );
     }
 
-    const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
+    const EXPRESS_API_URL = process.env.EXPRESS_API_URL;
     if (!EXPRESS_API_URL) {
       throw new Error("EXPRESS_API_URL is required.");
     }
