@@ -2,7 +2,6 @@
 
 import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/prisma";
-import { createCleanJobsToken } from "@/lib/service-auth";
 import { getServerSession } from "next-auth";
 
 export async function fetchRepositories() {
@@ -41,81 +40,6 @@ export async function activateBackendServer() {
     const response = await fetch(EXPRESS_API_URL);
     const data = await response.json();
     console.log("activateBackendServer data:", data);
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log("error.stack is ", error.stack);
-      console.log("error.message is ", error.message);
-    }
-  }
-}
-
-export async function fetchProcessingRepository() {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return [];
-    }
-
-    const response = await prisma.repository.findMany({
-      where: {
-        status: {
-          in: ["PENDING", "PROCESSING"],
-        },
-        userId: session.user.id,
-      },
-    });
-    console.log("response is ", response);
-
-    return response;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log("error.stack is ", error.stack);
-      console.log("error.message is ", error.message);
-    }
-    return [];
-  }
-}
-
-export async function stopRepositoryProcessing() {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return;
-    }
-
-    const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
-    console.log("EXPRESS_API_URL is ", EXPRESS_API_URL);
-    if (!EXPRESS_API_URL) {
-      throw new Error("EXPRESS_API_URL is required.");
-    }
-
-    const serviceToken = createCleanJobsToken({
-      userId: session.user.id,
-    });
-
-    const response = await fetch(`${EXPRESS_API_URL}/api/clean/user-jobs`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${serviceToken}`,
-      },
-    });
-
-    const data = await response.json();
-
-    console.log("stopRepositoryProcessing data : ", data);
-
-    await prisma.repository.updateMany({
-      where: {
-        userId: session.user.id,
-        status: {
-          in: ["PENDING", "PROCESSING"],
-        },
-      },
-      data: {
-        status: "FAILED",
-      },
-    });
   } catch (error) {
     if (error instanceof Error) {
       console.log("error.stack is ", error.stack);
