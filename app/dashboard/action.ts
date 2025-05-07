@@ -5,8 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { createCleanJobsToken } from "@/lib/service-auth";
 import { getServerSession } from "next-auth";
 
-const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
-
 export async function fetchRepositories() {
   try {
     const session = await getServerSession(authOptions);
@@ -34,6 +32,7 @@ export async function fetchRepositories() {
 
 export async function activateBackendServer() {
   try {
+    const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
     if (!EXPRESS_API_URL) {
       throw new Error("EXPRESS_API_URL is required.");
     }
@@ -81,6 +80,11 @@ export async function stopRepositoryProcessing() {
 
     if (!session) {
       return;
+    }
+
+    const EXPRESS_API_URL = process.env.EXPRESS_API_URl;
+    if (!EXPRESS_API_URL) {
+      throw new Error("EXPRESS_API_URL is required.");
     }
 
     const serviceToken = createCleanJobsToken({
