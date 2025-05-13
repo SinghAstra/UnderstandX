@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CodeMarkdown } from "@/lib/code-markdown";
 import { Markdown } from "@/lib/markdown";
 import { File } from "@prisma/client";
 import { Check, Code, Copy, FileText } from "lucide-react";
@@ -41,7 +42,12 @@ export const FileViewer = ({ selectedFile }: FileViewerProps) => {
   const fileExtension =
     selectedFile.name.split(".")[selectedFile.name.split(".").length - 1];
 
-  const parsedCode = `\`\`\`${fileExtension}\n${selectedFile.content}\n\`\`\``;
+  const isMarkdownFile = fileExtension === "md";
+  let parsedCode = "";
+
+  if (!isMarkdownFile) {
+    parsedCode = `\`\`\`${fileExtension}  \n${selectedFile.content}\n\`\`\``;
+  }
 
   return (
     <div className="ml-96 w-full p-3 overflow-hidden">
@@ -95,7 +101,11 @@ export const FileViewer = ({ selectedFile }: FileViewerProps) => {
 
         <div className="py-1 px-4 ">
           {activeTab === "code" ? (
-            <Markdown>{parsedCode}</Markdown>
+            isMarkdownFile ? (
+              <Markdown>{selectedFile.content ?? "No Code"}</Markdown>
+            ) : (
+              <CodeMarkdown>{parsedCode}</CodeMarkdown>
+            )
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
               <Markdown>{selectedFile.analysis ?? "No Analysis"}</Markdown>

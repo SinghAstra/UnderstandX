@@ -1,4 +1,4 @@
-import Pre from "@/components/markdown/pre";
+import PreCode from "@/components/markdown/pre-code";
 import { cn } from "@/lib/utils";
 import React, { ComponentProps, memo } from "react";
 import ReactMarkdown from "react-markdown";
@@ -71,7 +71,7 @@ const normalizeLanguage = () => (tree: any) => {
 
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   const components = {
-    pre: Pre,
+    pre: PreCode,
     code: ({ className, children, ...props }: ComponentProps<"code">) => {
       return (
         <code
@@ -98,7 +98,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   );
 };
 
-export const Markdown = memo(
+export const CodeMarkdown = memo(
   NonMemoizedMarkdown,
   (prevProps, nextProps) => prevProps.children === nextProps.children
 );
