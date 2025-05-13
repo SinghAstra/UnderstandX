@@ -3,12 +3,24 @@
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 
-export default function Copy({ content }: { content: string }) {
+import { useToastContext } from "../providers/toast";
+
+interface CopyProps {
+  content: string;
+  fileName?: string;
+}
+
+export default function Copy({ content, fileName }: CopyProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const { setToastMessage } = useToastContext();
 
   async function handleCopy() {
     await navigator.clipboard.writeText(content);
     setIsCopied(true);
+
+    if (fileName) {
+      setToastMessage(`Copied ${fileName}`);
+    }
 
     setTimeout(() => {
       setIsCopied(false);

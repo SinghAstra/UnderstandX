@@ -17,20 +17,13 @@ const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileSelect = async (filePath: string) => {
-    console.log("-----------------------------------------------");
-    console.log("In handleFileSelect");
-    console.log("filePath is ", filePath);
-
     const matchedFile = repository.files.find((file) => file.path === filePath);
-    console.log("matchedFile is ", matchedFile);
     if (!matchedFile) {
       setSelectedFile(null);
       return;
     }
     setSelectedFile(matchedFile);
-    console.log("-----------------------------------------------");
   };
-  console.log("selectedFile is ", selectedFile);
 
   return (
     <div className=" min-h-screen flex flex-col">
@@ -42,7 +35,7 @@ const RepoExplorer = ({ repository, user }: RepoExplorerProps) => {
           handleFileSelect={handleFileSelect}
         />
         {!selectedFile ? (
-          <RepoOverview parsedOverview={repository.parsedOverview} />
+          <RepoOverview overview={repository.overview ?? "No Overview"} />
         ) : (
           <FileViewer selectedFile={selectedFile} />
         )}

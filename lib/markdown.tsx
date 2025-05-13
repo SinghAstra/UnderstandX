@@ -1,191 +1,11 @@
 import Pre from "@/components/markdown/pre";
-import { Button } from "@/components/ui/button";
-import { compileMDX } from "next-mdx-remote/rsc";
-import Link from "next/link";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeCodeTitles from "rehype-code-titles";
+import { cn } from "@/lib/utils";
+import React, { ComponentProps, memo } from "react";
+import ReactMarkdown from "react-markdown";
 import rehypePrism from "rehype-prism-plus";
-import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { visit } from "unist-util-visit";
-import { cn, getIconName, hasSupportedExtension } from "./utils";
 
-const components = {
-  Button,
-  h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1
-      className={cn(
-        "font-heading mt-8 scroll-m-20 text-4xl leading-[3.25rem]",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2
-      className={cn(
-        "font-heading text-3xl font-medium  mt-12 scroll-m-20  first:mt-0 border-b border-dashed w-fit",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3
-      className={cn(
-        "font-heading mt-6 scroll-m-20 text-lg first:mt-0 border-b border-dashed w-fit",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4
-      className={cn("font-heading mt-6 scroll-m-20 text-lg ", className)}
-      {...props}
-    />
-  ),
-  h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h5 className={cn("mt-6 scroll-m-20 text-lg ", className)} {...props} />
-  ),
-  h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h6 className={cn("mt-6 scroll-m-20 text-base", className)} {...props} />
-  ),
-  a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => (
-    <a
-      className={cn("font-medium underline underline-offset-4", className)}
-      target="_blank"
-      {...props}
-    />
-  ),
-  p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p
-      className={cn(
-        "leading-[1.65rem] [&:not(:first-child)]:mt-6 font-thin ",
-        className
-      )}
-      {...props}
-    />
-  ),
-  strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <strong className={cn("font-normal", className)} {...props} />
-  ),
-  ul: ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
-  ),
-  ol: ({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
-  ),
-  li: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <li className={cn("mt-2 leading-8", className)} {...props} />
-  ),
-  blockquote: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <blockquote
-      className={cn("mt-6 border-l-2 pl-6 italic", className)}
-      {...props}
-    />
-  ),
-  img: ({
-    className,
-    alt,
-    ...props
-  }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img className={cn("rounded-md", className)} alt={alt} {...props} />
-  ),
-  hr: ({ ...props }: React.HTMLAttributes<HTMLHRElement>) => (
-    <hr className="my-4 " {...props} />
-  ),
-  table: ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-4 w-full overflow-y-auto">
-      <table
-        className={cn(
-          "relative w-full overflow-hidden border-none text-sm",
-          className
-        )}
-        {...props}
-      />
-    </div>
-  ),
-  tr: ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => (
-    <tr
-      className={cn("last:border-b-none m-0 border-b", className)}
-      {...props}
-    />
-  ),
-  th: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <th
-      className={cn(
-        "px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
-        className
-      )}
-      {...props}
-    />
-  ),
-  td: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <td
-      className={cn(
-        "px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
-        className
-      )}
-      {...props}
-    />
-  ),
-  Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
-    <Link
-      className={cn("font-medium underline underline-offset-4", className)}
-      {...props}
-    />
-  ),
-  pre: Pre,
-  code: ({ className, ...props }: React.ComponentProps<"code">) => (
-    <code
-      className={cn(
-        "rounded px-1 py-0.5 border bg-muted/20 overflow-x-auto",
-        className
-      )}
-      {...props}
-    />
-  ),
-};
-
-export async function parseMdx(rawMdx: string) {
-  let mdxContent;
-  try {
-    const { content } = await compileMDX({
-      source: rawMdx,
-      options: {
-        parseFrontmatter: true,
-        mdxOptions: {
-          rehypePlugins: [
-            preProcess,
-            rehypeCodeTitles,
-            rehypeCodeTitlesWithLogo,
-            rehypePrism,
-            rehypeSlug,
-            rehypeAutolinkHeadings,
-            postProcess,
-          ],
-          remarkPlugins: [remarkGfm],
-        },
-      },
-      components,
-    });
-    mdxContent = content;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log("rawMdx is ", rawMdx);
-      console.log("error.stack is ", error.stack);
-      console.log("error.message is ", error.message);
-    }
-  }
-
-  return {
-    content: mdxContent ? mdxContent : null,
-  };
-}
-
-// for copying the code in pre
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const preProcess = () => (tree: any) => {
   visit(tree, (node) => {
@@ -193,6 +13,13 @@ const preProcess = () => (tree: any) => {
       const [codeEl] = node.children;
       if (codeEl.tagName !== "code") return;
       node.raw = codeEl.children?.[0].value;
+      const meta = codeEl.data?.meta;
+      if (meta && typeof meta === "string") {
+        const fileMatch = meta.match(/title=([\w./-]+)/);
+        if (fileMatch) {
+          node.filename = fileMatch[1];
+        }
+      }
     }
   });
 };
@@ -202,45 +29,172 @@ const postProcess = () => (tree: any) => {
   visit(tree, "element", (node) => {
     if (node?.type === "element" && node?.tagName === "pre") {
       node.properties["raw"] = node.raw;
+      node.properties["filename"] = node.filename;
     }
   });
 };
 
-function rehypeCodeTitlesWithLogo() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (tree: any) => {
-    visit(tree, "element", (node) => {
-      if (
-        node?.tagName === "div" &&
-        node?.properties?.className?.includes("rehype-code-title")
-      ) {
-        const titleTextNode = node.children.find(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (child: any) => child.type === "text"
-        );
-        if (!titleTextNode) return;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const normalizeLanguage = () => (tree: any) => {
+  const supported = new Set([
+    "js",
+    "ts",
+    "tsx",
+    "jsx",
+    "html",
+    "css",
+    "json",
+    "bash",
+    "python",
+    "c",
+    "cpp",
+    "java",
+  ]);
 
-        // Extract filename and language
-        const titleText = titleTextNode.value;
-        const match = hasSupportedExtension(titleText);
-        if (!match) return;
+  visit(tree, "element", (node) => {
+    if (node.tagName === "code" && node.properties?.className) {
+      const classNames = node.properties.className;
+      const langClass = classNames.find((c: string) =>
+        c.startsWith("language-")
+      );
 
-        const splittedNames = titleText.split(".");
-        const ext = splittedNames[splittedNames.length - 1];
-        const iconClass = `devicon-${getIconName(
-          ext
-        )}-plain text-[17px] colored`;
-
-        // Insert icon before title text
-        if (iconClass) {
-          node.children.unshift({
-            type: "element",
-            tagName: "i",
-            properties: { className: [iconClass, "code-icon"] },
-            children: [],
-          });
+      if (langClass) {
+        const lang = langClass.replace("language-", "");
+        if (!supported.has(lang)) {
+          // fallback to plain text if unsupported
+          node.properties.className = ["language-text"];
         }
       }
-    });
+    }
+  });
+};
+
+const NonMemoizedMarkdown = ({ children }: { children: string }) => {
+  const components = {
+    h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h1
+        className={cn(
+          "font-heading mt-2 scroll-m-20 text-4xl font-bold",
+          className
+        )}
+        {...props}
+      />
+    ),
+    h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h2
+        className={cn(
+          "font-heading mt-16 scroll-m-20 border-b pb-4 text-xl font-semibold tracking-tight first:mt-0",
+          className
+        )}
+        {...props}
+      />
+    ),
+    h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h3
+        className={cn(
+          "font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
+          className
+        )}
+        {...props}
+      />
+    ),
+    h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h4
+        className={cn(
+          "font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
+          className
+        )}
+        {...props}
+      />
+    ),
+    h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h5
+        className={cn(
+          "mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
+          className
+        )}
+        {...props}
+      />
+    ),
+    h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h6
+        className={cn(
+          "mt-8 scroll-m-20 text-base font-semibold tracking-tight",
+          className
+        )}
+        {...props}
+      />
+    ),
+    a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => (
+      <a
+        className={cn("font-medium underline underline-offset-4", className)}
+        {...props}
+      />
+    ),
+    p: ({
+      className,
+      ...props
+    }: React.HTMLAttributes<HTMLParagraphElement>) => (
+      <p
+        className={cn(
+          "leading-[1.65rem] [&:not(:first-child)]:mt-6",
+          className
+        )}
+        {...props}
+      />
+    ),
+    strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
+      <strong className={cn("text-purple-400", className)} {...props} />
+    ),
+    ul: ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
+      <ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
+    ),
+    ol: ({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
+      <ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
+    ),
+    li: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
+      <li className={cn("mt-2", className)} {...props} />
+    ),
+    blockquote: ({
+      className,
+      ...props
+    }: React.HTMLAttributes<HTMLElement>) => (
+      <blockquote
+        className={cn("mt-6 border-l-2 pl-6 italic", className)}
+        {...props}
+      />
+    ),
+    hr: ({ ...props }: React.HTMLAttributes<HTMLHRElement>) => (
+      <hr className="my-4 md:my-8" {...props} />
+    ),
+    pre: Pre,
+    code: ({ className, children, ...props }: ComponentProps<"code">) => {
+      return (
+        <code
+          className={`${className} text-sm  py-0.5 px-1 rounded  border`}
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    },
+    em: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
+      <em className={cn("not-italic", className)} {...props} />
+    ),
   };
-}
+
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[preProcess, normalizeLanguage, rehypePrism, postProcess]}
+      components={components}
+    >
+      {children}
+    </ReactMarkdown>
+  );
+};
+
+export const Markdown = memo(
+  NonMemoizedMarkdown,
+  (prevProps, nextProps) => prevProps.children === nextProps.children
+);

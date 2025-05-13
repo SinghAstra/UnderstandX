@@ -1,13 +1,9 @@
 "use server";
 import { DirectoryWithRelations } from "@/interfaces/github";
 import { authOptions } from "@/lib/auth-options";
-import { parseMdx } from "@/lib/markdown";
 import { prisma } from "@/lib/prisma";
-import { getLanguage } from "@/lib/utils";
 import { File } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { extname } from "path";
-import { JSXElementConstructor, ReactElement } from "react";
 
 export async function getRepositoryData(id: string) {
   const session = await getServerSession(authOptions);
@@ -58,17 +54,12 @@ export async function getRepositoryData(id: string) {
       }
     });
 
-    const { content: parsedOverview } = await parseMdx(
-      repository.overview ?? "Overview not available. Please try again."
-    );
-
     // Create structured repository
     const structuredRepository = {
       ...repository,
       directories: rootDirectories,
       rootFiles,
       files: repository.files,
-      parsedOverview,
     };
 
     return structuredRepository;
@@ -79,29 +70,4 @@ export async function getRepositoryData(id: string) {
     }
     return null;
   }
-}
-
-export async function parseFile(file: File) {
-  console.log("Starting to parse the file ", file.path);
-  const { content: parsedAnalysis } = await parseMdx(
-    file.analysis ?? "Analysis not available. Please try again."
-  );
-  console.log("parsedAnalysis generated for ", file.path);
-  const ext = extname(file.path);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let parsedCode: ReactElement<any, string | JSXElementConstructor<any>> | null;
-
-  if (ext === ".md") {
-    const { content } = await parseMdx(
-      "This is a markdown file. It has no code."
-    );
-    parsedCode = content;
-  } else {
-    const language = getLanguage(file);
-    const markdown = `\`\`\`${language}\n${file.content}\n\`\`\``;
-    const { content } = await parseMdx(markdown);
-    parsedCode = content;
-  }
-  console.log("parsedCode generated for ", file.path);
-  return { ...file, parsedAnalysis, parsedCode };
 }

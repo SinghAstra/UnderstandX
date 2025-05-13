@@ -1,14 +1,15 @@
-import { JSXElementConstructor, ReactElement } from "react";
+import { Markdown } from "@/lib/markdown";
 
 interface RepoOverviewProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parsedOverview: ReactElement<any, string | JSXElementConstructor<any>> | null;
+  overview: string;
 }
 
-const RepoOverview = ({ parsedOverview }: RepoOverviewProps) => {
+const RepoOverview = ({ overview }: RepoOverviewProps) => {
   return (
     <div className="w-full flex-1 p-3 ml-96">
-      <div className="border rounded-md px-4 py-3 ">{parsedOverview}</div>
+      <div className="border rounded-md px-4 py-3 ">
+        <Markdown>{overview}</Markdown>
+      </div>
     </div>
   );
 };
