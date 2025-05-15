@@ -47,8 +47,14 @@ export const FileViewer = ({ selectedFile }: FileViewerProps) => {
   let parsedCode = "";
 
   if (!isMarkdownFile) {
-    parsedCode = `\`\`\`${fileExtension}  \n${selectedFile.content}\n\`\`\``;
+    parsedCode = `\`\`\`${fileExtension}  \n${selectedFile.content?.substring(
+      0,
+      10000
+    )}\n\`\`\``;
   }
+
+  console.log("selectedFile.name is ", selectedFile.name);
+  console.log("selectedFile.content?.length is ", selectedFile.content?.length);
 
   return (
     <div className="ml-96 w-full p-3 overflow-hidden">
