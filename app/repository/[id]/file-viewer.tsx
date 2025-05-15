@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Typography } from "@/components/ui/typography";
 import { CodeMarkdown } from "@/lib/code-markdown";
 import { Markdown } from "@/lib/markdown";
 import { File } from "@prisma/client";
@@ -102,13 +103,17 @@ export const FileViewer = ({ selectedFile }: FileViewerProps) => {
         <div className="py-1 px-4 ">
           {activeTab === "code" ? (
             isMarkdownFile ? (
-              <Markdown>{selectedFile.content ?? "No Code"}</Markdown>
+              <Typography>
+                <Markdown>{selectedFile.content ?? "No Code"}</Markdown>
+              </Typography>
             ) : (
               <CodeMarkdown>{parsedCode}</CodeMarkdown>
             )
           ) : (
             <div className="max-w-none prose-invert px-4 py-2">
-              <Markdown>{selectedFile.analysis ?? "No Analysis"}</Markdown>
+              <Typography>
+                <Markdown>{selectedFile.analysis ?? "No Analysis"}</Markdown>
+              </Typography>
             </div>
           )}
         </div>
