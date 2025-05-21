@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 interface HeroSectionProps {
   isAuthenticated: boolean;
@@ -32,6 +33,10 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
       redirect("/dashboard");
     }
   };
+
+  useEffect(() => {
+    fetch("/api/wake-up");
+  }, []);
 
   return (
     <div className="overflow-x-hidden scrollbar-hide ">
