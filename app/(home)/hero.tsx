@@ -35,7 +35,20 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
   };
 
   useEffect(() => {
-    fetch("/api/wake-up");
+    const wakeUpServer = async () => {
+      try {
+        const response = await fetch("/api/wake-up");
+        const data = await response.json();
+        console.log("wakeUpServer Response", data);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log("error.stack is ", error.stack);
+          console.log("error.message is ", error.message);
+        }
+      }
+    };
+
+    wakeUpServer();
   }, []);
 
   return (
