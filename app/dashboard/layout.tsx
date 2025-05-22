@@ -33,6 +33,8 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
 
   const { repositories } = await fetchRepositories();
 
+  await fetch("/api/wake-up");
+
   return (
     <div className="min-h-screen">
       <Navbar user={session.user} />

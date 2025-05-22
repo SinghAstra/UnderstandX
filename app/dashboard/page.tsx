@@ -34,7 +34,6 @@ function DashboardPage() {
   const actionQuery = searchParams.get("action");
   const router = useRouter();
   const [showAlert, setShowAlert] = useState(false);
-  const [isServerAwake, setIsServerAwake] = useState(false);
 
   useEffect(() => {
     if (actionQuery === "connect") {
@@ -184,29 +183,6 @@ function DashboardPage() {
     };
   }, [showGuide, dismissGuide]);
 
-  useEffect(() => {
-    const wakeUpServer = async () => {
-      try {
-        const response = await fetch("/api/wake-up");
-        const data = await response.json();
-        console.log("wakeUpServer Response", data);
-        if (data.data.message) {
-          setIsServerAwake(true);
-          return;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 10000));
-        wakeUpServer();
-      } catch (error) {
-        if (error instanceof Error) {
-          console.log("error.stack is ", error.stack);
-          console.log("error.message is ", error.message);
-        }
-      }
-    };
-
-    wakeUpServer();
-  }, []);
-
   return (
     <div className="w-full m-2">
       <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
@@ -278,9 +254,7 @@ function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
-                      disabled={
-                        !url || isProcessing || isSuccess || !isServerAwake
-                      }
+                      disabled={!url || isProcessing || isSuccess}
                       type="submit"
                       className={cn(
                         "relative overflow-hidden",
@@ -335,7 +309,7 @@ function DashboardPage() {
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
-                disabled={!url || isProcessing || isSuccess || !isServerAwake}
+                disabled={!url || isProcessing || isSuccess}
                 type="submit"
                 className={cn(
                   "relative overflow-hidden",

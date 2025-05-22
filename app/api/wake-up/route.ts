@@ -1,33 +1,25 @@
 export const dynamic = "force-dynamic";
 
-
 export async function GET() {
-  let data = "";
   try {
     const EXPRESS_API_URL = process.env.EXPRESS_API_URL;
+    const AWAKE_API_URL = process.env.AWAKE_API_URL;
     if (!EXPRESS_API_URL) {
       throw new Error("EXPRESS_API_URL is not defined");
     }
-    if (process.env.ENV === "development") {
-      console.log("In development mode, skipping wake-up check");
-      return Response.json({ isActive: true });
+    if (!AWAKE_API_URL) {
+      throw new Error("AWAKE_API_URL is not defined");
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 40000);
-
-    const response = await fetch(EXPRESS_API_URL, {
-      method: "GET",
-      signal: controller.signal,
+    const response = await fetch(`${AWAKE_API_URL}/api/wake-up`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ apiURL: EXPRESS_API_URL }),
     });
 
-    clearTimeout(timeout);
-
-    data = await response.json();
-
-    if (!response.ok) {
-      return Response.json({ isActive: false, data });
-    }
+    const data = await response.json();
 
     return Response.json({ isActive: true, data });
   } catch (error) {
@@ -35,6 +27,6 @@ export async function GET() {
       console.log("error.stack is ", error.stack);
       console.log("error.message is ", error.message);
     }
-    return Response.json({ isActive: false, data });
+    return Response.json({ message: "Failed to activate Server" });
   }
 }
