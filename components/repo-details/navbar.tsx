@@ -3,7 +3,6 @@ import { Repository } from "@prisma/client";
 import { User } from "next-auth";
 import Link from "next/link";
 import React from "react";
-import { FaGithub } from "react-icons/fa";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { AvatarMenu } from "../ui/avatar-menu";
 import { buttonVariants } from "../ui/button";
@@ -27,7 +26,8 @@ const Navbar = ({ repository, user }: RepoDetailsNavbarProps) => {
         </Link>
         <Link
           className="flex gap-2 items-center border p-2  rounded-lg w-fit cursor-pointer hover:bg-secondary transition-colors duration-150 group"
-          href={`/repository/${repository.id}`}
+          href={repository?.url}
+          target="_blank"
         >
           <Avatar className="w-8 h-8">
             <AvatarImage src={repository.avatarUrl} />
@@ -48,13 +48,6 @@ const Navbar = ({ repository, user }: RepoDetailsNavbarProps) => {
         >
           Overview
         </Link>
-        <a
-          href={repository?.url}
-          target="_blank"
-          className={buttonVariants({ variant: "outline" })}
-        >
-          <FaGithub />
-        </a>
         <AvatarMenu user={user} />
       </div>
     </header>
