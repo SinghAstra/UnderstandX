@@ -1,6 +1,6 @@
 # UnderstandX
 
-UnderstandX is a web application built with Next.js and Prisma that allows users to explore and analyze the contents of public GitHub repositories.  It provides features for viewing files, generating summaries, and monitoring processing status.
+UnderstandX allows users to explore and analyze the contents of public GitHub repositories. It generates detailed context aware analysis for every file with every file analysis explaining the role of file in the project, key code sections and improvement suggestions.
 
 ## 🧰 Technology Stack
 
