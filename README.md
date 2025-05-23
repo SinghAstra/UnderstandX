@@ -1,6 +1,6 @@
 # UnderstandX
 
-UnderstandX allows users to explore and analyze the contents of public GitHub repositories. It generates detailed context aware analysis for every file with every file analysis explaining the role of file in the project, key code sections and improvement suggestions.
+UnderstandX  allows users to explore and analyze the contents of any public Github repository. It generates detailed context aware analysis for every file with every file analysis explaining the role of file in the project, key code sections and improvement suggestions.
 
 ## 🧰 Technology Stack
 
