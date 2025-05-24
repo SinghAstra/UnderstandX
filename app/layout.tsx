@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     images: [
       {
-        url: "/assets/landing.png",
+        url: "/assets/hero.png",
         width: 1200,
         height: 630,
       },
