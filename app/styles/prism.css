@@ -1,0 +1,39 @@
+.keyword {
+  color: #f97583; /* GitHub Light Red */
+}
+
+.function {
+  color: #d2a8ff; /* GitHub Light Purple */
+}
+
+.punctuation {
+  color: #c9d1d9; /* GitHub Light Gray */
+}
+
+.comment {
+  color: #8b949e; /* GitHub Muted Gray */
+}
+
+.string,
+.constant,
+.annotation,
+.boolean,
+.number {
+  color: #79c0ff; /* GitHub Light Blue */
+}
+
+.tag {
+  color: #a5d6ff; /* GitHub Cyan */
+}
+
+.attr-name {
+  color: #d2a8ff; /* GitHub Light Purple */
+}
+
+.attr-value {
+  color: #ffa657; /* GitHub Light Orange */
+}
+
+pre > code {
+  border: 0;
+}
