@@ -52,3 +52,16 @@ body {
     scrollbar-color: hsl(var(--secondary)) transparent;
   }
 }
+
+@keyframes shine {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -400% 0;
+  }
+}
+
+.shine {
+  animation: shine 6s linear infinite;
+}
