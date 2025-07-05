@@ -113,7 +113,13 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
           borderWidth={4}
           initialTransparent={300}
         />
-        <div className="relative m-4 rounded-inherit ">
+        <div
+          className="relative m-4 rounded-inherit "
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, black 80%, transparent 100%)",
+          }}
+        >
           <Image
             src="/assets/hero.png"
             alt="Dashboard"
@@ -123,57 +129,9 @@ const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
             className="w-full h-full "
           />
         </div>
-        {/* <div className="absolute -bottom-4 inset-x-0 w-full h-1/2 bg-gradient-to-t from-background z-40"></div>
-          <div className="absolute bottom-0 md:-bottom-8 inset-x-0 w-full h-1/4 bg-gradient-to-t from-background z-50"></div> */}
+        <div className="absolute bottom-0 inset-x-0 w-full h-1/2 bg-gradient-to-t from-background z-40 "></div>
+        <div className="absolute bottom-0 inset-x-0 w-full h-1/4 bg-gradient-to-t from-background z-50 "></div>
       </div>
-
-      {/* Features Section */}
-      {/* <MaxWidthWrapper className="pt-10">
-        <FadeSlideIn delay={0.1}>
-          <div className="flex flex-col w-full items-center lg:items-center justify-center py-8">
-            <MagicBadge title="Process" />
-          </div>
-        </FadeSlideIn>
-        <FadeSlideIn delay={0.2}>
-          <ProcessGrid className="py-8 ">
-            {Steps(href).map((step, idx) => (
-              <ProcessCard key={idx} {...step} />
-            ))}
-          </ProcessGrid>
-        </FadeSlideIn>
-      </MaxWidthWrapper> */}
-
-      {/* CTA Section */}
-      {/* <MaxWidthWrapper className="mt-20 max-w-[100vw] overflow-x-hidden scrollbar-hide">
-        <LampContainer>
-          <motion.div
-            initial={{ opacity: 0.5, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center gap-8  "
-          >
-            <h1 className="mt-8  text-foreground py-4  text-center text-4xl font-medium tracking-tight md:text-7xl">
-              Understand <br />
-              <span className="text-transparent bg-gradient-to-r from-yellow-500 to-pink-500 bg-clip-text">
-                Github Repo
-              </span>
-              <br /> with{" "}
-              <span className="text-transparent bg-gradient-to-r from-yellow-500 to-pink-500 bg-clip-text">
-                UnderstandX
-              </span>
-            </h1>
-            <BackgroundShine>
-              <Link
-                href={isAuthenticated ? "/dashboard" : "/auth/sign-in"}
-                className="flex items-center "
-              >
-                Get started for free
-                <ArrowRightIcon className="w-4 h-4 ml-2" />
-              </Link>
-            </BackgroundShine>
-          </motion.div>
-        </LampContainer>
-      </MaxWidthWrapper> */}
     </motion.div>
   );
 };
