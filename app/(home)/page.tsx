@@ -121,9 +121,6 @@ const LandingPage = () => {
                 className="w-full h-full "
               />
             </div>
-
-            {/* <div className="absolute -bottom-4 inset-x-0 w-full h-1/2 bg-gradient-to-t from-background z-40"></div>
-          <div className="absolute bottom-0 md:-bottom-8 inset-x-0 w-full h-1/4 bg-gradient-to-t from-background z-50"></div> */}
           </div>
           <div
             className="absolute inset-x-0 bottom-0 h-1/4"

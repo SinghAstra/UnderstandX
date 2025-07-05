@@ -12,7 +12,7 @@ const Footer = () => {
       initial="hidden"
       whileInView="visible"
     >
-      <footer className="flex  p-4 relative items-center justify-between border-t border-border mx-4 sm:mx-8 ">
+      <footer className="flex sticky inset-x-0 bottom-0 p-4 items-center justify-between border-t border-border mx-4 sm:mx-8 ">
         <motion.div variants={slideUpVariant}>
           <span className=" text-muted-foreground flex gap-2 items-center tracking-wider">
             Made by{" "}

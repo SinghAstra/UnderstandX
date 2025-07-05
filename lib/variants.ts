@@ -34,9 +34,8 @@ export const slideUpVariant = {
 };
 
 export const containerVariant = {
-  hidden: { opacity: 0 },
+  hidden: {},
   visible: {
-    opacity: 1,
     transition: {
       staggerChildren: 0.4,
       delayChildren: 0.1,
