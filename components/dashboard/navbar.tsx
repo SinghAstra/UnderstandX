@@ -44,9 +44,7 @@ export function Navbar({ user }: NavbarProps) {
           <Plus className="h-5 w-5" />
           Connect New Repository
         </motion.div>
-        <motion.div variants={scaleInVariant}>
-          <AvatarMenu user={user} />
-        </motion.div>
+        <AvatarMenu user={user} />
       </div>
     </motion.div>
   );
