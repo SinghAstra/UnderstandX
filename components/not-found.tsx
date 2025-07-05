@@ -8,7 +8,8 @@ import {
 import { motion } from "framer-motion";
 import { User } from "next-auth";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import AuthDialog from "./componentX/auth-dialog";
 import Navbar from "./home/navbar";
 import { buttonVariants } from "./ui/button";
 
@@ -18,6 +19,10 @@ interface NotFoundProps {
 
 const NotFound = ({ user }: NotFoundProps) => {
   const href = user ? "/dashboard" : "/";
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const toggleAuthDialog = () => {
+    setShowAuthDialog(!showAuthDialog);
+  };
 
   return (
     <motion.div
@@ -26,7 +31,7 @@ const NotFound = ({ user }: NotFoundProps) => {
       whileInView={"visible"}
       className="min-h-screen flex flex-col"
     >
-      <Navbar user={user} />
+      <Navbar toggleAuthDialog={toggleAuthDialog} />
       <div className="flex-1 flex flex-col gap-4 items-center justify-center ">
         <div className="text-center flex flex-col items-center justify-center  gap-2">
           <motion.h2
@@ -51,6 +56,10 @@ const NotFound = ({ user }: NotFoundProps) => {
           </Link>
         </motion.div>
       </div>
+      <AuthDialog
+        isDialogVisible={showAuthDialog}
+        setIsDialogVisible={setShowAuthDialog}
+      />
     </motion.div>
   );
 };

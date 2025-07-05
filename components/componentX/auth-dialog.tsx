@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { FaGithub } from "react-icons/fa";
+import GradientInsetBackground from "../ui/gradient-inset-background";
 import MovingBackground from "../ui/moving-background";
 import Dialog from "./dialog";
 
@@ -65,11 +66,12 @@ const AuthDialog = ({
   return (
     <>
       <Dialog
-        className="max-w-[400px] relative bg-muted/20"
+        className="max-w-[400px] relative bg-background"
         isDialogVisible={isDialogVisible}
         setIsDialogVisible={setIsDialogVisible}
         keyToMakeDialogVisible="a"
       >
+        <GradientInsetBackground />
         <div className="space-y-4 m-4 text-center">
           <div className="space-y-1 mb-4">
             <h1 className="text-3xl tracking-wider">{siteConfig.name}</h1>

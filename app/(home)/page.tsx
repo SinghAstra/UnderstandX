@@ -1,6 +1,7 @@
 "use client";
 
 import AuthDialog from "@/components/componentX/auth-dialog";
+import ConicGradientBackground from "@/components/componentX/conic-gradient-background";
 import Footer from "@/components/home/footer";
 import Navbar from "@/components/home/navbar";
 import GradientInsetBackground from "@/components/ui/gradient-inset-background";
@@ -97,30 +98,63 @@ const LandingPage = () => {
             </motion.a>
           </div>
         </div>
-        <div className="relative mx-4 sm:mx-8 overflow-hidden rounded-sm border">
-          <MovingGlow
-            animationDuration={12}
-            borderWidth={4}
-            initialTransparent={300}
-          />
-          <div
-            className="relative m-4 rounded-inherit "
-            style={{
-              maskImage:
-                "linear-gradient(to bottom, black 80%, transparent 100%)",
-            }}
-          >
-            <Image
-              src="/assets/hero.png"
-              alt="Dashboard"
-              width={1200}
-              height={1200}
-              quality={100}
-              className="w-full h-full "
+        <div className="relative px-4 sm:px-8 ">
+          <div className="relative  overflow-hidden rounded-sm border">
+            <MovingGlow
+              animationDuration={12}
+              borderWidth={4}
+              initialTransparent={300}
             />
+            <div
+              className="relative m-4 rounded-inherit "
+              style={{
+                maskImage:
+                  "linear-gradient(to bottom, black 80%, transparent 100%)",
+              }}
+            >
+              <Image
+                src="/assets/hero.png"
+                alt="Dashboard"
+                width={1200}
+                height={1200}
+                quality={100}
+                className="w-full h-full "
+              />
+            </div>
+
+            {/* <div className="absolute -bottom-4 inset-x-0 w-full h-1/2 bg-gradient-to-t from-background z-40"></div>
+          <div className="absolute bottom-0 md:-bottom-8 inset-x-0 w-full h-1/4 bg-gradient-to-t from-background z-50"></div> */}
           </div>
-          <div className="absolute bottom-0 inset-x-0 w-full h-1/2 bg-gradient-to-t from-background z-40 "></div>
-          <div className="absolute bottom-0 inset-x-0 w-full h-1/4 bg-gradient-to-t from-background z-50 "></div>
+          <div
+            className="absolute inset-x-0 bottom-0 h-1/4"
+            style={{
+              background:
+                "linear-gradient(180deg,hsla(var(--background)/0),hsl(var(--background)))",
+            }}
+          />
+        </div>
+
+        <div className="min-h-screen relative px-4 sm:px-8 flex items-center">
+          <div className="flex flex-col gap-4 sm:gap-8 sm:max-w-[60%] text-balance">
+            <h1 className="text-5xl text-balance leading-[1.3]">
+              Understand any Public Github Repository by generating Context
+              Aware File Analysis
+            </h1>
+            <motion.div
+              variants={scaleInVariant}
+              className="relative border px-6 py-2 text-xl rounded flex items-center group cursor-pointer w-fit"
+              onClick={toggleAuthDialog}
+            >
+              <MovingGlow />
+              <GradientInsetBackground />
+              Get started
+              <ArrowRightIcon
+                className="ml-1 size-4 transition-all duration-300 
+                group-hover:translate-x-1"
+              />
+            </motion.div>
+          </div>
+          <ConicGradientBackground />
         </div>
         <AuthDialog
           isDialogVisible={showAuthDialog}
