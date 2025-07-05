@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import { User } from "next-auth";
 import Link from "next/link";
 import { AvatarMenu } from "../ui/avatar-menu";
-import SignInButton from "../ui/sign-in";
 
 interface NavbarProps {
   user: User;
@@ -27,7 +26,7 @@ export function Navbar({ user }: NavbarProps) {
             <Plus className="h-5 w-5" />
             Connect New Repository
           </Link>
-          {user ? <AvatarMenu user={user} /> : <SignInButton />}
+          <AvatarMenu user={user} />
         </div>
       </div>
     </nav>
