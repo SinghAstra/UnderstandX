@@ -130,11 +130,19 @@ const LandingPage = ({
         </div>
 
         <div className="min-h-screen relative px-4 sm:px-8 flex items-center">
-          <div className="flex flex-col gap-4 sm:gap-8 sm:max-w-[60%] text-balance">
-            <h1 className="text-5xl text-balance leading-[1.3]">
+          <motion.div
+            variants={containerVariant}
+            initial="hidden"
+            whileInView="visible"
+            className="flex flex-col gap-4 sm:gap-8 sm:max-w-[60%] text-balance"
+          >
+            <motion.h1
+              variants={blurInVariant}
+              className="text-5xl text-balance leading-[1.3]"
+            >
               Understand any Public Github Repository by generating Context
               Aware File Analysis
-            </h1>
+            </motion.h1>
             <motion.div
               variants={scaleInVariant}
               className="relative border px-6 py-2 text-xl rounded flex items-center group cursor-pointer w-fit"
@@ -148,7 +156,7 @@ const LandingPage = ({
                 group-hover:translate-x-1"
               />
             </motion.div>
-          </div>
+          </motion.div>
           <ConicGradientBackground />
         </div>
         <AuthDialog
