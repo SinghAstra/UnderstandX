@@ -189,6 +189,8 @@ function NewRepoDialog({
     );
   }
 
+  if (!showNewRepoDialog) return;
+
   return (
     <div className="w-full m-2">
       <Dialog

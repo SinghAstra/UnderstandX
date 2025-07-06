@@ -1,14 +1,13 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+   url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
-
-
-
 
 model User {
   id            String       @id @default(cuid())
@@ -105,12 +104,12 @@ model File {
 }
 
 model Log {
-  id           String     @id @default(cuid())
+  id           String           @id @default(cuid())
   repositoryId String
   message      String
   status       RepositoryStatus
-  createdAt    DateTime   @default(now())
-  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime         @default(now())
+  repository   Repository       @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 }
 
 enum RepositoryStatus {
@@ -126,4 +125,3 @@ enum DirectoryStatus {
   SUCCESS
   FAILED
 }
-
