@@ -1,12 +1,21 @@
-import DashboardPreview from "@/components/ui/preview/dashboard-preview";
+import { RepositoryPreview } from "@/interfaces/github";
 import React from "react";
+import { fetchTrendingTypeScriptRepos } from "../(protected)/dashboard/action";
+import LandingPage from "./landing";
 
-const HomePage = () => {
-  return (
-    <div className="min-h-screen">
-      <DashboardPreview />
-    </div>
+const HomePage = async () => {
+  const trendingRepos = await fetchTrendingTypeScriptRepos();
+  const parsedTrendingRepos: RepositoryPreview[] = trendingRepos.map(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (repo: any) => {
+      return {
+        name: repo.name,
+        owner: repo.owner.login,
+        avatarUrl: repo.owner.avatar_url,
+      };
+    }
   );
+  return <LandingPage previewRepos={parsedTrendingRepos} />;
 };
 
 export default HomePage;

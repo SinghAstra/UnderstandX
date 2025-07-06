@@ -1,19 +1,24 @@
+import { RightSidebar } from "@/components/dashboard/right-sidebar";
+import { RepositoryPreview } from "@/interfaces/github";
 import React from "react";
-import { fetchTrendingTypeScriptRepos } from "./action";
+import LeftSidebarRepoListPreview from "./left-sidebar-repo-list-preview";
 import { NavbarPreview } from "./navbar-preview";
+import NewRepoInputPreview from "./new-repo-input-preview";
 
-const DashboardPreview = async () => {
-  const trendingRepos = await fetchTrendingTypeScriptRepos();
-  const parsedTrendingRepos = trendingRepos.map((repo) => repo.name);
-  console.log("parsedTrendingRepos ", parsedTrendingRepos);
+const DashboardPreview = ({
+  previewRepos,
+}: {
+  previewRepos: RepositoryPreview[];
+}) => {
   return (
     <div className="min-h-screen">
       <NavbarPreview />
       <div className="flex ">
-        {/* <LeftSidebar initialRepositories={repositories} /> */}
-        Hey There
-        {/* <main className="hidden lg:flex flex-1 ml-96 ">{children}</main> */}
-        {/* <RightSidebar /> */}
+        <LeftSidebarRepoListPreview previewRepos={previewRepos} />
+        <main className="hidden lg:flex flex-1 ml-[420px] ">
+          <NewRepoInputPreview />
+        </main>
+        <RightSidebar />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import MovingGlow from "@/components/ui/moving-glow";
 import DashboardPreview from "@/components/ui/preview/dashboard-preview";
 import RadialFadePulsatingBackground from "@/components/ui/radial-fade-pulsating-background";
 import { siteConfig } from "@/config/site";
+import { RepositoryPreview } from "@/interfaces/github";
 import {
   blurInVariant,
   containerVariant,
@@ -17,11 +18,14 @@ import {
 } from "@/lib/variants";
 import { motion } from "framer-motion";
 import { ArrowRightIcon } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 import { FaGithub, FaTwitterSquare } from "react-icons/fa";
 
-const LandingPage = () => {
+const LandingPage = ({
+  previewRepos,
+}: {
+  previewRepos: RepositoryPreview[];
+}) => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const toggleAuthDialog = () => {
     setShowAuthDialog(!showAuthDialog);
@@ -113,15 +117,7 @@ const LandingPage = () => {
                   "linear-gradient(to bottom, black 80%, transparent 100%)",
               }}
             >
-              <DashboardPreview />
-              {/* <Image
-                src="/assets/hero.png"
-                alt="Dashboard"
-                width={1200}
-                height={1200}
-                quality={100}
-                className="w-full h-full "
-              /> */}
+              <DashboardPreview previewRepos={previewRepos} />
             </div>
           </div>
           <div

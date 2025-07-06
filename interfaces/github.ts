@@ -1,5 +1,11 @@
 import { Directory, File, Repository } from "@prisma/client";
 
+export interface RepositoryPreview {
+  owner: string;
+  avatarUrl: string;
+  name: string;
+}
+
 export interface GitHubContent {
   name: string;
   type: "file" | "dir";

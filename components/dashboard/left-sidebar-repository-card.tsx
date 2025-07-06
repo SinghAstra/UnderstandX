@@ -2,7 +2,9 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { slideUpVariant } from "@/lib/variants";
 import { Repository, RepositoryStatus } from "@prisma/client";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -65,8 +67,10 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
   }, [message]);
 
   return (
-    <Link href={href}>
-      <SidebarRepositoryCard repository={repository} />
-    </Link>
+    <motion.div variants={slideUpVariant}>
+      <Link href={href}>
+        <SidebarRepositoryCard repository={repository} />
+      </Link>
+    </motion.div>
   );
 }

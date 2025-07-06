@@ -1,4 +1,5 @@
 "use client";
+import AuthDialog from "@/components/componentX/auth-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,10 @@ export function NavbarPreview() {
           </Avatar>
         </div>
       </motion.div>
+      <AuthDialog
+        isDialogVisible={showAuthDialog}
+        setIsDialogVisible={setShowAuthDialog}
+      />
     </>
   );
 }
