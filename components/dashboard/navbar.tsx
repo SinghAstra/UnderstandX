@@ -9,8 +9,8 @@ import { Plus } from "lucide-react";
 import { User } from "next-auth";
 import Link from "next/link";
 import { useState } from "react";
+import GradientInsetBackground from "../componentX/gradient-inset-background";
 import { AvatarMenu } from "../ui/avatar-menu";
-import GradientInsetBackground from "../ui/gradient-inset-background";
 
 interface NavbarProps {
   user: User;

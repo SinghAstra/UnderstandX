@@ -8,7 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import React, { ReactNode, Suspense } from "react";
 import { SWRConfig } from "swr";
-import MaskedGridBackground from "../ui/masked-grid-background";
+import MaskedGridBackground from "../componentX/masked-grid-background";
 import { ToastProvider } from "./toast";
 
 interface ProviderProps {

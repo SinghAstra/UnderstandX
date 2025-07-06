@@ -1,5 +1,5 @@
 import NewRepoDialog from "@/app/(protected)/dashboard/new-repo-dialog";
-import GradientInsetBackground from "@/components/ui/gradient-inset-background";
+import GradientInsetBackground from "@/components/componentX/gradient-inset-background";
 import { cn } from "@/lib/utils";
 import { scaleInVariant } from "@/lib/variants";
 import { motion } from "framer-motion";

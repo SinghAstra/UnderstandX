@@ -3,7 +3,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import GradientInsetBackground from "../gradient-inset-background";
+import GradientInsetBackground from "../../componentX/gradient-inset-background";
 
 export function RightSidebarPreview() {
   return (

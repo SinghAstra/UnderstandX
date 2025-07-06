@@ -8,8 +8,8 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import GradientInsetBackground from "../../componentX/gradient-inset-background";
 import { Avatar, AvatarFallback } from "../avatar";
-import GradientInsetBackground from "../gradient-inset-background";
 
 export function NavbarPreview() {
   const [showAuthDialog, setShowAuthDialog] = useState(false);

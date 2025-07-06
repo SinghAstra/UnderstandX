@@ -1,6 +1,6 @@
 import { RepositoryPreview } from "@/interfaces/github";
 import React from "react";
-import { fetchTrendingTypeScriptRepos } from "../(protected)/dashboard/action";
+import { fetchTrendingTypeScriptRepos } from "./action";
 import LandingPage from "./landing";
 
 const HomePage = async () => {

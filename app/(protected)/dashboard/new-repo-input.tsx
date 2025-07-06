@@ -3,8 +3,8 @@
 import Dialog from "@/components/componentX/dialog";
 import { useToastContext } from "@/components/providers/toast";
 
+import GradientInsetBackground from "@/components/componentX/gradient-inset-background";
 import { Button, buttonVariants } from "@/components/ui/button";
-import GradientInsetBackground from "@/components/ui/gradient-inset-background";
 import { fetchAllUserRepository } from "@/lib/api";
 import { parseGithubUrl } from "@/lib/github";
 import { cn } from "@/lib/utils";

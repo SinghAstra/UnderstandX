@@ -2,13 +2,13 @@
 
 import AuthDialog from "@/components/componentX/auth-dialog";
 import ConicGradientBackground from "@/components/componentX/conic-gradient-background";
+import GradientInsetBackground from "@/components/componentX/gradient-inset-background";
+import MovingBackground from "@/components/componentX/moving-background";
+import MovingGlow from "@/components/componentX/moving-glow";
+import RadialFadePulsatingBackground from "@/components/componentX/radial-fade-pulsating-background";
 import Footer from "@/components/home/footer";
 import Navbar from "@/components/home/navbar";
-import GradientInsetBackground from "@/components/ui/gradient-inset-background";
-import MovingBackground from "@/components/ui/moving-background";
-import MovingGlow from "@/components/ui/moving-glow";
 import DashboardPreview from "@/components/ui/preview/dashboard-preview";
-import RadialFadePulsatingBackground from "@/components/ui/radial-fade-pulsating-background";
 import { siteConfig } from "@/config/site";
 import { RepositoryPreview } from "@/interfaces/github";
 import {
