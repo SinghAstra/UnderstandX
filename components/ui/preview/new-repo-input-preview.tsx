@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { SearchIcon, SparklesIcon } from "lucide-react";
 import { useState } from "react";
 
-function AddNewRepository() {
+function AddNewRepository({
+  toggleAuthDialog,
+}: {
+  toggleAuthDialog: () => void;
+}) {
+  const [url, setUrl] = useState("");
+
   return (
     <form onSubmit={toggleAuthDialog}>
       <div className="flex items-center border-b px-4 py-3">
@@ -44,16 +50,15 @@ function AddNewRepository() {
 }
 
 function NewRepoInputPreview() {
-  const [url, setUrl] = useState("");
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
   const toggleAuthDialog = () => {
     setShowAuthDialog(!showAuthDialog);
   };
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   return (
     <div className="w-full m-2">
       <div className="rounded border max-w-xl mx-auto">
-        <AddNewRepository />
+        <AddNewRepository toggleAuthDialog={toggleAuthDialog} />
       </div>
       <AuthDialog
         isDialogVisible={showAuthDialog}

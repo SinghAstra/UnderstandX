@@ -11,11 +11,11 @@ const DashboardPreview = ({
   previewRepos: RepositoryPreview[];
 }) => {
   return (
-    <div className="min-h-screen">
+    <div className="h-screen">
       <NavbarPreview />
       <div className="flex ">
         <LeftSidebarRepoListPreview previewRepos={previewRepos} />
-        <main className="hidden lg:flex flex-1 ml-[420px] ">
+        <main className="hidden lg:flex flex-1  ">
           <NewRepoInputPreview />
         </main>
         <RightSidebar />

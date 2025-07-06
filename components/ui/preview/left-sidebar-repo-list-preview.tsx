@@ -12,12 +12,12 @@ const LeftSidebarRepoListPreview = ({
   previewRepos: RepositoryPreview[];
 }) => {
   return (
-    <div className="w-full lg:fixed lg:inset-y-0 lg:left-0 lg:w-[420px] bg-background lg:border-r lg:border-dashed lg:pt-16">
+    <div className="w-full lg:w-96 bg-background lg:border-r lg:border-dashed ">
       <motion.div
         variants={containerVariant}
         initial="hidden"
         whileInView="visible"
-        className="flex flex-col gap-4 h-full px-2 py-3 pl-16 overflow-y-auto "
+        className="flex flex-col gap-4 h-full px-2 py-3  "
       >
         {previewRepos.map((repo) => {
           return (
