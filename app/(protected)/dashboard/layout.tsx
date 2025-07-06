@@ -38,7 +38,7 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
       <Navbar user={session.user} />
       <div className="flex ">
         <LeftSidebar initialRepositories={repositories} />
-        <main className="hidden md:flex flex-1 ml-96 ">{children}</main>
+        <main className="hidden lg:flex flex-1 ml-96 ">{children}</main>
         <RightSidebar />
       </div>
     </div>

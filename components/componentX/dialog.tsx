@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { scaleInVariant } from "@/lib/variants";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 
 interface DialogProps {
   isDialogVisible: boolean;
@@ -54,7 +55,7 @@ const Dialog = ({
   }, [isDialogVisible, setIsDialogVisible, keyToMakeDialogVisible]);
 
   if (!isDialogVisible) return;
-  return (
+  return ReactDOM.createPortal(
     <div className="fixed inset-0 flex items-center justify-center z-[999]">
       <div className="absolute inset-0 bg-background/20 backdrop-blur-md z-[-1]" />
 
@@ -70,7 +71,8 @@ const Dialog = ({
       >
         {children}
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

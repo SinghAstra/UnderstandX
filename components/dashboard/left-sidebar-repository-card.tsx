@@ -23,7 +23,7 @@ const getStatusColor = (status: RepositoryStatus) => {
 
 const SidebarRepositoryCard = ({ repository }: { repository: Repository }) => {
   return (
-    <div className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent cursor-pointer transition-colors">
+    <div className="flex items-center gap-3 rounded border p-3 hover:bg-muted/20  cursor-pointer transition-colors">
       <Avatar className="h-8 w-8">
         <AvatarImage src={repository.avatarUrl || ""} alt={repository.owner} />
         <AvatarFallback>{repository.owner[0].toUpperCase()}</AvatarFallback>

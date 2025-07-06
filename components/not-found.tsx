@@ -31,7 +31,7 @@ const NotFound = ({ user }: NotFoundProps) => {
       whileInView={"visible"}
       className="min-h-screen flex flex-col"
     >
-      <Navbar toggleAuthDialog={toggleAuthDialog} />
+      <Navbar toggleAuthDialog={toggleAuthDialog} user={user} />
       <div className="flex-1 flex flex-col gap-4 items-center justify-center ">
         <div className="text-center flex flex-col items-center justify-center  gap-2">
           <motion.h2
@@ -52,7 +52,7 @@ const NotFound = ({ user }: NotFoundProps) => {
         </div>
         <motion.div variants={scaleInVariant}>
           <Link href={href} className={buttonVariants({ variant: "outline" })}>
-            Back to homepage
+            Back to Home
           </Link>
         </motion.div>
       </div>
