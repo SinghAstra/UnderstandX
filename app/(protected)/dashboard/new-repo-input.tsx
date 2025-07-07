@@ -9,9 +9,78 @@ import { fetchAllUserRepository } from "@/lib/api";
 import { parseGithubUrl } from "@/lib/github";
 import { cn } from "@/lib/utils";
 import { AlertCircle, SearchIcon, SparklesIcon } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { mutate } from "swr";
+
+interface AddNewRepositoryProps {
+  url: string;
+  setUrl: Dispatch<SetStateAction<string>>;
+  handleSubmit: (e: FormEvent) => Promise<void>;
+  isProcessing: boolean;
+  isSuccess: boolean;
+}
+
+function AddNewRepository({
+  url,
+  setUrl,
+  handleSubmit,
+  isProcessing,
+  isSuccess,
+}: AddNewRepositoryProps) {
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="flex items-center border-b px-4 py-3">
+        <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
+        <input
+          type="url"
+          placeholder="Paste Your Github repository URL..."
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value);
+          }}
+          disabled={isProcessing}
+          className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-base placeholder:text-muted-foreground"
+        />
+        <kbd className="hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
+          <span className="text-xs">⌘</span>K
+        </kbd>
+      </div>
+
+      <div className="border-t px-4 py-3 flex justify-between items-center">
+        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+          <SparklesIcon className="w-4 h-4" />
+          <span>Uses GitHub API</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            disabled={!url || isProcessing || isSuccess}
+            type="submit"
+            className={cn(
+              "relative overflow-hidden",
+              isSuccess && "bg-yellow-400 "
+            )}
+          >
+            {isSuccess ? (
+              <div className="flex items-center">
+                <FaSpinner className="mr-2 h-5 w-5 animate-spin" />
+                Processing Started...
+              </div>
+            ) : isProcessing ? (
+              <div className="flex items-center">
+                <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </div>
+            ) : (
+              "Analyze"
+            )}
+          </Button>
+        </div>
+      </div>
+    </form>
+  );
+}
 
 function NewRepoInput() {
   const [url, setUrl] = useState("");
@@ -127,61 +196,6 @@ function NewRepoInput() {
     setAlertProcessingRepo(false);
   };
 
-  function AddNewRepository() {
-    return (
-      <form onSubmit={handleSubmit}>
-        <div className="flex items-center border-b px-4 py-3">
-          <SearchIcon className="w-5 h-5 text-muted-foreground mr-2" />
-          <input
-            type="url"
-            placeholder="Paste Your Github repository URL..."
-            value={url}
-            onChange={(e) => {
-              setUrl(e.target.value);
-            }}
-            disabled={isProcessing}
-            className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-base placeholder:text-muted-foreground"
-          />
-          <kbd className="hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
-            <span className="text-xs">⌘</span>K
-          </kbd>
-        </div>
-
-        <div className="border-t px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-            <SparklesIcon className="w-4 h-4" />
-            <span>Uses GitHub API</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              disabled={!url || isProcessing || isSuccess}
-              type="submit"
-              className={cn(
-                "relative overflow-hidden",
-                isSuccess && "bg-yellow-400 "
-              )}
-            >
-              {isSuccess ? (
-                <div className="flex items-center">
-                  <FaSpinner className="mr-2 h-5 w-5 animate-spin" />
-                  Processing Started...
-                </div>
-              ) : isProcessing ? (
-                <div className="flex items-center">
-                  <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </div>
-              ) : (
-                "Analyze"
-              )}
-            </Button>
-          </div>
-        </div>
-      </form>
-    );
-  }
-
   return (
     <div className="w-full m-2">
       <Dialog
@@ -231,10 +245,22 @@ function NewRepoInput() {
         setIsDialogVisible={setShowNewRepoDialog}
         keyToMakeDialogVisible="k"
       >
-        <AddNewRepository />
+        <AddNewRepository
+          url={url}
+          setUrl={setUrl}
+          handleSubmit={handleSubmit}
+          isProcessing={isProcessing}
+          isSuccess={isSuccess}
+        />
       </Dialog>
       <div className="rounded border max-w-xl mx-auto">
-        <AddNewRepository />
+        <AddNewRepository
+          url={url}
+          setUrl={setUrl}
+          handleSubmit={handleSubmit}
+          isProcessing={isProcessing}
+          isSuccess={isSuccess}
+        />
       </div>
     </div>
   );
