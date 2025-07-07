@@ -96,7 +96,7 @@ function Terminal({ repository, logs }: TerminalProps) {
             className="flex items-start space-x-3 animate-in fade-in slide-in-from-bottom-1 tracking-wider"
           >
             <span className="text-muted-foreground flex-shrink-0">
-              {formatDate(repository.createdAt)}
+              {formatDate(log.createdAt)}
             </span>
             <span
               className={`whitespace-pre-wrap  ${
