@@ -36,7 +36,7 @@ export default function Pre({
       </div>
 
       <Dialog open={showMaximize} onOpenChange={setShowMaximize}>
-        <DialogContent className=" border w-fit max-w-[80vw] sm:rounded-none  p-0   text-sm ">
+        <DialogContent className=" border w-fit max-w-[80vw] sm:rounded-none p-0 text-sm ">
           <DialogTitle>
             <VisuallyHidden>Code Content</VisuallyHidden>
           </DialogTitle>
