@@ -15,7 +15,7 @@ const MovingGlow = ({
 }: MovingGlowProps) => {
   return (
     <div
-      className="absolute z-[-2] inset-0 border-[calc(var(--border-width)*1px)] border-transparent w-[100%] rounded-inherit 
+      className="absolute z-[-1] inset-0 border-[calc(var(--border-width)*1px)] border-transparent w-[100%] rounded-inherit 
       before:absolute before:top-1/2 before:left-1/2 before:aspect-square 
       before:bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0_var(--initial-transparent),white_360deg)] 
       ![mask-clip:padding-box,border-box] ![mask-composite:intersect] 
