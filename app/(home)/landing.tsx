@@ -43,10 +43,7 @@ const LandingPage = ({
       >
         <div className="px-3 py-20 flex flex-col items-center justify-center text-center">
           <RadialFadePulsatingBackground />
-          <motion.div
-            variants={scaleInVariant}
-            className="p-1 relative rounded overflow-hidden"
-          >
+          <motion.div variants={scaleInVariant}>
             <Link
               href={siteConfig.links.twitter}
               target="_blank"
@@ -92,7 +89,7 @@ const LandingPage = ({
                 group-hover:translate-x-1"
               />
             </motion.button>
-            <motion.div variants={scaleInVariant} className="p-1 relative">
+            <motion.div variants={scaleInVariant}>
               <Link
                 href={siteConfig.links.githubRepo}
                 target="_blank"

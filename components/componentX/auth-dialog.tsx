@@ -8,7 +8,6 @@ import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import Dialog from "./dialog";
-import MovingBackground from "./moving-background";
 
 interface AuthDialogProps {
   isDialogVisible: boolean;
@@ -107,11 +106,10 @@ const AuthDialog = ({
 
           <Button
             variant="outline"
-            className="w-full text-foreground rounded font-normal bg-transparent hover:bg-transparent relative"
+            className="w-full text-foreground rounded font-normal tracking-wide relative"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
           >
-            <MovingBackground />
             {isGoogleLoading ? (
               <>
                 <Loader className="w-5 h-5 animate-spin" />

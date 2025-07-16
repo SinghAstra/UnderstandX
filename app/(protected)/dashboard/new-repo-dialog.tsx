@@ -168,8 +168,7 @@ function NewRepoDialog({
             onClick={handleContinueWithNewRepo}
             className={cn(
               buttonVariants({
-                className:
-                  "bg-transparent hover:bg-transparent flex-1 rounded font-normal tracking-wider relative",
+                className: "flex-1 rounded font-normal tracking-wider relative",
               })
             )}
           >
