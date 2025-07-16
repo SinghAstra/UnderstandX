@@ -106,7 +106,7 @@ const AuthDialog = ({
 
           <Button
             variant="outline"
-            className="w-full text-foreground rounded font-normal tracking-wide relative"
+            className="w-full rounded tracking-wide relative"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
           >
