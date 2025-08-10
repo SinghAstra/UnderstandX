@@ -1,166 +1,209 @@
 # UnderstandX
 
-UnderstandX  allows users to explore and analyze the contents of any public Github repository. It generates detailed context aware analysis for every file with every file analysis explaining the role of file in the project, key code sections and improvement suggestions.
+## Project Overview
 
-## 🧰 Technology Stack
+UnderstandX exists to solve the problem of quickly understanding and navigating large, unfamiliar codebases. It's designed for developers who need to:
 
-| Technology             | Purpose/Role                                                                 |
-|-------------------------|-----------------------------------------------------------------------------|
-| Next.js                | React framework for server-side rendering and routing.                       |
-| Prisma                  | ORM for database access and schema management (PostgreSQL).                   |
-| TypeScript              | Adds static typing to JavaScript.                                             |
-| Tailwind CSS            | Utility-first CSS framework for styling.                                     |
-| ESLint                  | JavaScript linter for code quality and consistency.                           |
-| Radix UI                | UI component library for building accessible and customizable components.     |
-| Framer Motion           | Motion library for creating smooth animations and transitions.                 |
-| Shadcn UI               | UI component library for generating styled components.                         |
-| ReactMarkdown           | Library for rendering Markdown content.                                      |
-| rehype-prism-plus       | Plugin for adding syntax highlighting to ReactMarkdown.                      |
-| remarkGfm               | Plugin for supporting GitHub Flavored Markdown in ReactMarkdown.              |
-| Lucide-react            | React icon library.                                                          |
-| NextAuth.js             | Authentication library for handling user login and sessions (GitHub, Google). |
-| Pusher                  | Real-time messaging service for live updates.                               |
-| Class Variance Authority | Utility for styling React components.                                         |
-| SWR                     | React Hooks library for data fetching and caching.                            |
-| Sonner                  | Library for creating toast notifications.                                    |
-| cmdk                    | Library for creating command palettes.                                        |
+-   Onboard to new projects faster.
+-   Explore and comprehend the structure of open-source repositories.
+-   Quickly locate specific files and understand their purpose.
+-   Gain insights into project architecture without extensive manual digging.
 
+**Target Audience:** Software developers, especially those working with TypeScript and React projects.
 
-## 📁 File Structure and Purpose
+**Use Cases:**
 
-| File Path                                          | Description                                                                                                                                                                       |
-|------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `components/markdown/pre-code.tsx`                   | Renders a styled code block within a markdown document.                                                                                                                                 |
-| `middleware.ts`                                      | Next.js middleware for redirecting authenticated users and protecting routes.                                                                                                                |
-| `package-lock.json`                                 | Automatically generated file containing a complete record of all project dependencies and their versions.                                                                                   |
-| `package.json`                                      | Defines project metadata, dependencies, and scripts.                                                                                                                                   |
-| `prisma/migrations/20241223013511_add_repo_avatar_url/migration.sql` | Database migration to add an 'avatarUrl' column to the 'Repository' table.                                                                                                                 |
-| `app/logs/[id]/layout.tsx`                           | Layout for repository log pages, handling authentication and fetching repository data.                                                                                                       |
-| `app/logs/[id]/page.tsx`                             | Fetches and displays repository logs, handling cases where the repository is not found.                                                                                                    |
-| `app/repository/[id]/page.tsx`                       | Handles authentication and renders the RepoExplorer component for displaying repository details.                                                                                             |
-| `tailwind.config.ts`                                 | Configures Tailwind CSS for the project.                                                                                                                                                 |
-| `.eslintrc.json`                                    | Configures ESLint.                                                                                                                                                                         |
-| `README.md`                                         | Project README file.                                                                                                                                                                       |
-| `tsconfig.json`                                     | Configures the TypeScript compiler.                                                                                                                                                     |
-| `prisma/migrations/20250131042933_add_repo_id_field/migration.sql` | Database migration to add a required "repositoryId" column to the "File" table and make "directoryId" nullable.                                                                            |
-| `app/repository/[id]/file-viewer.tsx`                | Displays the contents of a selected file using CodeMarkdown or Markdown.                                                                                                                  |
-| `app/(home)/page.tsx`                               | Renders the main home page content based on user authentication status.                                                                                                                  |
-| `components/global/max-width-wrapper.tsx`            | Wraps its children with a max-width container for responsiveness.                                                                                                                          |
-| `app/globals.css`                                   | Sets global styles for the application.                                                                                                                                                 |
-| `prisma/schema.prisma`                               | Defines the data model for the PostgreSQL database using Prisma.                                                                                                                        |
-| `components/global/fade-in.tsx`                      | React component providing a fade-in animation effect.                                                                                                                                   |
-| `components/ui/animated-beam.tsx`                    | React component rendering an animated curved beam between two elements.                                                                                                                     |
-| `components/dashboard/left-sidebar-repo-header.tsx` | Displays a header in the dashboard's left sidebar with a button to add new repositories.                                                                                                 |
-| `components/ui/rotating-border-badge.tsx`            | Renders a badge with a rotating border, indicating loading or activity.                                                                                                                    |
-| `app/repository/[id]/repo-overview.tsx`             | Displays repository overview information using Markdown.                                                                                                                               |
-| `components/ui/collapsible.tsx`                     | Exports the Collapsible component from Radix UI.                                                                                                                                          |
-| `components/ui/popover.tsx`                          | React component rendering a popover using Radix UI.                                                                                                                                      |
-| `components/ui/scroll-area.tsx`                      | Component providing a scrollable area using Radix UI.                                                                                                                                     |
-| `components/ui/select.tsx`                           | Component rendering a select dropdown using Radix UI.                                                                                                                                     |
-| `prisma/migrations/20250424234955_add_repository_status_to_log/migration.sql` | Database migration adding a "Log" table for repository status updates.                                                                                                                      |
-| `prisma/migrations/20250113012503_add_error_status_repo/migration.sql` | Database migration adding more granular status options to the "RepositoryStatus" enum.                                                                                                       |
-| `components/ui/accordion.tsx`                       | React component implementing a custom accordion using Radix UI.                                                                                                                            |
-| `prisma/migrations/20250129072128_rebuilding/migration.sql` | Database migration indicating a significant schema change or rebuild.                                                                                                                          |
-| `app/api/repository/[id]/route.ts`                   | API route handling GET requests to retrieve a specific repository by ID.                                                                                                                      |
-| `app/repository/[id]/layout.tsx`                     | Fetches repository data and generates metadata for the repository page.                                                                                                                      |
-| `prisma/migrations/20250408063826_analysis/migration.sql` | Database migration removing `longSummary` and adding `analysis` column to the `File` table.                                                                                                 |
-| `app/repository/[id]/file-item.tsx`                  | Displays a single file item with selection capabilities.                                                                                                                                  |
-| `components/ui/button.tsx`                           | Customizable button component using Radix UI and Class Variance Authority.                                                                                                                  |
-| `components.json`                                    | Configures UI components using Shadcn UI.                                                                                                                                                  |
-| `hooks/use-toast.ts`                                 | Custom hook providing toast notification functionality.                                                                                                                                  |
-| `config/site.ts`                                    | Configures website metadata.                                                                                                                                                               |
-| `prisma/migrations/20250129090107_changed_type_of_github_id/migration.sql` | Database migration adding `avatarUrl` and `githubId` columns to the `Repository` table.                                                                                                    |
-| `interfaces/github.ts`                              | Defines interfaces for representing GitHub content.                                                                                                                                          |
-| `interfaces/next-auth.ts`                           | Extends NextAuth.js types to include custom user properties.                                                                                                                               |
-| `interfaces/site.ts`                                | Defines the type for the website's configuration.                                                                                                                                          |
-| `components/ui/alert.tsx`                            | Reusable alert message component.                                                                                                                                                          |
-| `components/ui/alert-dialog.tsx`                     | React component rendering a custom alert dialog using Radix UI.                                                                                                                            |
-| `components/ui/breadcrumb.tsx`                       | React component rendering a breadcrumb navigation component.                                                                                                                              |
-| `app/api/repository/get-all/route.ts`                | API route handling GET requests to retrieve all repositories for the authenticated user.                                                                                                    |
-| `app/repository/[id]/action.ts`                      | Server action retrieving repository data based on ID.                                                                                                                                     |
-| `app/repository/[id]/directory-item.tsx`             | Displays a directory item within a file explorer.                                                                                                                                         |
-| `components/dashboard/right-sidebar.tsx`             | Renders a right sidebar on the dashboard.                                                                                                                                                 |
-| `app/layout.tsx`                                     | Defines the main layout for the application.                                                                                                                                                |
-| `app/not-found.tsx`                                  | Renders a 404 page.                                                                                                                                                                       |
-| `components/dashboard/left-sidebar-repository-card.tsx` | Displays a repository card in the dashboard's left sidebar.                                                                                                                               |
-| `components/home/navbar.tsx`                         | Renders the navigation bar for the home page.                                                                                                                                             |
-| `app/(home)/hero.tsx`                               | Renders the hero section of the home page.                                                                                                                                                |
-| `app/(home)/layout.tsx`                              | Layout for the home page.                                                                                                                                                                    |
-| `components/background/repo-processed.tsx`           | Displays a visual representation of a processed repository.                                                                                                                              |
-| `components/background/repo-processing.tsx`          | Displays a list of repositories with their status.                                                                                                                                       |
-| `components/background/terminal.tsx`                 | Simulates a terminal displaying log entries.                                                                                                                                               |
-| `lib/api.ts`                                        | Defines the API endpoint for fetching all user repositories.                                                                                                                               |
-| `lib/auth-options.ts`                               | Configures authentication options for NextAuth.js.                                                                                                                                      |
-| `components/markdown/copy.tsx`                       | Provides a copy-to-clipboard button for markdown content.                                                                                                                                  |
-| `app/dashboard/action.ts`                           | Contains actions related to fetching and managing repositories.                                                                                                                            |
-| `app/dashboard/layout.tsx`                           | Defines the layout for the dashboard.                                                                                                                                                     |
-| `lib/markdown.tsx`                                   | Renders Markdown content with syntax highlighting.                                                                                                                                         |
-| `app/dashboard/page.tsx`                             | Main content area of the dashboard.                                                                                                                                                        |
-| `lib/prisma.ts`                                      | Provides a Prisma Client instance for database interaction.                                                                                                                                |
-| `prisma/migrations/migration_lock.toml`              | Lock file used by Prisma to manage database migrations.                                                                                                                                   |
-| `app/auth/sign-in/page.tsx`                          | Renders the sign-in page.                                                                                                                                                                  |
-| `components/global/fade-slide-in.tsx`                | React component providing a fade-in animation with slide effect.                                                                                                                            |
-| `lib/code-markdown.tsx`                              | Renders markdown content with syntax highlighting using ReactMarkdown, rehype-prism-plus, and remarkGfm.                                                                                 |
-| `lib/github.ts`                                      | Module providing a function to parse GitHub repository URLs.                                                                                                                                |
-| `components/home/footer.tsx`                         | Renders the footer section of the homepage.                                                                                                                                                |
-| `prisma/migrations/20250129083139_add_repo_schema/migration.sql` | SQL migration script adding a new 'Repository' table and updating the 'ProcessingStatus' enum.                                                                                             |
-| `lib/service-auth.ts`                               | Handles the creation of JSON Web Tokens (JWTs) for service authentication.                                                                                                                  |
-| `lib/utils.ts`                                       | Contains utility functions.                                                                                                                                                                  |
-| `components/dashboard/left-sidebar-repo-list.tsx`    | Renders a list of repositories in the dashboard's left sidebar.                                                                                                                            |
-| `components/dashboard/left-sidebar.tsx`              | Displays a left sidebar on the dashboard.                                                                                                                                                 |
-| `components/dashboard/navbar.tsx`                    | Navbar component providing navigation and user authentication features.                                                                                                                    |
-| `components/markdown/pre.tsx`                        | Displays a markdown code block with a maximize feature.                                                                                                                                   |
-| `components/repo-details/navbar.tsx`                 | Displays a navigation bar specific to repository details.                                                                                                                                |
-| `components/providers/toast.tsx`                     | Provides a React context for managing toast messages.                                                                                                                                      |
-| `prisma/migrations/20250129190740_enum_repo_status/migration.sql` | Migration script altering the Repository table to use an enum type for the status field.                                                                                                   |
-| `components/dashboard/empty/sidebar-repo-list.tsx`   | Renders an empty state message within the dashboard sidebar when no repositories are present.                                                                                             |
-| `lib/pusher/client.ts`                              | Initializes a Pusher client instance.                                                                                                                                                       |
-| `prisma/migrations/20241222125702_add_created_at_updated_at/migration.sql` | Migration adding 'createdAt' and 'updatedAt' timestamp columns to the 'Repository' table.                                                                                                  |
-| `components/providers/provider.tsx`                  | Provides global state management for the application.                                                                                                                                     |
-| `components/ui/command.tsx`                          | Provides a command palette UI element using the 'cmdk' library.                                                                                                                            |
-| `components/ui/dialog.tsx`                           | React component implementing a dialog box using Radix UI.                                                                                                                                  |
-| `components/ui/dropdown-menu.tsx`                    | Component rendering a dropdown menu using Radix UI.                                                                                                                                      |
-| `components/ui/gradient-button.tsx`                  | Creates a gradient-styled button.                                                                                                                                                          |
-| `app/logs/[id]/repo-logs.tsx`                        | Displays repository logs using a terminal-like UI, fetching and updating logs via Pusher for real-time updates.                                                                               |
-| `app/api/auth/[...nextauth]/route.ts`                | Sets up the NextAuth.js authentication routes.                                                                                                                                             |
-| `prisma/migrations/20250104080749_github_id_not_unique/migration.sql` | Migration removing the unique constraint from the 'githubId' column in the 'Repository' table.                                                                                             |
-| `prisma/migrations/20241217101901_init/migration.sql` | Initial database schema migration.                                                                                                                                                           |
-| `prisma/migrations/20241217174438_next_auth/migration.sql` | Migration altering the "User" table for NextAuth integration.                                                                                                                                |
-| `prisma/migrations/20241220214912_add_repo/migration.sql` | Migration adding a foreign key constraint to the "RepositoryChunk" table.                                                                                                                      |
-| `prisma/migrations/20250112141947_repo_status/migration.sql` | Migration adding new values to the "RepositoryStatus" enum.                                                                                                                                  |
-| `app/repository/[id]/repo-content.tsx`              | Displays the contents of a repository.                                                                                                                                                     |
-| `app/repository/[id]/repo-explorer.tsx`             | Main UI for exploring a repository.                                                                                                                                                        |
-| `components/ui/avatar-menu.tsx`                     | Renders a user avatar with a dropdown menu.                                                                                                                                                |
-| `components/ui/avatar.tsx`                           | Reusable Avatar component using Radix UI.                                                                                                                                                  |
-| `components/ui/background-shine.tsx`                 | Creates a background shine effect using CSS animations.                                                                                                                                    |
-| `components/ui/badge.tsx`                            | Renders a badge with customizable variants.                                                                                                                                                 |
-| `components/ui/border-beam.tsx`                      | Renders a border beam animation using motion library.                                                                                                                                      |
-| `components/ui/border-hover-link.tsx`                | Renders a link with a border that changes on hover.                                                                                                                                       |
-| `components/ui/calendar.tsx`                         | Implements a calendar component using `react-day-picker`.                                                                                                                                 |
-| `components/ui/card.tsx`                             | Renders a card with rounded corners, border, background, and shadow.                                                                                                                        |
-| `components/ui/input.tsx`                            | Renders a customizable input field.                                                                                                                                                         |
-| `components/ui/integrations.tsx`                     | Displays a circular UI element representing integrated services.                                                                                                                            |
-| `components/ui/label.tsx`                            | Renders a label using Radix UI.                                                                                                                                                           |
-| `components/ui/lamp.tsx`                             | Creates a container with a lamp-like visual style.                                                                                                                                          |
-| `components/ui/tabs.tsx`                             | Implements a tabbed interface using Radix UI.                                                                                                                                               |
-| `components/ui/magic-card.tsx`                       | Renders a card with customizable gradient effects and motion animations.                                                                                                                      |
-| `app/api/repository/processing/route.ts`            | API route retrieving processing information for a repository.                                                                                                                            |
-| `app/api/repository/start-process/route.ts`          | API route initiating a processing workflow for a repository.                                                                                                                              |
-| `app/api/repository/stop-processing/route.ts`        | API route to stop the processing of a repository.                                                                                                                                          |
-| `components/ui/skeleton.tsx`                         | Exports a `Skeleton` component, a basic UI component that displays a placeholder loading animation.                                                                                           |
-| `components/ui/sonner.tsx`                           | Renders a customizable toast notification using the `sonner` library.                                                                                                                        |
-| `components/ui/table.tsx`                            | Defines a `Table` component for displaying tabular data.                                                                                                                                   |
-| `prisma/migrations/20250228103826_/migration.sql`     | Database migration potentially dropping columns and tables.                                                                                                                                  |
-| `prisma/migrations/20250131152847_add_summary_field/migration.sql` | Database migration modifying the `File` and `Repository` tables.                                                                                                                            |
-| `components/ui/toast.tsx`                            | Provides primitives for creating custom toast notifications.                                                                                                                                |
-| `components/ui/toaster.tsx`                          | Renders a list of toasts.                                                                                                                                                                    |
-| `components/ui/tooltip.tsx`                          | Provides components for creating tooltips using `@radix-ui/react-tooltip`.                                                                                                                  |
-| `components/ui/typography.tsx`                       | Renders children content with styled typography classes.                                                                                                                                     |
-| `components/ui/navigation-menu.tsx`                  | Provides a navigation menu using Radix UI.                                                                                                                                                 |
-| `components/ui/process-grid.tsx`                     | Displays a grid of processes.                                                                                                                                                               |
-| `components/ui/progress.tsx`                         | Renders a progress bar using Radix UI.                                                                                                                                                     |
-| `components/ui/radio-group.tsx`                      | Implements a radio group using Radix UI.                                                                                                                                                    |
-| `components/ui/terminal.tsx`                         | Displays a terminal interface showing logs and repository information.                                                                                                                        |
-| `components/ui/separator.tsx`                        | Renders a separator using Radix UI.                                                                                                                                                        |
-| `components/ui/sign-in.tsx`                          | Provides sign-in functionality with styled buttons.                                                                                                                                          |
+-   Quickly grasping the architecture of a new project.
+-   Finding specific files or components within a large codebase.
+-   Understanding the relationships between different parts of a project.
+-   Identifying key technologies and dependencies used in a project.
 
+**What Makes UnderstandX Unique:**
+
+-   Focus on TypeScript and React codebases.
+-   Integration with GitHub for easy repository analysis.
+-   User-friendly interface for exploring code structure and content.
+-   Emphasis on visual representation of code relationships.
+
+## Key Features
+
+-   **Repository Analysis:**
+    -   Fetches and analyzes public GitHub repositories.
+    -   Parses directory structure and file contents.
+    -   Identifies key components and dependencies.
+-   **Code Exploration:**
+    -   Interactive file explorer for navigating the codebase.
+    -   File viewer with syntax highlighting and copy functionality.
+    -   Markdown rendering for README and other documentation files.
+-   **User Authentication:**
+    -   Secure user authentication via GitHub and Google.
+    -   Session management for persistent user data.
+-   **Dashboard:**
+    -   Displays a list of user's repositories.
+    -   Allows adding new repositories for analysis.
+    -   Provides a quick overview of each repository's status.
+-   **UI Components:**
+    -   Reusable UI components built with Radix UI and Tailwind CSS.
+    -   Styled notifications using the `sonner` library.
+    -   Loading indicators and placeholder elements for improved UX.
+-   **Logs Display:**
+    -   Displays repository processing logs in a terminal-like interface.
+    -   Uses Pusher for real-time log updates.
+
+## Architecture & Code Organization
+
+UnderstandX follows a modern web application architecture, primarily using Next.js for server-side rendering, routing, and API endpoints. It leverages Prisma as an ORM to interact with a PostgreSQL database.
+
+**Key Components and Interactions:**
+
+-   **Frontend (Next.js):**
+    -   Handles user interface and user interactions.
+    -   Fetches data from API endpoints.
+    -   Renders components using React and TypeScript.
+-   **Backend (Next.js API Routes):**
+    -   Provides API endpoints for data retrieval and manipulation.
+    -   Handles authentication and authorization.
+    -   Interacts with the database using Prisma.
+-   **Database (PostgreSQL):**
+    -   Stores user data, repository metadata, and analysis results.
+    -   Managed by Prisma ORM for type-safe database interactions.
+-   **Authentication (NextAuth.js):**
+    -   Handles user authentication using providers like GitHub and Google.
+    -   Manages user sessions and access control.
+-   **Realtime Updates (Pusher):**
+    -   Provides realtime updates for repository processing logs.
+
+**Directory Structure:**
+
+```
+.
+├── app                      # Next.js application directory
+│   ├── (home)               # Public routes (homepage, landing page)
+│   ├── (protected)          # Authenticated routes (dashboard, repository views)
+│   ├── api                  # API routes
+│   └── styles               # Global styles and CSS files
+├── components               # Reusable UI components
+│   ├── dashboard            # Dashboard-specific components
+│   ├── home                 # Homepage-specific components
+│   ├── markdown             # Markdown rendering components
+│   ├── providers            # Context providers
+│   └── ui                   # Core UI components (buttons, inputs, etc.)
+├── config                   # Configuration files
+├── hooks                    # Custom React hooks
+├── interfaces               # TypeScript interfaces
+├── lib                      # Utility functions and libraries
+├── prisma                   # Prisma ORM configuration
+├── public                   # Static assets
+└── scripts                  # Scripts for development and deployment
+```
+
+**Key Design Decisions:**
+
+-   **Next.js:** Chosen for its server-side rendering capabilities, routing, and API endpoint handling, providing a performant and scalable platform.
+-   **Prisma:** Selected as the ORM for its type safety, ease of use, and ability to generate a fully-typed database client.
+-   **Radix UI:** Used for building accessible and customizable UI components, ensuring a consistent and user-friendly experience.
+-   **Tailwind CSS:** Adopted for its utility-first approach to styling, enabling rapid UI development and consistent design.
+
+## Technology Stack
+
+-   **Next.js:** React framework for building server-rendered web applications.
+-   **TypeScript:** Superset of JavaScript that adds static typing.
+-   **React:** JavaScript library for building user interfaces.
+-   **Prisma:** ORM for type-safe database access.
+-   **PostgreSQL:** Relational database for storing application data.
+-   **NextAuth.js:** Authentication library for Next.js applications.
+-   **Radix UI:** Set of unstyled, accessible UI primitives.
+-   **Tailwind CSS:** Utility-first CSS framework.
+-   **Pusher:** Realtime communication platform.
+-   **SWR:** React Hooks library for remote data fetching.
+-   **Framer Motion:** A production-ready motion library for React.
+
+## Getting Started
+
+1.  **Prerequisites:**
+
+    -   Node.js (version 18 or higher)
+    -   npm or yarn package manager
+    -   PostgreSQL database
+    -   GitHub account (for authentication)
+    -   Pusher account (for realtime updates)
+
+2.  **Installation:**
+
+    ```bash
+    git clone <repository-url>
+    cd <repository-directory>
+    npm install # or yarn install
+    ```
+
+3.  **Configuration:**
+
+    -   Create a `.env.local` file in the project root.
+    -   Add the following environment variables:
+
+    ```
+    DATABASE_URL="postgresql://user:password@host:port/database"
+    GITHUB_CLIENT_ID="your-github-client-id"
+    GITHUB_CLIENT_SECRET="your-github-client-secret"
+    NEXTAUTH_SECRET="your-nextauth-secret"
+    NEXTAUTH_URL="http://localhost:3000" # or your deployment URL
+    PUSHER_APP_ID="your-pusher-app-id"
+    PUSHER_APP_KEY="your-pusher-app-key"
+    PUSHER_APP_SECRET="your-pusher-app-secret"
+    PUSHER_APP_CLUSTER="your-pusher-app-cluster"
+    ```
+
+4.  **Database Setup:**
+
+    ```bash
+    npx prisma migrate dev --name init
+    npx prisma db seed
+    ```
+
+5.  **Development Server:**
+
+    ```bash
+    npm run dev # or yarn dev
+    ```
+
+    Open your browser and navigate to `http://localhost:3000`.
+
+6.  **Common Development Commands:**
+
+    -   `npm run dev`: Start the development server.
+    -   `npm run build`: Build the application for production.
+    -   `npm run start`: Start the production server.
+    -   `npm run lint`: Run ESLint to check for code quality issues.
+    -   `npm run format`: Format the code using Prettier.
+    -   `npx prisma migrate dev`: Create and apply database migrations.
+    -   `npx prisma studio`: Open the Prisma Studio to view and manage the database.
+
+## Project Structure
+
+-   **`app/`:** Contains the Next.js application routes and pages.
+    -   **`app/(home)/`:** Public routes, including the landing page and authentication-related pages.
+    -   **`app/(protected)/`:** Routes that require user authentication, such as the dashboard and repository views.
+    -   **`app/api/`:** API routes for handling data retrieval and manipulation.
+    -   **`app/styles/`:** Global CSS styles and theme definitions.
+-   **`components/`:** Reusable UI components used throughout the application.
+    -   **`components/ui/`:** Core UI components like buttons, inputs, and modals.
+    -   **`components/dashboard/`:** Components specific to the user dashboard.
+    -   **`components/home/`:** Components used on the landing page.
+    -   **`components/markdown/`:** Components for rendering Markdown content.
+    -   **`components/providers/`:** React context providers for managing application state.
+-   **`config/`:** Configuration files for the application.
+    -   **`config/site.ts`:** Contains site-specific information like name, description, and URLs.
+-   **`hooks/`:** Custom React hooks for managing state and side effects.
+    -   **`hooks/use-toast.ts`:** Custom hook for managing toast notifications.
+-   **`interfaces/`:** TypeScript interfaces for defining data structures.
+    -   **`interfaces/github.ts`:** Interfaces for GitHub API responses.
+    -   **`interfaces/next-auth.ts`:** Extensions to the NextAuth.js types.
+-   **`lib/`:** Utility functions and libraries.
+    -   **`lib/prisma.ts`:** Initializes and exports the Prisma client.
+    -   **`lib/auth-options.ts`:** Configures the authentication options for NextAuth.js.
+    -   **`lib/utils.ts`:** Utility functions for class name merging and API requests.
+-   **`prisma/`:** Prisma ORM configuration.
+    -   **`prisma/schema.prisma`:** Defines the database schema.
+    -   **`prisma/migrations/`:** Database migration files.
+-   **`public/`:** Static assets like images and fonts.
+-   **`scripts/`:** Scripts for development and deployment.
