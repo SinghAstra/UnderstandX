@@ -10,6 +10,11 @@ jspm_packages/
 /apps/api/dist/
 /apps/api/build/
 
+# Package build outputs (Shared logic, types, etc.)
+/packages/*/dist/
+/packages/*/build/
+/packages/*/*.tsbuildinfo
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

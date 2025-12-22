@@ -6,10 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "npx prisma generate",
     "lint": "next lint"
   },
   "dependencies": {
+    "@understand-x/shared": "*",
     "@component-x/ui": "^1.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@next-auth/prisma-adapter": "^1.0.7",
