@@ -6626,14 +6626,14 @@ export namespace Prisma {
 
   export type RepositoryGroupByOutputType = {
     id: string
-    name: string
-    owner: string
+    name: string | null
+    owner: string | null
     url: string
     userId: string
     createdAt: Date
     updatedAt: Date
-    avatarUrl: string
-    githubId: number
+    avatarUrl: string | null
+    githubId: number | null
     status: $Enums.RepositoryStatus
     overview: string | null
     _count: RepositoryCountAggregateOutputType | null
@@ -6726,14 +6726,14 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      name: string
-      owner: string
+      name: string | null
+      owner: string | null
       url: string
       userId: string
       createdAt: Date
       updatedAt: Date
-      avatarUrl: string
-      githubId: number
+      avatarUrl: string | null
+      githubId: number | null
       status: $Enums.RepositoryStatus
       overview: string | null
     }, ExtArgs["result"]["repository"]>
@@ -11065,14 +11065,14 @@ export namespace Prisma {
     OR?: RepositoryWhereInput[]
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
     id?: StringFilter<"Repository"> | string
-    name?: StringFilter<"Repository"> | string
-    owner?: StringFilter<"Repository"> | string
+    name?: StringNullableFilter<"Repository"> | string | null
+    owner?: StringNullableFilter<"Repository"> | string | null
     url?: StringFilter<"Repository"> | string
     userId?: StringFilter<"Repository"> | string
     createdAt?: DateTimeFilter<"Repository"> | Date | string
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
-    avatarUrl?: StringFilter<"Repository"> | string
-    githubId?: IntFilter<"Repository"> | number
+    avatarUrl?: StringNullableFilter<"Repository"> | string | null
+    githubId?: IntNullableFilter<"Repository"> | number | null
     status?: EnumRepositoryStatusFilter<"Repository"> | $Enums.RepositoryStatus
     overview?: StringNullableFilter<"Repository"> | string | null
     directories?: DirectoryListRelationFilter
@@ -11083,14 +11083,14 @@ export namespace Prisma {
 
   export type RepositoryOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
-    owner?: SortOrder
+    name?: SortOrderInput | SortOrder
+    owner?: SortOrderInput | SortOrder
     url?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    avatarUrl?: SortOrder
-    githubId?: SortOrder
+    avatarUrl?: SortOrderInput | SortOrder
+    githubId?: SortOrderInput | SortOrder
     status?: SortOrder
     overview?: SortOrderInput | SortOrder
     directories?: DirectoryOrderByRelationAggregateInput
@@ -11104,14 +11104,14 @@ export namespace Prisma {
     AND?: RepositoryWhereInput | RepositoryWhereInput[]
     OR?: RepositoryWhereInput[]
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
-    name?: StringFilter<"Repository"> | string
-    owner?: StringFilter<"Repository"> | string
+    name?: StringNullableFilter<"Repository"> | string | null
+    owner?: StringNullableFilter<"Repository"> | string | null
     url?: StringFilter<"Repository"> | string
     userId?: StringFilter<"Repository"> | string
     createdAt?: DateTimeFilter<"Repository"> | Date | string
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
-    avatarUrl?: StringFilter<"Repository"> | string
-    githubId?: IntFilter<"Repository"> | number
+    avatarUrl?: StringNullableFilter<"Repository"> | string | null
+    githubId?: IntNullableFilter<"Repository"> | number | null
     status?: EnumRepositoryStatusFilter<"Repository"> | $Enums.RepositoryStatus
     overview?: StringNullableFilter<"Repository"> | string | null
     directories?: DirectoryListRelationFilter
@@ -11122,14 +11122,14 @@ export namespace Prisma {
 
   export type RepositoryOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
-    owner?: SortOrder
+    name?: SortOrderInput | SortOrder
+    owner?: SortOrderInput | SortOrder
     url?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    avatarUrl?: SortOrder
-    githubId?: SortOrder
+    avatarUrl?: SortOrderInput | SortOrder
+    githubId?: SortOrderInput | SortOrder
     status?: SortOrder
     overview?: SortOrderInput | SortOrder
     _count?: RepositoryCountOrderByAggregateInput
@@ -11144,14 +11144,14 @@ export namespace Prisma {
     OR?: RepositoryScalarWhereWithAggregatesInput[]
     NOT?: RepositoryScalarWhereWithAggregatesInput | RepositoryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Repository"> | string
-    name?: StringWithAggregatesFilter<"Repository"> | string
-    owner?: StringWithAggregatesFilter<"Repository"> | string
+    name?: StringNullableWithAggregatesFilter<"Repository"> | string | null
+    owner?: StringNullableWithAggregatesFilter<"Repository"> | string | null
     url?: StringWithAggregatesFilter<"Repository"> | string
     userId?: StringWithAggregatesFilter<"Repository"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
-    avatarUrl?: StringWithAggregatesFilter<"Repository"> | string
-    githubId?: IntWithAggregatesFilter<"Repository"> | number
+    avatarUrl?: StringNullableWithAggregatesFilter<"Repository"> | string | null
+    githubId?: IntNullableWithAggregatesFilter<"Repository"> | number | null
     status?: EnumRepositoryStatusWithAggregatesFilter<"Repository"> | $Enums.RepositoryStatus
     overview?: StringNullableWithAggregatesFilter<"Repository"> | string | null
   }
@@ -11709,13 +11709,13 @@ export namespace Prisma {
 
   export type RepositoryCreateInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
@@ -11726,14 +11726,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedCreateInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
@@ -11743,13 +11743,13 @@ export namespace Prisma {
 
   export type RepositoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
@@ -11760,14 +11760,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -11777,41 +11777,41 @@ export namespace Prisma {
 
   export type RepositoryCreateManyInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
   }
 
   export type RepositoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepositoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -12378,17 +12378,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type EnumRepositoryStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.RepositoryStatus | EnumRepositoryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
@@ -12474,22 +12463,6 @@ export namespace Prisma {
 
   export type RepositorySumOrderByAggregateInput = {
     githubId?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumRepositoryStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -12829,14 +12802,6 @@ export namespace Prisma {
     connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
     createMany?: LogCreateManyRepositoryInputEnvelope
     connect?: LogWhereUniqueInput | LogWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type EnumRepositoryStatusFieldUpdateOperationsInput = {
@@ -13261,33 +13226,6 @@ export namespace Prisma {
     not?: NestedEnumRepositoryStatusFilter<$PrismaModel> | $Enums.RepositoryStatus
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedEnumRepositoryStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.RepositoryStatus | EnumRepositoryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
@@ -13360,13 +13298,13 @@ export namespace Prisma {
 
   export type RepositoryCreateWithoutUserInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
@@ -13376,13 +13314,13 @@ export namespace Prisma {
 
   export type RepositoryUncheckedCreateWithoutUserInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
@@ -13481,14 +13419,14 @@ export namespace Prisma {
     OR?: RepositoryScalarWhereInput[]
     NOT?: RepositoryScalarWhereInput | RepositoryScalarWhereInput[]
     id?: StringFilter<"Repository"> | string
-    name?: StringFilter<"Repository"> | string
-    owner?: StringFilter<"Repository"> | string
+    name?: StringNullableFilter<"Repository"> | string | null
+    owner?: StringNullableFilter<"Repository"> | string | null
     url?: StringFilter<"Repository"> | string
     userId?: StringFilter<"Repository"> | string
     createdAt?: DateTimeFilter<"Repository"> | Date | string
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
-    avatarUrl?: StringFilter<"Repository"> | string
-    githubId?: IntFilter<"Repository"> | number
+    avatarUrl?: StringNullableFilter<"Repository"> | string | null
+    githubId?: IntNullableFilter<"Repository"> | number | null
     status?: EnumRepositoryStatusFilter<"Repository"> | $Enums.RepositoryStatus
     overview?: StringNullableFilter<"Repository"> | string | null
   }
@@ -13936,13 +13874,13 @@ export namespace Prisma {
 
   export type RepositoryCreateWithoutDirectoriesInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     files?: FileCreateNestedManyWithoutRepositoryInput
@@ -13952,14 +13890,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedCreateWithoutDirectoriesInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
@@ -14067,13 +14005,13 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutDirectoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     files?: FileUpdateManyWithoutRepositoryNestedInput
@@ -14083,14 +14021,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedUpdateWithoutDirectoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -14142,13 +14080,13 @@ export namespace Prisma {
 
   export type RepositoryCreateWithoutFilesInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
@@ -14158,14 +14096,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedCreateWithoutFilesInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
@@ -14223,13 +14161,13 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
@@ -14239,14 +14177,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedUpdateWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -14255,13 +14193,13 @@ export namespace Prisma {
 
   export type RepositoryCreateWithoutLogsInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
@@ -14271,14 +14209,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedCreateWithoutLogsInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
@@ -14303,13 +14241,13 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
@@ -14319,14 +14257,14 @@ export namespace Prisma {
 
   export type RepositoryUncheckedUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -14355,13 +14293,13 @@ export namespace Prisma {
 
   export type RepositoryCreateManyUserInput = {
     id?: string
-    name: string
-    owner: string
+    name?: string | null
+    owner?: string | null
     url: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    avatarUrl: string
-    githubId: number
+    avatarUrl?: string | null
+    githubId?: number | null
     status?: $Enums.RepositoryStatus
     overview?: string | null
   }
@@ -14428,13 +14366,13 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
@@ -14444,13 +14382,13 @@ export namespace Prisma {
 
   export type RepositoryUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -14460,13 +14398,13 @@ export namespace Prisma {
 
   export type RepositoryUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    owner?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
     url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: StringFieldUpdateOperationsInput | string
-    githubId?: IntFieldUpdateOperationsInput | number
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubId?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
     overview?: NullableStringFieldUpdateOperationsInput | string | null
   }

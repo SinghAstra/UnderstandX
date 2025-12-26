@@ -1,5 +1,6 @@
 import { env } from "@/config/env";
 import { errorHandler } from "@/middleware/error.middleware";
+import repoRoutes from "@/routes/repo.routes";
 import { AppError } from "@/utils/AppError";
 import { logError } from "@/utils/logger";
 import { sendSuccess } from "@/utils/response";
@@ -34,6 +35,8 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/test-error", (req: Request, res: Response, next: NextFunction) => {
   return next(new AppError(400, "This is a test bad request error"));
 });
+
+app.use("/api/repos", repoRoutes);
 
 // --- 3. 404 Handler ---
 app.all("*path", (req: Request, res: Response, next: NextFunction) => {
