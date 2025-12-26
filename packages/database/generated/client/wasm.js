@@ -169,6 +169,51 @@ exports.Prisma.PasswordResetTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.RepositoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  owner: 'owner',
+  url: 'url',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  avatarUrl: 'avatarUrl',
+  githubId: 'githubId',
+  status: 'status',
+  overview: 'overview'
+};
+
+exports.Prisma.DirectoryScalarFieldEnum = {
+  id: 'id',
+  path: 'path',
+  summary: 'summary',
+  repositoryId: 'repositoryId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FileScalarFieldEnum = {
+  id: 'id',
+  path: 'path',
+  name: 'name',
+  content: 'content',
+  directoryId: 'directoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  repositoryId: 'repositoryId',
+  analysis: 'analysis',
+  shortSummary: 'shortSummary'
+};
+
+exports.Prisma.LogScalarFieldEnum = {
+  id: 'id',
+  repositoryId: 'repositoryId',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -183,14 +228,23 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.RepositoryStatus = exports.$Enums.RepositoryStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Account: 'Account',
   Session: 'Session',
   VerificationToken: 'VerificationToken',
-  PasswordResetToken: 'PasswordResetToken'
+  PasswordResetToken: 'PasswordResetToken',
+  Repository: 'Repository',
+  Directory: 'Directory',
+  File: 'File',
+  Log: 'Log'
 };
 
 /**

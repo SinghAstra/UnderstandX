@@ -1,9 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Sidebar, useSidebar } from "@/components/ui/sidebar";
 import { siteConfig } from "@/config/site";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Home, LucideIcon } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
+import { LayoutGrid, LucideIcon, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -16,8 +18,8 @@ interface SidebarNavItem {
 const sidebarNav: SidebarNavItem[] = [
   {
     url: "/dashboard",
-    title: "Dashboard",
-    icon: Home,
+    title: "Repositories",
+    icon: LayoutGrid,
   },
 ];
 
@@ -60,6 +62,19 @@ export function AppSidebar() {
             </Link>
           );
         })}
+      </div>
+
+      <div className="mt-auto p-2  space-y-1 bg-background">
+        <Link href={ROUTES.DASHBOARD.IMPORT_REPO} onClick={handleClick}>
+          <Button
+            size={"lg"}
+            variant={"outline"}
+            className="w-full bg-muted/30 hover:bg-muted/60 transition-all duration-300"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>Import repository</span>
+          </Button>
+        </Link>
       </div>
     </Sidebar>
   );

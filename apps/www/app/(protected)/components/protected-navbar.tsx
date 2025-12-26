@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { siteConfig } from "@/config/site";
-import { Coins, LogOut, Menu, Plus, UserIcon } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
+import { LogOut, Menu, Plus, UserIcon } from "lucide-react";
 import { User } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
@@ -33,21 +34,16 @@ function ProtectedNavbar({ user }: ProtectedNavbarProps) {
       </div>
 
       <div className="flex items-center gap-4 ml-auto">
-        <Button
-          size={"sm"}
-          className="flex items-center gap-2 rounded bg-muted/50 hover:bg-muted/30 text-foreground transition-all duration-300 border"
-        >
-          <Coins className="w-4 h-4" />
-          <span className="text-sm font-medium">Item 1</span>
-        </Button>
-
-        <Button
-          size={"sm"}
-          className="flex items-center gap-2 rounded bg-muted/50 hover:bg-muted/30 text-foreground transition-all duration-300 border"
-        >
-          <Plus className="h-5 w-5" />
-          <span className="hidden sm:block">Item 2</span>
-        </Button>
+        <Link href={ROUTES.DASHBOARD.IMPORT_REPO}>
+          <Button
+            variant={"outline"}
+            size="sm"
+            className="gap-2 h-8 px-3 bg-muted/30 hover:bg-muted/60 transition-all duration-300"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:block">Import Repo</span>
+          </Button>
+        </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

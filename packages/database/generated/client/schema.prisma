@@ -10,16 +10,17 @@ generator client {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String       @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   accounts      Account[]
   sessions      Session[]
+  repositories  Repository[]
 }
 
 model Account {
@@ -62,4 +63,74 @@ model PasswordResetToken {
   code      String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Repository {
+  id          String           @id @default(cuid())
+  name        String
+  owner       String
+  url         String
+  userId      String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  avatarUrl   String
+  githubId    Int
+  status      RepositoryStatus @default(PENDING)
+  overview    String?
+  directories Directory[]
+  files       File[]
+  logs        Log[]
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Directory {
+  id           String      @id @default(cuid())
+  path         String
+  summary      String?
+  repositoryId String
+  parentId     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  parent       Directory?  @relation("DirectoryTree", fields: [parentId], references: [id])
+  children     Directory[] @relation("DirectoryTree")
+  repository   Repository  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  files        File[]
+}
+
+model File {
+  id           String     @id @default(cuid())
+  path         String
+  name         String
+  content      String?
+  directoryId  String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  repositoryId String
+  analysis     String?
+  shortSummary String?
+  directory    Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade)
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+}
+
+model Log {
+  id           String           @id @default(cuid())
+  repositoryId String
+  message      String
+  status       RepositoryStatus
+  createdAt    DateTime         @default(now())
+  repository   Repository       @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+}
+
+enum RepositoryStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+}
+
+enum DirectoryStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
 }
