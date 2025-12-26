@@ -33,7 +33,7 @@ const HomePage = () => {
         whileInView="visible"
         className="min-h-screen relative flex flex-col gap-16 px-4 md:px-6 lg:px-8"
       >
-        <div className="flex flex-col items-center justify-center w-full text-center min-h-screen relative max-w-[1200px] mx-auto">
+        <div className="flex flex-col items-center justify-center w-full text-center min-h-screen relative max-w-300 mx-auto">
           <MaskedGridBackground />
           <motion.div
             variants={slideFadeInVariantFromBottomToTop}
@@ -46,7 +46,7 @@ const HomePage = () => {
                 <div className="w-full h-full bg-background group transition-all duration-300 ease-in-out active:scale-[0.98]">
                   <div className="w-full rounded flex items-center justify-center gap-2 px-4 py-2 hover:bg-muted/20 transition-all duration-300 ease-in-out">
                     <h3 className="text-foreground text-xs font-medium uppercase tracking-wider">
-                      Connect on X
+                      Follow the journey on X
                     </h3>
                     <ArrowRight
                       className="size-4 ml-1 group-hover:translate-x-1 transition-all duration-300 ease-in-out text-muted-foreground"
@@ -57,19 +57,22 @@ const HomePage = () => {
               </MovingBorder>
             </Link>
             <h1 className="text-center py-6 text-5xl font-medium text-balance tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-tight w-full">
-              How are you ? <span className="opacity-50">Cool</span>
+              Understand any codebase{" "}
+              <span className="opacity-50">instantly.</span>
             </h1>
-            <p className="mb-12 text-lg tracking-normal leading-relaxed text-muted-foreground md:text-xl text-balance">
-              This is the first line describing the web app
+            <p className="mb-12 text-lg tracking-normal leading-relaxed text-muted-foreground md:text-xl text-balance max-w-3xl">
+              Navigate complex GitHub repositories with context-aware analysis.
               <br className="hidden md:block" />
-              <span className="hidden md:block">This is the second line.</span>
+              <span className="hidden md:block">
+                From architecture to line-by-line logic, we explain it all.
+              </span>
             </p>
             <Link href={ROUTES.AUTH.SIGN_IN}>
               <Button
                 size={"lg"}
                 className="text-lg group transition-all duration-300 ease-in-out active:scale-[0.98]"
               >
-                Get Started for free
+                Start Analyzing Now
                 <ArrowRight
                   className="size-4 transition-all duration-300 ease-in-out group-hover:translate-x-1"
                   strokeWidth={2}
@@ -79,7 +82,7 @@ const HomePage = () => {
           </motion.div>
         </div>
 
-        <div className="max-w-[1200px] mx-auto w-full">
+        <div className="max-w-300 mx-auto w-full">
           <motion.div
             variants={slideFadeInVariantFromBottomToTop}
             initial="hidden"
@@ -90,17 +93,17 @@ const HomePage = () => {
                 <div className="w-full h-full bg-background group transition-all duration-300 ease-in-out active:scale-[0.98]">
                   <div className="w-full rounded flex items-center justify-center px-4 py-2 hover:bg-muted/20 transition-all duration-300 ease-in-out">
                     <h3 className="text-foreground text-xs font-medium uppercase tracking-wider">
-                      The Process
+                      The Workflow
                     </h3>
                   </div>
                 </div>
               </MovingBorder>
               <h2 className="text-center text-3xl md:text-5xl font-medium tracking-tight mt-4">
-                Entire Process in 3 steps
+                Zero to Comprehension in Seconds
               </h2>
               <p className="text-center lg:text-center text-lg tracking-normal leading-relaxed text-muted-foreground max-w-lg">
-                Follow these simple steps to perform action this is just another
-                line
+                Just drop a link, let our engine digest the context, and explore
+                the code like a maintainer.
               </p>
             </div>
           </motion.div>
@@ -137,7 +140,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="max-w-[1200px] mx-auto w-full">
+        <div className="max-w-300 mx-auto w-full">
           <motion.div
             variants={slideFadeInVariantFromBottomToTop}
             initial="hidden"
@@ -148,17 +151,18 @@ const HomePage = () => {
                 <div className="w-full h-full group transition-all duration-300 ease-in-out active:scale-[0.98]">
                   <div className="w-full rounded flex items-center justify-center px-4 py-2 hover:bg-muted/20 transition-all duration-300 ease-in-out">
                     <h3 className="text-foreground text-xs font-medium uppercase tracking-wider">
-                      Our Customers
+                      Trusted by Developers
                     </h3>
                   </div>
                 </div>
               </MovingBorder>
               <h2 className="text-center lg:text-center text-3xl md:text-5xl leading-[1.1] font-medium font-heading text-foreground tracking-tight mt-4">
-                What our users are saying
+                Loved by engineers, <br className="hidden md:block" />
+                built for clarity.
               </h2>
-              <p className="text-center lg:text-center text-lg tracking-normal leading-relaxed text-muted-foreground max-w-lg">
-                Here&apos;s what some of our users have to say about{" "}
-                {siteConfig.name}.
+              <p className="text-center text-lg tracking-normal leading-relaxed text-muted-foreground max-w-lg">
+                See how developers are using {siteConfig.name} to master complex
+                codebases and ship faster.
               </p>
             </div>
           </motion.div>
@@ -176,7 +180,6 @@ const HomePage = () => {
                     <h4 className="text-lg font-medium text-muted-foreground tracking-tight">
                       {review.name}
                     </h4>
-                    <p className="tracking-normal">{review.username}</p>
                     <p className="text-muted-foreground pb-4 tracking-normal leading-relaxed">
                       {review.review}
                     </p>
@@ -201,16 +204,18 @@ const HomePage = () => {
           variants={slideFadeInVariantFromBottomToTop}
           initial="hidden"
           whileInView="visible"
-          className="relative min-h-screen flex flex-col items-center justify-center max-w-[1200px] mx-auto"
+          className="relative min-h-screen flex flex-col items-center justify-center max-w-300  w-full mx-auto"
         >
           <LampBackground />
           <div className="flex flex-col items-center justify-center relative w-full text-center gap-6">
             <h2 className="text-center text-4xl md:text-7xl font-medium tracking-tight">
-              Step into the future of Landing Pages
+              Decode the complexity <br />
+              of open source.
             </h2>
             <p className="text-muted-foreground text-lg tracking-normal leading-relaxed max-w-md mx-auto">
-              Few Line explaining the saas. This is the first line. This is the
-              second line. This is the third line.
+              Stop grepping through folders and guessing dependencies.
+              {siteConfig.name} provides the structural clarity you need to
+              master any codebase and start contributing in record time.
             </p>
             <div>
               <Link href={ROUTES.AUTH.SIGN_IN}>
@@ -232,16 +237,15 @@ const HomePage = () => {
           variants={slideFadeInVariantFromBottomToTop}
           initial="hidden"
           whileInView="visible"
-          className="relative min-h-screen flex flex-col items-center justify-center gap-8 mb-20 px-4 sm:px-8 max-w-[1200px] mx-auto w-full"
+          className="relative min-h-screen flex flex-col items-center justify-center gap-8 mb-20 px-4 sm:px-8 max-w-300 mx-auto w-full"
         >
           <div className="flex flex-col items-center justify-center w-full pt-12 gap-4">
-            <h2 className="text-2xl font-semibold text-center lg:text-3xl xl:text-4xl tracking-tight">
-              Frequently Asked Questions
+            <h2 className="text-3xl font-medium text-center md:text-5xl tracking-tight text-foreground">
+              Everything you need to know
             </h2>
-            <p className="max-w-lg text-center text-neutral-500 tracking-normal leading-relaxed">
-              Here are some of the most common questions we get asked. If you
-              have a question that isn&apos;t answered here, feel free to reach
-              out to us.
+            <p className="max-w-lg text-center text-muted-foreground text-lg tracking-normal leading-relaxed">
+              Common questions about {siteConfig.name} and how we help you
+              master complex codebases faster.
             </p>
           </div>
           <Accordion

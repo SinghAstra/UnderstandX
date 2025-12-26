@@ -1,160 +1,130 @@
-import { BarChart3Icon, FolderOpenIcon, WandSparklesIcon } from "lucide-react";
+import { Import, LayoutDashboardIcon, WandSparklesIcon } from "lucide-react";
 
 export const processSteps = [
   {
-    title: "Step 1",
+    title: "Import Repository",
     description:
-      "This is step 1 description placeholder text that explains what happens in the first step.",
-    icon: FolderOpenIcon,
+      "Paste any public GitHub repository URL. Our engine instantly maps the directory structure and identifies the core tech stack.",
+    icon: Import,
   },
   {
-    title: "Step 2",
+    title: "Contextual Analysis",
     description:
-      "This is step 2 description placeholder text that explains what happens in the second step.",
+      "We perform a deep-dive analysis of every file, generating high-level summaries and tracing cross-file dependencies automatically.",
     icon: WandSparklesIcon,
   },
   {
-    title: "Step 3",
+    title: "Interactive Explorer",
     description:
-      "This is step 3 description placeholder text that explains what happens in the third step.",
-    icon: BarChart3Icon,
+      "Navigate the codebase through an intuitive dashboard. Search, filter, and comprehend complex logic without leaving your browser.",
+    icon: LayoutDashboardIcon,
   },
 ];
 
 export const reviews = [
   {
-    name: "Michael Smith",
-    username: "@michaelsmith",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    name: "Michael Chen",
     rating: 5,
     review:
-      "This tool is a lifesaver! Managing and tracking my links has never been easier. A must-have for anyone dealing with numerous links.",
+      "A total lifesaver for onboarding. I had to dive into a legacy 50k LOC repo, and UnderstandX mapped the entire architecture in seconds. I actually understood the data flow before my first standup.",
   },
   {
-    name: "Emily Johnson",
-    username: "@emilyjohnson",
-    avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+    name: "Emily Watson",
+    rating: 5,
+    review:
+      "The context-aware file analysis is spooky good. It doesn't just describe the code; it explains why certain patterns were used. It's like having the original maintainer sitting next to me.",
+  },
+  {
+    name: "David Kumar",
+    rating: 5,
+    review:
+      "I use this daily for open-source contributions. Instead of spending hours clicking through folders on GitHub, I get a clear dependency map. It's significantly improved my PR turnaround time.",
+  },
+  {
+    name: "Sophia Rossi",
     rating: 4,
     review:
-      "Very useful app! It has streamlined my workflow considerably. A few minor bugs, but overall a great experience.",
+      "Fantastic tool for exploring new frameworks. The repo visualizer helped me understand how the core modules interact without me having to clone and grep everything locally.",
   },
   {
-    name: "Daniel Williams",
-    username: "@danielwilliams",
-    avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "James Thompson",
     rating: 5,
     review:
-      "I've been using this app daily for months. The insights and analytics it provides are invaluable. Highly recommend it!",
+      "Absolutely game-changing for technical leads. I use it to audit external libraries before we add them to our stack. The insights it provides on code quality and complexity are invaluable.",
   },
   {
-    name: "Sophia Brown",
-    username: "@sophiabrown",
-    avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+    name: "Olivia Zhang",
     rating: 4,
     review:
-      "This app is fantastic! It offers everything I need to manage my links efficiently.",
+      "Simple, effective, and fast. It takes the 'black box' out of complex GitHub repos. I'm looking forward to seeing how the analysis engine evolves with even more languages!",
   },
   {
-    name: "James Taylor",
-    username: "@jamestaylor",
-    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+    name: "William Smith",
     rating: 5,
     review:
-      "Absolutely love this app! It's intuitive and feature-rich. Has significantly improved how I manage and track links.",
+      "UnderstandX is now a permanent part of my workflow. If you deal with complex codebases, this isn't just a luxury—it's a necessity for maintaining sanity and speed.",
   },
   {
-    name: "Olivia Martinez",
-    username: "@oliviamartinez",
-    avatar: "https://randomuser.me/api/portraits/women/3.jpg",
-    rating: 4,
-    review:
-      "Great app with a lot of potential. It has already saved me a lot of time. Looking forward to future updates and improvements.",
-  },
-  {
-    name: "William Garcia",
-    username: "@williamgarcia",
-    avatar: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "Mia Lindholm",
     rating: 5,
     review:
-      "This app is a game-changer for link management. It's easy to use, extremely powerful and highly recommended!",
+      "I've tried other repo visualizers, but they usually just show a messy graph. UnderstandX actually gives me readable, logical summaries of what the code is doing.",
   },
   {
-    name: "Mia Rodriguez",
-    username: "@miarodriguez",
-    avatar: "https://randomuser.me/api/portraits/women/4.jpg",
-    rating: 4,
-    review:
-      "I've tried several link management tools, but this one stands out. It's simple, effective.",
-  },
-  {
-    name: "Henry Lee",
-    username: "@henrylee",
-    avatar: "https://randomuser.me/api/portraits/men/5.jpg",
+    name: "Henry Fletcher",
     rating: 5,
     review:
-      "This app has transformed my workflow. Managing and analyzing links is now a breeze. I can't imagine working without it.",
+      "This has completely transformed how our team handles code reviews. We run the repo through UnderstandX first to get a high-level view of the changes and their impact.",
   },
 ];
 
 export const FAQ = [
   {
     id: "item-1",
-    question: "What makes this browser AI-powered?",
+    question: "How does UnderstandX analyze my code?",
     answer:
-      "Our browser integrates advanced AI models that provide intelligent search suggestions, automatic content summarization, smart bookmarking, and personalized browsing recommendations based on your usage patterns.",
+      "UnderstandX uses advanced Large Language Models (LLMs) to parse your repository's structure and logic. It identifies core modules, traces dependencies, and generates context-aware summaries that help you understand how different parts of the codebase interact.",
   },
   {
     id: "item-2",
-    question: "How does the AI assistant help with browsing?",
+    question: "Do I need to clone the repository locally?",
     answer:
-      "The built-in AI assistant can instantly answer questions about any webpage, translate content in real-time, generate summaries of articles, and help you find specific information across multiple tabs.",
+      "No. UnderstandX works entirely in your browser. Just paste a public GitHub URL, and our engine handles the indexing and analysis on our secure servers, providing you with an instant interactive dashboard.",
   },
   {
     id: "item-3",
-    question: "Is my browsing data used to train AI models?",
+    question: "Is my code used to train your AI models?",
     answer:
-      "No. Your personal browsing data stays private and local. We use anonymized, aggregated data patterns only for improving general AI features, never your specific browsing history or personal information.",
+      "Absolutely not. We prioritize your privacy. The code we analyze is processed in a transient state and is never used to train or fine-tune our underlying AI models. Your intellectual property remains yours.",
   },
   {
     id: "item-4",
-    question: "How does AI-powered ad blocking work?",
+    question: "Which programming languages are supported?",
     answer:
-      "Our AI analyzes webpage elements in real-time to intelligently block ads, trackers, and malicious content while preserving the website's functionality and user experience.",
+      "We currently offer deep, context-aware support for TypeScript, JavaScript, Python, Rust, Go, and Java. We are constantly expanding our language models to support more ecosystems every month.",
   },
   {
     id: "item-5",
-    question: "Can the AI help with productivity tasks?",
+    question: "Can it handle large, complex repositories?",
     answer:
-      "Absolutely! The AI can automatically fill forms, schedule meetings from email content, extract key information from documents, and organize your tabs based on projects or topics.",
+      "Yes! UnderstandX is built specifically for scale. Whether it's a small utility library or a massive monolithic architecture, our system breaks down the code into digestible chunks to provide a clear overview without overwhelming you.",
   },
   {
     id: "item-6",
-    question: "What browsers is this compatible with?",
+    question: "Does it support private repositories?",
     answer:
-      "Our AI-powered browser is built on Chromium for maximum compatibility. It supports all Chrome extensions and websites while adding our intelligent AI layer on top.",
+      "Currently, we focus on public GitHub repositories. However, support for private repos via GitHub App integration is our top-priority feature and is coming very soon in our Pro tier.",
   },
   {
     id: "item-7",
-    question: "How much does the AI browser cost?",
+    question: "How accurate are the code summaries?",
     answer:
-      "We offer a free tier with basic AI features and a Pro version ($9.99/month) with advanced AI capabilities, unlimited queries, and premium integrations.",
+      "Our summaries are highly accurate because they aren't just looking at individual files. Our engine analyzes the 'context'—seeing how a function is called in another file—to explain the actual intent behind the code.",
   },
   {
     id: "item-8",
-    question: "Does it work offline?",
+    question: "Can I use UnderstandX for technical audits?",
     answer:
-      "Basic browsing works offline, and some AI features like content summarization are cached locally. However, real-time AI assistance and advanced features require an internet connection.",
-  },
-  {
-    id: "item-9",
-    question: "Is there a mobile version available?",
-    answer:
-      "Yes! Our AI-powered mobile browser is available for both iOS and Android, featuring voice commands, smart reading mode, and seamless sync with the desktop version.",
-  },
-  {
-    id: "item-10",
-    question: "How do I import my data from other browsers?",
-    answer:
-      "Our smart migration tool can import bookmarks, passwords, history, and extensions from Chrome, Firefox, Safari, and Edge with one click. The AI will also organize your imported data intelligently.",
+      "Definitely. Teams use UnderstandX to perform quick security audits, dependency checks, and complexity analysis before deciding whether to adopt an open-source library into their stack.",
   },
 ];
