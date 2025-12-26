@@ -1,6 +1,6 @@
 import { logError } from "@/lib/log-error";
-import { prisma } from "@/lib/prisma";
 import { errorResponse, successResponse } from "@/lib/response-utils";
+import { prisma } from "@understand-x/database";
 import bcrypt from "bcryptjs";
 import { type NextRequest } from "next/server";
 

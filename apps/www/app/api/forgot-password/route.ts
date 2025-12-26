@@ -4,9 +4,9 @@ import {
   getExpirationTime,
 } from "@/lib/generate-reset-code";
 import { logError } from "@/lib/log-error";
-import { prisma } from "@/lib/prisma";
 import { errorResponse, successResponse } from "@/lib/response-utils";
 import { transporter } from "@/lib/transporter";
+import { prisma } from "@understand-x/database";
 import { type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

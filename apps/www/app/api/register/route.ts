@@ -1,10 +1,10 @@
 import { siteConfig } from "@/config/site";
 import { getExpirationTime } from "@/lib/generate-reset-code";
 import { logError } from "@/lib/log-error";
-import { prisma } from "@/lib/prisma";
 import { errorResponse, successResponse } from "@/lib/response-utils";
 import { transporter } from "@/lib/transporter";
 import { signUpSchema } from "@/schema/auth";
+import { prisma } from "@understand-x/database";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 

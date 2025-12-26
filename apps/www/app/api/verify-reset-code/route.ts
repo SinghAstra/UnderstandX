@@ -1,7 +1,7 @@
 import { logError } from "@/lib/log-error";
-import { prisma } from "@/lib/prisma";
 import { errorResponse } from "@/lib/response-utils";
 import { verifyResetCodeSchema } from "@/schema/auth";
+import { prisma } from "@understand-x/database";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

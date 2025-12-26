@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
 import { ROUTES } from "@/lib/routes";
+import { prisma } from "@understand-x/database";
 import { redirect } from "next/navigation";
 
 interface VerifyEmailPageProps {

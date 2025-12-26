@@ -73,7 +73,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
 
         <div
           className={cn(
-            "flex w-full gap-2 overflow-hidden bg-accent border border-input rounded  transition-all duration-200",
+            "flex w-full gap-2 p-0.5 overflow-hidden bg-accent border border-input rounded  transition-all duration-200",
             "hover:border-primary/50",
             "focus-within:border-primary",
             error &&
@@ -109,9 +109,10 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
             ref={ref}
           />
           {StateSuffixIcon && (
-            <div
+            <button
+              type="button"
               className={cn(
-                "flex items-center pr-3 pl-2 text-muted-foreground",
+                "flex items-center px-2 text-muted-foreground",
                 isPassword &&
                   "cursor-pointer hover:text-primary transition-colors",
                 error && "text-destructive"
@@ -119,7 +120,7 @@ export const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
               onClick={clickHandler}
             >
               <StateSuffixIcon className="w-4 h-4" />
-            </div>
+            </button>
           )}
         </div>
 
