@@ -1,13 +1,22 @@
 import { SiteConfig } from "@/interfaces/site";
 
 export const siteConfig: SiteConfig = {
-  name: "StarterX",
-  description: "Starter Template",
-  url: "https://starterx.vercel.app",
-  keywords: ["Starter"],
+  name: "UnderstandX",
+  description:
+    "Understand any open source GitHub repository instantly. UnderstandX generates context-aware file analysis for every file, helping you navigate and comprehend complex codebases with ease.",
+  url: "https://understandx.vercel.app",
+  keywords: [
+    "github analysis",
+    "code comprehension",
+    "open source explorer",
+    "context-aware analysis",
+    "developer tools",
+    "repo visualizer",
+    "source code explained",
+  ],
   links: {
     twitter: "https://x.com/XSinghAstra",
     github: "https://github.com/SinghAstra",
-    githubRepo: "https://github.com/SinghAstra/StarterX",
+    githubRepo: "https://github.com/SinghAstra/UnderstandX",
   },
 };
