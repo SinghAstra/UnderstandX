@@ -2,8 +2,7 @@ import { SiteConfig } from "@/interfaces/site";
 
 export const siteConfig: SiteConfig = {
   name: "UnderstandX",
-  description:
-    "Understand any open source GitHub repository instantly. UnderstandX generates context-aware file analysis for every file, helping you navigate and comprehend complex codebases with ease.",
+  description: "Understand any open source GitHub repository instantly",
   url: "https://understandx.vercel.app",
   keywords: [
     "github analysis",
