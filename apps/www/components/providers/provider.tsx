@@ -1,8 +1,10 @@
 "use client";
 
 import { siteConfig } from "@/config/site";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
-import { ReactNode, Suspense } from "react";
+import { ReactNode, Suspense, useState } from "react";
 import MaskedGridBackground from "../component-x/masked-grid-background";
 import { SidebarProvider } from "../ui/sidebar";
 
@@ -41,11 +43,28 @@ const LoadingFallback = () => {
 };
 
 const Providers = ({ children }: ProviderProps) => {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // Setting a default staleTime to avoid aggressive refetching
+            staleTime: 60 * 1000,
+          },
+        },
+      })
+  );
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <SidebarProvider>
-        <SessionProvider>{children}</SessionProvider>
-      </SidebarProvider>
+      <QueryClientProvider client={queryClient}>
+        <SidebarProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </SidebarProvider>
+
+        {process.env.NODE_ENV === "development" && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </QueryClientProvider>
     </Suspense>
   );
 };

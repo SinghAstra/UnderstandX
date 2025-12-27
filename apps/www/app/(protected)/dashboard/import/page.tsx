@@ -2,42 +2,78 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ROUTES } from "@/lib/routes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { ImportRepoInput, importRepoSchema } from "@understand-x/shared";
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Github, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { FaGithub } from "react-icons/fa";
+import { toast } from "sonner";
 
 function ImportRepoPage() {
-  const [url, setUrl] = useState("");
-  const [isValidating, setIsValidating] = useState(false);
-  const [isValid, setIsValid] = useState(false);
   const router = useRouter();
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ImportRepoInput>({
+    resolver: zodResolver(importRepoSchema),
+    mode: "onSubmit",
+  });
+
+  const repoUrlValue = watch("repoUrl");
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (values: ImportRepoInput) => {
+      const { data } = await axios.post("/api/repos/import", values);
+      return data;
+    },
+    onSuccess: (data) => {
+      router.push(`/dashboard/repo/${data.repositoryId}/console`);
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.message || "Something went wrong";
+      toast.error(message);
+    },
+  });
+
+  const placeholders = useMemo(
+    () => [
+      "https://github.com/vercel/next.js",
+      "https://github.com/shadcn/ui",
+      "https://github.com/facebook/react",
+    ],
+    []
+  );
+
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
   useEffect(() => {
-    if (url.length > 10) {
-      setIsValidating(true);
-      const timer = setTimeout(() => {
-        setIsValidating(false);
-        setIsValid(url.toLowerCase().includes("github.com/"));
-      }, 600);
-      return () => clearTimeout(timer);
-    } else {
-      setIsValid(false);
-      setIsValidating(false);
-    }
-  }, [url]);
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [placeholders.length]);
+
+  const onSubmit = (data: ImportRepoInput) => {
+    mutate(data);
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] p-6">
+    <div className="flex flex-col items-center justify-center h-full p-6">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-lg space-y-8"
       >
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl md:text-4xl font-medium tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-medium tracking-tight">
             Import Repository
           </h1>
           <p className="text-lg text-muted-foreground">
@@ -45,55 +81,71 @@ function ImportRepoPage() {
           </p>
         </div>
 
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-primary/20 rounded-lg blur opacity-0 group-focus-within:opacity-100 transition duration-500" />
-
-          <div className="relative flex items-center bg-card border border-border rounded-lg px-4 h-12 transition-all group-focus-within:border-primary/50 group-focus-within:bg-card/80">
+        <div className="space-y-2">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="relative group flex items-center border rounded px-4 h-12 transition-all focus-within:border-primary/50"
+          >
             <FaGithub className="w-4 h-4 text-muted-foreground mr-3" />
-            <Input
-              type="text"
-              placeholder="github.com/username/repo"
-              className="flex-1 bg-transparent border-none p-0 focus-visible:ring-0 text-sm placeholder:text-muted-foreground/40 h-full"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              autoFocus
-            />
-
-            <div className="flex items-center gap-3">
+            <div className="relative flex-1 h-full flex items-center">
               <AnimatePresence mode="wait">
-                {isValidating && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center text-xs text-muted-foreground gap-1.5"
+                {!repoUrlValue && (
+                  <motion.span
+                    key={placeholders[placeholderIndex]}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute left-0 text-sm text-muted-foreground/40 pointer-events-none select-none"
                   >
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    <span>Validating</span>
-                  </motion.div>
-                )}
-                {isValid && !isValidating && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center text-xs text-emerald-500 font-medium"
-                  >
-                    Ready
-                  </motion.div>
+                    {placeholders[placeholderIndex]}
+                  </motion.span>
                 )}
               </AnimatePresence>
 
+              <Input
+                {...register("repoUrl")}
+                type="text"
+                autoComplete="off"
+                className="flex-1 bg-transparent border-none p-0 focus-visible:ring-0 text-sm h-full relative z-10"
+                autoFocus
+              />
+            </div>
+
+            <div className="p-2">
               <Button
+                type="submit"
                 size="sm"
-                disabled={!isValid}
-                onClick={() => router.push(ROUTES.DASHBOARD.IMPORT_REPO)}
-                className="h-8 px-3 rounded-md text-xs gap-1.5 bg-primary hover:bg-primary/90 transition-all disabled:opacity-0 disabled:translate-x-2"
+                disabled={isPending}
+                className="h-8 px-3 rounded gap-1.5 bg-primary hover:bg-primary/90 transition-all duration-300 min-w-20"
               >
-                Import
-                <ArrowRight className="w-3 h-3" />
+                {isPending ? (
+                  <div className="flex gap-1.5">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    Wait...
+                  </div>
+                ) : (
+                  <div className="flex gap-1.5">
+                    Import
+                    <ArrowRight className="w-3 h-3" />
+                  </div>
+                )}
               </Button>
             </div>
-          </div>
+          </form>
+
+          <AnimatePresence>
+            {errors.repoUrl && (
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="text-xs text-destructive px-1 ml-auto text-right"
+              >
+                {errors.repoUrl.message}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
     </div>
