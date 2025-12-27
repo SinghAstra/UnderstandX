@@ -1,4 +1,3 @@
-// Standard API Response structure
 export interface ApiResponse<T = any> {
   success: boolean;
   statusCode: number;
@@ -6,10 +5,5 @@ export interface ApiResponse<T = any> {
   data?: T; // Result for success
   stack?: string; // Only for dev debugging
 }
-// Common Domain Types
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: "admin" | "user";
-}
+
+export * from "./schemas/repo";

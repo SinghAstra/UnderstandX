@@ -129,8 +129,6 @@ enum RepositoryStatus {
   FAILED
 }
 
-
-
 enum DirectoryStatus {
   PENDING
   PROCESSING

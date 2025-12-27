@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev -w www\" \"npm run dev -w api\"",
+    "dev": "concurrently \"npm run dev -w www\" \"npm run dev -w api\" \"npm run worker:dev -w api\"",
     "build:shared": "npm run build -w @understand-x/shared",
     "build": "npm run build:shared && npm run build -w www && npm run build -w api"
   },

@@ -6,16 +6,11 @@ import {
 import { repositoryImportQueue } from "@/queue";
 import { AppError } from "@/utils/AppError";
 import { sendSuccess } from "@/utils/response";
-import { prisma } from "@understand-x/database";
+import { prisma, RepositoryStatus } from "@understand-x/database";
+import { importRepoSchema } from "@understand-x/shared";
 import { Router } from "express";
-import { z } from "zod";
 
 const router = Router();
-
-// Define the schema for the request body to validate the repoUrl.
-const importRepoSchema = z.object({
-  repoUrl: z.url(),
-});
 
 /**
  * POST /api/repos/import
@@ -36,17 +31,17 @@ router.post(
       const { repoUrl } = validationResult.data;
 
       // 2. Get the userId from the authenticated request.
-      const userId = req.user?.id;
-      if (!userId) {
+      const { user } = req;
+      if (!user) {
         return next(new AppError(401, "User not authenticated."));
       }
 
       // 3. Create a new Repository record in the database with PENDING status.
       const newRepo = await prisma.repository.create({
         data: {
-          userId,
+          userId: user.id,
           url: repoUrl,
-          status: "PENDING", // Initial status
+          status: RepositoryStatus.PENDING,
         },
       });
       const repoId = newRepo.id;
@@ -55,7 +50,7 @@ router.post(
       // The worker will use this repoId to update the repository's status and details.
       await repositoryImportQueue.add(REPOSITORY_IMPORT_QUEUE, {
         repoId,
-        userId,
+        userId: user.id,
         repoUrl,
       });
 
