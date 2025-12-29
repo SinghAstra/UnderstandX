@@ -1,4 +1,4 @@
-import { REPOSITORY_IMPORT_QUEUE } from "@/constants/queues";
+import { QUEUES } from "@/constants/queues";
 import {
   AuthenticatedRequest,
   authMiddleware,
@@ -50,7 +50,7 @@ router.post(
 
       // 4. Add a job to the repository import queue.
       // The worker will use this repoId to update the repository's status and details.
-      await repositoryImportQueue.add(REPOSITORY_IMPORT_QUEUE, {
+      await repositoryImportQueue.add(QUEUES.REPO_IMPORT, {
         repoId,
         userId: user.id,
         repoUrl,

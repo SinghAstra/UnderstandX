@@ -1,1 +1,3 @@
-export const REPOSITORY_IMPORT_QUEUE = "repository-import";
+export const QUEUES = {
+  REPO_IMPORT: "repo-import",
+} as const;
