@@ -1,4 +1,4 @@
-import { ApiResponse } from "@understand-x/shared";
+import { ApiSuccessResponse } from "@understand-x/shared/src/schemas/api";
 import { Response } from "express";
 
 export const sendSuccess = <T>(
@@ -7,7 +7,7 @@ export const sendSuccess = <T>(
   message: string = "Success",
   statusCode: number = 200
 ) => {
-  const response: ApiResponse<T> = {
+  const response: ApiSuccessResponse<T> = {
     success: true,
     statusCode,
     message,

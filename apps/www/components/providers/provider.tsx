@@ -16,7 +16,7 @@ const LoadingFallback = () => {
     <div className="h-screen w-full overflow-hidden flex flex-col items-center justify-center relative px-4 bg-background dark">
       <MaskedGridBackground />
 
-      <div className="relative z-10 flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-200">
+      <div className="relative z-10 flex flex-col items-center gap-6 animate-in fade-in duration-200">
         <div className="flex flex-col items-center gap-3 text-center">
           <h1 className="text-4xl md:text-6xl tracking-tight font-semibold text-foreground/90 text-balance">
             {siteConfig.name}

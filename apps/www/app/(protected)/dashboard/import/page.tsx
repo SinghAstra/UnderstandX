@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { ImportRepoInput, importRepoSchema } from "@understand-x/shared";
+import {
+  ImportRepoInput,
+  ImportRepoResponse,
+  importRepoSchema,
+} from "@understand-x/shared";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -30,12 +34,17 @@ function ImportRepoPage() {
   const repoUrlValue = watch("repoUrl");
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (values: ImportRepoInput) => {
-      const { data } = await axios.post("/api/repos/import", values);
+    mutationFn: async (
+      values: ImportRepoInput
+    ): Promise<ImportRepoResponse> => {
+      const { data } = await axios.post<ImportRepoResponse>(
+        "/api/repos/import",
+        values
+      );
       return data;
     },
     onSuccess: (data) => {
-      router.push(`/dashboard/repo/${data.repositoryId}/console`);
+      router.push(`/dashboard/repo/${data.repoId}/console`);
     },
     onError: (error: any) => {
       const message = error.response?.data?.message || "Something went wrong";

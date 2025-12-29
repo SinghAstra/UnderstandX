@@ -7,7 +7,7 @@ import { repositoryImportQueue } from "@/queue";
 import { AppError } from "@/utils/AppError";
 import { sendSuccess } from "@/utils/response";
 import { prisma, RepositoryStatus } from "@understand-x/database";
-import { importRepoSchema } from "@understand-x/shared";
+import { ImportRepoResponse, importRepoSchema } from "@understand-x/shared";
 import { Router } from "express";
 
 const router = Router();
@@ -55,7 +55,7 @@ router.post(
       });
 
       // 5. Return a success response with the repoId.
-      return sendSuccess(
+      return sendSuccess<ImportRepoResponse>(
         res,
         { repoId },
         "Repository import initiated successfully.",
