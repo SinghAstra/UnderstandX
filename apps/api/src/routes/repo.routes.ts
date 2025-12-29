@@ -44,6 +44,8 @@ router.post(
           status: RepositoryStatus.PENDING,
         },
       });
+
+      console.log("newRepo is ", newRepo);
       const repoId = newRepo.id;
 
       // 4. Add a job to the repository import queue.

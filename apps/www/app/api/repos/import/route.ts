@@ -75,12 +75,11 @@ export async function POST(req: NextRequest) {
 
     if (expressData.success) {
       return NextResponse.json(expressData.data, { status: 202 });
-    } else {
-      return NextResponse.json(
-        { message: expressData.message },
-        { status: expressData.statusCode }
-      );
     }
+    return NextResponse.json(
+      { message: expressData.message },
+      { status: expressData.statusCode }
+    );
   } catch (error) {
     logError(error);
 

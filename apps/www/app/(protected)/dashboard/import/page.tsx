@@ -129,12 +129,12 @@ function ImportRepoPage() {
                 className="h-8 px-3 rounded gap-1.5 bg-primary hover:bg-primary/90 transition-all duration-300 min-w-20"
               >
                 {isPending ? (
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-1.5 items-center">
                     <Loader2 className="w-3 h-3 animate-spin" />
                     Wait...
                   </div>
                 ) : (
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-1.5 items-center">
                     Import
                     <ArrowRight className="w-3 h-3" />
                   </div>
