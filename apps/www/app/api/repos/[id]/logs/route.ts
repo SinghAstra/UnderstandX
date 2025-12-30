@@ -1,18 +1,47 @@
 import { env } from "@/env";
+import { authOptions } from "@/lib/auth-options";
 import { logError } from "@/lib/log-error";
 import {
   createErrorResponse,
   createSuccessResponse,
 } from "@/lib/response-utils";
-import { LogResponse } from "@understand-x/shared";
+import {
+  INTERNAL_AUTH_KEYS,
+  InternalJwtPayload,
+  LogResponse,
+} from "@understand-x/shared";
+import jwt from "jsonwebtoken";
+import { getServerSession } from "next-auth";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    const JWT_SECRET = env.JWT_SECRET;
+    const API_URL = env.API_URL;
+
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return createErrorResponse("Unauthorized: Please sign in again.", 401);
+    }
+
+    //  Generate Internal Service Token
+    const payload: InternalJwtPayload = {
+      userId: session.user.id,
+      purpose: INTERNAL_AUTH_KEYS.PURPOSE,
+    };
+
+    const internalToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "60s" });
     // 1. Fetch from Express
-    const response = await fetch(`${env.API_URL}/api/repos/${params.id}/logs`);
+    const response = await fetch(`${env.API_URL}/api/repos/${id}/logs`, {
+      headers: {
+        Authorization: `Bearer ${internalToken}`,
+        "Content-Type": "application/json",
+      },
+    });
     const result = await response.json();
 
     console.log("result is ", result);

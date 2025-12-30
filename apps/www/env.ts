@@ -5,10 +5,6 @@ const envSchema = z.object({
   API_URL: z.url(),
   JWT_SECRET: z.string().min(1),
   NEXT_AUTH_SECRET: z.string().min(1),
-
-  NEXT_PUBLIC_API_URL: z.string().url(),
-  NEXT_PUBLIC_SOCKET_URL: z.string().url(),
-
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
@@ -20,8 +16,6 @@ const _env = envSchema.safeParse({
   API_URL: process.env.API_URL,
   JWT_SECRET: process.env.JWT_SECRET,
   NEXT_AUTH_SECRET: process.env.NEXT_AUTH_SECRET,
-  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-  NEXT_PUBLIC_SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL,
   NODE_ENV: process.env.NODE_ENV,
 });
 

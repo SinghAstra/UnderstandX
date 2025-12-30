@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import {
+  ApiSuccessResponse,
   ImportRepoInput,
   ImportRepoResponse,
   importRepoSchema,
@@ -37,11 +38,12 @@ function ImportRepoPage() {
     mutationFn: async (
       values: ImportRepoInput
     ): Promise<ImportRepoResponse> => {
-      const { data } = await axios.post<ImportRepoResponse>(
+      const { data } = await axios.post<ApiSuccessResponse<ImportRepoResponse>>(
         "/api/repos/import",
         values
       );
-      return data;
+
+      return data.data;
     },
     onSuccess: (data) => {
       router.push(`/dashboard/repo/${data.repoId}/console`);

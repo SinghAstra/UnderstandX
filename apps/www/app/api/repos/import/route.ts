@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     // 1. Authenticate the User Session
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user?.id) {
+    if (!session) {
       return createErrorResponse("Unauthorized: Please sign in again.", 401);
     }
 
@@ -35,15 +35,9 @@ export async function POST(req: NextRequest) {
       return createErrorResponse("Repository URL is required.", 400);
     }
 
-    // 3. Environment Variable Checks
+    // 3. Environment Variable
     const JWT_SECRET = env.JWT_SECRET;
     const API_URL = env.API_URL;
-
-    if (!JWT_SECRET || !API_URL) {
-      throw new Error(
-        "Missing required environment variables (JWT_SECRET or API_URL)"
-      );
-    }
 
     // 4. Generate Internal Service Token
     const payload: InternalJwtPayload = {
@@ -63,6 +57,8 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
       },
     });
+
+    console.log("expressData is ", expressData);
 
     // 6. Return Generalized Response based on Express outcome
     if (expressData.success) {
