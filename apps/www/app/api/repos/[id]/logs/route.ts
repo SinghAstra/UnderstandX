@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { logError } from "@/lib/log-error";
 import {
   createErrorResponse,
@@ -11,14 +12,14 @@ export async function GET(
 ) {
   try {
     // 1. Fetch from Express
-    const response = await fetch(
-      `${process.env.API_URL}/api/repos/${params.id}/logs`
-    );
+    const response = await fetch(`${env.API_URL}/api/repos/${params.id}/logs`);
     const result = await response.json();
+
+    console.log("result is ", result);
 
     if (!response.ok) {
       return createErrorResponse(
-        result.message || "Failed to fetch",
+        "Failed to fetch Logs. Please try again later.",
         response.status
       );
     }

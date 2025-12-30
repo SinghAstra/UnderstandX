@@ -8,7 +8,11 @@ import { repositoryImportQueue } from "@/queue";
 import { AppError } from "@/utils/AppError";
 import { sendSuccess } from "@/utils/response";
 import { prisma, RepositoryStatus } from "@understand-x/database";
-import { ImportRepoResponse, importRepoSchema } from "@understand-x/shared";
+import {
+  ImportRepoResponse,
+  importRepoSchema,
+  LogResponse,
+} from "@understand-x/shared";
 import axios from "axios";
 import { Router } from "express";
 
@@ -98,6 +102,57 @@ router.post(
       );
     } catch (err) {
       return next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/repos/:id/logs
+ * Fetches historical logs for a specific repository.
+ * Used for "hydrating" the UI before the Socket.io stream takes over.
+ */
+router.get(
+  "/:id/logs",
+  authMiddleware,
+  async (req: AuthenticatedRequest, res, next) => {
+    try {
+      const { id: repoId } = req.params;
+      const { user } = req;
+      if (!user) {
+        return next(new AppError(401, "User not authenticated."));
+      }
+
+      // 1. Security check: Ensure the user owns this repository
+      const repository = await prisma.repository.findFirst({
+        where: {
+          id: repoId,
+          userId: user.id,
+        },
+      });
+
+      if (!repository) {
+        return next(new AppError(404, "Repository not found or access denied"));
+      }
+
+      // 2. Fetch all logs for this repo ordered by creation time
+      const logs = await prisma.log.findMany({
+        where: { repositoryId: repoId },
+        orderBy: { createdAt: "asc" },
+      });
+
+      // 3. Send standardized success response
+      const formattedLogs: LogResponse[] = logs.map((log) => ({
+        ...log,
+        createdAt: log.createdAt.toISOString(),
+      }));
+
+      return sendSuccess<LogResponse[]>(
+        res,
+        formattedLogs,
+        "Logs retrieved successfully"
+      );
+    } catch (error) {
+      next(error);
     }
   }
 );
