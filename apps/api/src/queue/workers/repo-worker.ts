@@ -71,7 +71,9 @@ export async function processRepo(job: Job) {
 
     // 🚀 [PLACEHOLDER] AST Parsing logic goes here
 
-    await createLog("Analysis complete.", RepositoryStatus.SUCCESS);
+    for (let i = 0; i < 40; i++) {
+      await createLog("Analysis complete.", RepositoryStatus.SUCCESS);
+    }
 
     await prisma.repository.update({
       where: { id: repoId },
