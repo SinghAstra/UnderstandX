@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import { QUEUES } from "@/constants/queues";
 import {
   AuthenticatedRequest,
@@ -8,9 +9,21 @@ import { AppError } from "@/utils/AppError";
 import { sendSuccess } from "@/utils/response";
 import { prisma, RepositoryStatus } from "@understand-x/database";
 import { ImportRepoResponse, importRepoSchema } from "@understand-x/shared";
+import axios from "axios";
 import { Router } from "express";
 
 const router = Router();
+
+function parseGithubUrl(url: string) {
+  try {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split("/").filter(Boolean);
+    if (pathParts.length < 2) return null;
+    return { owner: pathParts[0], repo: pathParts[1] };
+  } catch {
+    return null;
+  }
+}
 
 /**
  * POST /api/repos/import
@@ -36,30 +49,50 @@ router.post(
         return next(new AppError(401, "User not authenticated."));
       }
 
-      // 3. Create a new Repository record in the database with PENDING status.
+      const gitInfo = parseGithubUrl(repoUrl);
+      if (!gitInfo) return next(new AppError(400, "Invalid GitHub URL"));
+
+      // 1. Fetch Metadata with Token Authorization
+      const githubRes = await axios.get(
+        `https://api.github.com/repos/${gitInfo.owner}/${gitInfo.repo}`,
+        {
+          headers: {
+            "User-Agent": "UnderstandX-App",
+            Authorization: `token ${env.GITHUB_TOKEN}`, // Increased rate limit
+            Accept: "application/vnd.github.v3+json",
+          },
+        }
+      );
+
+      const githubMetadata = githubRes.data;
+
+      console.log("githubMetadata is ", githubMetadata);
+
+      // 2. Create the record with full metadata
       const newRepo = await prisma.repository.create({
         data: {
-          userId: user.id,
+          userId: user!.id,
           url: repoUrl,
+          name: githubMetadata.name,
+          owner: githubMetadata.owner.login,
+          avatarUrl: githubMetadata.owner.avatar_url,
+          githubId: githubMetadata.id,
           status: RepositoryStatus.PENDING,
         },
       });
 
       console.log("newRepo is ", newRepo);
-      const repoId = newRepo.id;
 
-      // 4. Add a job to the repository import queue.
-      // The worker will use this repoId to update the repository's status and details.
+      // 3. Queue the worker job
       await repositoryImportQueue.add(QUEUES.REPO_IMPORT, {
-        repoId,
-        userId: user.id,
+        repoId: newRepo.id,
         repoUrl,
       });
 
-      // 5. Return a success response with the repoId.
+      // 4. Return a success response with the repoId.
       return sendSuccess<ImportRepoResponse>(
         res,
-        { repoId },
+        { repoId: newRepo.id },
         "Repository import initiated successfully.",
         202
       );

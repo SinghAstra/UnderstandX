@@ -50,6 +50,8 @@ subClient.on("message", async (channel, message) => {
         where: { id: logId },
       });
 
+      console.log("Log to be broadcasted : ", fullLog);
+
       if (fullLog) {
         // Broadcast to specific room
         io.to(`repo_${repoId}`).emit(SOCKET_EVENTS.LOG_UPDATED, fullLog);
