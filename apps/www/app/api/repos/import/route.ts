@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { authOptions } from "@/lib/auth-options";
 import { logError } from "@/lib/log-error";
 import {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET;
+    const JWT_SECRET = env.JWT_SECRET;
     if (!JWT_SECRET) {
       throw new Error("JWT_SECRET : Missing ENV");
     }
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
       { expiresIn: "60s" } // Extremely short expiration for security
     );
 
-    const API_URL = process.env.API_URL;
+    const API_URL = env.API_URL;
     if (!API_URL) {
       throw new Error("API_URL : Missing ENV");
     }
