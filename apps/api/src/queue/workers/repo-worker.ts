@@ -6,11 +6,12 @@ import { Job } from "bullmq";
 import fs from "fs-extra";
 import path from "path";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
+import { walkAndMap } from "../logic/walker";
 
 export async function processRepo(job: Job) {
   const { repoId, repoUrl } = job.data;
 
-  const workDir = path.resolve(process.cwd(), "tmp", `understandx-${repoId}`);
+  const workDir = path.resolve(process.cwd(), "tmp", `${repoId}`);
 
   const createLog = async (msg: string, status: RepositoryStatus) => {
     const log = await prisma.log.create({
@@ -26,7 +27,7 @@ export async function processRepo(job: Job) {
   };
 
   try {
-    // 1. Ensure the parent tmp directory exists
+    // Ensure the parent tmp directory exists
     await fs.ensureDir(path.dirname(workDir));
 
     await prisma.repository.update({
@@ -39,7 +40,7 @@ export async function processRepo(job: Job) {
       RepositoryStatus.PROCESSING
     );
 
-    // 2. Configure Simple Git with error logging
+    // Configure Simple Git with error logging
     const options: Partial<SimpleGitOptions> = {
       baseDir: process.cwd(),
       binary: "git",
@@ -50,7 +51,7 @@ export async function processRepo(job: Job) {
 
     console.log(`[GIT]: Cloning ${repoUrl} into ${workDir}`);
 
-    // 3. Execution with verbose error catching
+    // Execution with verbose error catching
     await git.clone(repoUrl, workDir, ["--depth", "1"]);
 
     // VERIFICATION: Check if folder actually exists before continuing
@@ -69,11 +70,38 @@ export async function processRepo(job: Job) {
       RepositoryStatus.PROCESSING
     );
 
-    // 🚀 [PLACEHOLDER] AST Parsing logic goes here
+    // This scans the /tmp folder and populates the DB tables
+    await walkAndMap(workDir, repoId, workDir);
 
-    for (let i = 0; i < 40; i++) {
-      await createLog("Analysis complete.", RepositoryStatus.SUCCESS);
-    }
+    const fileCount = await prisma.file.count({
+      where: { repositoryId: repoId },
+    });
+    const dirCount = await prisma.directory.count({
+      where: { repositoryId: repoId },
+    });
+
+    await createLog(
+      `Mapped ${fileCount} files in ${dirCount} directories.`,
+      RepositoryStatus.PROCESSING
+    );
+
+    // Extract Metadata (AST)
+    await createLog(
+      "Extracting code symbols (AST)...",
+      RepositoryStatus.PROCESSING
+    );
+    const analysis = await analyzeCodebase(workDir, repoId);
+
+    //  Dependency Mapping
+    await createLog(
+      `Analyzed ${analysis.fileCount} files. Building graph...`,
+      RepositoryStatus.PROCESSING
+    );
+    // Logic to link imports/exports
+
+    // --- END PHASE 2 ---
+
+    await createLog("Analysis complete.", RepositoryStatus.SUCCESS);
 
     await prisma.repository.update({
       where: { id: repoId },

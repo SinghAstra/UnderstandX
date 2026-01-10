@@ -25,6 +25,7 @@ yarn-debug.log*
 .env.*
 !.env.example
 
+**/tmp/
 # OS Metadata
 .DS_Store
 Thumbs.db
