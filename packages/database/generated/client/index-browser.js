@@ -200,10 +200,22 @@ exports.Prisma.FileScalarFieldEnum = {
   content: 'content',
   directoryId: 'directoryId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  repositoryId: 'repositoryId',
-  analysis: 'analysis',
-  shortSummary: 'shortSummary'
+  repositoryId: 'repositoryId'
+};
+
+exports.Prisma.SymbolScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  fileId: 'fileId'
+};
+
+exports.Prisma.DependencyScalarFieldEnum = {
+  id: 'id',
+  fileId: 'fileId',
+  importPath: 'importPath',
+  sourceValue: 'sourceValue',
+  resolvedFileId: 'resolvedFileId'
 };
 
 exports.Prisma.LogScalarFieldEnum = {
@@ -244,6 +256,8 @@ exports.Prisma.ModelName = {
   Repository: 'Repository',
   Directory: 'Directory',
   File: 'File',
+  Symbol: 'Symbol',
+  Dependency: 'Dependency',
   Log: 'Log'
 };
 

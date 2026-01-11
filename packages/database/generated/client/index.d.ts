@@ -54,6 +54,16 @@ export type Directory = $Result.DefaultSelection<Prisma.$DirectoryPayload>
  */
 export type File = $Result.DefaultSelection<Prisma.$FilePayload>
 /**
+ * Model Symbol
+ * 
+ */
+export type Symbol = $Result.DefaultSelection<Prisma.$SymbolPayload>
+/**
+ * Model Dependency
+ * 
+ */
+export type Dependency = $Result.DefaultSelection<Prisma.$DependencyPayload>
+/**
  * Model Log
  * 
  */
@@ -280,6 +290,26 @@ export class PrismaClient<
     * ```
     */
   get file(): Prisma.FileDelegate<ExtArgs>;
+
+  /**
+   * `prisma.symbol`: Exposes CRUD operations for the **Symbol** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Symbols
+    * const symbols = await prisma.symbol.findMany()
+    * ```
+    */
+  get symbol(): Prisma.SymbolDelegate<ExtArgs>;
+
+  /**
+   * `prisma.dependency`: Exposes CRUD operations for the **Dependency** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Dependencies
+    * const dependencies = await prisma.dependency.findMany()
+    * ```
+    */
+  get dependency(): Prisma.DependencyDelegate<ExtArgs>;
 
   /**
    * `prisma.log`: Exposes CRUD operations for the **Log** model.
@@ -739,6 +769,8 @@ export namespace Prisma {
     Repository: 'Repository',
     Directory: 'Directory',
     File: 'File',
+    Symbol: 'Symbol',
+    Dependency: 'Dependency',
     Log: 'Log'
   };
 
@@ -755,7 +787,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "passwordResetToken" | "repository" | "directory" | "file" | "log"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "passwordResetToken" | "repository" | "directory" | "file" | "symbol" | "dependency" | "log"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1319,6 +1351,146 @@ export namespace Prisma {
           }
         }
       }
+      Symbol: {
+        payload: Prisma.$SymbolPayload<ExtArgs>
+        fields: Prisma.SymbolFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SymbolFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SymbolFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>
+          }
+          findFirst: {
+            args: Prisma.SymbolFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SymbolFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>
+          }
+          findMany: {
+            args: Prisma.SymbolFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>[]
+          }
+          create: {
+            args: Prisma.SymbolCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>
+          }
+          createMany: {
+            args: Prisma.SymbolCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SymbolCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>[]
+          }
+          delete: {
+            args: Prisma.SymbolDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>
+          }
+          update: {
+            args: Prisma.SymbolUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>
+          }
+          deleteMany: {
+            args: Prisma.SymbolDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SymbolUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SymbolUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SymbolPayload>
+          }
+          aggregate: {
+            args: Prisma.SymbolAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSymbol>
+          }
+          groupBy: {
+            args: Prisma.SymbolGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SymbolGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SymbolCountArgs<ExtArgs>
+            result: $Utils.Optional<SymbolCountAggregateOutputType> | number
+          }
+        }
+      }
+      Dependency: {
+        payload: Prisma.$DependencyPayload<ExtArgs>
+        fields: Prisma.DependencyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DependencyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DependencyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>
+          }
+          findFirst: {
+            args: Prisma.DependencyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DependencyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>
+          }
+          findMany: {
+            args: Prisma.DependencyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>[]
+          }
+          create: {
+            args: Prisma.DependencyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>
+          }
+          createMany: {
+            args: Prisma.DependencyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DependencyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>[]
+          }
+          delete: {
+            args: Prisma.DependencyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>
+          }
+          update: {
+            args: Prisma.DependencyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>
+          }
+          deleteMany: {
+            args: Prisma.DependencyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DependencyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.DependencyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DependencyPayload>
+          }
+          aggregate: {
+            args: Prisma.DependencyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDependency>
+          }
+          groupBy: {
+            args: Prisma.DependencyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DependencyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DependencyCountArgs<ExtArgs>
+            result: $Utils.Optional<DependencyCountAggregateOutputType> | number
+          }
+        }
+      }
       Log: {
         payload: Prisma.$LogPayload<ExtArgs>
         fields: Prisma.LogFieldRefs
@@ -1680,6 +1852,46 @@ export namespace Prisma {
    */
   export type DirectoryCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FileWhereInput
+  }
+
+
+  /**
+   * Count Type FileCountOutputType
+   */
+
+  export type FileCountOutputType = {
+    symbols: number
+    dependencies: number
+  }
+
+  export type FileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    symbols?: boolean | FileCountOutputTypeCountSymbolsArgs
+    dependencies?: boolean | FileCountOutputTypeCountDependenciesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileCountOutputType
+     */
+    select?: FileCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountSymbolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SymbolWhereInput
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountDependenciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DependencyWhereInput
   }
 
 
@@ -8581,10 +8793,7 @@ export namespace Prisma {
     content: string | null
     directoryId: string | null
     createdAt: Date | null
-    updatedAt: Date | null
     repositoryId: string | null
-    analysis: string | null
-    shortSummary: string | null
   }
 
   export type FileMaxAggregateOutputType = {
@@ -8594,10 +8803,7 @@ export namespace Prisma {
     content: string | null
     directoryId: string | null
     createdAt: Date | null
-    updatedAt: Date | null
     repositoryId: string | null
-    analysis: string | null
-    shortSummary: string | null
   }
 
   export type FileCountAggregateOutputType = {
@@ -8607,10 +8813,7 @@ export namespace Prisma {
     content: number
     directoryId: number
     createdAt: number
-    updatedAt: number
     repositoryId: number
-    analysis: number
-    shortSummary: number
     _all: number
   }
 
@@ -8622,10 +8825,7 @@ export namespace Prisma {
     content?: true
     directoryId?: true
     createdAt?: true
-    updatedAt?: true
     repositoryId?: true
-    analysis?: true
-    shortSummary?: true
   }
 
   export type FileMaxAggregateInputType = {
@@ -8635,10 +8835,7 @@ export namespace Prisma {
     content?: true
     directoryId?: true
     createdAt?: true
-    updatedAt?: true
     repositoryId?: true
-    analysis?: true
-    shortSummary?: true
   }
 
   export type FileCountAggregateInputType = {
@@ -8648,10 +8845,7 @@ export namespace Prisma {
     content?: true
     directoryId?: true
     createdAt?: true
-    updatedAt?: true
     repositoryId?: true
-    analysis?: true
-    shortSummary?: true
     _all?: true
   }
 
@@ -8734,10 +8928,7 @@ export namespace Prisma {
     content: string | null
     directoryId: string | null
     createdAt: Date
-    updatedAt: Date
     repositoryId: string
-    analysis: string | null
-    shortSummary: string | null
     _count: FileCountAggregateOutputType | null
     _min: FileMinAggregateOutputType | null
     _max: FileMaxAggregateOutputType | null
@@ -8764,12 +8955,12 @@ export namespace Prisma {
     content?: boolean
     directoryId?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
     repositoryId?: boolean
-    analysis?: boolean
-    shortSummary?: boolean
+    symbols?: boolean | File$symbolsArgs<ExtArgs>
+    dependencies?: boolean | File$dependenciesArgs<ExtArgs>
     directory?: boolean | File$directoryArgs<ExtArgs>
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
   export type FileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8779,10 +8970,7 @@ export namespace Prisma {
     content?: boolean
     directoryId?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
     repositoryId?: boolean
-    analysis?: boolean
-    shortSummary?: boolean
     directory?: boolean | File$directoryArgs<ExtArgs>
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
@@ -8794,15 +8982,15 @@ export namespace Prisma {
     content?: boolean
     directoryId?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
     repositoryId?: boolean
-    analysis?: boolean
-    shortSummary?: boolean
   }
 
   export type FileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    symbols?: boolean | File$symbolsArgs<ExtArgs>
+    dependencies?: boolean | File$dependenciesArgs<ExtArgs>
     directory?: boolean | File$directoryArgs<ExtArgs>
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     directory?: boolean | File$directoryArgs<ExtArgs>
@@ -8812,6 +9000,8 @@ export namespace Prisma {
   export type $FilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "File"
     objects: {
+      symbols: Prisma.$SymbolPayload<ExtArgs>[]
+      dependencies: Prisma.$DependencyPayload<ExtArgs>[]
       directory: Prisma.$DirectoryPayload<ExtArgs> | null
       repository: Prisma.$RepositoryPayload<ExtArgs>
     }
@@ -8822,10 +9012,7 @@ export namespace Prisma {
       content: string | null
       directoryId: string | null
       createdAt: Date
-      updatedAt: Date
       repositoryId: string
-      analysis: string | null
-      shortSummary: string | null
     }, ExtArgs["result"]["file"]>
     composites: {}
   }
@@ -9190,6 +9377,8 @@ export namespace Prisma {
    */
   export interface Prisma__FileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    symbols<T extends File$symbolsArgs<ExtArgs> = {}>(args?: Subset<T, File$symbolsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findMany"> | Null>
+    dependencies<T extends File$dependenciesArgs<ExtArgs> = {}>(args?: Subset<T, File$dependenciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findMany"> | Null>
     directory<T extends File$directoryArgs<ExtArgs> = {}>(args?: Subset<T, File$directoryArgs<ExtArgs>>): Prisma__DirectoryClient<$Result.GetResult<Prisma.$DirectoryPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     repository<T extends RepositoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RepositoryDefaultArgs<ExtArgs>>): Prisma__RepositoryClient<$Result.GetResult<Prisma.$RepositoryPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
@@ -9227,10 +9416,7 @@ export namespace Prisma {
     readonly content: FieldRef<"File", 'String'>
     readonly directoryId: FieldRef<"File", 'String'>
     readonly createdAt: FieldRef<"File", 'DateTime'>
-    readonly updatedAt: FieldRef<"File", 'DateTime'>
     readonly repositoryId: FieldRef<"File", 'String'>
-    readonly analysis: FieldRef<"File", 'String'>
-    readonly shortSummary: FieldRef<"File", 'String'>
   }
     
 
@@ -9549,6 +9735,46 @@ export namespace Prisma {
   }
 
   /**
+   * File.symbols
+   */
+  export type File$symbolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    where?: SymbolWhereInput
+    orderBy?: SymbolOrderByWithRelationInput | SymbolOrderByWithRelationInput[]
+    cursor?: SymbolWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SymbolScalarFieldEnum | SymbolScalarFieldEnum[]
+  }
+
+  /**
+   * File.dependencies
+   */
+  export type File$dependenciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    where?: DependencyWhereInput
+    orderBy?: DependencyOrderByWithRelationInput | DependencyOrderByWithRelationInput[]
+    cursor?: DependencyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DependencyScalarFieldEnum | DependencyScalarFieldEnum[]
+  }
+
+  /**
    * File.directory
    */
   export type File$directoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9575,6 +9801,1860 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Symbol
+   */
+
+  export type AggregateSymbol = {
+    _count: SymbolCountAggregateOutputType | null
+    _min: SymbolMinAggregateOutputType | null
+    _max: SymbolMaxAggregateOutputType | null
+  }
+
+  export type SymbolMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: string | null
+    fileId: string | null
+  }
+
+  export type SymbolMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: string | null
+    fileId: string | null
+  }
+
+  export type SymbolCountAggregateOutputType = {
+    id: number
+    name: number
+    type: number
+    fileId: number
+    _all: number
+  }
+
+
+  export type SymbolMinAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    fileId?: true
+  }
+
+  export type SymbolMaxAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    fileId?: true
+  }
+
+  export type SymbolCountAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    fileId?: true
+    _all?: true
+  }
+
+  export type SymbolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Symbol to aggregate.
+     */
+    where?: SymbolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Symbols to fetch.
+     */
+    orderBy?: SymbolOrderByWithRelationInput | SymbolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SymbolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Symbols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Symbols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Symbols
+    **/
+    _count?: true | SymbolCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SymbolMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SymbolMaxAggregateInputType
+  }
+
+  export type GetSymbolAggregateType<T extends SymbolAggregateArgs> = {
+        [P in keyof T & keyof AggregateSymbol]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSymbol[P]>
+      : GetScalarType<T[P], AggregateSymbol[P]>
+  }
+
+
+
+
+  export type SymbolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SymbolWhereInput
+    orderBy?: SymbolOrderByWithAggregationInput | SymbolOrderByWithAggregationInput[]
+    by: SymbolScalarFieldEnum[] | SymbolScalarFieldEnum
+    having?: SymbolScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SymbolCountAggregateInputType | true
+    _min?: SymbolMinAggregateInputType
+    _max?: SymbolMaxAggregateInputType
+  }
+
+  export type SymbolGroupByOutputType = {
+    id: string
+    name: string
+    type: string
+    fileId: string
+    _count: SymbolCountAggregateOutputType | null
+    _min: SymbolMinAggregateOutputType | null
+    _max: SymbolMaxAggregateOutputType | null
+  }
+
+  type GetSymbolGroupByPayload<T extends SymbolGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SymbolGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SymbolGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SymbolGroupByOutputType[P]>
+            : GetScalarType<T[P], SymbolGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SymbolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    fileId?: boolean
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["symbol"]>
+
+  export type SymbolSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    fileId?: boolean
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["symbol"]>
+
+  export type SymbolSelectScalar = {
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    fileId?: boolean
+  }
+
+  export type SymbolInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }
+  export type SymbolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }
+
+  export type $SymbolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Symbol"
+    objects: {
+      file: Prisma.$FilePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      type: string
+      fileId: string
+    }, ExtArgs["result"]["symbol"]>
+    composites: {}
+  }
+
+  type SymbolGetPayload<S extends boolean | null | undefined | SymbolDefaultArgs> = $Result.GetResult<Prisma.$SymbolPayload, S>
+
+  type SymbolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<SymbolFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SymbolCountAggregateInputType | true
+    }
+
+  export interface SymbolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Symbol'], meta: { name: 'Symbol' } }
+    /**
+     * Find zero or one Symbol that matches the filter.
+     * @param {SymbolFindUniqueArgs} args - Arguments to find a Symbol
+     * @example
+     * // Get one Symbol
+     * const symbol = await prisma.symbol.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SymbolFindUniqueArgs>(args: SelectSubset<T, SymbolFindUniqueArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Symbol that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {SymbolFindUniqueOrThrowArgs} args - Arguments to find a Symbol
+     * @example
+     * // Get one Symbol
+     * const symbol = await prisma.symbol.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SymbolFindUniqueOrThrowArgs>(args: SelectSubset<T, SymbolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Symbol that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolFindFirstArgs} args - Arguments to find a Symbol
+     * @example
+     * // Get one Symbol
+     * const symbol = await prisma.symbol.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SymbolFindFirstArgs>(args?: SelectSubset<T, SymbolFindFirstArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Symbol that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolFindFirstOrThrowArgs} args - Arguments to find a Symbol
+     * @example
+     * // Get one Symbol
+     * const symbol = await prisma.symbol.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SymbolFindFirstOrThrowArgs>(args?: SelectSubset<T, SymbolFindFirstOrThrowArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Symbols that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Symbols
+     * const symbols = await prisma.symbol.findMany()
+     * 
+     * // Get first 10 Symbols
+     * const symbols = await prisma.symbol.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const symbolWithIdOnly = await prisma.symbol.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SymbolFindManyArgs>(args?: SelectSubset<T, SymbolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Symbol.
+     * @param {SymbolCreateArgs} args - Arguments to create a Symbol.
+     * @example
+     * // Create one Symbol
+     * const Symbol = await prisma.symbol.create({
+     *   data: {
+     *     // ... data to create a Symbol
+     *   }
+     * })
+     * 
+     */
+    create<T extends SymbolCreateArgs>(args: SelectSubset<T, SymbolCreateArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Symbols.
+     * @param {SymbolCreateManyArgs} args - Arguments to create many Symbols.
+     * @example
+     * // Create many Symbols
+     * const symbol = await prisma.symbol.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SymbolCreateManyArgs>(args?: SelectSubset<T, SymbolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Symbols and returns the data saved in the database.
+     * @param {SymbolCreateManyAndReturnArgs} args - Arguments to create many Symbols.
+     * @example
+     * // Create many Symbols
+     * const symbol = await prisma.symbol.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Symbols and only return the `id`
+     * const symbolWithIdOnly = await prisma.symbol.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SymbolCreateManyAndReturnArgs>(args?: SelectSubset<T, SymbolCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Symbol.
+     * @param {SymbolDeleteArgs} args - Arguments to delete one Symbol.
+     * @example
+     * // Delete one Symbol
+     * const Symbol = await prisma.symbol.delete({
+     *   where: {
+     *     // ... filter to delete one Symbol
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SymbolDeleteArgs>(args: SelectSubset<T, SymbolDeleteArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Symbol.
+     * @param {SymbolUpdateArgs} args - Arguments to update one Symbol.
+     * @example
+     * // Update one Symbol
+     * const symbol = await prisma.symbol.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SymbolUpdateArgs>(args: SelectSubset<T, SymbolUpdateArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Symbols.
+     * @param {SymbolDeleteManyArgs} args - Arguments to filter Symbols to delete.
+     * @example
+     * // Delete a few Symbols
+     * const { count } = await prisma.symbol.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SymbolDeleteManyArgs>(args?: SelectSubset<T, SymbolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Symbols.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Symbols
+     * const symbol = await prisma.symbol.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SymbolUpdateManyArgs>(args: SelectSubset<T, SymbolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Symbol.
+     * @param {SymbolUpsertArgs} args - Arguments to update or create a Symbol.
+     * @example
+     * // Update or create a Symbol
+     * const symbol = await prisma.symbol.upsert({
+     *   create: {
+     *     // ... data to create a Symbol
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Symbol we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SymbolUpsertArgs>(args: SelectSubset<T, SymbolUpsertArgs<ExtArgs>>): Prisma__SymbolClient<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Symbols.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolCountArgs} args - Arguments to filter Symbols to count.
+     * @example
+     * // Count the number of Symbols
+     * const count = await prisma.symbol.count({
+     *   where: {
+     *     // ... the filter for the Symbols we want to count
+     *   }
+     * })
+    **/
+    count<T extends SymbolCountArgs>(
+      args?: Subset<T, SymbolCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SymbolCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Symbol.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SymbolAggregateArgs>(args: Subset<T, SymbolAggregateArgs>): Prisma.PrismaPromise<GetSymbolAggregateType<T>>
+
+    /**
+     * Group by Symbol.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SymbolGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SymbolGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SymbolGroupByArgs['orderBy'] }
+        : { orderBy?: SymbolGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SymbolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSymbolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Symbol model
+   */
+  readonly fields: SymbolFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Symbol.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SymbolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    file<T extends FileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FileDefaultArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Symbol model
+   */ 
+  interface SymbolFieldRefs {
+    readonly id: FieldRef<"Symbol", 'String'>
+    readonly name: FieldRef<"Symbol", 'String'>
+    readonly type: FieldRef<"Symbol", 'String'>
+    readonly fileId: FieldRef<"Symbol", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Symbol findUnique
+   */
+  export type SymbolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * Filter, which Symbol to fetch.
+     */
+    where: SymbolWhereUniqueInput
+  }
+
+  /**
+   * Symbol findUniqueOrThrow
+   */
+  export type SymbolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * Filter, which Symbol to fetch.
+     */
+    where: SymbolWhereUniqueInput
+  }
+
+  /**
+   * Symbol findFirst
+   */
+  export type SymbolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * Filter, which Symbol to fetch.
+     */
+    where?: SymbolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Symbols to fetch.
+     */
+    orderBy?: SymbolOrderByWithRelationInput | SymbolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Symbols.
+     */
+    cursor?: SymbolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Symbols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Symbols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Symbols.
+     */
+    distinct?: SymbolScalarFieldEnum | SymbolScalarFieldEnum[]
+  }
+
+  /**
+   * Symbol findFirstOrThrow
+   */
+  export type SymbolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * Filter, which Symbol to fetch.
+     */
+    where?: SymbolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Symbols to fetch.
+     */
+    orderBy?: SymbolOrderByWithRelationInput | SymbolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Symbols.
+     */
+    cursor?: SymbolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Symbols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Symbols.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Symbols.
+     */
+    distinct?: SymbolScalarFieldEnum | SymbolScalarFieldEnum[]
+  }
+
+  /**
+   * Symbol findMany
+   */
+  export type SymbolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * Filter, which Symbols to fetch.
+     */
+    where?: SymbolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Symbols to fetch.
+     */
+    orderBy?: SymbolOrderByWithRelationInput | SymbolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Symbols.
+     */
+    cursor?: SymbolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Symbols from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Symbols.
+     */
+    skip?: number
+    distinct?: SymbolScalarFieldEnum | SymbolScalarFieldEnum[]
+  }
+
+  /**
+   * Symbol create
+   */
+  export type SymbolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Symbol.
+     */
+    data: XOR<SymbolCreateInput, SymbolUncheckedCreateInput>
+  }
+
+  /**
+   * Symbol createMany
+   */
+  export type SymbolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Symbols.
+     */
+    data: SymbolCreateManyInput | SymbolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Symbol createManyAndReturn
+   */
+  export type SymbolCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Symbols.
+     */
+    data: SymbolCreateManyInput | SymbolCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Symbol update
+   */
+  export type SymbolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Symbol.
+     */
+    data: XOR<SymbolUpdateInput, SymbolUncheckedUpdateInput>
+    /**
+     * Choose, which Symbol to update.
+     */
+    where: SymbolWhereUniqueInput
+  }
+
+  /**
+   * Symbol updateMany
+   */
+  export type SymbolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Symbols.
+     */
+    data: XOR<SymbolUpdateManyMutationInput, SymbolUncheckedUpdateManyInput>
+    /**
+     * Filter which Symbols to update
+     */
+    where?: SymbolWhereInput
+  }
+
+  /**
+   * Symbol upsert
+   */
+  export type SymbolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Symbol to update in case it exists.
+     */
+    where: SymbolWhereUniqueInput
+    /**
+     * In case the Symbol found by the `where` argument doesn't exist, create a new Symbol with this data.
+     */
+    create: XOR<SymbolCreateInput, SymbolUncheckedCreateInput>
+    /**
+     * In case the Symbol was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SymbolUpdateInput, SymbolUncheckedUpdateInput>
+  }
+
+  /**
+   * Symbol delete
+   */
+  export type SymbolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+    /**
+     * Filter which Symbol to delete.
+     */
+    where: SymbolWhereUniqueInput
+  }
+
+  /**
+   * Symbol deleteMany
+   */
+  export type SymbolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Symbols to delete
+     */
+    where?: SymbolWhereInput
+  }
+
+  /**
+   * Symbol without action
+   */
+  export type SymbolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Symbol
+     */
+    select?: SymbolSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SymbolInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Dependency
+   */
+
+  export type AggregateDependency = {
+    _count: DependencyCountAggregateOutputType | null
+    _min: DependencyMinAggregateOutputType | null
+    _max: DependencyMaxAggregateOutputType | null
+  }
+
+  export type DependencyMinAggregateOutputType = {
+    id: string | null
+    fileId: string | null
+    importPath: string | null
+    sourceValue: string | null
+    resolvedFileId: string | null
+  }
+
+  export type DependencyMaxAggregateOutputType = {
+    id: string | null
+    fileId: string | null
+    importPath: string | null
+    sourceValue: string | null
+    resolvedFileId: string | null
+  }
+
+  export type DependencyCountAggregateOutputType = {
+    id: number
+    fileId: number
+    importPath: number
+    sourceValue: number
+    resolvedFileId: number
+    _all: number
+  }
+
+
+  export type DependencyMinAggregateInputType = {
+    id?: true
+    fileId?: true
+    importPath?: true
+    sourceValue?: true
+    resolvedFileId?: true
+  }
+
+  export type DependencyMaxAggregateInputType = {
+    id?: true
+    fileId?: true
+    importPath?: true
+    sourceValue?: true
+    resolvedFileId?: true
+  }
+
+  export type DependencyCountAggregateInputType = {
+    id?: true
+    fileId?: true
+    importPath?: true
+    sourceValue?: true
+    resolvedFileId?: true
+    _all?: true
+  }
+
+  export type DependencyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Dependency to aggregate.
+     */
+    where?: DependencyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Dependencies to fetch.
+     */
+    orderBy?: DependencyOrderByWithRelationInput | DependencyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DependencyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Dependencies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Dependencies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Dependencies
+    **/
+    _count?: true | DependencyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DependencyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DependencyMaxAggregateInputType
+  }
+
+  export type GetDependencyAggregateType<T extends DependencyAggregateArgs> = {
+        [P in keyof T & keyof AggregateDependency]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDependency[P]>
+      : GetScalarType<T[P], AggregateDependency[P]>
+  }
+
+
+
+
+  export type DependencyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DependencyWhereInput
+    orderBy?: DependencyOrderByWithAggregationInput | DependencyOrderByWithAggregationInput[]
+    by: DependencyScalarFieldEnum[] | DependencyScalarFieldEnum
+    having?: DependencyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DependencyCountAggregateInputType | true
+    _min?: DependencyMinAggregateInputType
+    _max?: DependencyMaxAggregateInputType
+  }
+
+  export type DependencyGroupByOutputType = {
+    id: string
+    fileId: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId: string | null
+    _count: DependencyCountAggregateOutputType | null
+    _min: DependencyMinAggregateOutputType | null
+    _max: DependencyMaxAggregateOutputType | null
+  }
+
+  type GetDependencyGroupByPayload<T extends DependencyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DependencyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DependencyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DependencyGroupByOutputType[P]>
+            : GetScalarType<T[P], DependencyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DependencySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileId?: boolean
+    importPath?: boolean
+    sourceValue?: boolean
+    resolvedFileId?: boolean
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dependency"]>
+
+  export type DependencySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileId?: boolean
+    importPath?: boolean
+    sourceValue?: boolean
+    resolvedFileId?: boolean
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dependency"]>
+
+  export type DependencySelectScalar = {
+    id?: boolean
+    fileId?: boolean
+    importPath?: boolean
+    sourceValue?: boolean
+    resolvedFileId?: boolean
+  }
+
+  export type DependencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }
+  export type DependencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    file?: boolean | FileDefaultArgs<ExtArgs>
+  }
+
+  export type $DependencyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Dependency"
+    objects: {
+      file: Prisma.$FilePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      fileId: string
+      importPath: string
+      sourceValue: string
+      resolvedFileId: string | null
+    }, ExtArgs["result"]["dependency"]>
+    composites: {}
+  }
+
+  type DependencyGetPayload<S extends boolean | null | undefined | DependencyDefaultArgs> = $Result.GetResult<Prisma.$DependencyPayload, S>
+
+  type DependencyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<DependencyFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: DependencyCountAggregateInputType | true
+    }
+
+  export interface DependencyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Dependency'], meta: { name: 'Dependency' } }
+    /**
+     * Find zero or one Dependency that matches the filter.
+     * @param {DependencyFindUniqueArgs} args - Arguments to find a Dependency
+     * @example
+     * // Get one Dependency
+     * const dependency = await prisma.dependency.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DependencyFindUniqueArgs>(args: SelectSubset<T, DependencyFindUniqueArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Dependency that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {DependencyFindUniqueOrThrowArgs} args - Arguments to find a Dependency
+     * @example
+     * // Get one Dependency
+     * const dependency = await prisma.dependency.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DependencyFindUniqueOrThrowArgs>(args: SelectSubset<T, DependencyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Dependency that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyFindFirstArgs} args - Arguments to find a Dependency
+     * @example
+     * // Get one Dependency
+     * const dependency = await prisma.dependency.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DependencyFindFirstArgs>(args?: SelectSubset<T, DependencyFindFirstArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Dependency that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyFindFirstOrThrowArgs} args - Arguments to find a Dependency
+     * @example
+     * // Get one Dependency
+     * const dependency = await prisma.dependency.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DependencyFindFirstOrThrowArgs>(args?: SelectSubset<T, DependencyFindFirstOrThrowArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Dependencies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Dependencies
+     * const dependencies = await prisma.dependency.findMany()
+     * 
+     * // Get first 10 Dependencies
+     * const dependencies = await prisma.dependency.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dependencyWithIdOnly = await prisma.dependency.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DependencyFindManyArgs>(args?: SelectSubset<T, DependencyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Dependency.
+     * @param {DependencyCreateArgs} args - Arguments to create a Dependency.
+     * @example
+     * // Create one Dependency
+     * const Dependency = await prisma.dependency.create({
+     *   data: {
+     *     // ... data to create a Dependency
+     *   }
+     * })
+     * 
+     */
+    create<T extends DependencyCreateArgs>(args: SelectSubset<T, DependencyCreateArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Dependencies.
+     * @param {DependencyCreateManyArgs} args - Arguments to create many Dependencies.
+     * @example
+     * // Create many Dependencies
+     * const dependency = await prisma.dependency.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DependencyCreateManyArgs>(args?: SelectSubset<T, DependencyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Dependencies and returns the data saved in the database.
+     * @param {DependencyCreateManyAndReturnArgs} args - Arguments to create many Dependencies.
+     * @example
+     * // Create many Dependencies
+     * const dependency = await prisma.dependency.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Dependencies and only return the `id`
+     * const dependencyWithIdOnly = await prisma.dependency.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DependencyCreateManyAndReturnArgs>(args?: SelectSubset<T, DependencyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Dependency.
+     * @param {DependencyDeleteArgs} args - Arguments to delete one Dependency.
+     * @example
+     * // Delete one Dependency
+     * const Dependency = await prisma.dependency.delete({
+     *   where: {
+     *     // ... filter to delete one Dependency
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DependencyDeleteArgs>(args: SelectSubset<T, DependencyDeleteArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Dependency.
+     * @param {DependencyUpdateArgs} args - Arguments to update one Dependency.
+     * @example
+     * // Update one Dependency
+     * const dependency = await prisma.dependency.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DependencyUpdateArgs>(args: SelectSubset<T, DependencyUpdateArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Dependencies.
+     * @param {DependencyDeleteManyArgs} args - Arguments to filter Dependencies to delete.
+     * @example
+     * // Delete a few Dependencies
+     * const { count } = await prisma.dependency.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DependencyDeleteManyArgs>(args?: SelectSubset<T, DependencyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Dependencies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Dependencies
+     * const dependency = await prisma.dependency.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DependencyUpdateManyArgs>(args: SelectSubset<T, DependencyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Dependency.
+     * @param {DependencyUpsertArgs} args - Arguments to update or create a Dependency.
+     * @example
+     * // Update or create a Dependency
+     * const dependency = await prisma.dependency.upsert({
+     *   create: {
+     *     // ... data to create a Dependency
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Dependency we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DependencyUpsertArgs>(args: SelectSubset<T, DependencyUpsertArgs<ExtArgs>>): Prisma__DependencyClient<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Dependencies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyCountArgs} args - Arguments to filter Dependencies to count.
+     * @example
+     * // Count the number of Dependencies
+     * const count = await prisma.dependency.count({
+     *   where: {
+     *     // ... the filter for the Dependencies we want to count
+     *   }
+     * })
+    **/
+    count<T extends DependencyCountArgs>(
+      args?: Subset<T, DependencyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DependencyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Dependency.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DependencyAggregateArgs>(args: Subset<T, DependencyAggregateArgs>): Prisma.PrismaPromise<GetDependencyAggregateType<T>>
+
+    /**
+     * Group by Dependency.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DependencyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DependencyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DependencyGroupByArgs['orderBy'] }
+        : { orderBy?: DependencyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DependencyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDependencyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Dependency model
+   */
+  readonly fields: DependencyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Dependency.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DependencyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    file<T extends FileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FileDefaultArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Dependency model
+   */ 
+  interface DependencyFieldRefs {
+    readonly id: FieldRef<"Dependency", 'String'>
+    readonly fileId: FieldRef<"Dependency", 'String'>
+    readonly importPath: FieldRef<"Dependency", 'String'>
+    readonly sourceValue: FieldRef<"Dependency", 'String'>
+    readonly resolvedFileId: FieldRef<"Dependency", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Dependency findUnique
+   */
+  export type DependencyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * Filter, which Dependency to fetch.
+     */
+    where: DependencyWhereUniqueInput
+  }
+
+  /**
+   * Dependency findUniqueOrThrow
+   */
+  export type DependencyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * Filter, which Dependency to fetch.
+     */
+    where: DependencyWhereUniqueInput
+  }
+
+  /**
+   * Dependency findFirst
+   */
+  export type DependencyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * Filter, which Dependency to fetch.
+     */
+    where?: DependencyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Dependencies to fetch.
+     */
+    orderBy?: DependencyOrderByWithRelationInput | DependencyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Dependencies.
+     */
+    cursor?: DependencyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Dependencies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Dependencies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Dependencies.
+     */
+    distinct?: DependencyScalarFieldEnum | DependencyScalarFieldEnum[]
+  }
+
+  /**
+   * Dependency findFirstOrThrow
+   */
+  export type DependencyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * Filter, which Dependency to fetch.
+     */
+    where?: DependencyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Dependencies to fetch.
+     */
+    orderBy?: DependencyOrderByWithRelationInput | DependencyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Dependencies.
+     */
+    cursor?: DependencyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Dependencies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Dependencies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Dependencies.
+     */
+    distinct?: DependencyScalarFieldEnum | DependencyScalarFieldEnum[]
+  }
+
+  /**
+   * Dependency findMany
+   */
+  export type DependencyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * Filter, which Dependencies to fetch.
+     */
+    where?: DependencyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Dependencies to fetch.
+     */
+    orderBy?: DependencyOrderByWithRelationInput | DependencyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Dependencies.
+     */
+    cursor?: DependencyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Dependencies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Dependencies.
+     */
+    skip?: number
+    distinct?: DependencyScalarFieldEnum | DependencyScalarFieldEnum[]
+  }
+
+  /**
+   * Dependency create
+   */
+  export type DependencyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Dependency.
+     */
+    data: XOR<DependencyCreateInput, DependencyUncheckedCreateInput>
+  }
+
+  /**
+   * Dependency createMany
+   */
+  export type DependencyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Dependencies.
+     */
+    data: DependencyCreateManyInput | DependencyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Dependency createManyAndReturn
+   */
+  export type DependencyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Dependencies.
+     */
+    data: DependencyCreateManyInput | DependencyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Dependency update
+   */
+  export type DependencyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Dependency.
+     */
+    data: XOR<DependencyUpdateInput, DependencyUncheckedUpdateInput>
+    /**
+     * Choose, which Dependency to update.
+     */
+    where: DependencyWhereUniqueInput
+  }
+
+  /**
+   * Dependency updateMany
+   */
+  export type DependencyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Dependencies.
+     */
+    data: XOR<DependencyUpdateManyMutationInput, DependencyUncheckedUpdateManyInput>
+    /**
+     * Filter which Dependencies to update
+     */
+    where?: DependencyWhereInput
+  }
+
+  /**
+   * Dependency upsert
+   */
+  export type DependencyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Dependency to update in case it exists.
+     */
+    where: DependencyWhereUniqueInput
+    /**
+     * In case the Dependency found by the `where` argument doesn't exist, create a new Dependency with this data.
+     */
+    create: XOR<DependencyCreateInput, DependencyUncheckedCreateInput>
+    /**
+     * In case the Dependency was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DependencyUpdateInput, DependencyUncheckedUpdateInput>
+  }
+
+  /**
+   * Dependency delete
+   */
+  export type DependencyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
+    /**
+     * Filter which Dependency to delete.
+     */
+    where: DependencyWhereUniqueInput
+  }
+
+  /**
+   * Dependency deleteMany
+   */
+  export type DependencyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Dependencies to delete
+     */
+    where?: DependencyWhereInput
+  }
+
+  /**
+   * Dependency without action
+   */
+  export type DependencyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dependency
+     */
+    select?: DependencySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DependencyInclude<ExtArgs> | null
   }
 
 
@@ -10624,13 +12704,31 @@ export namespace Prisma {
     content: 'content',
     directoryId: 'directoryId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    repositoryId: 'repositoryId',
-    analysis: 'analysis',
-    shortSummary: 'shortSummary'
+    repositoryId: 'repositoryId'
   };
 
   export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
+
+
+  export const SymbolScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    type: 'type',
+    fileId: 'fileId'
+  };
+
+  export type SymbolScalarFieldEnum = (typeof SymbolScalarFieldEnum)[keyof typeof SymbolScalarFieldEnum]
+
+
+  export const DependencyScalarFieldEnum: {
+    id: 'id',
+    fileId: 'fileId',
+    importPath: 'importPath',
+    sourceValue: 'sourceValue',
+    resolvedFileId: 'resolvedFileId'
+  };
+
+  export type DependencyScalarFieldEnum = (typeof DependencyScalarFieldEnum)[keyof typeof DependencyScalarFieldEnum]
 
 
   export const LogScalarFieldEnum: {
@@ -11240,10 +13338,9 @@ export namespace Prisma {
     content?: StringNullableFilter<"File"> | string | null
     directoryId?: StringNullableFilter<"File"> | string | null
     createdAt?: DateTimeFilter<"File"> | Date | string
-    updatedAt?: DateTimeFilter<"File"> | Date | string
     repositoryId?: StringFilter<"File"> | string
-    analysis?: StringNullableFilter<"File"> | string | null
-    shortSummary?: StringNullableFilter<"File"> | string | null
+    symbols?: SymbolListRelationFilter
+    dependencies?: DependencyListRelationFilter
     directory?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
     repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
   }
@@ -11255,10 +13352,9 @@ export namespace Prisma {
     content?: SortOrderInput | SortOrder
     directoryId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     repositoryId?: SortOrder
-    analysis?: SortOrderInput | SortOrder
-    shortSummary?: SortOrderInput | SortOrder
+    symbols?: SymbolOrderByRelationAggregateInput
+    dependencies?: DependencyOrderByRelationAggregateInput
     directory?: DirectoryOrderByWithRelationInput
     repository?: RepositoryOrderByWithRelationInput
   }
@@ -11273,10 +13369,9 @@ export namespace Prisma {
     content?: StringNullableFilter<"File"> | string | null
     directoryId?: StringNullableFilter<"File"> | string | null
     createdAt?: DateTimeFilter<"File"> | Date | string
-    updatedAt?: DateTimeFilter<"File"> | Date | string
     repositoryId?: StringFilter<"File"> | string
-    analysis?: StringNullableFilter<"File"> | string | null
-    shortSummary?: StringNullableFilter<"File"> | string | null
+    symbols?: SymbolListRelationFilter
+    dependencies?: DependencyListRelationFilter
     directory?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
     repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
   }, "id">
@@ -11288,10 +13383,7 @@ export namespace Prisma {
     content?: SortOrderInput | SortOrder
     directoryId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     repositoryId?: SortOrder
-    analysis?: SortOrderInput | SortOrder
-    shortSummary?: SortOrderInput | SortOrder
     _count?: FileCountOrderByAggregateInput
     _max?: FileMaxOrderByAggregateInput
     _min?: FileMinOrderByAggregateInput
@@ -11307,10 +13399,112 @@ export namespace Prisma {
     content?: StringNullableWithAggregatesFilter<"File"> | string | null
     directoryId?: StringNullableWithAggregatesFilter<"File"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
     repositoryId?: StringWithAggregatesFilter<"File"> | string
-    analysis?: StringNullableWithAggregatesFilter<"File"> | string | null
-    shortSummary?: StringNullableWithAggregatesFilter<"File"> | string | null
+  }
+
+  export type SymbolWhereInput = {
+    AND?: SymbolWhereInput | SymbolWhereInput[]
+    OR?: SymbolWhereInput[]
+    NOT?: SymbolWhereInput | SymbolWhereInput[]
+    id?: StringFilter<"Symbol"> | string
+    name?: StringFilter<"Symbol"> | string
+    type?: StringFilter<"Symbol"> | string
+    fileId?: StringFilter<"Symbol"> | string
+    file?: XOR<FileRelationFilter, FileWhereInput>
+  }
+
+  export type SymbolOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    fileId?: SortOrder
+    file?: FileOrderByWithRelationInput
+  }
+
+  export type SymbolWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SymbolWhereInput | SymbolWhereInput[]
+    OR?: SymbolWhereInput[]
+    NOT?: SymbolWhereInput | SymbolWhereInput[]
+    name?: StringFilter<"Symbol"> | string
+    type?: StringFilter<"Symbol"> | string
+    fileId?: StringFilter<"Symbol"> | string
+    file?: XOR<FileRelationFilter, FileWhereInput>
+  }, "id">
+
+  export type SymbolOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    fileId?: SortOrder
+    _count?: SymbolCountOrderByAggregateInput
+    _max?: SymbolMaxOrderByAggregateInput
+    _min?: SymbolMinOrderByAggregateInput
+  }
+
+  export type SymbolScalarWhereWithAggregatesInput = {
+    AND?: SymbolScalarWhereWithAggregatesInput | SymbolScalarWhereWithAggregatesInput[]
+    OR?: SymbolScalarWhereWithAggregatesInput[]
+    NOT?: SymbolScalarWhereWithAggregatesInput | SymbolScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Symbol"> | string
+    name?: StringWithAggregatesFilter<"Symbol"> | string
+    type?: StringWithAggregatesFilter<"Symbol"> | string
+    fileId?: StringWithAggregatesFilter<"Symbol"> | string
+  }
+
+  export type DependencyWhereInput = {
+    AND?: DependencyWhereInput | DependencyWhereInput[]
+    OR?: DependencyWhereInput[]
+    NOT?: DependencyWhereInput | DependencyWhereInput[]
+    id?: StringFilter<"Dependency"> | string
+    fileId?: StringFilter<"Dependency"> | string
+    importPath?: StringFilter<"Dependency"> | string
+    sourceValue?: StringFilter<"Dependency"> | string
+    resolvedFileId?: StringNullableFilter<"Dependency"> | string | null
+    file?: XOR<FileRelationFilter, FileWhereInput>
+  }
+
+  export type DependencyOrderByWithRelationInput = {
+    id?: SortOrder
+    fileId?: SortOrder
+    importPath?: SortOrder
+    sourceValue?: SortOrder
+    resolvedFileId?: SortOrderInput | SortOrder
+    file?: FileOrderByWithRelationInput
+  }
+
+  export type DependencyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DependencyWhereInput | DependencyWhereInput[]
+    OR?: DependencyWhereInput[]
+    NOT?: DependencyWhereInput | DependencyWhereInput[]
+    fileId?: StringFilter<"Dependency"> | string
+    importPath?: StringFilter<"Dependency"> | string
+    sourceValue?: StringFilter<"Dependency"> | string
+    resolvedFileId?: StringNullableFilter<"Dependency"> | string | null
+    file?: XOR<FileRelationFilter, FileWhereInput>
+  }, "id">
+
+  export type DependencyOrderByWithAggregationInput = {
+    id?: SortOrder
+    fileId?: SortOrder
+    importPath?: SortOrder
+    sourceValue?: SortOrder
+    resolvedFileId?: SortOrderInput | SortOrder
+    _count?: DependencyCountOrderByAggregateInput
+    _max?: DependencyMaxOrderByAggregateInput
+    _min?: DependencyMinOrderByAggregateInput
+  }
+
+  export type DependencyScalarWhereWithAggregatesInput = {
+    AND?: DependencyScalarWhereWithAggregatesInput | DependencyScalarWhereWithAggregatesInput[]
+    OR?: DependencyScalarWhereWithAggregatesInput[]
+    NOT?: DependencyScalarWhereWithAggregatesInput | DependencyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Dependency"> | string
+    fileId?: StringWithAggregatesFilter<"Dependency"> | string
+    importPath?: StringWithAggregatesFilter<"Dependency"> | string
+    sourceValue?: StringWithAggregatesFilter<"Dependency"> | string
+    resolvedFileId?: StringNullableWithAggregatesFilter<"Dependency"> | string | null
   }
 
   export type LogWhereInput = {
@@ -11898,9 +14092,8 @@ export namespace Prisma {
     name: string
     content?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    analysis?: string | null
-    shortSummary?: string | null
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
     directory?: DirectoryCreateNestedOneWithoutFilesInput
     repository: RepositoryCreateNestedOneWithoutFilesInput
   }
@@ -11912,10 +14105,9 @@ export namespace Prisma {
     content?: string | null
     directoryId?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
     repositoryId: string
-    analysis?: string | null
-    shortSummary?: string | null
+    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
   }
 
   export type FileUpdateInput = {
@@ -11924,9 +14116,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUpdateManyWithoutFileNestedInput
     directory?: DirectoryUpdateOneWithoutFilesNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
   }
@@ -11938,10 +14129,9 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type FileCreateManyInput = {
@@ -11951,10 +14141,7 @@ export namespace Prisma {
     content?: string | null
     directoryId?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
     repositoryId: string
-    analysis?: string | null
-    shortSummary?: string | null
   }
 
   export type FileUpdateManyMutationInput = {
@@ -11963,9 +14150,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FileUncheckedUpdateManyInput = {
@@ -11975,10 +14159,110 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SymbolCreateInput = {
+    id?: string
+    name: string
+    type: string
+    file: FileCreateNestedOneWithoutSymbolsInput
+  }
+
+  export type SymbolUncheckedCreateInput = {
+    id?: string
+    name: string
+    type: string
+    fileId: string
+  }
+
+  export type SymbolUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    file?: FileUpdateOneRequiredWithoutSymbolsNestedInput
+  }
+
+  export type SymbolUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SymbolCreateManyInput = {
+    id?: string
+    name: string
+    type: string
+    fileId: string
+  }
+
+  export type SymbolUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SymbolUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DependencyCreateInput = {
+    id?: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId?: string | null
+    file: FileCreateNestedOneWithoutDependenciesInput
+  }
+
+  export type DependencyUncheckedCreateInput = {
+    id?: string
+    fileId: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId?: string | null
+  }
+
+  export type DependencyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    file?: FileUpdateOneRequiredWithoutDependenciesNestedInput
+  }
+
+  export type DependencyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DependencyCreateManyInput = {
+    id?: string
+    fileId: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId?: string | null
+  }
+
+  export type DependencyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DependencyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LogCreateInput = {
@@ -12515,6 +14799,26 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type SymbolListRelationFilter = {
+    every?: SymbolWhereInput
+    some?: SymbolWhereInput
+    none?: SymbolWhereInput
+  }
+
+  export type DependencyListRelationFilter = {
+    every?: DependencyWhereInput
+    some?: DependencyWhereInput
+    none?: DependencyWhereInput
+  }
+
+  export type SymbolOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DependencyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type FileCountOrderByAggregateInput = {
     id?: SortOrder
     path?: SortOrder
@@ -12522,10 +14826,7 @@ export namespace Prisma {
     content?: SortOrder
     directoryId?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     repositoryId?: SortOrder
-    analysis?: SortOrder
-    shortSummary?: SortOrder
   }
 
   export type FileMaxOrderByAggregateInput = {
@@ -12535,10 +14836,7 @@ export namespace Prisma {
     content?: SortOrder
     directoryId?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     repositoryId?: SortOrder
-    analysis?: SortOrder
-    shortSummary?: SortOrder
   }
 
   export type FileMinOrderByAggregateInput = {
@@ -12548,10 +14846,57 @@ export namespace Prisma {
     content?: SortOrder
     directoryId?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     repositoryId?: SortOrder
-    analysis?: SortOrder
-    shortSummary?: SortOrder
+  }
+
+  export type FileRelationFilter = {
+    is?: FileWhereInput
+    isNot?: FileWhereInput
+  }
+
+  export type SymbolCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    fileId?: SortOrder
+  }
+
+  export type SymbolMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    fileId?: SortOrder
+  }
+
+  export type SymbolMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    fileId?: SortOrder
+  }
+
+  export type DependencyCountOrderByAggregateInput = {
+    id?: SortOrder
+    fileId?: SortOrder
+    importPath?: SortOrder
+    sourceValue?: SortOrder
+    resolvedFileId?: SortOrder
+  }
+
+  export type DependencyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    fileId?: SortOrder
+    importPath?: SortOrder
+    sourceValue?: SortOrder
+    resolvedFileId?: SortOrder
+  }
+
+  export type DependencyMinOrderByAggregateInput = {
+    id?: SortOrder
+    fileId?: SortOrder
+    importPath?: SortOrder
+    sourceValue?: SortOrder
+    resolvedFileId?: SortOrder
   }
 
   export type LogCountOrderByAggregateInput = {
@@ -13014,6 +15359,20 @@ export namespace Prisma {
     deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
   }
 
+  export type SymbolCreateNestedManyWithoutFileInput = {
+    create?: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput> | SymbolCreateWithoutFileInput[] | SymbolUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: SymbolCreateOrConnectWithoutFileInput | SymbolCreateOrConnectWithoutFileInput[]
+    createMany?: SymbolCreateManyFileInputEnvelope
+    connect?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+  }
+
+  export type DependencyCreateNestedManyWithoutFileInput = {
+    create?: XOR<DependencyCreateWithoutFileInput, DependencyUncheckedCreateWithoutFileInput> | DependencyCreateWithoutFileInput[] | DependencyUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutFileInput | DependencyCreateOrConnectWithoutFileInput[]
+    createMany?: DependencyCreateManyFileInputEnvelope
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+  }
+
   export type DirectoryCreateNestedOneWithoutFilesInput = {
     create?: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
     connectOrCreate?: DirectoryCreateOrConnectWithoutFilesInput
@@ -13024,6 +15383,48 @@ export namespace Prisma {
     create?: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
     connectOrCreate?: RepositoryCreateOrConnectWithoutFilesInput
     connect?: RepositoryWhereUniqueInput
+  }
+
+  export type SymbolUncheckedCreateNestedManyWithoutFileInput = {
+    create?: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput> | SymbolCreateWithoutFileInput[] | SymbolUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: SymbolCreateOrConnectWithoutFileInput | SymbolCreateOrConnectWithoutFileInput[]
+    createMany?: SymbolCreateManyFileInputEnvelope
+    connect?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+  }
+
+  export type DependencyUncheckedCreateNestedManyWithoutFileInput = {
+    create?: XOR<DependencyCreateWithoutFileInput, DependencyUncheckedCreateWithoutFileInput> | DependencyCreateWithoutFileInput[] | DependencyUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutFileInput | DependencyCreateOrConnectWithoutFileInput[]
+    createMany?: DependencyCreateManyFileInputEnvelope
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+  }
+
+  export type SymbolUpdateManyWithoutFileNestedInput = {
+    create?: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput> | SymbolCreateWithoutFileInput[] | SymbolUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: SymbolCreateOrConnectWithoutFileInput | SymbolCreateOrConnectWithoutFileInput[]
+    upsert?: SymbolUpsertWithWhereUniqueWithoutFileInput | SymbolUpsertWithWhereUniqueWithoutFileInput[]
+    createMany?: SymbolCreateManyFileInputEnvelope
+    set?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    disconnect?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    delete?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    connect?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    update?: SymbolUpdateWithWhereUniqueWithoutFileInput | SymbolUpdateWithWhereUniqueWithoutFileInput[]
+    updateMany?: SymbolUpdateManyWithWhereWithoutFileInput | SymbolUpdateManyWithWhereWithoutFileInput[]
+    deleteMany?: SymbolScalarWhereInput | SymbolScalarWhereInput[]
+  }
+
+  export type DependencyUpdateManyWithoutFileNestedInput = {
+    create?: XOR<DependencyCreateWithoutFileInput, DependencyUncheckedCreateWithoutFileInput> | DependencyCreateWithoutFileInput[] | DependencyUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutFileInput | DependencyCreateOrConnectWithoutFileInput[]
+    upsert?: DependencyUpsertWithWhereUniqueWithoutFileInput | DependencyUpsertWithWhereUniqueWithoutFileInput[]
+    createMany?: DependencyCreateManyFileInputEnvelope
+    set?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    disconnect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    delete?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    update?: DependencyUpdateWithWhereUniqueWithoutFileInput | DependencyUpdateWithWhereUniqueWithoutFileInput[]
+    updateMany?: DependencyUpdateManyWithWhereWithoutFileInput | DependencyUpdateManyWithWhereWithoutFileInput[]
+    deleteMany?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
   }
 
   export type DirectoryUpdateOneWithoutFilesNestedInput = {
@@ -13042,6 +15443,62 @@ export namespace Prisma {
     upsert?: RepositoryUpsertWithoutFilesInput
     connect?: RepositoryWhereUniqueInput
     update?: XOR<XOR<RepositoryUpdateToOneWithWhereWithoutFilesInput, RepositoryUpdateWithoutFilesInput>, RepositoryUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type SymbolUncheckedUpdateManyWithoutFileNestedInput = {
+    create?: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput> | SymbolCreateWithoutFileInput[] | SymbolUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: SymbolCreateOrConnectWithoutFileInput | SymbolCreateOrConnectWithoutFileInput[]
+    upsert?: SymbolUpsertWithWhereUniqueWithoutFileInput | SymbolUpsertWithWhereUniqueWithoutFileInput[]
+    createMany?: SymbolCreateManyFileInputEnvelope
+    set?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    disconnect?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    delete?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    connect?: SymbolWhereUniqueInput | SymbolWhereUniqueInput[]
+    update?: SymbolUpdateWithWhereUniqueWithoutFileInput | SymbolUpdateWithWhereUniqueWithoutFileInput[]
+    updateMany?: SymbolUpdateManyWithWhereWithoutFileInput | SymbolUpdateManyWithWhereWithoutFileInput[]
+    deleteMany?: SymbolScalarWhereInput | SymbolScalarWhereInput[]
+  }
+
+  export type DependencyUncheckedUpdateManyWithoutFileNestedInput = {
+    create?: XOR<DependencyCreateWithoutFileInput, DependencyUncheckedCreateWithoutFileInput> | DependencyCreateWithoutFileInput[] | DependencyUncheckedCreateWithoutFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutFileInput | DependencyCreateOrConnectWithoutFileInput[]
+    upsert?: DependencyUpsertWithWhereUniqueWithoutFileInput | DependencyUpsertWithWhereUniqueWithoutFileInput[]
+    createMany?: DependencyCreateManyFileInputEnvelope
+    set?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    disconnect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    delete?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    update?: DependencyUpdateWithWhereUniqueWithoutFileInput | DependencyUpdateWithWhereUniqueWithoutFileInput[]
+    updateMany?: DependencyUpdateManyWithWhereWithoutFileInput | DependencyUpdateManyWithWhereWithoutFileInput[]
+    deleteMany?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
+  }
+
+  export type FileCreateNestedOneWithoutSymbolsInput = {
+    create?: XOR<FileCreateWithoutSymbolsInput, FileUncheckedCreateWithoutSymbolsInput>
+    connectOrCreate?: FileCreateOrConnectWithoutSymbolsInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type FileUpdateOneRequiredWithoutSymbolsNestedInput = {
+    create?: XOR<FileCreateWithoutSymbolsInput, FileUncheckedCreateWithoutSymbolsInput>
+    connectOrCreate?: FileCreateOrConnectWithoutSymbolsInput
+    upsert?: FileUpsertWithoutSymbolsInput
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutSymbolsInput, FileUpdateWithoutSymbolsInput>, FileUncheckedUpdateWithoutSymbolsInput>
+  }
+
+  export type FileCreateNestedOneWithoutDependenciesInput = {
+    create?: XOR<FileCreateWithoutDependenciesInput, FileUncheckedCreateWithoutDependenciesInput>
+    connectOrCreate?: FileCreateOrConnectWithoutDependenciesInput
+    connect?: FileWhereUniqueInput
+  }
+
+  export type FileUpdateOneRequiredWithoutDependenciesNestedInput = {
+    create?: XOR<FileCreateWithoutDependenciesInput, FileUncheckedCreateWithoutDependenciesInput>
+    connectOrCreate?: FileCreateOrConnectWithoutDependenciesInput
+    upsert?: FileUpsertWithoutDependenciesInput
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutDependenciesInput, FileUpdateWithoutDependenciesInput>, FileUncheckedUpdateWithoutDependenciesInput>
   }
 
   export type RepositoryCreateNestedOneWithoutLogsInput = {
@@ -13605,9 +16062,8 @@ export namespace Prisma {
     name: string
     content?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    analysis?: string | null
-    shortSummary?: string | null
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
     directory?: DirectoryCreateNestedOneWithoutFilesInput
   }
 
@@ -13618,9 +16074,8 @@ export namespace Prisma {
     content?: string | null
     directoryId?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    analysis?: string | null
-    shortSummary?: string | null
+    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
   }
 
   export type FileCreateOrConnectWithoutRepositoryInput = {
@@ -13743,10 +16198,7 @@ export namespace Prisma {
     content?: StringNullableFilter<"File"> | string | null
     directoryId?: StringNullableFilter<"File"> | string | null
     createdAt?: DateTimeFilter<"File"> | Date | string
-    updatedAt?: DateTimeFilter<"File"> | Date | string
     repositoryId?: StringFilter<"File"> | string
-    analysis?: StringNullableFilter<"File"> | string | null
-    shortSummary?: StringNullableFilter<"File"> | string | null
   }
 
   export type LogUpsertWithWhereUniqueWithoutRepositoryInput = {
@@ -13915,9 +16367,8 @@ export namespace Prisma {
     name: string
     content?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    analysis?: string | null
-    shortSummary?: string | null
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
     repository: RepositoryCreateNestedOneWithoutFilesInput
   }
 
@@ -13927,10 +16378,9 @@ export namespace Prisma {
     name: string
     content?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
     repositoryId: string
-    analysis?: string | null
-    shortSummary?: string | null
+    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
   }
 
   export type FileCreateOrConnectWithoutDirectoryInput = {
@@ -14051,6 +16501,52 @@ export namespace Prisma {
     data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutDirectoryInput>
   }
 
+  export type SymbolCreateWithoutFileInput = {
+    id?: string
+    name: string
+    type: string
+  }
+
+  export type SymbolUncheckedCreateWithoutFileInput = {
+    id?: string
+    name: string
+    type: string
+  }
+
+  export type SymbolCreateOrConnectWithoutFileInput = {
+    where: SymbolWhereUniqueInput
+    create: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput>
+  }
+
+  export type SymbolCreateManyFileInputEnvelope = {
+    data: SymbolCreateManyFileInput | SymbolCreateManyFileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DependencyCreateWithoutFileInput = {
+    id?: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId?: string | null
+  }
+
+  export type DependencyUncheckedCreateWithoutFileInput = {
+    id?: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId?: string | null
+  }
+
+  export type DependencyCreateOrConnectWithoutFileInput = {
+    where: DependencyWhereUniqueInput
+    create: XOR<DependencyCreateWithoutFileInput, DependencyUncheckedCreateWithoutFileInput>
+  }
+
+  export type DependencyCreateManyFileInputEnvelope = {
+    data: DependencyCreateManyFileInput | DependencyCreateManyFileInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DirectoryCreateWithoutFilesInput = {
     id?: string
     path: string
@@ -14113,6 +16609,59 @@ export namespace Prisma {
   export type RepositoryCreateOrConnectWithoutFilesInput = {
     where: RepositoryWhereUniqueInput
     create: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
+  }
+
+  export type SymbolUpsertWithWhereUniqueWithoutFileInput = {
+    where: SymbolWhereUniqueInput
+    update: XOR<SymbolUpdateWithoutFileInput, SymbolUncheckedUpdateWithoutFileInput>
+    create: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput>
+  }
+
+  export type SymbolUpdateWithWhereUniqueWithoutFileInput = {
+    where: SymbolWhereUniqueInput
+    data: XOR<SymbolUpdateWithoutFileInput, SymbolUncheckedUpdateWithoutFileInput>
+  }
+
+  export type SymbolUpdateManyWithWhereWithoutFileInput = {
+    where: SymbolScalarWhereInput
+    data: XOR<SymbolUpdateManyMutationInput, SymbolUncheckedUpdateManyWithoutFileInput>
+  }
+
+  export type SymbolScalarWhereInput = {
+    AND?: SymbolScalarWhereInput | SymbolScalarWhereInput[]
+    OR?: SymbolScalarWhereInput[]
+    NOT?: SymbolScalarWhereInput | SymbolScalarWhereInput[]
+    id?: StringFilter<"Symbol"> | string
+    name?: StringFilter<"Symbol"> | string
+    type?: StringFilter<"Symbol"> | string
+    fileId?: StringFilter<"Symbol"> | string
+  }
+
+  export type DependencyUpsertWithWhereUniqueWithoutFileInput = {
+    where: DependencyWhereUniqueInput
+    update: XOR<DependencyUpdateWithoutFileInput, DependencyUncheckedUpdateWithoutFileInput>
+    create: XOR<DependencyCreateWithoutFileInput, DependencyUncheckedCreateWithoutFileInput>
+  }
+
+  export type DependencyUpdateWithWhereUniqueWithoutFileInput = {
+    where: DependencyWhereUniqueInput
+    data: XOR<DependencyUpdateWithoutFileInput, DependencyUncheckedUpdateWithoutFileInput>
+  }
+
+  export type DependencyUpdateManyWithWhereWithoutFileInput = {
+    where: DependencyScalarWhereInput
+    data: XOR<DependencyUpdateManyMutationInput, DependencyUncheckedUpdateManyWithoutFileInput>
+  }
+
+  export type DependencyScalarWhereInput = {
+    AND?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
+    OR?: DependencyScalarWhereInput[]
+    NOT?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
+    id?: StringFilter<"Dependency"> | string
+    fileId?: StringFilter<"Dependency"> | string
+    importPath?: StringFilter<"Dependency"> | string
+    sourceValue?: StringFilter<"Dependency"> | string
+    resolvedFileId?: StringNullableFilter<"Dependency"> | string | null
   }
 
   export type DirectoryUpsertWithoutFilesInput = {
@@ -14189,6 +16738,126 @@ export namespace Prisma {
     overview?: NullableStringFieldUpdateOperationsInput | string | null
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
     logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
+  }
+
+  export type FileCreateWithoutSymbolsInput = {
+    id?: string
+    path: string
+    name: string
+    content?: string | null
+    createdAt?: Date | string
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
+    repository: RepositoryCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileUncheckedCreateWithoutSymbolsInput = {
+    id?: string
+    path: string
+    name: string
+    content?: string | null
+    directoryId?: string | null
+    createdAt?: Date | string
+    repositoryId: string
+    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
+  }
+
+  export type FileCreateOrConnectWithoutSymbolsInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutSymbolsInput, FileUncheckedCreateWithoutSymbolsInput>
+  }
+
+  export type FileUpsertWithoutSymbolsInput = {
+    update: XOR<FileUpdateWithoutSymbolsInput, FileUncheckedUpdateWithoutSymbolsInput>
+    create: XOR<FileCreateWithoutSymbolsInput, FileUncheckedCreateWithoutSymbolsInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutSymbolsInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutSymbolsInput, FileUncheckedUpdateWithoutSymbolsInput>
+  }
+
+  export type FileUpdateWithoutSymbolsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dependencies?: DependencyUpdateManyWithoutFileNestedInput
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
+    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutSymbolsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repositoryId?: StringFieldUpdateOperationsInput | string
+    dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
+  }
+
+  export type FileCreateWithoutDependenciesInput = {
+    id?: string
+    path: string
+    name: string
+    content?: string | null
+    createdAt?: Date | string
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
+    repository: RepositoryCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileUncheckedCreateWithoutDependenciesInput = {
+    id?: string
+    path: string
+    name: string
+    content?: string | null
+    directoryId?: string | null
+    createdAt?: Date | string
+    repositoryId: string
+    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+  }
+
+  export type FileCreateOrConnectWithoutDependenciesInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutDependenciesInput, FileUncheckedCreateWithoutDependenciesInput>
+  }
+
+  export type FileUpsertWithoutDependenciesInput = {
+    update: XOR<FileUpdateWithoutDependenciesInput, FileUncheckedUpdateWithoutDependenciesInput>
+    create: XOR<FileCreateWithoutDependenciesInput, FileUncheckedCreateWithoutDependenciesInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutDependenciesInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutDependenciesInput, FileUncheckedUpdateWithoutDependenciesInput>
+  }
+
+  export type FileUpdateWithoutDependenciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    symbols?: SymbolUpdateManyWithoutFileNestedInput
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
+    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutDependenciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repositoryId?: StringFieldUpdateOperationsInput | string
+    symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type RepositoryCreateWithoutLogsInput = {
@@ -14425,9 +17094,6 @@ export namespace Prisma {
     content?: string | null
     directoryId?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
-    analysis?: string | null
-    shortSummary?: string | null
   }
 
   export type LogCreateManyRepositoryInput = {
@@ -14474,9 +17140,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUpdateManyWithoutFileNestedInput
     directory?: DirectoryUpdateOneWithoutFilesNestedInput
   }
 
@@ -14487,9 +17152,8 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type FileUncheckedUpdateManyWithoutRepositoryInput = {
@@ -14499,9 +17163,6 @@ export namespace Prisma {
     content?: NullableStringFieldUpdateOperationsInput | string | null
     directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LogUpdateWithoutRepositoryInput = {
@@ -14540,10 +17201,7 @@ export namespace Prisma {
     name: string
     content?: string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
     repositoryId: string
-    analysis?: string | null
-    shortSummary?: string | null
   }
 
   export type DirectoryUpdateWithoutParentInput = {
@@ -14583,9 +17241,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUpdateManyWithoutFileNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
   }
 
@@ -14595,10 +17252,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type FileUncheckedUpdateManyWithoutDirectoryInput = {
@@ -14607,10 +17263,59 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
-    analysis?: NullableStringFieldUpdateOperationsInput | string | null
-    shortSummary?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SymbolCreateManyFileInput = {
+    id?: string
+    name: string
+    type: string
+  }
+
+  export type DependencyCreateManyFileInput = {
+    id?: string
+    importPath: string
+    sourceValue: string
+    resolvedFileId?: string | null
+  }
+
+  export type SymbolUpdateWithoutFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SymbolUncheckedUpdateWithoutFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SymbolUncheckedUpdateManyWithoutFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DependencyUpdateWithoutFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DependencyUncheckedUpdateWithoutFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DependencyUncheckedUpdateManyWithoutFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
@@ -14630,6 +17335,10 @@ export namespace Prisma {
      * @deprecated Use DirectoryCountOutputTypeDefaultArgs instead
      */
     export type DirectoryCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DirectoryCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FileCountOutputTypeDefaultArgs instead
+     */
+    export type FileCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FileCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use UserDefaultArgs instead
      */
@@ -14662,6 +17371,14 @@ export namespace Prisma {
      * @deprecated Use FileDefaultArgs instead
      */
     export type FileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FileDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SymbolDefaultArgs instead
+     */
+    export type SymbolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SymbolDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use DependencyDefaultArgs instead
+     */
+    export type DependencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DependencyDefaultArgs<ExtArgs>
     /**
      * @deprecated Use LogDefaultArgs instead
      */

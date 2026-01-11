@@ -6,25 +6,15 @@ import { Job } from "bullmq";
 import fs from "fs-extra";
 import path from "path";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
+import { analyzeCodebase } from "../logic/analyzer";
+import { createLog } from "../logic/helper";
+import { resolveDependencies } from "../logic/resolver";
 import { walkAndMap } from "../logic/walker";
 
 export async function processRepo(job: Job) {
   const { repoId, repoUrl } = job.data;
 
   const workDir = path.resolve(process.cwd(), "tmp", `${repoId}`);
-
-  const createLog = async (msg: string, status: RepositoryStatus) => {
-    const log = await prisma.log.create({
-      data: { repositoryId: repoId, message: msg, status },
-    });
-
-    // console.log(`[LOG]: ${msg}`);
-
-    await redisConnection.publish(
-      REDIS_CHANNELS.REPO_LOG_PUBLISH,
-      JSON.stringify({ repoId, logId: log.id })
-    );
-  };
 
   try {
     // Ensure the parent tmp directory exists
@@ -37,7 +27,8 @@ export async function processRepo(job: Job) {
 
     await createLog(
       "Workspace initialized. Starting clone...",
-      RepositoryStatus.PROCESSING
+      RepositoryStatus.PROCESSING,
+      repoId
     );
 
     // Configure Simple Git with error logging
@@ -67,7 +58,8 @@ export async function processRepo(job: Job) {
 
     await createLog(
       `Clone complete. Found ${files.length} top-level items.`,
-      RepositoryStatus.PROCESSING
+      RepositoryStatus.PROCESSING,
+      repoId
     );
 
     // This scans the /tmp folder and populates the DB tables
@@ -82,26 +74,44 @@ export async function processRepo(job: Job) {
 
     await createLog(
       `Mapped ${fileCount} files in ${dirCount} directories.`,
-      RepositoryStatus.PROCESSING
+      RepositoryStatus.PROCESSING,
+      repoId
     );
 
     // Extract Metadata (AST)
     await createLog(
       "Extracting code symbols (AST)...",
-      RepositoryStatus.PROCESSING
+      RepositoryStatus.PROCESSING,
+      repoId
     );
-    const analysis = await analyzeCodebase(workDir, repoId);
+    await analyzeCodebase(workDir, repoId);
 
     //  Dependency Mapping
     await createLog(
-      `Analyzed ${analysis.fileCount} files. Building graph...`,
-      RepositoryStatus.PROCESSING
+      `Analyzed ${fileCount} files. Building graph...`,
+      RepositoryStatus.PROCESSING,
+      repoId
     );
-    // Logic to link imports/exports
 
-    // --- END PHASE 2 ---
+    await createLog(
+      "Connecting dependency graph...",
+      RepositoryStatus.PROCESSING,
+      repoId
+    );
+    await resolveDependencies(repoId, workDir);
 
-    await createLog("Analysis complete.", RepositoryStatus.SUCCESS);
+    // Finalize
+    const resolvedCount = await prisma.dependency.count({
+      where: { file: { repositoryId: repoId }, NOT: { resolvedFileId: null } },
+    });
+
+    await createLog(
+      `Nervous system built. Linked ${resolvedCount} dependencies.`,
+      RepositoryStatus.SUCCESS,
+      repoId
+    );
+
+    await createLog("Analysis complete.", RepositoryStatus.SUCCESS, repoId);
 
     await prisma.repository.update({
       where: { id: repoId },
@@ -112,7 +122,8 @@ export async function processRepo(job: Job) {
 
     await createLog(
       `Something went wrong on the server. Please try again later.`,
-      RepositoryStatus.FAILED
+      RepositoryStatus.FAILED,
+      repoId
     );
 
     await prisma.repository.update({

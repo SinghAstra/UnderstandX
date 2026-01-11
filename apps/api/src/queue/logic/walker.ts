@@ -14,7 +14,6 @@ const IGNORED_DIRECTORIES = new Set([
 ]);
 
 /**
- * Simple English:
  * This function walks through the folder we just cloned.
  * 1. It finds a folder -> It creates a "Directory" in the DB.
  * 2. It finds a file -> It creates a "File" in the DB.

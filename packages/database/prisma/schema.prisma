@@ -105,12 +105,34 @@ model File {
   content      String?
   directoryId  String?
   createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
   repositoryId String
-  analysis     String?
-  shortSummary String?
+
+ // Relations
+  symbols      Symbol[]   // What this file EXPORTS
+  dependencies Dependency[] // What this file IMPORTS
+
   directory    Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade)
   repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+}
+
+model Symbol {
+  id        String @id @default(cuid())
+  name      String // e.g., "UserAuth"
+  type      String // e.g., "function", "class", "variable"
+  fileId    String
+  file      File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+}
+
+model Dependency {
+  id          String @id @default(cuid())
+  fileId      String // The file that HAS the import
+  file        File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  
+  importPath  String // e.g., "@/components/Button"
+  sourceValue String // The raw import line for debugging
+  
+  // This is the "Magic Link" we fill in during the Graph Step 
+  resolvedFileId String? 
 }
 
 model Log {
