@@ -3,16 +3,11 @@ import { QUEUES } from "@/constants/queues";
 import { Worker } from "bullmq";
 import { processRepo } from "./repo-worker";
 
-/**
- * Initialize the Background Worker.
- * It listens for jobs added to the queue defined in the Producer.
- */
 const worker = new Worker(QUEUES.REPO_IMPORT, processRepo, {
   connection: redisConnection,
   concurrency: 1,
 });
 
-// Event Listeners for logging
 worker.on("active", (job) => {
   console.log(
     `[WORKER]: Job ${job.id} for repo ${job.data.repoId} is now active.`
