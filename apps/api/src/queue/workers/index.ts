@@ -9,7 +9,7 @@ import { processRepo } from "./repo-worker";
  */
 const worker = new Worker(QUEUES.REPO_IMPORT, processRepo, {
   connection: redisConnection,
-  concurrency: 1, // Recommended for Render Free/Starter tiers
+  concurrency: 1,
 });
 
 // Event Listeners for logging
