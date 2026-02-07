@@ -73,20 +73,20 @@ export type Log = $Result.DefaultSelection<Prisma.$LogPayload>
  * Enums
  */
 export namespace $Enums {
-  export const RepositoryStatus: {
-  PENDING: 'PENDING',
+  export const RepoStatus: {
+  QUEUED: 'QUEUED',
   PROCESSING: 'PROCESSING',
-  SUCCESS: 'SUCCESS',
+  COMPLETED: 'COMPLETED',
   FAILED: 'FAILED'
 };
 
-export type RepositoryStatus = (typeof RepositoryStatus)[keyof typeof RepositoryStatus]
+export type RepoStatus = (typeof RepoStatus)[keyof typeof RepoStatus]
 
 }
 
-export type RepositoryStatus = $Enums.RepositoryStatus
+export type RepoStatus = $Enums.RepoStatus
 
-export const RepositoryStatus: typeof $Enums.RepositoryStatus
+export const RepoStatus: typeof $Enums.RepoStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1771,15 +1771,15 @@ export namespace Prisma {
    */
 
   export type RepositoryCountOutputType = {
+    logs: number
     directories: number
     files: number
-    logs: number
   }
 
   export type RepositoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    logs?: boolean | RepositoryCountOutputTypeCountLogsArgs
     directories?: boolean | RepositoryCountOutputTypeCountDirectoriesArgs
     files?: boolean | RepositoryCountOutputTypeCountFilesArgs
-    logs?: boolean | RepositoryCountOutputTypeCountLogsArgs
   }
 
   // Custom InputTypes
@@ -1796,6 +1796,13 @@ export namespace Prisma {
   /**
    * RepositoryCountOutputType without action
    */
+  export type RepositoryCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LogWhereInput
+  }
+
+  /**
+   * RepositoryCountOutputType without action
+   */
   export type RepositoryCountOutputTypeCountDirectoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DirectoryWhereInput
   }
@@ -1805,13 +1812,6 @@ export namespace Prisma {
    */
   export type RepositoryCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FileWhereInput
-  }
-
-  /**
-   * RepositoryCountOutputType without action
-   */
-  export type RepositoryCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: LogWhereInput
   }
 
 
@@ -1862,11 +1862,13 @@ export namespace Prisma {
   export type FileCountOutputType = {
     symbols: number
     dependencies: number
+    referencedBy: number
   }
 
   export type FileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     symbols?: boolean | FileCountOutputTypeCountSymbolsArgs
     dependencies?: boolean | FileCountOutputTypeCountDependenciesArgs
+    referencedBy?: boolean | FileCountOutputTypeCountReferencedByArgs
   }
 
   // Custom InputTypes
@@ -1891,6 +1893,13 @@ export namespace Prisma {
    * FileCountOutputType without action
    */
   export type FileCountOutputTypeCountDependenciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DependencyWhereInput
+  }
+
+  /**
+   * FileCountOutputType without action
+   */
+  export type FileCountOutputTypeCountReferencedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DependencyWhereInput
   }
 
@@ -6641,112 +6650,64 @@ export namespace Prisma {
 
   export type AggregateRepository = {
     _count: RepositoryCountAggregateOutputType | null
-    _avg: RepositoryAvgAggregateOutputType | null
-    _sum: RepositorySumAggregateOutputType | null
     _min: RepositoryMinAggregateOutputType | null
     _max: RepositoryMaxAggregateOutputType | null
-  }
-
-  export type RepositoryAvgAggregateOutputType = {
-    githubId: number | null
-  }
-
-  export type RepositorySumAggregateOutputType = {
-    githubId: number | null
   }
 
   export type RepositoryMinAggregateOutputType = {
     id: string | null
     name: string | null
-    owner: string | null
     url: string | null
-    userId: string | null
+    status: $Enums.RepoStatus | null
     createdAt: Date | null
-    updatedAt: Date | null
-    avatarUrl: string | null
-    githubId: number | null
-    status: $Enums.RepositoryStatus | null
-    overview: string | null
+    userId: string | null
   }
 
   export type RepositoryMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    owner: string | null
     url: string | null
-    userId: string | null
+    status: $Enums.RepoStatus | null
     createdAt: Date | null
-    updatedAt: Date | null
-    avatarUrl: string | null
-    githubId: number | null
-    status: $Enums.RepositoryStatus | null
-    overview: string | null
+    userId: string | null
   }
 
   export type RepositoryCountAggregateOutputType = {
     id: number
     name: number
-    owner: number
     url: number
-    userId: number
-    createdAt: number
-    updatedAt: number
-    avatarUrl: number
-    githubId: number
     status: number
-    overview: number
+    createdAt: number
+    userId: number
     _all: number
   }
 
 
-  export type RepositoryAvgAggregateInputType = {
-    githubId?: true
-  }
-
-  export type RepositorySumAggregateInputType = {
-    githubId?: true
-  }
-
   export type RepositoryMinAggregateInputType = {
     id?: true
     name?: true
-    owner?: true
     url?: true
-    userId?: true
-    createdAt?: true
-    updatedAt?: true
-    avatarUrl?: true
-    githubId?: true
     status?: true
-    overview?: true
+    createdAt?: true
+    userId?: true
   }
 
   export type RepositoryMaxAggregateInputType = {
     id?: true
     name?: true
-    owner?: true
     url?: true
-    userId?: true
-    createdAt?: true
-    updatedAt?: true
-    avatarUrl?: true
-    githubId?: true
     status?: true
-    overview?: true
+    createdAt?: true
+    userId?: true
   }
 
   export type RepositoryCountAggregateInputType = {
     id?: true
     name?: true
-    owner?: true
     url?: true
-    userId?: true
-    createdAt?: true
-    updatedAt?: true
-    avatarUrl?: true
-    githubId?: true
     status?: true
-    overview?: true
+    createdAt?: true
+    userId?: true
     _all?: true
   }
 
@@ -6788,18 +6749,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: RepositoryAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RepositorySumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: RepositoryMinAggregateInputType
@@ -6830,27 +6779,18 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RepositoryCountAggregateInputType | true
-    _avg?: RepositoryAvgAggregateInputType
-    _sum?: RepositorySumAggregateInputType
     _min?: RepositoryMinAggregateInputType
     _max?: RepositoryMaxAggregateInputType
   }
 
   export type RepositoryGroupByOutputType = {
     id: string
-    name: string | null
-    owner: string | null
+    name: string
     url: string
-    userId: string
+    status: $Enums.RepoStatus
     createdAt: Date
-    updatedAt: Date
-    avatarUrl: string | null
-    githubId: number | null
-    status: $Enums.RepositoryStatus
-    overview: string | null
+    userId: string
     _count: RepositoryCountAggregateOutputType | null
-    _avg: RepositoryAvgAggregateOutputType | null
-    _sum: RepositorySumAggregateOutputType | null
     _min: RepositoryMinAggregateOutputType | null
     _max: RepositoryMaxAggregateOutputType | null
   }
@@ -6872,56 +6812,41 @@ export namespace Prisma {
   export type RepositorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    owner?: boolean
     url?: boolean
-    userId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    avatarUrl?: boolean
-    githubId?: boolean
     status?: boolean
-    overview?: boolean
+    createdAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    logs?: boolean | Repository$logsArgs<ExtArgs>
     directories?: boolean | Repository$directoriesArgs<ExtArgs>
     files?: boolean | Repository$filesArgs<ExtArgs>
-    logs?: boolean | Repository$logsArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | RepositoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repository"]>
 
   export type RepositorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    owner?: boolean
     url?: boolean
-    userId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    avatarUrl?: boolean
-    githubId?: boolean
     status?: boolean
-    overview?: boolean
+    createdAt?: boolean
+    userId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repository"]>
 
   export type RepositorySelectScalar = {
     id?: boolean
     name?: boolean
-    owner?: boolean
     url?: boolean
-    userId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    avatarUrl?: boolean
-    githubId?: boolean
     status?: boolean
-    overview?: boolean
+    createdAt?: boolean
+    userId?: boolean
   }
 
   export type RepositoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    logs?: boolean | Repository$logsArgs<ExtArgs>
     directories?: boolean | Repository$directoriesArgs<ExtArgs>
     files?: boolean | Repository$filesArgs<ExtArgs>
-    logs?: boolean | Repository$logsArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | RepositoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RepositoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6931,23 +6856,18 @@ export namespace Prisma {
   export type $RepositoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Repository"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      logs: Prisma.$LogPayload<ExtArgs>[]
       directories: Prisma.$DirectoryPayload<ExtArgs>[]
       files: Prisma.$FilePayload<ExtArgs>[]
-      logs: Prisma.$LogPayload<ExtArgs>[]
-      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      name: string | null
-      owner: string | null
+      name: string
       url: string
-      userId: string
+      status: $Enums.RepoStatus
       createdAt: Date
-      updatedAt: Date
-      avatarUrl: string | null
-      githubId: number | null
-      status: $Enums.RepositoryStatus
-      overview: string | null
+      userId: string
     }, ExtArgs["result"]["repository"]>
     composites: {}
   }
@@ -7312,10 +7232,10 @@ export namespace Prisma {
    */
   export interface Prisma__RepositoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    logs<T extends Repository$logsArgs<ExtArgs> = {}>(args?: Subset<T, Repository$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LogPayload<ExtArgs>, T, "findMany"> | Null>
     directories<T extends Repository$directoriesArgs<ExtArgs> = {}>(args?: Subset<T, Repository$directoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DirectoryPayload<ExtArgs>, T, "findMany"> | Null>
     files<T extends Repository$filesArgs<ExtArgs> = {}>(args?: Subset<T, Repository$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany"> | Null>
-    logs<T extends Repository$logsArgs<ExtArgs> = {}>(args?: Subset<T, Repository$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LogPayload<ExtArgs>, T, "findMany"> | Null>
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7347,15 +7267,10 @@ export namespace Prisma {
   interface RepositoryFieldRefs {
     readonly id: FieldRef<"Repository", 'String'>
     readonly name: FieldRef<"Repository", 'String'>
-    readonly owner: FieldRef<"Repository", 'String'>
     readonly url: FieldRef<"Repository", 'String'>
-    readonly userId: FieldRef<"Repository", 'String'>
+    readonly status: FieldRef<"Repository", 'RepoStatus'>
     readonly createdAt: FieldRef<"Repository", 'DateTime'>
-    readonly updatedAt: FieldRef<"Repository", 'DateTime'>
-    readonly avatarUrl: FieldRef<"Repository", 'String'>
-    readonly githubId: FieldRef<"Repository", 'Int'>
-    readonly status: FieldRef<"Repository", 'RepositoryStatus'>
-    readonly overview: FieldRef<"Repository", 'String'>
+    readonly userId: FieldRef<"Repository", 'String'>
   }
     
 
@@ -7674,6 +7589,26 @@ export namespace Prisma {
   }
 
   /**
+   * Repository.logs
+   */
+  export type Repository$logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Log
+     */
+    select?: LogSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LogInclude<ExtArgs> | null
+    where?: LogWhereInput
+    orderBy?: LogOrderByWithRelationInput | LogOrderByWithRelationInput[]
+    cursor?: LogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LogScalarFieldEnum | LogScalarFieldEnum[]
+  }
+
+  /**
    * Repository.directories
    */
   export type Repository$directoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7714,26 +7649,6 @@ export namespace Prisma {
   }
 
   /**
-   * Repository.logs
-   */
-  export type Repository$logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Log
-     */
-    select?: LogSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: LogInclude<ExtArgs> | null
-    where?: LogWhereInput
-    orderBy?: LogOrderByWithRelationInput | LogOrderByWithRelationInput[]
-    cursor?: LogWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: LogScalarFieldEnum | LogScalarFieldEnum[]
-  }
-
-  /**
    * Repository without action
    */
   export type RepositoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7760,64 +7675,52 @@ export namespace Prisma {
 
   export type DirectoryMinAggregateOutputType = {
     id: string | null
+    name: string | null
     path: string | null
-    summary: string | null
-    repositoryId: string | null
     parentId: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    repositoryId: string | null
   }
 
   export type DirectoryMaxAggregateOutputType = {
     id: string | null
+    name: string | null
     path: string | null
-    summary: string | null
-    repositoryId: string | null
     parentId: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    repositoryId: string | null
   }
 
   export type DirectoryCountAggregateOutputType = {
     id: number
+    name: number
     path: number
-    summary: number
-    repositoryId: number
     parentId: number
-    createdAt: number
-    updatedAt: number
+    repositoryId: number
     _all: number
   }
 
 
   export type DirectoryMinAggregateInputType = {
     id?: true
+    name?: true
     path?: true
-    summary?: true
-    repositoryId?: true
     parentId?: true
-    createdAt?: true
-    updatedAt?: true
+    repositoryId?: true
   }
 
   export type DirectoryMaxAggregateInputType = {
     id?: true
+    name?: true
     path?: true
-    summary?: true
-    repositoryId?: true
     parentId?: true
-    createdAt?: true
-    updatedAt?: true
+    repositoryId?: true
   }
 
   export type DirectoryCountAggregateInputType = {
     id?: true
+    name?: true
     path?: true
-    summary?: true
-    repositoryId?: true
     parentId?: true
-    createdAt?: true
-    updatedAt?: true
+    repositoryId?: true
     _all?: true
   }
 
@@ -7895,12 +7798,10 @@ export namespace Prisma {
 
   export type DirectoryGroupByOutputType = {
     id: string
+    name: string
     path: string
-    summary: string | null
-    repositoryId: string
     parentId: string | null
-    createdAt: Date
-    updatedAt: Date
+    repositoryId: string
     _count: DirectoryCountAggregateOutputType | null
     _min: DirectoryMinAggregateOutputType | null
     _max: DirectoryMaxAggregateOutputType | null
@@ -7922,12 +7823,10 @@ export namespace Prisma {
 
   export type DirectorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     path?: boolean
-    summary?: boolean
-    repositoryId?: boolean
     parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    repositoryId?: boolean
     parent?: boolean | Directory$parentArgs<ExtArgs>
     children?: boolean | Directory$childrenArgs<ExtArgs>
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
@@ -7937,24 +7836,20 @@ export namespace Prisma {
 
   export type DirectorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    name?: boolean
     path?: boolean
-    summary?: boolean
-    repositoryId?: boolean
     parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    repositoryId?: boolean
     parent?: boolean | Directory$parentArgs<ExtArgs>
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["directory"]>
 
   export type DirectorySelectScalar = {
     id?: boolean
+    name?: boolean
     path?: boolean
-    summary?: boolean
-    repositoryId?: boolean
     parentId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    repositoryId?: boolean
   }
 
   export type DirectoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7979,12 +7874,10 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      name: string
       path: string
-      summary: string | null
-      repositoryId: string
       parentId: string | null
-      createdAt: Date
-      updatedAt: Date
+      repositoryId: string
     }, ExtArgs["result"]["directory"]>
     composites: {}
   }
@@ -8383,12 +8276,10 @@ export namespace Prisma {
    */ 
   interface DirectoryFieldRefs {
     readonly id: FieldRef<"Directory", 'String'>
+    readonly name: FieldRef<"Directory", 'String'>
     readonly path: FieldRef<"Directory", 'String'>
-    readonly summary: FieldRef<"Directory", 'String'>
-    readonly repositoryId: FieldRef<"Directory", 'String'>
     readonly parentId: FieldRef<"Directory", 'String'>
-    readonly createdAt: FieldRef<"Directory", 'DateTime'>
-    readonly updatedAt: FieldRef<"Directory", 'DateTime'>
+    readonly repositoryId: FieldRef<"Directory", 'String'>
   }
     
 
@@ -8788,64 +8679,64 @@ export namespace Prisma {
 
   export type FileMinAggregateOutputType = {
     id: string | null
-    path: string | null
     name: string | null
+    path: string | null
+    extension: string | null
     content: string | null
-    directoryId: string | null
-    createdAt: Date | null
     repositoryId: string | null
+    directoryId: string | null
   }
 
   export type FileMaxAggregateOutputType = {
     id: string | null
-    path: string | null
     name: string | null
+    path: string | null
+    extension: string | null
     content: string | null
-    directoryId: string | null
-    createdAt: Date | null
     repositoryId: string | null
+    directoryId: string | null
   }
 
   export type FileCountAggregateOutputType = {
     id: number
-    path: number
     name: number
+    path: number
+    extension: number
     content: number
-    directoryId: number
-    createdAt: number
     repositoryId: number
+    directoryId: number
     _all: number
   }
 
 
   export type FileMinAggregateInputType = {
     id?: true
-    path?: true
     name?: true
+    path?: true
+    extension?: true
     content?: true
-    directoryId?: true
-    createdAt?: true
     repositoryId?: true
+    directoryId?: true
   }
 
   export type FileMaxAggregateInputType = {
     id?: true
-    path?: true
     name?: true
+    path?: true
+    extension?: true
     content?: true
-    directoryId?: true
-    createdAt?: true
     repositoryId?: true
+    directoryId?: true
   }
 
   export type FileCountAggregateInputType = {
     id?: true
-    path?: true
     name?: true
+    path?: true
+    extension?: true
     content?: true
-    directoryId?: true
-    createdAt?: true
     repositoryId?: true
+    directoryId?: true
     _all?: true
   }
 
@@ -8923,12 +8814,12 @@ export namespace Prisma {
 
   export type FileGroupByOutputType = {
     id: string
-    path: string
     name: string
+    path: string
+    extension: string
     content: string | null
-    directoryId: string | null
-    createdAt: Date
     repositoryId: string
+    directoryId: string | null
     _count: FileCountAggregateOutputType | null
     _min: FileMinAggregateOutputType | null
     _max: FileMaxAggregateOutputType | null
@@ -8950,69 +8841,72 @@ export namespace Prisma {
 
   export type FileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    path?: boolean
     name?: boolean
+    path?: boolean
+    extension?: boolean
     content?: boolean
-    directoryId?: boolean
-    createdAt?: boolean
     repositoryId?: boolean
+    directoryId?: boolean
+    repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    directory?: boolean | File$directoryArgs<ExtArgs>
     symbols?: boolean | File$symbolsArgs<ExtArgs>
     dependencies?: boolean | File$dependenciesArgs<ExtArgs>
-    directory?: boolean | File$directoryArgs<ExtArgs>
-    repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    referencedBy?: boolean | File$referencedByArgs<ExtArgs>
     _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
   export type FileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    path?: boolean
     name?: boolean
+    path?: boolean
+    extension?: boolean
     content?: boolean
-    directoryId?: boolean
-    createdAt?: boolean
     repositoryId?: boolean
-    directory?: boolean | File$directoryArgs<ExtArgs>
+    directoryId?: boolean
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    directory?: boolean | File$directoryArgs<ExtArgs>
   }, ExtArgs["result"]["file"]>
 
   export type FileSelectScalar = {
     id?: boolean
-    path?: boolean
     name?: boolean
+    path?: boolean
+    extension?: boolean
     content?: boolean
-    directoryId?: boolean
-    createdAt?: boolean
     repositoryId?: boolean
+    directoryId?: boolean
   }
 
   export type FileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    directory?: boolean | File$directoryArgs<ExtArgs>
     symbols?: boolean | File$symbolsArgs<ExtArgs>
     dependencies?: boolean | File$dependenciesArgs<ExtArgs>
-    directory?: boolean | File$directoryArgs<ExtArgs>
-    repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    referencedBy?: boolean | File$referencedByArgs<ExtArgs>
     _count?: boolean | FileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    directory?: boolean | File$directoryArgs<ExtArgs>
     repository?: boolean | RepositoryDefaultArgs<ExtArgs>
+    directory?: boolean | File$directoryArgs<ExtArgs>
   }
 
   export type $FilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "File"
     objects: {
+      repository: Prisma.$RepositoryPayload<ExtArgs>
+      directory: Prisma.$DirectoryPayload<ExtArgs> | null
       symbols: Prisma.$SymbolPayload<ExtArgs>[]
       dependencies: Prisma.$DependencyPayload<ExtArgs>[]
-      directory: Prisma.$DirectoryPayload<ExtArgs> | null
-      repository: Prisma.$RepositoryPayload<ExtArgs>
+      referencedBy: Prisma.$DependencyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      path: string
       name: string
+      path: string
+      extension: string
       content: string | null
-      directoryId: string | null
-      createdAt: Date
       repositoryId: string
+      directoryId: string | null
     }, ExtArgs["result"]["file"]>
     composites: {}
   }
@@ -9377,10 +9271,11 @@ export namespace Prisma {
    */
   export interface Prisma__FileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    repository<T extends RepositoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RepositoryDefaultArgs<ExtArgs>>): Prisma__RepositoryClient<$Result.GetResult<Prisma.$RepositoryPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    directory<T extends File$directoryArgs<ExtArgs> = {}>(args?: Subset<T, File$directoryArgs<ExtArgs>>): Prisma__DirectoryClient<$Result.GetResult<Prisma.$DirectoryPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     symbols<T extends File$symbolsArgs<ExtArgs> = {}>(args?: Subset<T, File$symbolsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SymbolPayload<ExtArgs>, T, "findMany"> | Null>
     dependencies<T extends File$dependenciesArgs<ExtArgs> = {}>(args?: Subset<T, File$dependenciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findMany"> | Null>
-    directory<T extends File$directoryArgs<ExtArgs> = {}>(args?: Subset<T, File$directoryArgs<ExtArgs>>): Prisma__DirectoryClient<$Result.GetResult<Prisma.$DirectoryPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    repository<T extends RepositoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RepositoryDefaultArgs<ExtArgs>>): Prisma__RepositoryClient<$Result.GetResult<Prisma.$RepositoryPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    referencedBy<T extends File$referencedByArgs<ExtArgs> = {}>(args?: Subset<T, File$referencedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DependencyPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9411,12 +9306,12 @@ export namespace Prisma {
    */ 
   interface FileFieldRefs {
     readonly id: FieldRef<"File", 'String'>
-    readonly path: FieldRef<"File", 'String'>
     readonly name: FieldRef<"File", 'String'>
+    readonly path: FieldRef<"File", 'String'>
+    readonly extension: FieldRef<"File", 'String'>
     readonly content: FieldRef<"File", 'String'>
-    readonly directoryId: FieldRef<"File", 'String'>
-    readonly createdAt: FieldRef<"File", 'DateTime'>
     readonly repositoryId: FieldRef<"File", 'String'>
+    readonly directoryId: FieldRef<"File", 'String'>
   }
     
 
@@ -9735,6 +9630,21 @@ export namespace Prisma {
   }
 
   /**
+   * File.directory
+   */
+  export type File$directoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Directory
+     */
+    select?: DirectorySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DirectoryInclude<ExtArgs> | null
+    where?: DirectoryWhereInput
+  }
+
+  /**
    * File.symbols
    */
   export type File$symbolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9775,18 +9685,23 @@ export namespace Prisma {
   }
 
   /**
-   * File.directory
+   * File.referencedBy
    */
-  export type File$directoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type File$referencedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Directory
+     * Select specific fields to fetch from the Dependency
      */
-    select?: DirectorySelect<ExtArgs> | null
+    select?: DependencySelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: DirectoryInclude<ExtArgs> | null
-    where?: DirectoryWhereInput
+    include?: DependencyInclude<ExtArgs> | null
+    where?: DependencyWhereInput
+    orderBy?: DependencyOrderByWithRelationInput | DependencyOrderByWithRelationInput[]
+    cursor?: DependencyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DependencyScalarFieldEnum | DependencyScalarFieldEnum[]
   }
 
   /**
@@ -10737,25 +10652,25 @@ export namespace Prisma {
 
   export type DependencyMinAggregateOutputType = {
     id: string | null
-    fileId: string | null
     importPath: string | null
     sourceValue: string | null
+    fileId: string | null
     resolvedFileId: string | null
   }
 
   export type DependencyMaxAggregateOutputType = {
     id: string | null
-    fileId: string | null
     importPath: string | null
     sourceValue: string | null
+    fileId: string | null
     resolvedFileId: string | null
   }
 
   export type DependencyCountAggregateOutputType = {
     id: number
-    fileId: number
     importPath: number
     sourceValue: number
+    fileId: number
     resolvedFileId: number
     _all: number
   }
@@ -10763,25 +10678,25 @@ export namespace Prisma {
 
   export type DependencyMinAggregateInputType = {
     id?: true
-    fileId?: true
     importPath?: true
     sourceValue?: true
+    fileId?: true
     resolvedFileId?: true
   }
 
   export type DependencyMaxAggregateInputType = {
     id?: true
-    fileId?: true
     importPath?: true
     sourceValue?: true
+    fileId?: true
     resolvedFileId?: true
   }
 
   export type DependencyCountAggregateInputType = {
     id?: true
-    fileId?: true
     importPath?: true
     sourceValue?: true
+    fileId?: true
     resolvedFileId?: true
     _all?: true
   }
@@ -10860,9 +10775,9 @@ export namespace Prisma {
 
   export type DependencyGroupByOutputType = {
     id: string
-    fileId: string
     importPath: string
     sourceValue: string
+    fileId: string
     resolvedFileId: string | null
     _count: DependencyCountAggregateOutputType | null
     _min: DependencyMinAggregateOutputType | null
@@ -10885,47 +10800,52 @@ export namespace Prisma {
 
   export type DependencySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    fileId?: boolean
     importPath?: boolean
     sourceValue?: boolean
+    fileId?: boolean
     resolvedFileId?: boolean
     file?: boolean | FileDefaultArgs<ExtArgs>
+    resolvedFile?: boolean | Dependency$resolvedFileArgs<ExtArgs>
   }, ExtArgs["result"]["dependency"]>
 
   export type DependencySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    fileId?: boolean
     importPath?: boolean
     sourceValue?: boolean
+    fileId?: boolean
     resolvedFileId?: boolean
     file?: boolean | FileDefaultArgs<ExtArgs>
+    resolvedFile?: boolean | Dependency$resolvedFileArgs<ExtArgs>
   }, ExtArgs["result"]["dependency"]>
 
   export type DependencySelectScalar = {
     id?: boolean
-    fileId?: boolean
     importPath?: boolean
     sourceValue?: boolean
+    fileId?: boolean
     resolvedFileId?: boolean
   }
 
   export type DependencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     file?: boolean | FileDefaultArgs<ExtArgs>
+    resolvedFile?: boolean | Dependency$resolvedFileArgs<ExtArgs>
   }
   export type DependencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     file?: boolean | FileDefaultArgs<ExtArgs>
+    resolvedFile?: boolean | Dependency$resolvedFileArgs<ExtArgs>
   }
 
   export type $DependencyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Dependency"
     objects: {
       file: Prisma.$FilePayload<ExtArgs>
+      resolvedFile: Prisma.$FilePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      fileId: string
       importPath: string
       sourceValue: string
+      fileId: string
       resolvedFileId: string | null
     }, ExtArgs["result"]["dependency"]>
     composites: {}
@@ -11292,6 +11212,7 @@ export namespace Prisma {
   export interface Prisma__DependencyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     file<T extends FileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FileDefaultArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    resolvedFile<T extends Dependency$resolvedFileArgs<ExtArgs> = {}>(args?: Subset<T, Dependency$resolvedFileArgs<ExtArgs>>): Prisma__FileClient<$Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11322,9 +11243,9 @@ export namespace Prisma {
    */ 
   interface DependencyFieldRefs {
     readonly id: FieldRef<"Dependency", 'String'>
-    readonly fileId: FieldRef<"Dependency", 'String'>
     readonly importPath: FieldRef<"Dependency", 'String'>
     readonly sourceValue: FieldRef<"Dependency", 'String'>
+    readonly fileId: FieldRef<"Dependency", 'String'>
     readonly resolvedFileId: FieldRef<"Dependency", 'String'>
   }
     
@@ -11644,6 +11565,21 @@ export namespace Prisma {
   }
 
   /**
+   * Dependency.resolvedFile
+   */
+  export type Dependency$resolvedFileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the File
+     */
+    select?: FileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileInclude<ExtArgs> | null
+    where?: FileWhereInput
+  }
+
+  /**
    * Dependency without action
    */
   export type DependencyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11672,7 +11608,7 @@ export namespace Prisma {
     id: string | null
     repositoryId: string | null
     message: string | null
-    status: $Enums.RepositoryStatus | null
+    status: $Enums.RepoStatus | null
     createdAt: Date | null
   }
 
@@ -11680,7 +11616,7 @@ export namespace Prisma {
     id: string | null
     repositoryId: string | null
     message: string | null
-    status: $Enums.RepositoryStatus | null
+    status: $Enums.RepoStatus | null
     createdAt: Date | null
   }
 
@@ -11795,7 +11731,7 @@ export namespace Prisma {
     id: string
     repositoryId: string
     message: string
-    status: $Enums.RepositoryStatus
+    status: $Enums.RepoStatus
     createdAt: Date
     _count: LogCountAggregateOutputType | null
     _min: LogMinAggregateOutputType | null
@@ -11858,7 +11794,7 @@ export namespace Prisma {
       id: string
       repositoryId: string
       message: string
-      status: $Enums.RepositoryStatus
+      status: $Enums.RepoStatus
       createdAt: Date
     }, ExtArgs["result"]["log"]>
     composites: {}
@@ -12257,7 +12193,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Log", 'String'>
     readonly repositoryId: FieldRef<"Log", 'String'>
     readonly message: FieldRef<"Log", 'String'>
-    readonly status: FieldRef<"Log", 'RepositoryStatus'>
+    readonly status: FieldRef<"Log", 'RepoStatus'>
     readonly createdAt: FieldRef<"Log", 'DateTime'>
   }
     
@@ -12670,15 +12606,10 @@ export namespace Prisma {
   export const RepositoryScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    owner: 'owner',
     url: 'url',
-    userId: 'userId',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    avatarUrl: 'avatarUrl',
-    githubId: 'githubId',
     status: 'status',
-    overview: 'overview'
+    createdAt: 'createdAt',
+    userId: 'userId'
   };
 
   export type RepositoryScalarFieldEnum = (typeof RepositoryScalarFieldEnum)[keyof typeof RepositoryScalarFieldEnum]
@@ -12686,12 +12617,10 @@ export namespace Prisma {
 
   export const DirectoryScalarFieldEnum: {
     id: 'id',
+    name: 'name',
     path: 'path',
-    summary: 'summary',
-    repositoryId: 'repositoryId',
     parentId: 'parentId',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    repositoryId: 'repositoryId'
   };
 
   export type DirectoryScalarFieldEnum = (typeof DirectoryScalarFieldEnum)[keyof typeof DirectoryScalarFieldEnum]
@@ -12699,12 +12628,12 @@ export namespace Prisma {
 
   export const FileScalarFieldEnum: {
     id: 'id',
-    path: 'path',
     name: 'name',
+    path: 'path',
+    extension: 'extension',
     content: 'content',
-    directoryId: 'directoryId',
-    createdAt: 'createdAt',
-    repositoryId: 'repositoryId'
+    repositoryId: 'repositoryId',
+    directoryId: 'directoryId'
   };
 
   export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
@@ -12722,9 +12651,9 @@ export namespace Prisma {
 
   export const DependencyScalarFieldEnum: {
     id: 'id',
-    fileId: 'fileId',
     importPath: 'importPath',
     sourceValue: 'sourceValue',
+    fileId: 'fileId',
     resolvedFileId: 'resolvedFileId'
   };
 
@@ -12814,16 +12743,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'RepositoryStatus'
+   * Reference to a field of type 'RepoStatus'
    */
-  export type EnumRepositoryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepositoryStatus'>
+  export type EnumRepoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepoStatus'>
     
 
 
   /**
-   * Reference to a field of type 'RepositoryStatus[]'
+   * Reference to a field of type 'RepoStatus[]'
    */
-  export type ListEnumRepositoryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepositoryStatus[]'>
+  export type ListEnumRepoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepoStatus[]'>
     
 
 
@@ -13163,38 +13092,28 @@ export namespace Prisma {
     OR?: RepositoryWhereInput[]
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
     id?: StringFilter<"Repository"> | string
-    name?: StringNullableFilter<"Repository"> | string | null
-    owner?: StringNullableFilter<"Repository"> | string | null
+    name?: StringFilter<"Repository"> | string
     url?: StringFilter<"Repository"> | string
-    userId?: StringFilter<"Repository"> | string
+    status?: EnumRepoStatusFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Repository"> | Date | string
-    updatedAt?: DateTimeFilter<"Repository"> | Date | string
-    avatarUrl?: StringNullableFilter<"Repository"> | string | null
-    githubId?: IntNullableFilter<"Repository"> | number | null
-    status?: EnumRepositoryStatusFilter<"Repository"> | $Enums.RepositoryStatus
-    overview?: StringNullableFilter<"Repository"> | string | null
+    userId?: StringFilter<"Repository"> | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    logs?: LogListRelationFilter
     directories?: DirectoryListRelationFilter
     files?: FileListRelationFilter
-    logs?: LogListRelationFilter
-    user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
   export type RepositoryOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrderInput | SortOrder
-    owner?: SortOrderInput | SortOrder
+    name?: SortOrder
     url?: SortOrder
-    userId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    avatarUrl?: SortOrderInput | SortOrder
-    githubId?: SortOrderInput | SortOrder
     status?: SortOrder
-    overview?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
+    logs?: LogOrderByRelationAggregateInput
     directories?: DirectoryOrderByRelationAggregateInput
     files?: FileOrderByRelationAggregateInput
-    logs?: LogOrderByRelationAggregateInput
-    user?: UserOrderByWithRelationInput
   }
 
   export type RepositoryWhereUniqueInput = Prisma.AtLeast<{
@@ -13202,39 +13121,27 @@ export namespace Prisma {
     AND?: RepositoryWhereInput | RepositoryWhereInput[]
     OR?: RepositoryWhereInput[]
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
-    name?: StringNullableFilter<"Repository"> | string | null
-    owner?: StringNullableFilter<"Repository"> | string | null
+    name?: StringFilter<"Repository"> | string
     url?: StringFilter<"Repository"> | string
-    userId?: StringFilter<"Repository"> | string
+    status?: EnumRepoStatusFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Repository"> | Date | string
-    updatedAt?: DateTimeFilter<"Repository"> | Date | string
-    avatarUrl?: StringNullableFilter<"Repository"> | string | null
-    githubId?: IntNullableFilter<"Repository"> | number | null
-    status?: EnumRepositoryStatusFilter<"Repository"> | $Enums.RepositoryStatus
-    overview?: StringNullableFilter<"Repository"> | string | null
+    userId?: StringFilter<"Repository"> | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    logs?: LogListRelationFilter
     directories?: DirectoryListRelationFilter
     files?: FileListRelationFilter
-    logs?: LogListRelationFilter
-    user?: XOR<UserRelationFilter, UserWhereInput>
   }, "id">
 
   export type RepositoryOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrderInput | SortOrder
-    owner?: SortOrderInput | SortOrder
+    name?: SortOrder
     url?: SortOrder
-    userId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    avatarUrl?: SortOrderInput | SortOrder
-    githubId?: SortOrderInput | SortOrder
     status?: SortOrder
-    overview?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
     _count?: RepositoryCountOrderByAggregateInput
-    _avg?: RepositoryAvgOrderByAggregateInput
     _max?: RepositoryMaxOrderByAggregateInput
     _min?: RepositoryMinOrderByAggregateInput
-    _sum?: RepositorySumOrderByAggregateInput
   }
 
   export type RepositoryScalarWhereWithAggregatesInput = {
@@ -13242,16 +13149,11 @@ export namespace Prisma {
     OR?: RepositoryScalarWhereWithAggregatesInput[]
     NOT?: RepositoryScalarWhereWithAggregatesInput | RepositoryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Repository"> | string
-    name?: StringNullableWithAggregatesFilter<"Repository"> | string | null
-    owner?: StringNullableWithAggregatesFilter<"Repository"> | string | null
+    name?: StringWithAggregatesFilter<"Repository"> | string
     url?: StringWithAggregatesFilter<"Repository"> | string
-    userId?: StringWithAggregatesFilter<"Repository"> | string
+    status?: EnumRepoStatusWithAggregatesFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
-    avatarUrl?: StringNullableWithAggregatesFilter<"Repository"> | string | null
-    githubId?: IntNullableWithAggregatesFilter<"Repository"> | number | null
-    status?: EnumRepositoryStatusWithAggregatesFilter<"Repository"> | $Enums.RepositoryStatus
-    overview?: StringNullableWithAggregatesFilter<"Repository"> | string | null
+    userId?: StringWithAggregatesFilter<"Repository"> | string
   }
 
   export type DirectoryWhereInput = {
@@ -13259,12 +13161,10 @@ export namespace Prisma {
     OR?: DirectoryWhereInput[]
     NOT?: DirectoryWhereInput | DirectoryWhereInput[]
     id?: StringFilter<"Directory"> | string
+    name?: StringFilter<"Directory"> | string
     path?: StringFilter<"Directory"> | string
-    summary?: StringNullableFilter<"Directory"> | string | null
-    repositoryId?: StringFilter<"Directory"> | string
     parentId?: StringNullableFilter<"Directory"> | string | null
-    createdAt?: DateTimeFilter<"Directory"> | Date | string
-    updatedAt?: DateTimeFilter<"Directory"> | Date | string
+    repositoryId?: StringFilter<"Directory"> | string
     parent?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
     children?: DirectoryListRelationFilter
     repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
@@ -13273,12 +13173,10 @@ export namespace Prisma {
 
   export type DirectoryOrderByWithRelationInput = {
     id?: SortOrder
+    name?: SortOrder
     path?: SortOrder
-    summary?: SortOrderInput | SortOrder
-    repositoryId?: SortOrder
     parentId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    repositoryId?: SortOrder
     parent?: DirectoryOrderByWithRelationInput
     children?: DirectoryOrderByRelationAggregateInput
     repository?: RepositoryOrderByWithRelationInput
@@ -13287,29 +13185,26 @@ export namespace Prisma {
 
   export type DirectoryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    repositoryId_path?: DirectoryRepositoryIdPathCompoundUniqueInput
     AND?: DirectoryWhereInput | DirectoryWhereInput[]
     OR?: DirectoryWhereInput[]
     NOT?: DirectoryWhereInput | DirectoryWhereInput[]
+    name?: StringFilter<"Directory"> | string
     path?: StringFilter<"Directory"> | string
-    summary?: StringNullableFilter<"Directory"> | string | null
-    repositoryId?: StringFilter<"Directory"> | string
     parentId?: StringNullableFilter<"Directory"> | string | null
-    createdAt?: DateTimeFilter<"Directory"> | Date | string
-    updatedAt?: DateTimeFilter<"Directory"> | Date | string
+    repositoryId?: StringFilter<"Directory"> | string
     parent?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
     children?: DirectoryListRelationFilter
     repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
     files?: FileListRelationFilter
-  }, "id">
+  }, "id" | "repositoryId_path">
 
   export type DirectoryOrderByWithAggregationInput = {
     id?: SortOrder
+    name?: SortOrder
     path?: SortOrder
-    summary?: SortOrderInput | SortOrder
-    repositoryId?: SortOrder
     parentId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    repositoryId?: SortOrder
     _count?: DirectoryCountOrderByAggregateInput
     _max?: DirectoryMaxOrderByAggregateInput
     _min?: DirectoryMinOrderByAggregateInput
@@ -13320,12 +13215,10 @@ export namespace Prisma {
     OR?: DirectoryScalarWhereWithAggregatesInput[]
     NOT?: DirectoryScalarWhereWithAggregatesInput | DirectoryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Directory"> | string
+    name?: StringWithAggregatesFilter<"Directory"> | string
     path?: StringWithAggregatesFilter<"Directory"> | string
-    summary?: StringNullableWithAggregatesFilter<"Directory"> | string | null
-    repositoryId?: StringWithAggregatesFilter<"Directory"> | string
     parentId?: StringNullableWithAggregatesFilter<"Directory"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Directory"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Directory"> | Date | string
+    repositoryId?: StringWithAggregatesFilter<"Directory"> | string
   }
 
   export type FileWhereInput = {
@@ -13333,57 +13226,61 @@ export namespace Prisma {
     OR?: FileWhereInput[]
     NOT?: FileWhereInput | FileWhereInput[]
     id?: StringFilter<"File"> | string
-    path?: StringFilter<"File"> | string
     name?: StringFilter<"File"> | string
+    path?: StringFilter<"File"> | string
+    extension?: StringFilter<"File"> | string
     content?: StringNullableFilter<"File"> | string | null
-    directoryId?: StringNullableFilter<"File"> | string | null
-    createdAt?: DateTimeFilter<"File"> | Date | string
     repositoryId?: StringFilter<"File"> | string
+    directoryId?: StringNullableFilter<"File"> | string | null
+    repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
+    directory?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
     symbols?: SymbolListRelationFilter
     dependencies?: DependencyListRelationFilter
-    directory?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
-    repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
+    referencedBy?: DependencyListRelationFilter
   }
 
   export type FileOrderByWithRelationInput = {
     id?: SortOrder
-    path?: SortOrder
     name?: SortOrder
+    path?: SortOrder
+    extension?: SortOrder
     content?: SortOrderInput | SortOrder
-    directoryId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
     repositoryId?: SortOrder
+    directoryId?: SortOrderInput | SortOrder
+    repository?: RepositoryOrderByWithRelationInput
+    directory?: DirectoryOrderByWithRelationInput
     symbols?: SymbolOrderByRelationAggregateInput
     dependencies?: DependencyOrderByRelationAggregateInput
-    directory?: DirectoryOrderByWithRelationInput
-    repository?: RepositoryOrderByWithRelationInput
+    referencedBy?: DependencyOrderByRelationAggregateInput
   }
 
   export type FileWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    repositoryId_path?: FileRepositoryIdPathCompoundUniqueInput
     AND?: FileWhereInput | FileWhereInput[]
     OR?: FileWhereInput[]
     NOT?: FileWhereInput | FileWhereInput[]
-    path?: StringFilter<"File"> | string
     name?: StringFilter<"File"> | string
+    path?: StringFilter<"File"> | string
+    extension?: StringFilter<"File"> | string
     content?: StringNullableFilter<"File"> | string | null
-    directoryId?: StringNullableFilter<"File"> | string | null
-    createdAt?: DateTimeFilter<"File"> | Date | string
     repositoryId?: StringFilter<"File"> | string
+    directoryId?: StringNullableFilter<"File"> | string | null
+    repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
+    directory?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
     symbols?: SymbolListRelationFilter
     dependencies?: DependencyListRelationFilter
-    directory?: XOR<DirectoryNullableRelationFilter, DirectoryWhereInput> | null
-    repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
-  }, "id">
+    referencedBy?: DependencyListRelationFilter
+  }, "id" | "repositoryId_path">
 
   export type FileOrderByWithAggregationInput = {
     id?: SortOrder
-    path?: SortOrder
     name?: SortOrder
+    path?: SortOrder
+    extension?: SortOrder
     content?: SortOrderInput | SortOrder
-    directoryId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
     repositoryId?: SortOrder
+    directoryId?: SortOrderInput | SortOrder
     _count?: FileCountOrderByAggregateInput
     _max?: FileMaxOrderByAggregateInput
     _min?: FileMinOrderByAggregateInput
@@ -13394,12 +13291,12 @@ export namespace Prisma {
     OR?: FileScalarWhereWithAggregatesInput[]
     NOT?: FileScalarWhereWithAggregatesInput | FileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"File"> | string
-    path?: StringWithAggregatesFilter<"File"> | string
     name?: StringWithAggregatesFilter<"File"> | string
+    path?: StringWithAggregatesFilter<"File"> | string
+    extension?: StringWithAggregatesFilter<"File"> | string
     content?: StringNullableWithAggregatesFilter<"File"> | string | null
-    directoryId?: StringNullableWithAggregatesFilter<"File"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"File"> | Date | string
     repositoryId?: StringWithAggregatesFilter<"File"> | string
+    directoryId?: StringNullableWithAggregatesFilter<"File"> | string | null
   }
 
   export type SymbolWhereInput = {
@@ -13457,20 +13354,22 @@ export namespace Prisma {
     OR?: DependencyWhereInput[]
     NOT?: DependencyWhereInput | DependencyWhereInput[]
     id?: StringFilter<"Dependency"> | string
-    fileId?: StringFilter<"Dependency"> | string
     importPath?: StringFilter<"Dependency"> | string
     sourceValue?: StringFilter<"Dependency"> | string
+    fileId?: StringFilter<"Dependency"> | string
     resolvedFileId?: StringNullableFilter<"Dependency"> | string | null
     file?: XOR<FileRelationFilter, FileWhereInput>
+    resolvedFile?: XOR<FileNullableRelationFilter, FileWhereInput> | null
   }
 
   export type DependencyOrderByWithRelationInput = {
     id?: SortOrder
-    fileId?: SortOrder
     importPath?: SortOrder
     sourceValue?: SortOrder
+    fileId?: SortOrder
     resolvedFileId?: SortOrderInput | SortOrder
     file?: FileOrderByWithRelationInput
+    resolvedFile?: FileOrderByWithRelationInput
   }
 
   export type DependencyWhereUniqueInput = Prisma.AtLeast<{
@@ -13478,18 +13377,19 @@ export namespace Prisma {
     AND?: DependencyWhereInput | DependencyWhereInput[]
     OR?: DependencyWhereInput[]
     NOT?: DependencyWhereInput | DependencyWhereInput[]
-    fileId?: StringFilter<"Dependency"> | string
     importPath?: StringFilter<"Dependency"> | string
     sourceValue?: StringFilter<"Dependency"> | string
+    fileId?: StringFilter<"Dependency"> | string
     resolvedFileId?: StringNullableFilter<"Dependency"> | string | null
     file?: XOR<FileRelationFilter, FileWhereInput>
+    resolvedFile?: XOR<FileNullableRelationFilter, FileWhereInput> | null
   }, "id">
 
   export type DependencyOrderByWithAggregationInput = {
     id?: SortOrder
-    fileId?: SortOrder
     importPath?: SortOrder
     sourceValue?: SortOrder
+    fileId?: SortOrder
     resolvedFileId?: SortOrderInput | SortOrder
     _count?: DependencyCountOrderByAggregateInput
     _max?: DependencyMaxOrderByAggregateInput
@@ -13501,9 +13401,9 @@ export namespace Prisma {
     OR?: DependencyScalarWhereWithAggregatesInput[]
     NOT?: DependencyScalarWhereWithAggregatesInput | DependencyScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Dependency"> | string
-    fileId?: StringWithAggregatesFilter<"Dependency"> | string
     importPath?: StringWithAggregatesFilter<"Dependency"> | string
     sourceValue?: StringWithAggregatesFilter<"Dependency"> | string
+    fileId?: StringWithAggregatesFilter<"Dependency"> | string
     resolvedFileId?: StringNullableWithAggregatesFilter<"Dependency"> | string | null
   }
 
@@ -13514,7 +13414,7 @@ export namespace Prisma {
     id?: StringFilter<"Log"> | string
     repositoryId?: StringFilter<"Log"> | string
     message?: StringFilter<"Log"> | string
-    status?: EnumRepositoryStatusFilter<"Log"> | $Enums.RepositoryStatus
+    status?: EnumRepoStatusFilter<"Log"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Log"> | Date | string
     repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
   }
@@ -13535,7 +13435,7 @@ export namespace Prisma {
     NOT?: LogWhereInput | LogWhereInput[]
     repositoryId?: StringFilter<"Log"> | string
     message?: StringFilter<"Log"> | string
-    status?: EnumRepositoryStatusFilter<"Log"> | $Enums.RepositoryStatus
+    status?: EnumRepoStatusFilter<"Log"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Log"> | Date | string
     repository?: XOR<RepositoryRelationFilter, RepositoryWhereInput>
   }, "id">
@@ -13558,7 +13458,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Log"> | string
     repositoryId?: StringWithAggregatesFilter<"Log"> | string
     message?: StringWithAggregatesFilter<"Log"> | string
-    status?: EnumRepositoryStatusWithAggregatesFilter<"Log"> | $Enums.RepositoryStatus
+    status?: EnumRepoStatusWithAggregatesFilter<"Log"> | $Enums.RepoStatus
     createdAt?: DateTimeWithAggregatesFilter<"Log"> | Date | string
   }
 
@@ -13903,119 +13803,82 @@ export namespace Prisma {
 
   export type RepositoryCreateInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    user: UserCreateNestedOneWithoutRepositoriesInput
+    logs?: LogCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
     files?: FileCreateNestedManyWithoutRepositoryInput
-    logs?: LogCreateNestedManyWithoutRepositoryInput
-    user: UserCreateNestedOneWithoutRepositoriesInput
   }
 
   export type RepositoryUncheckedCreateInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
-    userId: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    userId: string
+    logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
-    logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
   }
 
   export type RepositoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
+    logs?: LogUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
     files?: FileUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUpdateManyWithoutRepositoryNestedInput
-    user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
   }
 
   export type RepositoryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
   }
 
   export type RepositoryCreateManyInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
-    userId: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    userId: string
   }
 
   export type RepositoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepositoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type DirectoryCreateInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
     parent?: DirectoryCreateNestedOneWithoutChildrenInput
     children?: DirectoryCreateNestedManyWithoutParentInput
     repository: RepositoryCreateNestedOneWithoutDirectoriesInput
@@ -14024,22 +13887,18 @@ export namespace Prisma {
 
   export type DirectoryUncheckedCreateInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
-    repositoryId: string
     parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    repositoryId: string
     children?: DirectoryUncheckedCreateNestedManyWithoutParentInput
     files?: FileUncheckedCreateNestedManyWithoutDirectoryInput
   }
 
   export type DirectoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parent?: DirectoryUpdateOneWithoutChildrenNestedInput
     children?: DirectoryUpdateManyWithoutParentNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutDirectoriesNestedInput
@@ -14048,118 +13907,114 @@ export namespace Prisma {
 
   export type DirectoryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    repositoryId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repositoryId?: StringFieldUpdateOperationsInput | string
     children?: DirectoryUncheckedUpdateManyWithoutParentNestedInput
     files?: FileUncheckedUpdateManyWithoutDirectoryNestedInput
   }
 
   export type DirectoryCreateManyInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
-    repositoryId: string
     parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    repositoryId: string
   }
 
   export type DirectoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DirectoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    repositoryId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repositoryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type FileCreateInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    createdAt?: Date | string
+    repository: RepositoryCreateNestedOneWithoutFilesInput
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
     symbols?: SymbolCreateNestedManyWithoutFileInput
     dependencies?: DependencyCreateNestedManyWithoutFileInput
-    directory?: DirectoryCreateNestedOneWithoutFilesInput
-    repository: RepositoryCreateNestedOneWithoutFilesInput
+    referencedBy?: DependencyCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileUncheckedCreateInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    directoryId?: string | null
-    createdAt?: Date | string
     repositoryId: string
+    directoryId?: string | null
     symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
     dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyUncheckedCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
     symbols?: SymbolUpdateManyWithoutFileNestedInput
     dependencies?: DependencyUpdateManyWithoutFileNestedInput
-    directory?: DirectoryUpdateOneWithoutFilesNestedInput
-    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+    referencedBy?: DependencyUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
     dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUncheckedUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileCreateManyInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    directoryId?: string | null
-    createdAt?: Date | string
     repositoryId: string
+    directoryId?: string | null
   }
 
   export type FileUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SymbolCreateInput = {
@@ -14214,15 +14069,15 @@ export namespace Prisma {
     id?: string
     importPath: string
     sourceValue: string
-    resolvedFileId?: string | null
     file: FileCreateNestedOneWithoutDependenciesInput
+    resolvedFile?: FileCreateNestedOneWithoutReferencedByInput
   }
 
   export type DependencyUncheckedCreateInput = {
     id?: string
-    fileId: string
     importPath: string
     sourceValue: string
+    fileId: string
     resolvedFileId?: string | null
   }
 
@@ -14230,23 +14085,23 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     importPath?: StringFieldUpdateOperationsInput | string
     sourceValue?: StringFieldUpdateOperationsInput | string
-    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
     file?: FileUpdateOneRequiredWithoutDependenciesNestedInput
+    resolvedFile?: FileUpdateOneWithoutReferencedByNestedInput
   }
 
   export type DependencyUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
     importPath?: StringFieldUpdateOperationsInput | string
     sourceValue?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
     resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DependencyCreateManyInput = {
     id?: string
-    fileId: string
     importPath: string
     sourceValue: string
+    fileId: string
     resolvedFileId?: string | null
   }
 
@@ -14254,21 +14109,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     importPath?: StringFieldUpdateOperationsInput | string
     sourceValue?: StringFieldUpdateOperationsInput | string
-    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DependencyUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    fileId?: StringFieldUpdateOperationsInput | string
     importPath?: StringFieldUpdateOperationsInput | string
     sourceValue?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
     resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LogCreateInput = {
     id?: string
     message: string
-    status: $Enums.RepositoryStatus
+    status: $Enums.RepoStatus
     createdAt?: Date | string
     repository: RepositoryCreateNestedOneWithoutLogsInput
   }
@@ -14277,14 +14131,14 @@ export namespace Prisma {
     id?: string
     repositoryId: string
     message: string
-    status: $Enums.RepositoryStatus
+    status: $Enums.RepoStatus
     createdAt?: Date | string
   }
 
   export type LogUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repository?: RepositoryUpdateOneRequiredWithoutLogsNestedInput
   }
@@ -14293,7 +14147,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     repositoryId?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14301,14 +14155,14 @@ export namespace Prisma {
     id?: string
     repositoryId: string
     message: string
-    status: $Enums.RepositoryStatus
+    status: $Enums.RepoStatus
     createdAt?: Date | string
   }
 
   export type LogUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14316,7 +14170,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     repositoryId?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14662,11 +14516,17 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type EnumRepositoryStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.RepositoryStatus | EnumRepositoryStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumRepositoryStatusFilter<$PrismaModel> | $Enums.RepositoryStatus
+  export type EnumRepoStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RepoStatus | EnumRepoStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRepoStatusFilter<$PrismaModel> | $Enums.RepoStatus
+  }
+
+  export type LogListRelationFilter = {
+    every?: LogWhereInput
+    some?: LogWhereInput
+    none?: LogWhereInput
   }
 
   export type DirectoryListRelationFilter = {
@@ -14681,10 +14541,8 @@ export namespace Prisma {
     none?: FileWhereInput
   }
 
-  export type LogListRelationFilter = {
-    every?: LogWhereInput
-    some?: LogWhereInput
-    none?: LogWhereInput
+  export type LogOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type DirectoryOrderByRelationAggregateInput = {
@@ -14695,68 +14553,41 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type LogOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type RepositoryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    owner?: SortOrder
     url?: SortOrder
-    userId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    avatarUrl?: SortOrder
-    githubId?: SortOrder
     status?: SortOrder
-    overview?: SortOrder
-  }
-
-  export type RepositoryAvgOrderByAggregateInput = {
-    githubId?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type RepositoryMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    owner?: SortOrder
     url?: SortOrder
-    userId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    avatarUrl?: SortOrder
-    githubId?: SortOrder
     status?: SortOrder
-    overview?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type RepositoryMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    owner?: SortOrder
     url?: SortOrder
-    userId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    avatarUrl?: SortOrder
-    githubId?: SortOrder
     status?: SortOrder
-    overview?: SortOrder
+    createdAt?: SortOrder
+    userId?: SortOrder
   }
 
-  export type RepositorySumOrderByAggregateInput = {
-    githubId?: SortOrder
-  }
-
-  export type EnumRepositoryStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.RepositoryStatus | EnumRepositoryStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumRepositoryStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepositoryStatus
+  export type EnumRepoStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RepoStatus | EnumRepoStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRepoStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepoStatus
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRepositoryStatusFilter<$PrismaModel>
-    _max?: NestedEnumRepositoryStatusFilter<$PrismaModel>
+    _min?: NestedEnumRepoStatusFilter<$PrismaModel>
+    _max?: NestedEnumRepoStatusFilter<$PrismaModel>
   }
 
   export type DirectoryNullableRelationFilter = {
@@ -14769,34 +14600,33 @@ export namespace Prisma {
     isNot?: RepositoryWhereInput
   }
 
+  export type DirectoryRepositoryIdPathCompoundUniqueInput = {
+    repositoryId: string
+    path: string
+  }
+
   export type DirectoryCountOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     path?: SortOrder
-    summary?: SortOrder
-    repositoryId?: SortOrder
     parentId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    repositoryId?: SortOrder
   }
 
   export type DirectoryMaxOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     path?: SortOrder
-    summary?: SortOrder
-    repositoryId?: SortOrder
     parentId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    repositoryId?: SortOrder
   }
 
   export type DirectoryMinOrderByAggregateInput = {
     id?: SortOrder
+    name?: SortOrder
     path?: SortOrder
-    summary?: SortOrder
-    repositoryId?: SortOrder
     parentId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    repositoryId?: SortOrder
   }
 
   export type SymbolListRelationFilter = {
@@ -14819,34 +14649,39 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type FileRepositoryIdPathCompoundUniqueInput = {
+    repositoryId: string
+    path: string
+  }
+
   export type FileCountOrderByAggregateInput = {
     id?: SortOrder
-    path?: SortOrder
     name?: SortOrder
+    path?: SortOrder
+    extension?: SortOrder
     content?: SortOrder
-    directoryId?: SortOrder
-    createdAt?: SortOrder
     repositoryId?: SortOrder
+    directoryId?: SortOrder
   }
 
   export type FileMaxOrderByAggregateInput = {
     id?: SortOrder
-    path?: SortOrder
     name?: SortOrder
+    path?: SortOrder
+    extension?: SortOrder
     content?: SortOrder
-    directoryId?: SortOrder
-    createdAt?: SortOrder
     repositoryId?: SortOrder
+    directoryId?: SortOrder
   }
 
   export type FileMinOrderByAggregateInput = {
     id?: SortOrder
-    path?: SortOrder
     name?: SortOrder
+    path?: SortOrder
+    extension?: SortOrder
     content?: SortOrder
-    directoryId?: SortOrder
-    createdAt?: SortOrder
     repositoryId?: SortOrder
+    directoryId?: SortOrder
   }
 
   export type FileRelationFilter = {
@@ -14875,27 +14710,32 @@ export namespace Prisma {
     fileId?: SortOrder
   }
 
+  export type FileNullableRelationFilter = {
+    is?: FileWhereInput | null
+    isNot?: FileWhereInput | null
+  }
+
   export type DependencyCountOrderByAggregateInput = {
     id?: SortOrder
-    fileId?: SortOrder
     importPath?: SortOrder
     sourceValue?: SortOrder
+    fileId?: SortOrder
     resolvedFileId?: SortOrder
   }
 
   export type DependencyMaxOrderByAggregateInput = {
     id?: SortOrder
-    fileId?: SortOrder
     importPath?: SortOrder
     sourceValue?: SortOrder
+    fileId?: SortOrder
     resolvedFileId?: SortOrder
   }
 
   export type DependencyMinOrderByAggregateInput = {
     id?: SortOrder
-    fileId?: SortOrder
     importPath?: SortOrder
     sourceValue?: SortOrder
+    fileId?: SortOrder
     resolvedFileId?: SortOrder
   }
 
@@ -15101,6 +14941,19 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
+  export type UserCreateNestedOneWithoutRepositoriesInput = {
+    create?: XOR<UserCreateWithoutRepositoriesInput, UserUncheckedCreateWithoutRepositoriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRepositoriesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type LogCreateNestedManyWithoutRepositoryInput = {
+    create?: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput> | LogCreateWithoutRepositoryInput[] | LogUncheckedCreateWithoutRepositoryInput[]
+    connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
+    createMany?: LogCreateManyRepositoryInputEnvelope
+    connect?: LogWhereUniqueInput | LogWhereUniqueInput[]
+  }
+
   export type DirectoryCreateNestedManyWithoutRepositoryInput = {
     create?: XOR<DirectoryCreateWithoutRepositoryInput, DirectoryUncheckedCreateWithoutRepositoryInput> | DirectoryCreateWithoutRepositoryInput[] | DirectoryUncheckedCreateWithoutRepositoryInput[]
     connectOrCreate?: DirectoryCreateOrConnectWithoutRepositoryInput | DirectoryCreateOrConnectWithoutRepositoryInput[]
@@ -15115,17 +14968,11 @@ export namespace Prisma {
     connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
   }
 
-  export type LogCreateNestedManyWithoutRepositoryInput = {
+  export type LogUncheckedCreateNestedManyWithoutRepositoryInput = {
     create?: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput> | LogCreateWithoutRepositoryInput[] | LogUncheckedCreateWithoutRepositoryInput[]
     connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
     createMany?: LogCreateManyRepositoryInputEnvelope
     connect?: LogWhereUniqueInput | LogWhereUniqueInput[]
-  }
-
-  export type UserCreateNestedOneWithoutRepositoriesInput = {
-    create?: XOR<UserCreateWithoutRepositoriesInput, UserUncheckedCreateWithoutRepositoriesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutRepositoriesInput
-    connect?: UserWhereUniqueInput
   }
 
   export type DirectoryUncheckedCreateNestedManyWithoutRepositoryInput = {
@@ -15142,15 +14989,30 @@ export namespace Prisma {
     connect?: FileWhereUniqueInput | FileWhereUniqueInput[]
   }
 
-  export type LogUncheckedCreateNestedManyWithoutRepositoryInput = {
-    create?: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput> | LogCreateWithoutRepositoryInput[] | LogUncheckedCreateWithoutRepositoryInput[]
-    connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
-    createMany?: LogCreateManyRepositoryInputEnvelope
-    connect?: LogWhereUniqueInput | LogWhereUniqueInput[]
+  export type EnumRepoStatusFieldUpdateOperationsInput = {
+    set?: $Enums.RepoStatus
   }
 
-  export type EnumRepositoryStatusFieldUpdateOperationsInput = {
-    set?: $Enums.RepositoryStatus
+  export type UserUpdateOneRequiredWithoutRepositoriesNestedInput = {
+    create?: XOR<UserCreateWithoutRepositoriesInput, UserUncheckedCreateWithoutRepositoriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRepositoriesInput
+    upsert?: UserUpsertWithoutRepositoriesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRepositoriesInput, UserUpdateWithoutRepositoriesInput>, UserUncheckedUpdateWithoutRepositoriesInput>
+  }
+
+  export type LogUpdateManyWithoutRepositoryNestedInput = {
+    create?: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput> | LogCreateWithoutRepositoryInput[] | LogUncheckedCreateWithoutRepositoryInput[]
+    connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
+    upsert?: LogUpsertWithWhereUniqueWithoutRepositoryInput | LogUpsertWithWhereUniqueWithoutRepositoryInput[]
+    createMany?: LogCreateManyRepositoryInputEnvelope
+    set?: LogWhereUniqueInput | LogWhereUniqueInput[]
+    disconnect?: LogWhereUniqueInput | LogWhereUniqueInput[]
+    delete?: LogWhereUniqueInput | LogWhereUniqueInput[]
+    connect?: LogWhereUniqueInput | LogWhereUniqueInput[]
+    update?: LogUpdateWithWhereUniqueWithoutRepositoryInput | LogUpdateWithWhereUniqueWithoutRepositoryInput[]
+    updateMany?: LogUpdateManyWithWhereWithoutRepositoryInput | LogUpdateManyWithWhereWithoutRepositoryInput[]
+    deleteMany?: LogScalarWhereInput | LogScalarWhereInput[]
   }
 
   export type DirectoryUpdateManyWithoutRepositoryNestedInput = {
@@ -15181,7 +15043,7 @@ export namespace Prisma {
     deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
   }
 
-  export type LogUpdateManyWithoutRepositoryNestedInput = {
+  export type LogUncheckedUpdateManyWithoutRepositoryNestedInput = {
     create?: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput> | LogCreateWithoutRepositoryInput[] | LogUncheckedCreateWithoutRepositoryInput[]
     connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
     upsert?: LogUpsertWithWhereUniqueWithoutRepositoryInput | LogUpsertWithWhereUniqueWithoutRepositoryInput[]
@@ -15193,14 +15055,6 @@ export namespace Prisma {
     update?: LogUpdateWithWhereUniqueWithoutRepositoryInput | LogUpdateWithWhereUniqueWithoutRepositoryInput[]
     updateMany?: LogUpdateManyWithWhereWithoutRepositoryInput | LogUpdateManyWithWhereWithoutRepositoryInput[]
     deleteMany?: LogScalarWhereInput | LogScalarWhereInput[]
-  }
-
-  export type UserUpdateOneRequiredWithoutRepositoriesNestedInput = {
-    create?: XOR<UserCreateWithoutRepositoriesInput, UserUncheckedCreateWithoutRepositoriesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutRepositoriesInput
-    upsert?: UserUpsertWithoutRepositoriesInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRepositoriesInput, UserUpdateWithoutRepositoriesInput>, UserUncheckedUpdateWithoutRepositoriesInput>
   }
 
   export type DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput = {
@@ -15229,20 +15083,6 @@ export namespace Prisma {
     update?: FileUpdateWithWhereUniqueWithoutRepositoryInput | FileUpdateWithWhereUniqueWithoutRepositoryInput[]
     updateMany?: FileUpdateManyWithWhereWithoutRepositoryInput | FileUpdateManyWithWhereWithoutRepositoryInput[]
     deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
-  }
-
-  export type LogUncheckedUpdateManyWithoutRepositoryNestedInput = {
-    create?: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput> | LogCreateWithoutRepositoryInput[] | LogUncheckedCreateWithoutRepositoryInput[]
-    connectOrCreate?: LogCreateOrConnectWithoutRepositoryInput | LogCreateOrConnectWithoutRepositoryInput[]
-    upsert?: LogUpsertWithWhereUniqueWithoutRepositoryInput | LogUpsertWithWhereUniqueWithoutRepositoryInput[]
-    createMany?: LogCreateManyRepositoryInputEnvelope
-    set?: LogWhereUniqueInput | LogWhereUniqueInput[]
-    disconnect?: LogWhereUniqueInput | LogWhereUniqueInput[]
-    delete?: LogWhereUniqueInput | LogWhereUniqueInput[]
-    connect?: LogWhereUniqueInput | LogWhereUniqueInput[]
-    update?: LogUpdateWithWhereUniqueWithoutRepositoryInput | LogUpdateWithWhereUniqueWithoutRepositoryInput[]
-    updateMany?: LogUpdateManyWithWhereWithoutRepositoryInput | LogUpdateManyWithWhereWithoutRepositoryInput[]
-    deleteMany?: LogScalarWhereInput | LogScalarWhereInput[]
   }
 
   export type DirectoryCreateNestedOneWithoutChildrenInput = {
@@ -15359,6 +15199,18 @@ export namespace Prisma {
     deleteMany?: FileScalarWhereInput | FileScalarWhereInput[]
   }
 
+  export type RepositoryCreateNestedOneWithoutFilesInput = {
+    create?: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: RepositoryCreateOrConnectWithoutFilesInput
+    connect?: RepositoryWhereUniqueInput
+  }
+
+  export type DirectoryCreateNestedOneWithoutFilesInput = {
+    create?: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: DirectoryCreateOrConnectWithoutFilesInput
+    connect?: DirectoryWhereUniqueInput
+  }
+
   export type SymbolCreateNestedManyWithoutFileInput = {
     create?: XOR<SymbolCreateWithoutFileInput, SymbolUncheckedCreateWithoutFileInput> | SymbolCreateWithoutFileInput[] | SymbolUncheckedCreateWithoutFileInput[]
     connectOrCreate?: SymbolCreateOrConnectWithoutFileInput | SymbolCreateOrConnectWithoutFileInput[]
@@ -15373,16 +15225,11 @@ export namespace Prisma {
     connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
   }
 
-  export type DirectoryCreateNestedOneWithoutFilesInput = {
-    create?: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: DirectoryCreateOrConnectWithoutFilesInput
-    connect?: DirectoryWhereUniqueInput
-  }
-
-  export type RepositoryCreateNestedOneWithoutFilesInput = {
-    create?: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: RepositoryCreateOrConnectWithoutFilesInput
-    connect?: RepositoryWhereUniqueInput
+  export type DependencyCreateNestedManyWithoutResolvedFileInput = {
+    create?: XOR<DependencyCreateWithoutResolvedFileInput, DependencyUncheckedCreateWithoutResolvedFileInput> | DependencyCreateWithoutResolvedFileInput[] | DependencyUncheckedCreateWithoutResolvedFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutResolvedFileInput | DependencyCreateOrConnectWithoutResolvedFileInput[]
+    createMany?: DependencyCreateManyResolvedFileInputEnvelope
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
   }
 
   export type SymbolUncheckedCreateNestedManyWithoutFileInput = {
@@ -15397,6 +15244,31 @@ export namespace Prisma {
     connectOrCreate?: DependencyCreateOrConnectWithoutFileInput | DependencyCreateOrConnectWithoutFileInput[]
     createMany?: DependencyCreateManyFileInputEnvelope
     connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+  }
+
+  export type DependencyUncheckedCreateNestedManyWithoutResolvedFileInput = {
+    create?: XOR<DependencyCreateWithoutResolvedFileInput, DependencyUncheckedCreateWithoutResolvedFileInput> | DependencyCreateWithoutResolvedFileInput[] | DependencyUncheckedCreateWithoutResolvedFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutResolvedFileInput | DependencyCreateOrConnectWithoutResolvedFileInput[]
+    createMany?: DependencyCreateManyResolvedFileInputEnvelope
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+  }
+
+  export type RepositoryUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: RepositoryCreateOrConnectWithoutFilesInput
+    upsert?: RepositoryUpsertWithoutFilesInput
+    connect?: RepositoryWhereUniqueInput
+    update?: XOR<XOR<RepositoryUpdateToOneWithWhereWithoutFilesInput, RepositoryUpdateWithoutFilesInput>, RepositoryUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type DirectoryUpdateOneWithoutFilesNestedInput = {
+    create?: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: DirectoryCreateOrConnectWithoutFilesInput
+    upsert?: DirectoryUpsertWithoutFilesInput
+    disconnect?: DirectoryWhereInput | boolean
+    delete?: DirectoryWhereInput | boolean
+    connect?: DirectoryWhereUniqueInput
+    update?: XOR<XOR<DirectoryUpdateToOneWithWhereWithoutFilesInput, DirectoryUpdateWithoutFilesInput>, DirectoryUncheckedUpdateWithoutFilesInput>
   }
 
   export type SymbolUpdateManyWithoutFileNestedInput = {
@@ -15427,22 +15299,18 @@ export namespace Prisma {
     deleteMany?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
   }
 
-  export type DirectoryUpdateOneWithoutFilesNestedInput = {
-    create?: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: DirectoryCreateOrConnectWithoutFilesInput
-    upsert?: DirectoryUpsertWithoutFilesInput
-    disconnect?: DirectoryWhereInput | boolean
-    delete?: DirectoryWhereInput | boolean
-    connect?: DirectoryWhereUniqueInput
-    update?: XOR<XOR<DirectoryUpdateToOneWithWhereWithoutFilesInput, DirectoryUpdateWithoutFilesInput>, DirectoryUncheckedUpdateWithoutFilesInput>
-  }
-
-  export type RepositoryUpdateOneRequiredWithoutFilesNestedInput = {
-    create?: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
-    connectOrCreate?: RepositoryCreateOrConnectWithoutFilesInput
-    upsert?: RepositoryUpsertWithoutFilesInput
-    connect?: RepositoryWhereUniqueInput
-    update?: XOR<XOR<RepositoryUpdateToOneWithWhereWithoutFilesInput, RepositoryUpdateWithoutFilesInput>, RepositoryUncheckedUpdateWithoutFilesInput>
+  export type DependencyUpdateManyWithoutResolvedFileNestedInput = {
+    create?: XOR<DependencyCreateWithoutResolvedFileInput, DependencyUncheckedCreateWithoutResolvedFileInput> | DependencyCreateWithoutResolvedFileInput[] | DependencyUncheckedCreateWithoutResolvedFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutResolvedFileInput | DependencyCreateOrConnectWithoutResolvedFileInput[]
+    upsert?: DependencyUpsertWithWhereUniqueWithoutResolvedFileInput | DependencyUpsertWithWhereUniqueWithoutResolvedFileInput[]
+    createMany?: DependencyCreateManyResolvedFileInputEnvelope
+    set?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    disconnect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    delete?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    update?: DependencyUpdateWithWhereUniqueWithoutResolvedFileInput | DependencyUpdateWithWhereUniqueWithoutResolvedFileInput[]
+    updateMany?: DependencyUpdateManyWithWhereWithoutResolvedFileInput | DependencyUpdateManyWithWhereWithoutResolvedFileInput[]
+    deleteMany?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
   }
 
   export type SymbolUncheckedUpdateManyWithoutFileNestedInput = {
@@ -15473,6 +15341,20 @@ export namespace Prisma {
     deleteMany?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
   }
 
+  export type DependencyUncheckedUpdateManyWithoutResolvedFileNestedInput = {
+    create?: XOR<DependencyCreateWithoutResolvedFileInput, DependencyUncheckedCreateWithoutResolvedFileInput> | DependencyCreateWithoutResolvedFileInput[] | DependencyUncheckedCreateWithoutResolvedFileInput[]
+    connectOrCreate?: DependencyCreateOrConnectWithoutResolvedFileInput | DependencyCreateOrConnectWithoutResolvedFileInput[]
+    upsert?: DependencyUpsertWithWhereUniqueWithoutResolvedFileInput | DependencyUpsertWithWhereUniqueWithoutResolvedFileInput[]
+    createMany?: DependencyCreateManyResolvedFileInputEnvelope
+    set?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    disconnect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    delete?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    connect?: DependencyWhereUniqueInput | DependencyWhereUniqueInput[]
+    update?: DependencyUpdateWithWhereUniqueWithoutResolvedFileInput | DependencyUpdateWithWhereUniqueWithoutResolvedFileInput[]
+    updateMany?: DependencyUpdateManyWithWhereWithoutResolvedFileInput | DependencyUpdateManyWithWhereWithoutResolvedFileInput[]
+    deleteMany?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
+  }
+
   export type FileCreateNestedOneWithoutSymbolsInput = {
     create?: XOR<FileCreateWithoutSymbolsInput, FileUncheckedCreateWithoutSymbolsInput>
     connectOrCreate?: FileCreateOrConnectWithoutSymbolsInput
@@ -15493,12 +15375,28 @@ export namespace Prisma {
     connect?: FileWhereUniqueInput
   }
 
+  export type FileCreateNestedOneWithoutReferencedByInput = {
+    create?: XOR<FileCreateWithoutReferencedByInput, FileUncheckedCreateWithoutReferencedByInput>
+    connectOrCreate?: FileCreateOrConnectWithoutReferencedByInput
+    connect?: FileWhereUniqueInput
+  }
+
   export type FileUpdateOneRequiredWithoutDependenciesNestedInput = {
     create?: XOR<FileCreateWithoutDependenciesInput, FileUncheckedCreateWithoutDependenciesInput>
     connectOrCreate?: FileCreateOrConnectWithoutDependenciesInput
     upsert?: FileUpsertWithoutDependenciesInput
     connect?: FileWhereUniqueInput
     update?: XOR<XOR<FileUpdateToOneWithWhereWithoutDependenciesInput, FileUpdateWithoutDependenciesInput>, FileUncheckedUpdateWithoutDependenciesInput>
+  }
+
+  export type FileUpdateOneWithoutReferencedByNestedInput = {
+    create?: XOR<FileCreateWithoutReferencedByInput, FileUncheckedCreateWithoutReferencedByInput>
+    connectOrCreate?: FileCreateOrConnectWithoutReferencedByInput
+    upsert?: FileUpsertWithoutReferencedByInput
+    disconnect?: FileWhereInput | boolean
+    delete?: FileWhereInput | boolean
+    connect?: FileWhereUniqueInput
+    update?: XOR<XOR<FileUpdateToOneWithWhereWithoutReferencedByInput, FileUpdateWithoutReferencedByInput>, FileUncheckedUpdateWithoutReferencedByInput>
   }
 
   export type RepositoryCreateNestedOneWithoutLogsInput = {
@@ -15676,21 +15574,21 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumRepositoryStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.RepositoryStatus | EnumRepositoryStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumRepositoryStatusFilter<$PrismaModel> | $Enums.RepositoryStatus
+  export type NestedEnumRepoStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RepoStatus | EnumRepoStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRepoStatusFilter<$PrismaModel> | $Enums.RepoStatus
   }
 
-  export type NestedEnumRepositoryStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.RepositoryStatus | EnumRepositoryStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RepositoryStatus[] | ListEnumRepositoryStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumRepositoryStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepositoryStatus
+  export type NestedEnumRepoStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RepoStatus | EnumRepoStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RepoStatus[] | ListEnumRepoStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRepoStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepoStatus
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRepositoryStatusFilter<$PrismaModel>
-    _max?: NestedEnumRepositoryStatusFilter<$PrismaModel>
+    _min?: NestedEnumRepoStatusFilter<$PrismaModel>
+    _max?: NestedEnumRepoStatusFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -15755,34 +15653,24 @@ export namespace Prisma {
 
   export type RepositoryCreateWithoutUserInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    logs?: LogCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
     files?: FileCreateNestedManyWithoutRepositoryInput
-    logs?: LogCreateNestedManyWithoutRepositoryInput
   }
 
   export type RepositoryUncheckedCreateWithoutUserInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
-    logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
   }
 
   export type RepositoryCreateOrConnectWithoutUserInput = {
@@ -15876,16 +15764,11 @@ export namespace Prisma {
     OR?: RepositoryScalarWhereInput[]
     NOT?: RepositoryScalarWhereInput | RepositoryScalarWhereInput[]
     id?: StringFilter<"Repository"> | string
-    name?: StringNullableFilter<"Repository"> | string | null
-    owner?: StringNullableFilter<"Repository"> | string | null
+    name?: StringFilter<"Repository"> | string
     url?: StringFilter<"Repository"> | string
-    userId?: StringFilter<"Repository"> | string
+    status?: EnumRepoStatusFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Repository"> | Date | string
-    updatedAt?: DateTimeFilter<"Repository"> | Date | string
-    avatarUrl?: StringNullableFilter<"Repository"> | string | null
-    githubId?: IntNullableFilter<"Repository"> | number | null
-    status?: EnumRepositoryStatusFilter<"Repository"> | $Enums.RepositoryStatus
-    overview?: StringNullableFilter<"Repository"> | string | null
+    userId?: StringFilter<"Repository"> | string
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -16024,94 +15907,6 @@ export namespace Prisma {
     repositories?: RepositoryUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type DirectoryCreateWithoutRepositoryInput = {
-    id?: string
-    path: string
-    summary?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: DirectoryCreateNestedOneWithoutChildrenInput
-    children?: DirectoryCreateNestedManyWithoutParentInput
-    files?: FileCreateNestedManyWithoutDirectoryInput
-  }
-
-  export type DirectoryUncheckedCreateWithoutRepositoryInput = {
-    id?: string
-    path: string
-    summary?: string | null
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: DirectoryUncheckedCreateNestedManyWithoutParentInput
-    files?: FileUncheckedCreateNestedManyWithoutDirectoryInput
-  }
-
-  export type DirectoryCreateOrConnectWithoutRepositoryInput = {
-    where: DirectoryWhereUniqueInput
-    create: XOR<DirectoryCreateWithoutRepositoryInput, DirectoryUncheckedCreateWithoutRepositoryInput>
-  }
-
-  export type DirectoryCreateManyRepositoryInputEnvelope = {
-    data: DirectoryCreateManyRepositoryInput | DirectoryCreateManyRepositoryInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type FileCreateWithoutRepositoryInput = {
-    id?: string
-    path: string
-    name: string
-    content?: string | null
-    createdAt?: Date | string
-    symbols?: SymbolCreateNestedManyWithoutFileInput
-    dependencies?: DependencyCreateNestedManyWithoutFileInput
-    directory?: DirectoryCreateNestedOneWithoutFilesInput
-  }
-
-  export type FileUncheckedCreateWithoutRepositoryInput = {
-    id?: string
-    path: string
-    name: string
-    content?: string | null
-    directoryId?: string | null
-    createdAt?: Date | string
-    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
-    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
-  }
-
-  export type FileCreateOrConnectWithoutRepositoryInput = {
-    where: FileWhereUniqueInput
-    create: XOR<FileCreateWithoutRepositoryInput, FileUncheckedCreateWithoutRepositoryInput>
-  }
-
-  export type FileCreateManyRepositoryInputEnvelope = {
-    data: FileCreateManyRepositoryInput | FileCreateManyRepositoryInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type LogCreateWithoutRepositoryInput = {
-    id?: string
-    message: string
-    status: $Enums.RepositoryStatus
-    createdAt?: Date | string
-  }
-
-  export type LogUncheckedCreateWithoutRepositoryInput = {
-    id?: string
-    message: string
-    status: $Enums.RepositoryStatus
-    createdAt?: Date | string
-  }
-
-  export type LogCreateOrConnectWithoutRepositoryInput = {
-    where: LogWhereUniqueInput
-    create: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput>
-  }
-
-  export type LogCreateManyRepositoryInputEnvelope = {
-    data: LogCreateManyRepositoryInput | LogCreateManyRepositoryInput[]
-    skipDuplicates?: boolean
-  }
-
   export type UserCreateWithoutRepositoriesInput = {
     id?: string
     name?: string | null
@@ -16143,89 +15938,90 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutRepositoriesInput, UserUncheckedCreateWithoutRepositoriesInput>
   }
 
-  export type DirectoryUpsertWithWhereUniqueWithoutRepositoryInput = {
-    where: DirectoryWhereUniqueInput
-    update: XOR<DirectoryUpdateWithoutRepositoryInput, DirectoryUncheckedUpdateWithoutRepositoryInput>
-    create: XOR<DirectoryCreateWithoutRepositoryInput, DirectoryUncheckedCreateWithoutRepositoryInput>
+  export type LogCreateWithoutRepositoryInput = {
+    id?: string
+    message: string
+    status: $Enums.RepoStatus
+    createdAt?: Date | string
   }
 
-  export type DirectoryUpdateWithWhereUniqueWithoutRepositoryInput = {
-    where: DirectoryWhereUniqueInput
-    data: XOR<DirectoryUpdateWithoutRepositoryInput, DirectoryUncheckedUpdateWithoutRepositoryInput>
+  export type LogUncheckedCreateWithoutRepositoryInput = {
+    id?: string
+    message: string
+    status: $Enums.RepoStatus
+    createdAt?: Date | string
   }
 
-  export type DirectoryUpdateManyWithWhereWithoutRepositoryInput = {
-    where: DirectoryScalarWhereInput
-    data: XOR<DirectoryUpdateManyMutationInput, DirectoryUncheckedUpdateManyWithoutRepositoryInput>
-  }
-
-  export type DirectoryScalarWhereInput = {
-    AND?: DirectoryScalarWhereInput | DirectoryScalarWhereInput[]
-    OR?: DirectoryScalarWhereInput[]
-    NOT?: DirectoryScalarWhereInput | DirectoryScalarWhereInput[]
-    id?: StringFilter<"Directory"> | string
-    path?: StringFilter<"Directory"> | string
-    summary?: StringNullableFilter<"Directory"> | string | null
-    repositoryId?: StringFilter<"Directory"> | string
-    parentId?: StringNullableFilter<"Directory"> | string | null
-    createdAt?: DateTimeFilter<"Directory"> | Date | string
-    updatedAt?: DateTimeFilter<"Directory"> | Date | string
-  }
-
-  export type FileUpsertWithWhereUniqueWithoutRepositoryInput = {
-    where: FileWhereUniqueInput
-    update: XOR<FileUpdateWithoutRepositoryInput, FileUncheckedUpdateWithoutRepositoryInput>
-    create: XOR<FileCreateWithoutRepositoryInput, FileUncheckedCreateWithoutRepositoryInput>
-  }
-
-  export type FileUpdateWithWhereUniqueWithoutRepositoryInput = {
-    where: FileWhereUniqueInput
-    data: XOR<FileUpdateWithoutRepositoryInput, FileUncheckedUpdateWithoutRepositoryInput>
-  }
-
-  export type FileUpdateManyWithWhereWithoutRepositoryInput = {
-    where: FileScalarWhereInput
-    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutRepositoryInput>
-  }
-
-  export type FileScalarWhereInput = {
-    AND?: FileScalarWhereInput | FileScalarWhereInput[]
-    OR?: FileScalarWhereInput[]
-    NOT?: FileScalarWhereInput | FileScalarWhereInput[]
-    id?: StringFilter<"File"> | string
-    path?: StringFilter<"File"> | string
-    name?: StringFilter<"File"> | string
-    content?: StringNullableFilter<"File"> | string | null
-    directoryId?: StringNullableFilter<"File"> | string | null
-    createdAt?: DateTimeFilter<"File"> | Date | string
-    repositoryId?: StringFilter<"File"> | string
-  }
-
-  export type LogUpsertWithWhereUniqueWithoutRepositoryInput = {
+  export type LogCreateOrConnectWithoutRepositoryInput = {
     where: LogWhereUniqueInput
-    update: XOR<LogUpdateWithoutRepositoryInput, LogUncheckedUpdateWithoutRepositoryInput>
     create: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput>
   }
 
-  export type LogUpdateWithWhereUniqueWithoutRepositoryInput = {
-    where: LogWhereUniqueInput
-    data: XOR<LogUpdateWithoutRepositoryInput, LogUncheckedUpdateWithoutRepositoryInput>
+  export type LogCreateManyRepositoryInputEnvelope = {
+    data: LogCreateManyRepositoryInput | LogCreateManyRepositoryInput[]
+    skipDuplicates?: boolean
   }
 
-  export type LogUpdateManyWithWhereWithoutRepositoryInput = {
-    where: LogScalarWhereInput
-    data: XOR<LogUpdateManyMutationInput, LogUncheckedUpdateManyWithoutRepositoryInput>
+  export type DirectoryCreateWithoutRepositoryInput = {
+    id?: string
+    name: string
+    path: string
+    parent?: DirectoryCreateNestedOneWithoutChildrenInput
+    children?: DirectoryCreateNestedManyWithoutParentInput
+    files?: FileCreateNestedManyWithoutDirectoryInput
   }
 
-  export type LogScalarWhereInput = {
-    AND?: LogScalarWhereInput | LogScalarWhereInput[]
-    OR?: LogScalarWhereInput[]
-    NOT?: LogScalarWhereInput | LogScalarWhereInput[]
-    id?: StringFilter<"Log"> | string
-    repositoryId?: StringFilter<"Log"> | string
-    message?: StringFilter<"Log"> | string
-    status?: EnumRepositoryStatusFilter<"Log"> | $Enums.RepositoryStatus
-    createdAt?: DateTimeFilter<"Log"> | Date | string
+  export type DirectoryUncheckedCreateWithoutRepositoryInput = {
+    id?: string
+    name: string
+    path: string
+    parentId?: string | null
+    children?: DirectoryUncheckedCreateNestedManyWithoutParentInput
+    files?: FileUncheckedCreateNestedManyWithoutDirectoryInput
+  }
+
+  export type DirectoryCreateOrConnectWithoutRepositoryInput = {
+    where: DirectoryWhereUniqueInput
+    create: XOR<DirectoryCreateWithoutRepositoryInput, DirectoryUncheckedCreateWithoutRepositoryInput>
+  }
+
+  export type DirectoryCreateManyRepositoryInputEnvelope = {
+    data: DirectoryCreateManyRepositoryInput | DirectoryCreateManyRepositoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FileCreateWithoutRepositoryInput = {
+    id?: string
+    name: string
+    path: string
+    extension: string
+    content?: string | null
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyCreateNestedManyWithoutResolvedFileInput
+  }
+
+  export type FileUncheckedCreateWithoutRepositoryInput = {
+    id?: string
+    name: string
+    path: string
+    extension: string
+    content?: string | null
+    directoryId?: string | null
+    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyUncheckedCreateNestedManyWithoutResolvedFileInput
+  }
+
+  export type FileCreateOrConnectWithoutRepositoryInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutRepositoryInput, FileUncheckedCreateWithoutRepositoryInput>
+  }
+
+  export type FileCreateManyRepositoryInputEnvelope = {
+    data: FileCreateManyRepositoryInput | FileCreateManyRepositoryInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutRepositoriesInput = {
@@ -16265,12 +16061,93 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type LogUpsertWithWhereUniqueWithoutRepositoryInput = {
+    where: LogWhereUniqueInput
+    update: XOR<LogUpdateWithoutRepositoryInput, LogUncheckedUpdateWithoutRepositoryInput>
+    create: XOR<LogCreateWithoutRepositoryInput, LogUncheckedCreateWithoutRepositoryInput>
+  }
+
+  export type LogUpdateWithWhereUniqueWithoutRepositoryInput = {
+    where: LogWhereUniqueInput
+    data: XOR<LogUpdateWithoutRepositoryInput, LogUncheckedUpdateWithoutRepositoryInput>
+  }
+
+  export type LogUpdateManyWithWhereWithoutRepositoryInput = {
+    where: LogScalarWhereInput
+    data: XOR<LogUpdateManyMutationInput, LogUncheckedUpdateManyWithoutRepositoryInput>
+  }
+
+  export type LogScalarWhereInput = {
+    AND?: LogScalarWhereInput | LogScalarWhereInput[]
+    OR?: LogScalarWhereInput[]
+    NOT?: LogScalarWhereInput | LogScalarWhereInput[]
+    id?: StringFilter<"Log"> | string
+    repositoryId?: StringFilter<"Log"> | string
+    message?: StringFilter<"Log"> | string
+    status?: EnumRepoStatusFilter<"Log"> | $Enums.RepoStatus
+    createdAt?: DateTimeFilter<"Log"> | Date | string
+  }
+
+  export type DirectoryUpsertWithWhereUniqueWithoutRepositoryInput = {
+    where: DirectoryWhereUniqueInput
+    update: XOR<DirectoryUpdateWithoutRepositoryInput, DirectoryUncheckedUpdateWithoutRepositoryInput>
+    create: XOR<DirectoryCreateWithoutRepositoryInput, DirectoryUncheckedCreateWithoutRepositoryInput>
+  }
+
+  export type DirectoryUpdateWithWhereUniqueWithoutRepositoryInput = {
+    where: DirectoryWhereUniqueInput
+    data: XOR<DirectoryUpdateWithoutRepositoryInput, DirectoryUncheckedUpdateWithoutRepositoryInput>
+  }
+
+  export type DirectoryUpdateManyWithWhereWithoutRepositoryInput = {
+    where: DirectoryScalarWhereInput
+    data: XOR<DirectoryUpdateManyMutationInput, DirectoryUncheckedUpdateManyWithoutRepositoryInput>
+  }
+
+  export type DirectoryScalarWhereInput = {
+    AND?: DirectoryScalarWhereInput | DirectoryScalarWhereInput[]
+    OR?: DirectoryScalarWhereInput[]
+    NOT?: DirectoryScalarWhereInput | DirectoryScalarWhereInput[]
+    id?: StringFilter<"Directory"> | string
+    name?: StringFilter<"Directory"> | string
+    path?: StringFilter<"Directory"> | string
+    parentId?: StringNullableFilter<"Directory"> | string | null
+    repositoryId?: StringFilter<"Directory"> | string
+  }
+
+  export type FileUpsertWithWhereUniqueWithoutRepositoryInput = {
+    where: FileWhereUniqueInput
+    update: XOR<FileUpdateWithoutRepositoryInput, FileUncheckedUpdateWithoutRepositoryInput>
+    create: XOR<FileCreateWithoutRepositoryInput, FileUncheckedCreateWithoutRepositoryInput>
+  }
+
+  export type FileUpdateWithWhereUniqueWithoutRepositoryInput = {
+    where: FileWhereUniqueInput
+    data: XOR<FileUpdateWithoutRepositoryInput, FileUncheckedUpdateWithoutRepositoryInput>
+  }
+
+  export type FileUpdateManyWithWhereWithoutRepositoryInput = {
+    where: FileScalarWhereInput
+    data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutRepositoryInput>
+  }
+
+  export type FileScalarWhereInput = {
+    AND?: FileScalarWhereInput | FileScalarWhereInput[]
+    OR?: FileScalarWhereInput[]
+    NOT?: FileScalarWhereInput | FileScalarWhereInput[]
+    id?: StringFilter<"File"> | string
+    name?: StringFilter<"File"> | string
+    path?: StringFilter<"File"> | string
+    extension?: StringFilter<"File"> | string
+    content?: StringNullableFilter<"File"> | string | null
+    repositoryId?: StringFilter<"File"> | string
+    directoryId?: StringNullableFilter<"File"> | string | null
+  }
+
   export type DirectoryCreateWithoutChildrenInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
     parent?: DirectoryCreateNestedOneWithoutChildrenInput
     repository: RepositoryCreateNestedOneWithoutDirectoriesInput
     files?: FileCreateNestedManyWithoutDirectoryInput
@@ -16278,12 +16155,10 @@ export namespace Prisma {
 
   export type DirectoryUncheckedCreateWithoutChildrenInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
-    repositoryId: string
     parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    repositoryId: string
     files?: FileUncheckedCreateNestedManyWithoutDirectoryInput
   }
 
@@ -16294,10 +16169,8 @@ export namespace Prisma {
 
   export type DirectoryCreateWithoutParentInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
     children?: DirectoryCreateNestedManyWithoutParentInput
     repository: RepositoryCreateNestedOneWithoutDirectoriesInput
     files?: FileCreateNestedManyWithoutDirectoryInput
@@ -16305,11 +16178,9 @@ export namespace Prisma {
 
   export type DirectoryUncheckedCreateWithoutParentInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
     repositoryId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
     children?: DirectoryUncheckedCreateNestedManyWithoutParentInput
     files?: FileUncheckedCreateNestedManyWithoutDirectoryInput
   }
@@ -16326,34 +16197,24 @@ export namespace Prisma {
 
   export type RepositoryCreateWithoutDirectoriesInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
-    files?: FileCreateNestedManyWithoutRepositoryInput
-    logs?: LogCreateNestedManyWithoutRepositoryInput
     user: UserCreateNestedOneWithoutRepositoriesInput
+    logs?: LogCreateNestedManyWithoutRepositoryInput
+    files?: FileCreateNestedManyWithoutRepositoryInput
   }
 
   export type RepositoryUncheckedCreateWithoutDirectoriesInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
-    userId: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
-    files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
+    userId: string
     logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
+    files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
   }
 
   export type RepositoryCreateOrConnectWithoutDirectoriesInput = {
@@ -16363,24 +16224,26 @@ export namespace Prisma {
 
   export type FileCreateWithoutDirectoryInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    createdAt?: Date | string
+    repository: RepositoryCreateNestedOneWithoutFilesInput
     symbols?: SymbolCreateNestedManyWithoutFileInput
     dependencies?: DependencyCreateNestedManyWithoutFileInput
-    repository: RepositoryCreateNestedOneWithoutFilesInput
+    referencedBy?: DependencyCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileUncheckedCreateWithoutDirectoryInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    createdAt?: Date | string
     repositoryId: string
     symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
     dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyUncheckedCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileCreateOrConnectWithoutDirectoryInput = {
@@ -16406,10 +16269,8 @@ export namespace Prisma {
 
   export type DirectoryUpdateWithoutChildrenInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parent?: DirectoryUpdateOneWithoutChildrenNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutDirectoriesNestedInput
     files?: FileUpdateManyWithoutDirectoryNestedInput
@@ -16417,12 +16278,10 @@ export namespace Prisma {
 
   export type DirectoryUncheckedUpdateWithoutChildrenInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    repositoryId?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repositoryId?: StringFieldUpdateOperationsInput | string
     files?: FileUncheckedUpdateManyWithoutDirectoryNestedInput
   }
 
@@ -16455,34 +16314,24 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutDirectoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: FileUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUpdateManyWithoutRepositoryNestedInput
     user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
+    logs?: LogUpdateManyWithoutRepositoryNestedInput
+    files?: FileUpdateManyWithoutRepositoryNestedInput
   }
 
   export type RepositoryUncheckedUpdateWithoutDirectoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
+    userId?: StringFieldUpdateOperationsInput | string
     logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
+    files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
   }
 
   export type FileUpsertWithWhereUniqueWithoutDirectoryInput = {
@@ -16499,6 +16348,56 @@ export namespace Prisma {
   export type FileUpdateManyWithWhereWithoutDirectoryInput = {
     where: FileScalarWhereInput
     data: XOR<FileUpdateManyMutationInput, FileUncheckedUpdateManyWithoutDirectoryInput>
+  }
+
+  export type RepositoryCreateWithoutFilesInput = {
+    id?: string
+    name: string
+    url: string
+    status?: $Enums.RepoStatus
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutRepositoriesInput
+    logs?: LogCreateNestedManyWithoutRepositoryInput
+    directories?: DirectoryCreateNestedManyWithoutRepositoryInput
+  }
+
+  export type RepositoryUncheckedCreateWithoutFilesInput = {
+    id?: string
+    name: string
+    url: string
+    status?: $Enums.RepoStatus
+    createdAt?: Date | string
+    userId: string
+    logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
+    directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
+  }
+
+  export type RepositoryCreateOrConnectWithoutFilesInput = {
+    where: RepositoryWhereUniqueInput
+    create: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
+  }
+
+  export type DirectoryCreateWithoutFilesInput = {
+    id?: string
+    name: string
+    path: string
+    parent?: DirectoryCreateNestedOneWithoutChildrenInput
+    children?: DirectoryCreateNestedManyWithoutParentInput
+    repository: RepositoryCreateNestedOneWithoutDirectoriesInput
+  }
+
+  export type DirectoryUncheckedCreateWithoutFilesInput = {
+    id?: string
+    name: string
+    path: string
+    parentId?: string | null
+    repositoryId: string
+    children?: DirectoryUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type DirectoryCreateOrConnectWithoutFilesInput = {
+    where: DirectoryWhereUniqueInput
+    create: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
   }
 
   export type SymbolCreateWithoutFileInput = {
@@ -16527,7 +16426,7 @@ export namespace Prisma {
     id?: string
     importPath: string
     sourceValue: string
-    resolvedFileId?: string | null
+    resolvedFile?: FileCreateNestedOneWithoutReferencedByInput
   }
 
   export type DependencyUncheckedCreateWithoutFileInput = {
@@ -16547,68 +16446,90 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type DirectoryCreateWithoutFilesInput = {
+  export type DependencyCreateWithoutResolvedFileInput = {
     id?: string
-    path: string
-    summary?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    parent?: DirectoryCreateNestedOneWithoutChildrenInput
-    children?: DirectoryCreateNestedManyWithoutParentInput
-    repository: RepositoryCreateNestedOneWithoutDirectoriesInput
+    importPath: string
+    sourceValue: string
+    file: FileCreateNestedOneWithoutDependenciesInput
   }
 
-  export type DirectoryUncheckedCreateWithoutFilesInput = {
+  export type DependencyUncheckedCreateWithoutResolvedFileInput = {
     id?: string
-    path: string
-    summary?: string | null
-    repositoryId: string
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    children?: DirectoryUncheckedCreateNestedManyWithoutParentInput
+    importPath: string
+    sourceValue: string
+    fileId: string
   }
 
-  export type DirectoryCreateOrConnectWithoutFilesInput = {
-    where: DirectoryWhereUniqueInput
-    create: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
+  export type DependencyCreateOrConnectWithoutResolvedFileInput = {
+    where: DependencyWhereUniqueInput
+    create: XOR<DependencyCreateWithoutResolvedFileInput, DependencyUncheckedCreateWithoutResolvedFileInput>
   }
 
-  export type RepositoryCreateWithoutFilesInput = {
-    id?: string
-    name?: string | null
-    owner?: string | null
-    url: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
-    directories?: DirectoryCreateNestedManyWithoutRepositoryInput
-    logs?: LogCreateNestedManyWithoutRepositoryInput
-    user: UserCreateNestedOneWithoutRepositoriesInput
+  export type DependencyCreateManyResolvedFileInputEnvelope = {
+    data: DependencyCreateManyResolvedFileInput | DependencyCreateManyResolvedFileInput[]
+    skipDuplicates?: boolean
   }
 
-  export type RepositoryUncheckedCreateWithoutFilesInput = {
-    id?: string
-    name?: string | null
-    owner?: string | null
-    url: string
-    userId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
-    directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
-    logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
-  }
-
-  export type RepositoryCreateOrConnectWithoutFilesInput = {
-    where: RepositoryWhereUniqueInput
+  export type RepositoryUpsertWithoutFilesInput = {
+    update: XOR<RepositoryUpdateWithoutFilesInput, RepositoryUncheckedUpdateWithoutFilesInput>
     create: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
+    where?: RepositoryWhereInput
+  }
+
+  export type RepositoryUpdateToOneWithWhereWithoutFilesInput = {
+    where?: RepositoryWhereInput
+    data: XOR<RepositoryUpdateWithoutFilesInput, RepositoryUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type RepositoryUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
+    logs?: LogUpdateManyWithoutRepositoryNestedInput
+    directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
+  }
+
+  export type RepositoryUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
+    directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
+  }
+
+  export type DirectoryUpsertWithoutFilesInput = {
+    update: XOR<DirectoryUpdateWithoutFilesInput, DirectoryUncheckedUpdateWithoutFilesInput>
+    create: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
+    where?: DirectoryWhereInput
+  }
+
+  export type DirectoryUpdateToOneWithWhereWithoutFilesInput = {
+    where?: DirectoryWhereInput
+    data: XOR<DirectoryUpdateWithoutFilesInput, DirectoryUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type DirectoryUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    parent?: DirectoryUpdateOneWithoutChildrenNestedInput
+    children?: DirectoryUpdateManyWithoutParentNestedInput
+    repository?: RepositoryUpdateOneRequiredWithoutDirectoriesNestedInput
+  }
+
+  export type DirectoryUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    repositoryId?: StringFieldUpdateOperationsInput | string
+    children?: DirectoryUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type SymbolUpsertWithWhereUniqueWithoutFileInput = {
@@ -16658,108 +16579,50 @@ export namespace Prisma {
     OR?: DependencyScalarWhereInput[]
     NOT?: DependencyScalarWhereInput | DependencyScalarWhereInput[]
     id?: StringFilter<"Dependency"> | string
-    fileId?: StringFilter<"Dependency"> | string
     importPath?: StringFilter<"Dependency"> | string
     sourceValue?: StringFilter<"Dependency"> | string
+    fileId?: StringFilter<"Dependency"> | string
     resolvedFileId?: StringNullableFilter<"Dependency"> | string | null
   }
 
-  export type DirectoryUpsertWithoutFilesInput = {
-    update: XOR<DirectoryUpdateWithoutFilesInput, DirectoryUncheckedUpdateWithoutFilesInput>
-    create: XOR<DirectoryCreateWithoutFilesInput, DirectoryUncheckedCreateWithoutFilesInput>
-    where?: DirectoryWhereInput
+  export type DependencyUpsertWithWhereUniqueWithoutResolvedFileInput = {
+    where: DependencyWhereUniqueInput
+    update: XOR<DependencyUpdateWithoutResolvedFileInput, DependencyUncheckedUpdateWithoutResolvedFileInput>
+    create: XOR<DependencyCreateWithoutResolvedFileInput, DependencyUncheckedCreateWithoutResolvedFileInput>
   }
 
-  export type DirectoryUpdateToOneWithWhereWithoutFilesInput = {
-    where?: DirectoryWhereInput
-    data: XOR<DirectoryUpdateWithoutFilesInput, DirectoryUncheckedUpdateWithoutFilesInput>
+  export type DependencyUpdateWithWhereUniqueWithoutResolvedFileInput = {
+    where: DependencyWhereUniqueInput
+    data: XOR<DependencyUpdateWithoutResolvedFileInput, DependencyUncheckedUpdateWithoutResolvedFileInput>
   }
 
-  export type DirectoryUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parent?: DirectoryUpdateOneWithoutChildrenNestedInput
-    children?: DirectoryUpdateManyWithoutParentNestedInput
-    repository?: RepositoryUpdateOneRequiredWithoutDirectoriesNestedInput
-  }
-
-  export type DirectoryUncheckedUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    repositoryId?: StringFieldUpdateOperationsInput | string
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    children?: DirectoryUncheckedUpdateManyWithoutParentNestedInput
-  }
-
-  export type RepositoryUpsertWithoutFilesInput = {
-    update: XOR<RepositoryUpdateWithoutFilesInput, RepositoryUncheckedUpdateWithoutFilesInput>
-    create: XOR<RepositoryCreateWithoutFilesInput, RepositoryUncheckedCreateWithoutFilesInput>
-    where?: RepositoryWhereInput
-  }
-
-  export type RepositoryUpdateToOneWithWhereWithoutFilesInput = {
-    where?: RepositoryWhereInput
-    data: XOR<RepositoryUpdateWithoutFilesInput, RepositoryUncheckedUpdateWithoutFilesInput>
-  }
-
-  export type RepositoryUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
-    directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUpdateManyWithoutRepositoryNestedInput
-    user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
-  }
-
-  export type RepositoryUncheckedUpdateWithoutFilesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
-    url?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
-    directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
+  export type DependencyUpdateManyWithWhereWithoutResolvedFileInput = {
+    where: DependencyScalarWhereInput
+    data: XOR<DependencyUpdateManyMutationInput, DependencyUncheckedUpdateManyWithoutResolvedFileInput>
   }
 
   export type FileCreateWithoutSymbolsInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    createdAt?: Date | string
-    dependencies?: DependencyCreateNestedManyWithoutFileInput
-    directory?: DirectoryCreateNestedOneWithoutFilesInput
     repository: RepositoryCreateNestedOneWithoutFilesInput
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileUncheckedCreateWithoutSymbolsInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    directoryId?: string | null
-    createdAt?: Date | string
     repositoryId: string
+    directoryId?: string | null
     dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyUncheckedCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileCreateOrConnectWithoutSymbolsInput = {
@@ -16780,51 +16643,84 @@ export namespace Prisma {
 
   export type FileUpdateWithoutSymbolsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    dependencies?: DependencyUpdateManyWithoutFileNestedInput
-    directory?: DirectoryUpdateOneWithoutFilesNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
+    dependencies?: DependencyUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateWithoutSymbolsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUncheckedUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileCreateWithoutDependenciesInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    createdAt?: Date | string
-    symbols?: SymbolCreateNestedManyWithoutFileInput
-    directory?: DirectoryCreateNestedOneWithoutFilesInput
     repository: RepositoryCreateNestedOneWithoutFilesInput
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileUncheckedCreateWithoutDependenciesInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    directoryId?: string | null
-    createdAt?: Date | string
     repositoryId: string
+    directoryId?: string | null
     symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+    referencedBy?: DependencyUncheckedCreateNestedManyWithoutResolvedFileInput
   }
 
   export type FileCreateOrConnectWithoutDependenciesInput = {
     where: FileWhereUniqueInput
     create: XOR<FileCreateWithoutDependenciesInput, FileUncheckedCreateWithoutDependenciesInput>
+  }
+
+  export type FileCreateWithoutReferencedByInput = {
+    id?: string
+    name: string
+    path: string
+    extension: string
+    content?: string | null
+    repository: RepositoryCreateNestedOneWithoutFilesInput
+    directory?: DirectoryCreateNestedOneWithoutFilesInput
+    symbols?: SymbolCreateNestedManyWithoutFileInput
+    dependencies?: DependencyCreateNestedManyWithoutFileInput
+  }
+
+  export type FileUncheckedCreateWithoutReferencedByInput = {
+    id?: string
+    name: string
+    path: string
+    extension: string
+    content?: string | null
+    repositoryId: string
+    directoryId?: string | null
+    symbols?: SymbolUncheckedCreateNestedManyWithoutFileInput
+    dependencies?: DependencyUncheckedCreateNestedManyWithoutFileInput
+  }
+
+  export type FileCreateOrConnectWithoutReferencedByInput = {
+    where: FileWhereUniqueInput
+    create: XOR<FileCreateWithoutReferencedByInput, FileUncheckedCreateWithoutReferencedByInput>
   }
 
   export type FileUpsertWithoutDependenciesInput = {
@@ -16840,54 +16736,81 @@ export namespace Prisma {
 
   export type FileUpdateWithoutDependenciesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    symbols?: SymbolUpdateManyWithoutFileNestedInput
-    directory?: DirectoryUpdateOneWithoutFilesNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
+    symbols?: SymbolUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateWithoutDependenciesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
     symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUncheckedUpdateManyWithoutResolvedFileNestedInput
+  }
+
+  export type FileUpsertWithoutReferencedByInput = {
+    update: XOR<FileUpdateWithoutReferencedByInput, FileUncheckedUpdateWithoutReferencedByInput>
+    create: XOR<FileCreateWithoutReferencedByInput, FileUncheckedCreateWithoutReferencedByInput>
+    where?: FileWhereInput
+  }
+
+  export type FileUpdateToOneWithWhereWithoutReferencedByInput = {
+    where?: FileWhereInput
+    data: XOR<FileUpdateWithoutReferencedByInput, FileUncheckedUpdateWithoutReferencedByInput>
+  }
+
+  export type FileUpdateWithoutReferencedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
+    symbols?: SymbolUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUpdateManyWithoutFileNestedInput
+  }
+
+  export type FileUncheckedUpdateWithoutReferencedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    repositoryId?: StringFieldUpdateOperationsInput | string
+    directoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
+    dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
   }
 
   export type RepositoryCreateWithoutLogsInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    user: UserCreateNestedOneWithoutRepositoriesInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
     files?: FileCreateNestedManyWithoutRepositoryInput
-    user: UserCreateNestedOneWithoutRepositoriesInput
   }
 
   export type RepositoryUncheckedCreateWithoutLogsInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
-    userId: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
+    userId: string
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
   }
@@ -16910,32 +16833,22 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
     files?: FileUpdateManyWithoutRepositoryNestedInput
-    user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
   }
 
   export type RepositoryUncheckedUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
   }
@@ -16962,15 +16875,10 @@ export namespace Prisma {
 
   export type RepositoryCreateManyUserInput = {
     id?: string
-    name?: string | null
-    owner?: string | null
+    name: string
     url: string
+    status?: $Enums.RepoStatus
     createdAt?: Date | string
-    updatedAt?: Date | string
-    avatarUrl?: string | null
-    githubId?: number | null
-    status?: $Enums.RepositoryStatus
-    overview?: string | null
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -17035,80 +16943,82 @@ export namespace Prisma {
 
   export type RepositoryUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    logs?: LogUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
     files?: FileUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUpdateManyWithoutRepositoryNestedInput
   }
 
   export type RepositoryUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
+    logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
-    logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
   }
 
   export type RepositoryUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    githubId?: NullableIntFieldUpdateOperationsInput | number | null
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    overview?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type DirectoryCreateManyRepositoryInput = {
-    id?: string
-    path: string
-    summary?: string | null
-    parentId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type FileCreateManyRepositoryInput = {
-    id?: string
-    path: string
-    name: string
-    content?: string | null
-    directoryId?: string | null
-    createdAt?: Date | string
   }
 
   export type LogCreateManyRepositoryInput = {
     id?: string
     message: string
-    status: $Enums.RepositoryStatus
+    status: $Enums.RepoStatus
     createdAt?: Date | string
+  }
+
+  export type DirectoryCreateManyRepositoryInput = {
+    id?: string
+    name: string
+    path: string
+    parentId?: string | null
+  }
+
+  export type FileCreateManyRepositoryInput = {
+    id?: string
+    name: string
+    path: string
+    extension: string
+    content?: string | null
+    directoryId?: string | null
+  }
+
+  export type LogUpdateWithoutRepositoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LogUncheckedUpdateWithoutRepositoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LogUncheckedUpdateManyWithoutRepositoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DirectoryUpdateWithoutRepositoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     parent?: DirectoryUpdateOneWithoutChildrenNestedInput
     children?: DirectoryUpdateManyWithoutParentNestedInput
     files?: FileUpdateManyWithoutDirectoryNestedInput
@@ -17116,100 +17026,73 @@ export namespace Prisma {
 
   export type DirectoryUncheckedUpdateWithoutRepositoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: DirectoryUncheckedUpdateManyWithoutParentNestedInput
     files?: FileUncheckedUpdateManyWithoutDirectoryNestedInput
   }
 
   export type DirectoryUncheckedUpdateManyWithoutRepositoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FileUpdateWithoutRepositoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    directory?: DirectoryUpdateOneWithoutFilesNestedInput
     symbols?: SymbolUpdateManyWithoutFileNestedInput
     dependencies?: DependencyUpdateManyWithoutFileNestedInput
-    directory?: DirectoryUpdateOneWithoutFilesNestedInput
+    referencedBy?: DependencyUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateWithoutRepositoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     directoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
     dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUncheckedUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateManyWithoutRepositoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     directoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type LogUpdateWithoutRepositoryInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type LogUncheckedUpdateWithoutRepositoryInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type LogUncheckedUpdateManyWithoutRepositoryInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    message?: StringFieldUpdateOperationsInput | string
-    status?: EnumRepositoryStatusFieldUpdateOperationsInput | $Enums.RepositoryStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DirectoryCreateManyParentInput = {
     id?: string
+    name: string
     path: string
-    summary?: string | null
     repositoryId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type FileCreateManyDirectoryInput = {
     id?: string
-    path: string
     name: string
+    path: string
+    extension: string
     content?: string | null
-    createdAt?: Date | string
     repositoryId: string
   }
 
   export type DirectoryUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: DirectoryUpdateManyWithoutParentNestedInput
     repository?: RepositoryUpdateOneRequiredWithoutDirectoriesNestedInput
     files?: FileUpdateManyWithoutDirectoryNestedInput
@@ -17217,52 +17100,50 @@ export namespace Prisma {
 
   export type DirectoryUncheckedUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: DirectoryUncheckedUpdateManyWithoutParentNestedInput
     files?: FileUncheckedUpdateManyWithoutDirectoryNestedInput
   }
 
   export type DirectoryUncheckedUpdateManyWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
-    summary?: NullableStringFieldUpdateOperationsInput | string | null
     repositoryId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FileUpdateWithoutDirectoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
     symbols?: SymbolUpdateManyWithoutFileNestedInput
     dependencies?: DependencyUpdateManyWithoutFileNestedInput
-    repository?: RepositoryUpdateOneRequiredWithoutFilesNestedInput
+    referencedBy?: DependencyUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateWithoutDirectoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
     symbols?: SymbolUncheckedUpdateManyWithoutFileNestedInput
     dependencies?: DependencyUncheckedUpdateManyWithoutFileNestedInput
+    referencedBy?: DependencyUncheckedUpdateManyWithoutResolvedFileNestedInput
   }
 
   export type FileUncheckedUpdateManyWithoutDirectoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    path?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    extension?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repositoryId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -17277,6 +17158,13 @@ export namespace Prisma {
     importPath: string
     sourceValue: string
     resolvedFileId?: string | null
+  }
+
+  export type DependencyCreateManyResolvedFileInput = {
+    id?: string
+    importPath: string
+    sourceValue: string
+    fileId: string
   }
 
   export type SymbolUpdateWithoutFileInput = {
@@ -17301,7 +17189,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     importPath?: StringFieldUpdateOperationsInput | string
     sourceValue?: StringFieldUpdateOperationsInput | string
-    resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedFile?: FileUpdateOneWithoutReferencedByNestedInput
   }
 
   export type DependencyUncheckedUpdateWithoutFileInput = {
@@ -17316,6 +17204,27 @@ export namespace Prisma {
     importPath?: StringFieldUpdateOperationsInput | string
     sourceValue?: StringFieldUpdateOperationsInput | string
     resolvedFileId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DependencyUpdateWithoutResolvedFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    file?: FileUpdateOneRequiredWithoutDependenciesNestedInput
+  }
+
+  export type DependencyUncheckedUpdateWithoutResolvedFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DependencyUncheckedUpdateManyWithoutResolvedFileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    importPath?: StringFieldUpdateOperationsInput | string
+    sourceValue?: StringFieldUpdateOperationsInput | string
+    fileId?: StringFieldUpdateOperationsInput | string
   }
 
 

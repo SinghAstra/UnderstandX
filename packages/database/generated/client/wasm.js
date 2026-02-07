@@ -172,35 +172,28 @@ exports.Prisma.PasswordResetTokenScalarFieldEnum = {
 exports.Prisma.RepositoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  owner: 'owner',
   url: 'url',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  avatarUrl: 'avatarUrl',
-  githubId: 'githubId',
   status: 'status',
-  overview: 'overview'
+  createdAt: 'createdAt',
+  userId: 'userId'
 };
 
 exports.Prisma.DirectoryScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   path: 'path',
-  summary: 'summary',
-  repositoryId: 'repositoryId',
   parentId: 'parentId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  repositoryId: 'repositoryId'
 };
 
 exports.Prisma.FileScalarFieldEnum = {
   id: 'id',
-  path: 'path',
   name: 'name',
+  path: 'path',
+  extension: 'extension',
   content: 'content',
-  directoryId: 'directoryId',
-  createdAt: 'createdAt',
-  repositoryId: 'repositoryId'
+  repositoryId: 'repositoryId',
+  directoryId: 'directoryId'
 };
 
 exports.Prisma.SymbolScalarFieldEnum = {
@@ -212,9 +205,9 @@ exports.Prisma.SymbolScalarFieldEnum = {
 
 exports.Prisma.DependencyScalarFieldEnum = {
   id: 'id',
-  fileId: 'fileId',
   importPath: 'importPath',
   sourceValue: 'sourceValue',
+  fileId: 'fileId',
   resolvedFileId: 'resolvedFileId'
 };
 
@@ -240,10 +233,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.RepositoryStatus = exports.$Enums.RepositoryStatus = {
-  PENDING: 'PENDING',
+exports.RepoStatus = exports.$Enums.RepoStatus = {
+  QUEUED: 'QUEUED',
   PROCESSING: 'PROCESSING',
-  SUCCESS: 'SUCCESS',
+  COMPLETED: 'COMPLETED',
   FAILED: 'FAILED'
 };
 
