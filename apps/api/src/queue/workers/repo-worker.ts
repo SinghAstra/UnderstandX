@@ -2,7 +2,9 @@ import { Job } from "bullmq";
 import fs from "fs-extra";
 import path from "path";
 import simpleGit from "simple-git";
+import { analyzeCodebase } from "../logic/analyzer";
 import { reportStatus } from "../logic/reporter";
+import { resolveDependencies } from "../logic/resolver";
 import { scanDirectory } from "../logic/walker";
 
 export async function processRepo(job: Job) {
@@ -36,6 +38,15 @@ export async function processRepo(job: Job) {
       repoId,
       "Skeleton built. Starting deep code analysis...",
       "PROCESSING"
+    );
+
+    await analyzeCodebase(repoId);
+    await resolveDependencies(repoId, workDir);
+
+    await reportStatus(
+      repoId,
+      "System fully mapped and resolved.",
+      "COMPLETED"
     );
 
     return { workDir };
