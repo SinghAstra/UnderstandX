@@ -73,7 +73,7 @@ router.post(
         },
       });
 
-      console.log("newRepo is ", newRepo);
+      console.log("newRepo ", newRepo);
 
       await repositoryImportQueue.add(QUEUES.REPO_IMPORT, {
         repoId: newRepo.id,
