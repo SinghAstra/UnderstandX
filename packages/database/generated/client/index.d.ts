@@ -6660,6 +6660,7 @@ export namespace Prisma {
     url: string | null
     status: $Enums.RepoStatus | null
     createdAt: Date | null
+    avatarUrl: string | null
     userId: string | null
   }
 
@@ -6669,6 +6670,7 @@ export namespace Prisma {
     url: string | null
     status: $Enums.RepoStatus | null
     createdAt: Date | null
+    avatarUrl: string | null
     userId: string | null
   }
 
@@ -6678,6 +6680,7 @@ export namespace Prisma {
     url: number
     status: number
     createdAt: number
+    avatarUrl: number
     userId: number
     _all: number
   }
@@ -6689,6 +6692,7 @@ export namespace Prisma {
     url?: true
     status?: true
     createdAt?: true
+    avatarUrl?: true
     userId?: true
   }
 
@@ -6698,6 +6702,7 @@ export namespace Prisma {
     url?: true
     status?: true
     createdAt?: true
+    avatarUrl?: true
     userId?: true
   }
 
@@ -6707,6 +6712,7 @@ export namespace Prisma {
     url?: true
     status?: true
     createdAt?: true
+    avatarUrl?: true
     userId?: true
     _all?: true
   }
@@ -6789,6 +6795,7 @@ export namespace Prisma {
     url: string
     status: $Enums.RepoStatus
     createdAt: Date
+    avatarUrl: string
     userId: string
     _count: RepositoryCountAggregateOutputType | null
     _min: RepositoryMinAggregateOutputType | null
@@ -6815,6 +6822,7 @@ export namespace Prisma {
     url?: boolean
     status?: boolean
     createdAt?: boolean
+    avatarUrl?: boolean
     userId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     logs?: boolean | Repository$logsArgs<ExtArgs>
@@ -6829,6 +6837,7 @@ export namespace Prisma {
     url?: boolean
     status?: boolean
     createdAt?: boolean
+    avatarUrl?: boolean
     userId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repository"]>
@@ -6839,6 +6848,7 @@ export namespace Prisma {
     url?: boolean
     status?: boolean
     createdAt?: boolean
+    avatarUrl?: boolean
     userId?: boolean
   }
 
@@ -6867,6 +6877,7 @@ export namespace Prisma {
       url: string
       status: $Enums.RepoStatus
       createdAt: Date
+      avatarUrl: string
       userId: string
     }, ExtArgs["result"]["repository"]>
     composites: {}
@@ -7270,6 +7281,7 @@ export namespace Prisma {
     readonly url: FieldRef<"Repository", 'String'>
     readonly status: FieldRef<"Repository", 'RepoStatus'>
     readonly createdAt: FieldRef<"Repository", 'DateTime'>
+    readonly avatarUrl: FieldRef<"Repository", 'String'>
     readonly userId: FieldRef<"Repository", 'String'>
   }
     
@@ -12609,6 +12621,7 @@ export namespace Prisma {
     url: 'url',
     status: 'status',
     createdAt: 'createdAt',
+    avatarUrl: 'avatarUrl',
     userId: 'userId'
   };
 
@@ -13096,6 +13109,7 @@ export namespace Prisma {
     url?: StringFilter<"Repository"> | string
     status?: EnumRepoStatusFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Repository"> | Date | string
+    avatarUrl?: StringFilter<"Repository"> | string
     userId?: StringFilter<"Repository"> | string
     user?: XOR<UserRelationFilter, UserWhereInput>
     logs?: LogListRelationFilter
@@ -13109,6 +13123,7 @@ export namespace Prisma {
     url?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    avatarUrl?: SortOrder
     userId?: SortOrder
     user?: UserOrderByWithRelationInput
     logs?: LogOrderByRelationAggregateInput
@@ -13125,6 +13140,7 @@ export namespace Prisma {
     url?: StringFilter<"Repository"> | string
     status?: EnumRepoStatusFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Repository"> | Date | string
+    avatarUrl?: StringFilter<"Repository"> | string
     userId?: StringFilter<"Repository"> | string
     user?: XOR<UserRelationFilter, UserWhereInput>
     logs?: LogListRelationFilter
@@ -13138,6 +13154,7 @@ export namespace Prisma {
     url?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    avatarUrl?: SortOrder
     userId?: SortOrder
     _count?: RepositoryCountOrderByAggregateInput
     _max?: RepositoryMaxOrderByAggregateInput
@@ -13153,6 +13170,7 @@ export namespace Prisma {
     url?: StringWithAggregatesFilter<"Repository"> | string
     status?: EnumRepoStatusWithAggregatesFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
+    avatarUrl?: StringWithAggregatesFilter<"Repository"> | string
     userId?: StringWithAggregatesFilter<"Repository"> | string
   }
 
@@ -13807,6 +13825,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     user: UserCreateNestedOneWithoutRepositoriesInput
     logs?: LogCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
@@ -13819,6 +13838,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     userId: string
     logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
@@ -13831,6 +13851,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
     logs?: LogUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
@@ -13843,6 +13864,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -13855,6 +13877,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     userId: string
   }
 
@@ -13864,6 +13887,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
   }
 
   export type RepositoryUncheckedUpdateManyInput = {
@@ -13872,6 +13896,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -14559,6 +14584,7 @@ export namespace Prisma {
     url?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    avatarUrl?: SortOrder
     userId?: SortOrder
   }
 
@@ -14568,6 +14594,7 @@ export namespace Prisma {
     url?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    avatarUrl?: SortOrder
     userId?: SortOrder
   }
 
@@ -14577,6 +14604,7 @@ export namespace Prisma {
     url?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    avatarUrl?: SortOrder
     userId?: SortOrder
   }
 
@@ -15657,6 +15685,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     logs?: LogCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
     files?: FileCreateNestedManyWithoutRepositoryInput
@@ -15668,6 +15697,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
@@ -15768,6 +15798,7 @@ export namespace Prisma {
     url?: StringFilter<"Repository"> | string
     status?: EnumRepoStatusFilter<"Repository"> | $Enums.RepoStatus
     createdAt?: DateTimeFilter<"Repository"> | Date | string
+    avatarUrl?: StringFilter<"Repository"> | string
     userId?: StringFilter<"Repository"> | string
   }
 
@@ -16201,6 +16232,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     user: UserCreateNestedOneWithoutRepositoriesInput
     logs?: LogCreateNestedManyWithoutRepositoryInput
     files?: FileCreateNestedManyWithoutRepositoryInput
@@ -16212,6 +16244,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     userId: string
     logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
@@ -16318,6 +16351,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
     logs?: LogUpdateManyWithoutRepositoryNestedInput
     files?: FileUpdateManyWithoutRepositoryNestedInput
@@ -16329,6 +16363,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -16356,6 +16391,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     user: UserCreateNestedOneWithoutRepositoriesInput
     logs?: LogCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
@@ -16367,6 +16403,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     userId: string
     logs?: LogUncheckedCreateNestedManyWithoutRepositoryInput
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
@@ -16487,6 +16524,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
     logs?: LogUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
@@ -16498,6 +16536,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -16799,6 +16838,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     user: UserCreateNestedOneWithoutRepositoriesInput
     directories?: DirectoryCreateNestedManyWithoutRepositoryInput
     files?: FileCreateNestedManyWithoutRepositoryInput
@@ -16810,6 +16850,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
     userId: string
     directories?: DirectoryUncheckedCreateNestedManyWithoutRepositoryInput
     files?: FileUncheckedCreateNestedManyWithoutRepositoryInput
@@ -16837,6 +16878,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutRepositoriesNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
     files?: FileUpdateManyWithoutRepositoryNestedInput
@@ -16848,6 +16890,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -16879,6 +16922,7 @@ export namespace Prisma {
     url: string
     status?: $Enums.RepoStatus
     createdAt?: Date | string
+    avatarUrl: string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -16947,6 +16991,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     logs?: LogUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUpdateManyWithoutRepositoryNestedInput
     files?: FileUpdateManyWithoutRepositoryNestedInput
@@ -16958,6 +17003,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
     logs?: LogUncheckedUpdateManyWithoutRepositoryNestedInput
     directories?: DirectoryUncheckedUpdateManyWithoutRepositoryNestedInput
     files?: FileUncheckedUpdateManyWithoutRepositoryNestedInput
@@ -16969,6 +17015,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     status?: EnumRepoStatusFieldUpdateOperationsInput | $Enums.RepoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    avatarUrl?: StringFieldUpdateOperationsInput | string
   }
 
   export type LogCreateManyRepositoryInput = {

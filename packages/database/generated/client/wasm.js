@@ -175,6 +175,7 @@ exports.Prisma.RepositoryScalarFieldEnum = {
   url: 'url',
   status: 'status',
   createdAt: 'createdAt',
+  avatarUrl: 'avatarUrl',
   userId: 'userId'
 };
 

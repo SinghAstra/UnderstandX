@@ -3,6 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import simpleGit from "simple-git";
 import { reportStatus } from "../logic/reporter";
+import { scanDirectory } from "../logic/walker";
 
 export async function processRepo(job: Job) {
   const { repoId, repoUrl } = job.data;
@@ -25,12 +26,21 @@ export async function processRepo(job: Job) {
 
     await reportStatus(
       repoId,
-      "Clone successful. Preparing for analysis...",
+      "Clone successful. Mapping structure...",
+      "PROCESSING"
+    );
+
+    await scanDirectory(workDir, repoId, null, workDir);
+
+    await reportStatus(
+      repoId,
+      "Skeleton built. Starting deep code analysis...",
       "PROCESSING"
     );
 
     return { workDir };
   } catch (err: any) {
+    await reportStatus(repoId, `Error: ${err.message}`, "FAILED");
     console.error(`[GIT ERROR]: ${err.message}`);
     throw err;
   }

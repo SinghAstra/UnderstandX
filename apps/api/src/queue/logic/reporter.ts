@@ -1,11 +1,11 @@
 import { pubClient } from "@/config/redis";
-import { prisma, RepositoryStatus } from "@understand-x/database";
+import { prisma, RepoStatus } from "@understand-x/database";
 import { REDIS_CHANNELS } from "@understand-x/shared";
 
 export async function reportStatus(
   repositoryId: string,
   message: string,
-  status: RepositoryStatus
+  status: RepoStatus
 ) {
   console.log(message);
   const log = await prisma.log.create({

@@ -71,6 +71,7 @@ model Repository {
   url         String
   status      RepoStatus  @default(QUEUED)
   createdAt   DateTime    @default(now())
+  avatarUrl   String
 
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -112,7 +113,6 @@ model File {
   directoryId  String?
   directory    Directory?  @relation(fields: [directoryId], references: [id])
 
-  // Nervous System Data
   symbols      Symbol[]
   dependencies Dependency[] @relation("SourceFile")
   referencedBy Dependency[] @relation("TargetFile")
