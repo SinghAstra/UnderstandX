@@ -1,70 +1,87 @@
-import { logError } from "@/utils/logger";
 import { prisma } from "@understand-x/database";
-import fs from "fs-extra";
-import path from "path";
-import { QueryCapture } from "tree-sitter";
-import { extractPathFromImport } from "./helper";
-import { createParser, QUERY_SYMBOLS } from "./parser";
+import Parser from "tree-sitter";
+import { getLanguageForFile, getTreeForFile } from "./parser-utils";
+import { EXPORT_QUERY, IMPORT_QUERY } from "./queries";
+import { reportStatus } from "./reporter";
 
-export async function analyzeCodebase(workDir: string, repoId: string) {
-  const parser = createParser();
-  // Compile the query once outside the loop for performance
-  const query = parser.getLanguage().query(QUERY_SYMBOLS);
+export async function analyzeCodebase(repoId: string) {
+  const files = await prisma.file.findMany({
+    where: { repositoryId: repoId },
+  });
 
-  const files = await prisma.file.findMany({ where: { repositoryId: repoId } });
+  await reportStatus(
+    repoId,
+    `Analyzing ${files.length} files...`,
+    "PROCESSING"
+  );
 
   for (const file of files) {
-    if (!/\.(ts|js|tsx|jsx)$/.test(file.name)) continue;
+    if (![".ts", ".tsx", ".js", ".jsx"].includes(file.extension)) continue;
 
-    try {
-      const sourceCode = await fs.readFile(
-        path.join(workDir, file.path),
-        "utf8"
-      );
-      const tree = parser.parse(sourceCode);
-      // Execute the query on the root of the file
-      const captures: QueryCapture[] = query.captures(tree.rootNode);
+    const content = file.content || "";
+    if (!content) continue;
 
-      const dependencyData: any[] = [];
-      const symbolData: any[] = [];
+    const tree = getTreeForFile(content, file.extension);
 
-      // Process captures by their @name defined in the query
-      captures.forEach((capture) => {
-        const { name, node } = capture;
+    await extractSymbols(file.id, file.extension, tree);
 
-        if (name === "import") {
-          dependencyData.push({
-            importPath: extractPathFromImport(node.text),
-            sourceValue: node.text,
-            fileId: file.id,
-          });
-        }
+    await extractDependencies(file.id, file.extension, tree);
+  }
 
-        if (["export", "export_var", "export_func"].includes(name)) {
-          // If it's a specific func/var name, it's more precise than the whole block
-          symbolData.push({
-            name: node.text.replace(/['";]/g, ""), // Clean up any trailing punctuation
-            type: name,
-            fileId: file.id,
-          });
-        }
+  await reportStatus(
+    repoId,
+    "Analysis complete. Nervous system mapped.",
+    "COMPLETED"
+  );
+}
+
+async function extractSymbols(
+  fileId: string,
+  extension: string,
+  tree: Parser.Tree
+) {
+  const language = getLanguageForFile(extension);
+
+  const query = new Parser.Query(language, EXPORT_QUERY);
+  const matches = query.matches(tree.rootNode);
+
+  for (const match of matches) {
+    const nameNode = match.captures.find((c) => c.name === "name")?.node;
+    const typeNode = match.captures.find((c) => c.name === "export")?.node;
+
+    if (nameNode) {
+      await prisma.symbol.create({
+        data: {
+          fileId,
+          name: nameNode.text,
+          type: typeNode?.type || "unknown",
+        },
       });
+    }
+  }
+}
 
-      console.log("dependencyData is ", dependencyData);
-      console.log("symbolData is ", symbolData);
+async function extractDependencies(
+  fileId: string,
+  extension: string,
+  tree: Parser.Tree
+) {
+  const language = getLanguageForFile(extension);
 
-      // Atomic Transaction for Data Integrity
-      await prisma.$transaction([
-        prisma.dependency.createMany({ data: dependencyData }),
-        prisma.symbol.createMany({ data: symbolData }),
-        prisma.file.update({
-          where: { id: file.id },
-          data: { content: sourceCode },
-        }),
-      ]);
-    } catch (err) {
-      logError(err);
-      console.error(`Failed: ${file.path}`, err);
+  const query = new Parser.Query(language, IMPORT_QUERY);
+  const matches = query.matches(tree.rootNode);
+
+  for (const match of matches) {
+    const pathNode = match.captures.find((c) => c.name === "path")?.node;
+
+    if (pathNode) {
+      await prisma.dependency.create({
+        data: {
+          fileId,
+          importPath: pathNode.text.replace(/['"]/g, ""),
+          sourceValue: pathNode.parent?.text || "",
+        },
+      });
     }
   }
 }

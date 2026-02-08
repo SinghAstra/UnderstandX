@@ -66,95 +66,96 @@ model PasswordResetToken {
 
 
 model Repository {
-  id          String           @id @default(cuid())
-  name        String?
-  owner       String?
+  id          String      @id @default(uuid())
+  name        String
   url         String
-  userId      String
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  avatarUrl   String?
-  githubId    Int?
-  status      RepositoryStatus @default(PENDING)
-  overview    String?
+  status      RepoStatus  @default(QUEUED)
+  createdAt   DateTime    @default(now())
+  avatarUrl   String
+
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs         Log[]
+  
   directories Directory[]
   files       File[]
-  logs        Log[]
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
 }
 
 model Directory {
-  id           String      @id @default(cuid())
-  path         String
-  summary      String?
-  repositoryId String
+  id           String      @id @default(uuid())
+  name         String
+  path         String      
+  
   parentId     String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  parent       Directory?  @relation("DirectoryTree", fields: [parentId], references: [id])
-  children     Directory[] @relation("DirectoryTree")
-  repository   Repository  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  parent       Directory?  @relation("DirToDir", fields: [parentId], references: [id])
+  children     Directory[] @relation("DirToDir")
+
+  repositoryId String
+  repository   Repository  @relation(fields: [repositoryId], references: [id])
+
   files        File[]
+
+  @@unique([repositoryId, path])
 }
 
 model File {
-  id           String     @id @default(cuid())
-  path         String
+  id           String      @id @default(uuid())
   name         String
-  content      String?
-  directoryId  String?
-  createdAt    DateTime   @default(now())
+  path         String      
+  extension    String      
+  content      String?     @db.Text 
+
   repositoryId String
+  repository   Repository  @relation(fields: [repositoryId], references: [id])
+  
+  directoryId  String?
+  directory    Directory?  @relation(fields: [directoryId], references: [id])
 
- // Relations
-  symbols      Symbol[]   // What this file EXPORTS
-  dependencies Dependency[] // What this file IMPORTS
+  symbols      Symbol[]
+  dependencies Dependency[] @relation("SourceFile")
+  referencedBy Dependency[] @relation("TargetFile")
 
-  directory    Directory? @relation(fields: [directoryId], references: [id], onDelete: Cascade)
-  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  @@unique([repositoryId, path])
 }
 
 model Symbol {
-  id        String @id @default(cuid())
-  name      String // e.g., "UserAuth"
-  type      String // e.g., "function", "class", "variable"
+  id        String   @id @default(uuid())
+  name      String  
+  type      String   
+  
   fileId    String
-  file      File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
 }
 
 model Dependency {
-  id          String @id @default(cuid())
-  fileId      String // The file that HAS the import
-  file        File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  id             String   @id @default(uuid())
+  importPath     String  
+  sourceValue    String  
   
-  importPath  String // e.g., "@/components/Button"
-  sourceValue String // The raw import line for debugging
-  
-  // This is the "Magic Link" we fill in during the Graph Step 
-  resolvedFileId String? 
+  fileId         String
+  file           File     @relation("SourceFile", fields: [fileId], references: [id], onDelete: Cascade)
+
+  resolvedFileId String?
+  resolvedFile   File?    @relation("TargetFile", fields: [resolvedFileId], references: [id])
+}
+
+enum RepoStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
 }
 
 model Log {
   id           String           @id @default(cuid())
   repositoryId String
   message      String
-  status       RepositoryStatus
+  status       RepoStatus
   createdAt    DateTime         @default(now())
   repository   Repository       @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 }
 
-enum RepositoryStatus {
-  PENDING
-  PROCESSING
-  SUCCESS
-  FAILED
-}
-
-enum DirectoryStatus {
-  PENDING
-  PROCESSING
-  SUCCESS
-  FAILED
-}
 
 

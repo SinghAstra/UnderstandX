@@ -1,8 +1,5 @@
 -- CreateEnum
-CREATE TYPE "RepositoryStatus" AS ENUM ('PENDING', 'PROCESSING', 'SUCCESS', 'FAILED');
-
--- CreateEnum
-CREATE TYPE "DirectoryStatus" AS ENUM ('PENDING', 'PROCESSING', 'SUCCESS', 'FAILED');
+CREATE TYPE "RepoStatus" AS ENUM ('QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -67,16 +64,11 @@ CREATE TABLE "PasswordResetToken" (
 -- CreateTable
 CREATE TABLE "Repository" (
     "id" TEXT NOT NULL,
-    "name" TEXT,
-    "owner" TEXT,
+    "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "status" "RepoStatus" NOT NULL DEFAULT 'QUEUED',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "avatarUrl" TEXT,
-    "githubId" INTEGER,
-    "status" "RepositoryStatus" NOT NULL DEFAULT 'PENDING',
-    "overview" TEXT,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Repository_pkey" PRIMARY KEY ("id")
 );
@@ -84,12 +76,10 @@ CREATE TABLE "Repository" (
 -- CreateTable
 CREATE TABLE "Directory" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "path" TEXT NOT NULL,
-    "summary" TEXT,
-    "repositoryId" TEXT NOT NULL,
     "parentId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "repositoryId" TEXT NOT NULL,
 
     CONSTRAINT "Directory_pkey" PRIMARY KEY ("id")
 );
@@ -97,12 +87,12 @@ CREATE TABLE "Directory" (
 -- CreateTable
 CREATE TABLE "File" (
     "id" TEXT NOT NULL,
-    "path" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "extension" TEXT NOT NULL,
     "content" TEXT,
-    "directoryId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "repositoryId" TEXT NOT NULL,
+    "directoryId" TEXT,
 
     CONSTRAINT "File_pkey" PRIMARY KEY ("id")
 );
@@ -120,9 +110,9 @@ CREATE TABLE "Symbol" (
 -- CreateTable
 CREATE TABLE "Dependency" (
     "id" TEXT NOT NULL,
-    "fileId" TEXT NOT NULL,
     "importPath" TEXT NOT NULL,
     "sourceValue" TEXT NOT NULL,
+    "fileId" TEXT NOT NULL,
     "resolvedFileId" TEXT,
 
     CONSTRAINT "Dependency_pkey" PRIMARY KEY ("id")
@@ -133,7 +123,7 @@ CREATE TABLE "Log" (
     "id" TEXT NOT NULL,
     "repositoryId" TEXT NOT NULL,
     "message" TEXT NOT NULL,
-    "status" "RepositoryStatus" NOT NULL,
+    "status" "RepoStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Log_pkey" PRIMARY KEY ("id")
@@ -157,6 +147,12 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 -- CreateIndex
 CREATE UNIQUE INDEX "PasswordResetToken_code_key" ON "PasswordResetToken"("code");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Directory_repositoryId_path_key" ON "Directory"("repositoryId", "path");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "File_repositoryId_path_key" ON "File"("repositoryId", "path");
+
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -170,19 +166,22 @@ ALTER TABLE "Repository" ADD CONSTRAINT "Repository_userId_fkey" FOREIGN KEY ("u
 ALTER TABLE "Directory" ADD CONSTRAINT "Directory_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Directory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Directory" ADD CONSTRAINT "Directory_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Directory" ADD CONSTRAINT "Directory_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "File" ADD CONSTRAINT "File_directoryId_fkey" FOREIGN KEY ("directoryId") REFERENCES "Directory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "File" ADD CONSTRAINT "File_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "File" ADD CONSTRAINT "File_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "File" ADD CONSTRAINT "File_directoryId_fkey" FOREIGN KEY ("directoryId") REFERENCES "Directory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Symbol" ADD CONSTRAINT "Symbol_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "File"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Dependency" ADD CONSTRAINT "Dependency_fileId_fkey" FOREIGN KEY ("fileId") REFERENCES "File"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Dependency" ADD CONSTRAINT "Dependency_resolvedFileId_fkey" FOREIGN KEY ("resolvedFileId") REFERENCES "File"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Log" ADD CONSTRAINT "Log_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "Repository"("id") ON DELETE CASCADE ON UPDATE CASCADE;
