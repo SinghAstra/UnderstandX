@@ -22,7 +22,7 @@ export default function RepoClientPage({ repoId, initialData, audit }: any) {
         {repo.status === "COMPLETED" ? (
           <CodeExplorer repoId={repoId} />
         ) : (
-          <TerminalView repoId={repoId} logs={repo.logs} />
+          <TerminalView logs={repo.logs} />
         )}
       </main>
     </div>

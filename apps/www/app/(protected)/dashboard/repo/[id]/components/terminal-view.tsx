@@ -1,7 +1,8 @@
 "use client";
+import { Log, RepoStatus } from "@understand-x/database";
 import { useEffect, useRef } from "react";
 
-export function TerminalView({ logs }: { logs: any[] }) {
+export function TerminalView({ logs }: { logs: Log[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +33,9 @@ export function TerminalView({ logs }: { logs: any[] }) {
             </span>
             <span
               className={
-                log.level === "ERROR" ? "text-rose-400" : "text-slate-300"
+                log.status === RepoStatus.FAILED
+                  ? "text-rose-400"
+                  : "text-slate-300"
               }
             >
               {log.message}
