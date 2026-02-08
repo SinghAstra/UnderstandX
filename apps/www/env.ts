@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   DATABASE_URL: z.url(),
-  API_URL: z.url(),
+  NEXT_PUBLIC_API_URL: z.url(),
   JWT_SECRET: z.string().min(1),
   NEXT_AUTH_SECRET: z.string().min(1),
   NODE_ENV: z
@@ -13,7 +13,7 @@ const envSchema = z.object({
 // Validate process.env against the schema
 const _env = envSchema.safeParse({
   DATABASE_URL: process.env.DATABASE_URL,
-  API_URL: process.env.API_URL,
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   JWT_SECRET: process.env.JWT_SECRET,
   NEXT_AUTH_SECRET: process.env.NEXT_AUTH_SECRET,
   NODE_ENV: process.env.NODE_ENV,
